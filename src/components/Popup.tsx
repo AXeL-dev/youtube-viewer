@@ -273,7 +273,11 @@ export default function Popup() {
         <Divider />
         <List>
           <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => showAllChannels()}>
-            <ListItemIcon><SubscriptionsIcon /></ListItemIcon>
+            <ListItemIcon>
+              <Avatar>
+                <SubscriptionsIcon />
+              </Avatar>
+            </ListItemIcon>
             <ListItemText primary="All" />
           </ListItem>
           {channels.map((channel: Channel, index: number) => (
