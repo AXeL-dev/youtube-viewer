@@ -70,7 +70,6 @@ export default function VideoList(props: VideoListProps) {
         <React.Fragment>
           <Media loading maxPerLine={maxVideosPerLine} />
           <Media loading maxPerLine={maxVideosPerLine} />
-          <Media loading maxPerLine={maxVideosPerLine} />
         </React.Fragment>
       ) : (
         walk(videos, maxVideosPerLine, (data: Video[], index: number) => {

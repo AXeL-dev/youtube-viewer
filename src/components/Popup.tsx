@@ -128,8 +128,13 @@ export default function Popup() {
     get_activities(channel.id, aMonthAgo).then((results) => {
       //console.log(results);
       if (results?.items) {
-        setChannels([...channels, channel]);
-        setSelectedChannelIndex(channels.length);
+        const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
+        if (!found) {
+          setChannels([...channels, channel]);
+          setSelectedChannelIndex(channels.length);
+        } else {
+          setSelectedChannelIndex(channels.indexOf(found));
+        }
         const videoIds = results.items.map((item: any) => item.contentDetails.upload.videoId);
         //console.log(videoIds);
         get_video_info(videoIds).then((videos?: Video[]) => {
