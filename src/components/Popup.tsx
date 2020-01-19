@@ -26,6 +26,7 @@ import { Channel } from '../models/Channel';
 import { get_activities, get_video_info } from '../helpers/youtube';
 import { Video } from '../models/Video';
 import { DeleteChannelDialog } from './channel/Dialog';
+import { getDateBefore } from '../helpers/utils';
 
 const drawerWidth = 240;
 
@@ -111,6 +112,7 @@ export default function Popup() {
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(0);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+  const aMonthAgoDate = getDateBefore(30);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -122,10 +124,8 @@ export default function Popup() {
 
   const addChannel = (channel: Channel) => {
     //console.log('selected channel:', channel);
-    var aMonthAgo = new Date();
-    aMonthAgo.setDate(aMonthAgo.getDate() - 30);
     setIsLoading(true);
-    get_activities(channel.id, aMonthAgo).then((results) => {
+    get_activities(channel.id, aMonthAgoDate).then((results) => {
       //console.log(results);
       if (results?.items) {
         const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
@@ -135,7 +135,7 @@ export default function Popup() {
         } else {
           setSelectedChannelIndex(channels.indexOf(found));
         }
-        const videoIds = results.items.map((item: any) => item.contentDetails.upload.videoId);
+        const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
         //console.log(videoIds);
         get_video_info(videoIds).then((videos?: Video[]) => {
           //console.log(videos);
@@ -150,14 +150,12 @@ export default function Popup() {
 
   const selectChannel = (channel: Channel, index: number) => {
     //console.log('selected channel:', channel);
-    var aMonthAgo = new Date();
-    aMonthAgo.setDate(aMonthAgo.getDate() - 30);
     setIsLoading(true);
-    get_activities(channel.id, aMonthAgo).then((results) => {
+    get_activities(channel.id, aMonthAgoDate).then((results) => {
       //console.log(results);
       if (results?.items) {
         setSelectedChannelIndex(index);
-        const videoIds = results.items.map((item: any) => item.contentDetails.upload.videoId);
+        const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
         //console.log(videoIds);
         get_video_info(videoIds).then((videos?: Video[]) => {
           //console.log(videos);
@@ -187,6 +185,38 @@ export default function Popup() {
 
   const closeDeleteChannelDialog = () => {
     setOpenDeleteChannelDialog(false);
+  };
+
+  const showAllChannels = () => {
+    setSelectedChannelIndex(-1);
+    setIsLoading(true);
+    setVideos([]);
+    let promises: Promise<any>[] = [];
+    let subPromises: Promise<any>[] = [];
+    let videos: Video[]= [];
+    channels.forEach((channel: Channel) => {
+      const promise = get_activities(channel.id, aMonthAgoDate).then((results) => {
+        //console.log(results);
+        if (results?.items) {
+          const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
+          //console.log(videoIds);
+          const promise = get_video_info(videoIds).then((newVideos: Video[]) => {
+            //console.log(channel.title, newVideos);
+            videos.push(...newVideos);
+          });
+          subPromises.push(promise);
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+      promises.push(promise);
+    });
+    Promise.all(promises).finally(() => {
+      Promise.all(subPromises).finally(() => {
+        setVideos(videos);
+        setIsLoading(false);
+      });
+    });
   };
 
   return (
@@ -242,12 +272,12 @@ export default function Popup() {
         </div>
         <Divider />
         <List>
-          <ListItem button key="all">
+          <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => showAllChannels()}>
             <ListItemIcon><SubscriptionsIcon /></ListItemIcon>
             <ListItemText primary="All" />
           </ListItem>
           {channels.map((channel: Channel, index: number) => (
-            <ListItem button key={index} selected={index === selectedChannelIndex} onClick={(event) => selectChannel(channel, index)}>
+            <ListItem button key={index} selected={index === selectedChannelIndex} onClick={() => selectChannel(channel, index)}>
               <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
               <ListItemText primary={channel.title} />
               <ListItemSecondaryAction>

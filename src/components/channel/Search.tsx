@@ -160,7 +160,7 @@ export default function SearchChannelInput(props: SearchProps) {
           <ul className={classes.listbox} {...getListboxProps()}>
             {groupedOptions.map((option, index) => (
               <li {...getOptionProps({ option, index })}>
-                <Grid container alignItems="center" onClick={(event) => onSelect(option)}>
+                <Grid container alignItems="center" onClick={() => onSelect(option)}>
                   <Grid item>
                     <Avatar className={classes.avatar} alt={option.title} src={option.thumbnail} />
                   </Grid>

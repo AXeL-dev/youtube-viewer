@@ -121,3 +121,10 @@ export const TimeAgo = (() => {
   
   return self;
 })();
+
+// Return current date - number of days before
+export function getDateBefore(before: number = 0): Date {
+  let date = new Date();
+  date.setDate(date.getDate() - before);
+  return date;
+}
