@@ -26,7 +26,7 @@ function Media(props: MediaProps) {
       {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
-            <a href={item.url} style={style.anchor} target="_blank" rel="noopener noreferrer">
+            <a href={item.url} style={style.anchor} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>
               <img style={{ width: 210, height: 118 }} alt={item.title} src={item.thumbnails.medium.url} />
               <Box pr={2}>
                 <Typography gutterBottom variant="body2">
