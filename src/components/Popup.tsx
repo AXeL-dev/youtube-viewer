@@ -21,11 +21,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
 import VideoList from './VideoList';
-import SearchInput from './SearchField';
+import SearchChannelInput from './channel/Search';
 import { Channel } from '../models/Channel';
 import { get_activities, get_video_info } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { DeleteChannelDialog } from './DeleteChannelDialog';
+import { DeleteChannelDialog } from './channel/Dialog';
 
 const drawerWidth = 240;
 
@@ -204,7 +204,7 @@ export default function Popup() {
           <Typography className={classes.title} variant="h6" noWrap>
             Youtube viewer
           </Typography>
-          <SearchInput onSelect={addChannel} />
+          <SearchChannelInput onSelect={addChannel} />
           <div className={classes.grow} />
           <a href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener noreferrer">
             <IconButton

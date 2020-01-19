@@ -4,11 +4,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, fade } from '@material-ui/core/styles';
 import throttle from 'lodash/throttle';
-import { search_channel } from '../helpers/youtube';
+import { search_channel } from '../../helpers/youtube';
 import Avatar from '@material-ui/core/Avatar';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-import { Channel } from '../models/Channel';
+import { Channel } from '../../models/Channel';
 
 const useStyles = makeStyles((theme: Theme) => ({
   search: {
@@ -87,7 +87,7 @@ interface SearchProps {
   onSelect: Function;
 }
 
-export default function SearchField(props: SearchProps) {
+export default function SearchChannelInput(props: SearchProps) {
   const { onSelect } = props;
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState('');
