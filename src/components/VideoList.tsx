@@ -5,15 +5,14 @@ import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Video } from '../models/Video';
 
-const maxVideosPerLine: number = 3;
-
 interface MediaProps {
   loading?: boolean;
-  data: Video[]
+  data?: Video[];
+  maxPerLine: number;
 }
 
 function Media(props: MediaProps) {
-  const { loading = false, data } = props;
+  const { loading = false, data = [], maxPerLine } = props;
   const style = {
     anchor: {
       textDecoration: 'none',
@@ -24,7 +23,7 @@ function Media(props: MediaProps) {
 
   return (
     <Grid container wrap="nowrap">
-      {(loading ? Array.from(new Array(maxVideosPerLine)) : data).map((item, index) => (
+      {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
             <a href={item.url} style={style.anchor} target="_blank" rel="noopener noreferrer">
@@ -57,7 +56,30 @@ function Media(props: MediaProps) {
 }
 
 interface VideoListProps {
+  loading?: boolean;
   videos: Video[];
+}
+
+export default function VideoList(props: VideoListProps) {
+  const { videos, loading = false } = props;
+  const maxVideosPerLine: number = 3;
+
+  return (
+    <Box overflow="hidden">
+      {loading /*&& videos?.length === 0*/ ? (
+        <React.Fragment>
+          <Media loading maxPerLine={maxVideosPerLine} />
+          <Media loading maxPerLine={maxVideosPerLine} />
+          <Media loading maxPerLine={maxVideosPerLine} />
+        </React.Fragment>
+      ) : (
+        walk(videos, maxVideosPerLine, (data: Video[], index: number) => {
+          //console.log('data', data);
+          return (<Media key={index} data={data} maxPerLine={maxVideosPerLine} />);
+        })
+      )}
+    </Box>
+  );
 }
 
 function walk(arr: any[], n: number, fn: Function): any {
@@ -72,17 +94,4 @@ function walk(arr: any[], n: number, fn: Function): any {
     );
   }
   return output;
-}
-
-export default function VideoList(props: VideoListProps) {
-  const { videos } = props;
-
-  return (
-    <Box overflow="hidden">
-      {(walk(videos, maxVideosPerLine, (data: Video[], index: number) => {
-        //console.log('data', data);
-        return (<Media key={index} data={data} />);
-      }))}
-    </Box>
-  );
 }

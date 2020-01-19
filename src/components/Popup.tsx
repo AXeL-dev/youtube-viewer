@@ -21,10 +21,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
 import VideoList from './VideoList';
-import SearchInput from './Search';
+import SearchInput from './SearchField';
 import { Channel } from '../models/Channel';
 import { get_activities, get_video_info } from '../helpers/youtube';
 import { Video } from '../models/Video';
+import { DeleteChannelDialog } from './DeleteChannelDialog';
 
 const drawerWidth = 240;
 
@@ -105,6 +106,11 @@ export default function Popup() {
   const [channels, setChannels] = React.useState<Channel[]>([]);
   const [videos, setVideos] = React.useState<Video[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
+  const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(0);
+  const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
+  const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -114,24 +120,65 @@ export default function Popup() {
     setOpen(false);
   };
 
-  const handleChannelSelection = (channel: Channel) => {
+  const addChannel = (channel: Channel) => {
     //console.log('selected channel:', channel);
     var aMonthAgo = new Date();
     aMonthAgo.setDate(aMonthAgo.getDate() - 30);
+    setIsLoading(true);
     get_activities(channel.id, aMonthAgo).then((results) => {
       //console.log(results);
       if (results?.items) {
         setChannels([...channels, channel]);
+        setSelectedChannelIndex(channels.length);
         const videoIds = results.items.map((item: any) => item.contentDetails.upload.videoId);
         //console.log(videoIds);
         get_video_info(videoIds).then((videos?: Video[]) => {
           //console.log(videos);
           setVideos(videos || []);
+          setIsLoading(false);
         });
       }
     }).catch((error) => {
       console.error(error);
     });
+  };
+
+  const selectChannel = (channel: Channel, index: number) => {
+    //console.log('selected channel:', channel);
+    var aMonthAgo = new Date();
+    aMonthAgo.setDate(aMonthAgo.getDate() - 30);
+    setIsLoading(true);
+    get_activities(channel.id, aMonthAgo).then((results) => {
+      //console.log(results);
+      if (results?.items) {
+        setSelectedChannelIndex(index);
+        const videoIds = results.items.map((item: any) => item.contentDetails.upload.videoId);
+        //console.log(videoIds);
+        get_video_info(videoIds).then((videos?: Video[]) => {
+          //console.log(videos);
+          setVideos(videos || []);
+          setIsLoading(false);
+        });
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+  
+  const deleteChannel = (event: any, channel: Channel, index: number) => {
+    event.stopPropagation();
+    setChannelToDelete(channel);
+    setChannelToDeleteIndex(index);
+    setOpenDeleteChannelDialog(true);
+  };
+
+  const confirmDeleteChannel = (index: number) => {
+    setChannels(channels.filter((_, i) => i !== index));
+    closeDeleteChannelDialog();
+  };
+
+  const closeDeleteChannelDialog = () => {
+    setOpenDeleteChannelDialog(false);
   };
 
   return (
@@ -157,7 +204,7 @@ export default function Popup() {
           <Typography className={classes.title} variant="h6" noWrap>
             Youtube viewer
           </Typography>
-          <SearchInput onSelect={handleChannelSelection} />
+          <SearchInput onSelect={addChannel} />
           <div className={classes.grow} />
           <a href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener noreferrer">
             <IconButton
@@ -192,11 +239,11 @@ export default function Popup() {
             <ListItemText primary="All" />
           </ListItem>
           {channels.map((channel: Channel, index: number) => (
-            <ListItem button key={index}>
+            <ListItem button key={index} selected={index === selectedChannelIndex} onClick={(event) => selectChannel(channel, index)}>
               <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
               <ListItemText primary={channel.title} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete">
+                <IconButton edge="end" aria-label="delete" onClick={(event) => deleteChannel(event, channel, index)}>
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -210,8 +257,15 @@ export default function Popup() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <VideoList videos={videos} />
+        <VideoList videos={videos} loading={isLoading} />
       </main>
+      <DeleteChannelDialog
+        open={openDeleteChannelDialog}
+        channel={channelToDelete}
+        index={channelToDeleteIndex}
+        onConfirm={confirmDeleteChannel}
+        onClose={closeDeleteChannelDialog}
+      />
     </div>
   );
 }

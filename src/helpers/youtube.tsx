@@ -111,6 +111,7 @@ function search_channel (query: string, max: number = 3) {
         q: query
     }).then(response_json => {
         let pay_load: any = [];
+        //console.log(response_json);
         if (response_json.pageInfo.totalResults > 0) {
             let how_many = Math.min(response_json.pageInfo.totalResults, max);
             for (let i = 0; i < how_many; i++) {
