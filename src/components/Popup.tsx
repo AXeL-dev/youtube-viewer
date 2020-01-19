@@ -179,6 +179,9 @@ export default function Popup() {
 
   const confirmDeleteChannel = (index: number) => {
     setChannels(channels.filter((_, i) => i !== index));
+    if (selectedChannelIndex === index) {
+      setVideos([]);
+    }
     closeDeleteChannelDialog();
   };
 
