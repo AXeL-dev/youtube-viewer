@@ -1,4 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# <img src="public/icons/128.png" alt="icon" width="32"/> Youtube viewer
+
+A web extension to keep tracking your fav. youtube channels with less hassle..
+
+![screenshot](screenshots/popup.png)
+
+> This is a fun made project in my road to practice React & to learn more about it, so many aspects of the project may change along the time. Any help or feedback is welcome :pray:.
+
+## Installation
+
+[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](#)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](#)
+
+## Todo
+
+- [ ] Translations
 
 ## Available Scripts
 
@@ -37,8 +52,16 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+### `npm run package`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Note: the web-ext package is required. You can install it using `npm install -g web-ext`.**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Packages the app in a zip file.
+
+## Credits
+
+Icon made by [Vectorgraphit](https://www.iconfinder.com/vectorgraphit) and is licensed under [Creative Commons Attribution 3.0 Unported License](https://creativecommons.org/licenses/by/3.0/).
+
+## License
+
+This project is licensed under the [MPL2](LICENSE) license.
