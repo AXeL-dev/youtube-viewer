@@ -4,7 +4,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 ![screenshot](screenshots/popup.png)
 
-> This is a fun made project in my road to practice React & to learn more about it, so many aspects of the project may change along the time. Any help or feedback is welcome :pray:.
+> This is a fun made project in my road to practice React & to get more used to it, therefore, many aspects of the project may change over the time. Any help or feedback is welcome :pray:.
 
 ## Installation
 
@@ -15,7 +15,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 - [ ] Translations
 
-## Available Scripts
+## Development scripts
 
 In the project directory, you can run:
 
