@@ -11,6 +11,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models/Channel';
+import { getRegex } from '../../helpers/utils';
 
 const useStyles = makeStyles((theme: Theme) => ({
   search: {
@@ -188,7 +189,7 @@ export default function SearchChannelInput(props: SearchProps) {
                   </Grid>
                   <Grid item xs>
                     <Typography variant="body2" color="textSecondary">
-                      {option.title}
+                      <RawHTML>{option.title.replace(getRegex('(' + inputValue + ')', 'gi'), `<strong>$1</strong>`)}</RawHTML>
                     </Typography>
                   </Grid>
                 </Grid>
@@ -200,3 +201,7 @@ export default function SearchChannelInput(props: SearchProps) {
     </div>
   );
 }
+
+// Stolen from: https://stackoverflow.com/a/45810395
+const RawHTML = ({children, className = ''}: any): any =>
+  <span className={className} dangerouslySetInnerHTML={{ __html: children.replace(/\n/g, '<br />')}} />

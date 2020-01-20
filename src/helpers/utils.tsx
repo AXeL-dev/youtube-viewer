@@ -148,3 +148,13 @@ export function getDateBefore(before: number = 0): Date {
 }
 
 // -------------------------------------------------------------------
+
+/**
+ * Return a new RegExp object instance
+ * 
+ * @param pattern 
+ * @param modifiers 
+ */
+export function getRegex(pattern: string, modifiers: string): RegExp {
+  return new RegExp(pattern, modifiers);
+}
