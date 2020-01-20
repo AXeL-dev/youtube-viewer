@@ -21,12 +21,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
-import VideoList from './VideoList';
-import SearchChannelInput from './channel/Search';
+import VideoList from './video/VideoList';
+import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
 import { get_activities, get_video_info } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { DeleteChannelDialog } from './channel/Dialog';
+import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
 
 const drawerWidth = 240;
