@@ -1,5 +1,10 @@
 
-export function nice_duration (ISO_8601_string: string) {
+/**
+ * Convert youtube duration to readable format
+ * 
+ * @param ISO_8601_string {string}
+ */
+export function niceDuration (ISO_8601_string: string) {
   let time = ISO_8601_string.replace("PT", "").toUpperCase();
   let h = extract('H');
   let m = extract('M');
@@ -20,6 +25,8 @@ export function nice_duration (ISO_8601_string: string) {
       return '00';
   }
 }
+
+// -------------------------------------------------------------------
 
 /**
  * Shorten number to thousands, millions, billions, etc.
@@ -64,7 +71,12 @@ export function shortenLargeNumber(num: number, digits: number = 1) {
   return num;
 }
 
-// Stolen from: https://stackoverflow.com/a/37802747
+// -------------------------------------------------------------------
+
+/**
+ * Return Date & time in words
+ * Stolen from: https://stackoverflow.com/a/37802747
+ */
 export const TimeAgo = (() => {
   let self: any = {};
 
@@ -122,9 +134,17 @@ export const TimeAgo = (() => {
   return self;
 })();
 
-// Return current date - number of days before
+// -------------------------------------------------------------------
+
+/**
+ * Return current date minus number of days before
+ * 
+ * @param before {number}
+ */
 export function getDateBefore(before: number = 0): Date {
   let date = new Date();
   date.setDate(date.getDate() - before);
   return date;
 }
+
+// -------------------------------------------------------------------

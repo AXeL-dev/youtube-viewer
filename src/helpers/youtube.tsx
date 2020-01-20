@@ -9,14 +9,17 @@ This module provide functions for making api certain YouTube Data API V3
 requests. All functions return promise.
 */
 
-import { nice_duration, shortenLargeNumber, TimeAgo } from './utils';
+import { niceDuration, shortenLargeNumber, TimeAgo } from './utils';
 
-const api_key = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
+const apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
 
-const log_error = (e: any) => console.error(e);
+const logError = (e: any) => console.error(e);
 
-const api_request = (() => {
-    async function make_request (url: string) {
+/**
+ * Send API requests to youtube
+ */
+const apiRequest = (() => {
+    async function makeRequest (url: string) {
         let response = await window.fetch(url);
         //console.log(`HTTP ${response.status}: ${response.url}`);
         if (!response.ok) {
@@ -25,114 +28,139 @@ const api_request = (() => {
         return await response.json();
     }
 
-    function api_url (action: string, param: any) {
+    function apiUrl (action: string, param: any) {
         let url = "https://www.googleapis.com/youtube/v3/" + action + '?';
-        url += new URLSearchParams({...param, key: api_key }).toString();
+        url += new URLSearchParams({...param, key: apiKey }).toString();
         return url;
     }
 
-    return (action: string, api_args: any) => make_request(api_url(action, api_args));
+    return (action: string, apiArgs: any) => makeRequest(apiUrl(action, apiArgs));
 })();
 
-// Request a channel's activities after a date
-// Return a promise that resolves to api response
-function get_activities (channel_id: string, after: Date = new Date()) {
-    return api_request("activities", {
+/**
+ * Request a channel's activities after a date
+ * Return a promise that resolves to api response
+ * 
+ * @param channelId 
+ * @param after 
+ */
+function getActivities (channelId: string, after: Date = new Date()) {
+    return apiRequest("activities", {
         part: "snippet,contentDetails",
-        channelId: channel_id,
+        channelId: channelId,
         publishedAfter: after.toISOString(),
         maxResults: 50
     });
 }
 
+/**
+ * Return video duration
+ * 
+ * @param videoId 
+ */
 const VIDEO_DOES_NOT_EXIST = Symbol("Video does not exist");
-function get_duration (video_id: string) {
-    return api_request("videos", {
+function getDuration (videoId: string) {
+    return apiRequest("videos", {
         part: "contentDetails",
         fields: "items/contentDetails/duration",
-        id: video_id,
+        id: videoId,
     }).then(json => {
         if (json.items.length === 0) {
             throw VIDEO_DOES_NOT_EXIST;
         }
         return {
-            video_id,
-            duration: nice_duration(json.items[0].contentDetails.duration)
+            videoId,
+            duration: niceDuration(json.items[0].contentDetails.duration)
         };
     });
 }
 
-function get_tags_and_duration (video_id: string) {
-    return api_request("videos", {
+/**
+ * Return video tags & duration
+ * 
+ * @param videoId 
+ */
+function getTagsAndDuration (videoId: string) {
+    return apiRequest("videos", {
         part: "snippet,contentDetails",
         fields: "items/contentDetails/duration,items/snippet/tags",
-        id: video_id,
+        id: videoId,
     }).then(res => {
         res = res.items[0];
         return {
-            duration: nice_duration(res.contentDetails.duration),
+            duration: niceDuration(res.contentDetails.duration),
             tags: (res.snippet && res.snippet.tags) || []
         };
     });
 }
 
-function get_video_info (video_id_list: string[]) {
-    let joined_id = video_id_list.join(",");
-    return api_request("videos", {
+/**
+ * Return video informations
+ * 
+ * @param videoIdList 
+ */
+function getVideoInfo (videoIdList: string[]) {
+    let joinedIds = videoIdList.join(",");
+    return apiRequest("videos", {
         part: "snippet,contentDetails,statistics,id",
         fields: "items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))",
-        id: joined_id,
+        id: joinedIds,
         maxResults: 50,
     }).then(response => {
         //console.log(response);
-        return response.items.map((video_item: any) => ({
-            id: video_item.id,
-            title: video_item.snippet.title,
-            url: 'https://youtu.be/' + video_item.id,
-            duration: nice_duration(video_item.contentDetails.duration),
-            views: shortenLargeNumber(video_item.statistics.viewCount),
-            publishedAt: TimeAgo.inWords(new Date(video_item.snippet.publishedAt).getTime()),
-            thumbnails: video_item.snippet.thumbnails,
-            channelId: video_item.snippet.channelId,
-            channelTitle: video_item.snippet.channelTitle,
+        return response.items.map((videoItem: any) => ({
+            id: videoItem.id,
+            title: videoItem.snippet.title,
+            url: 'https://youtu.be/' + videoItem.id,
+            duration: niceDuration(videoItem.contentDetails.duration),
+            views: shortenLargeNumber(videoItem.statistics.viewCount),
+            publishedAt: TimeAgo.inWords(new Date(videoItem.snippet.publishedAt).getTime()),
+            thumbnails: videoItem.snippet.thumbnails,
+            channelId: videoItem.snippet.channelId,
+            channelTitle: videoItem.snippet.channelTitle,
         }));
     });
 }
 
-get_video_info.batch_size = 50;
+getVideoInfo.batch_size = 50;
 
-// Request to search channel matching `query`. Return a promise that will
-// resolve to either [] or [channels]
-function search_channel (query: string, max: number = 3) {
-    return api_request("search", {
+/**
+ * Request to search channel matching `query`. Return a promise that will
+ * resolve to either [] or [channels]
+ * 
+ * @param query 
+ * @param max 
+ */
+function searchChannel (query: string, max: number = 3) {
+    return apiRequest("search", {
         part: "snippet",
         type: "channel",
         order: "relevance",
         q: query
-    }).then(response_json => {
-        let pay_load: any = [];
-        //console.log(response_json);
-        if (response_json.pageInfo.totalResults > 0) {
-            let how_many = Math.min(response_json.pageInfo.totalResults, max);
-            for (let i = 0; i < how_many; i++) {
-                if (response_json.items[i]) {
-                    pay_load.push({
-                        title: response_json.items[i].snippet.title,
-                        thumbnail: response_json.items[i].snippet.thumbnails.medium.url,
-                        id: response_json.items[i].id.channelId
+    }).then(responseJson => {
+        let payLoad: any = [];
+        //console.log(responseJson);
+        if (responseJson.pageInfo.totalResults > 0) {
+            let howMany = Math.min(responseJson.pageInfo.totalResults, max);
+            for (let i = 0; i < howMany; i++) {
+                if (responseJson.items[i]) {
+                    payLoad.push({
+                        title: responseJson.items[i].snippet.title,
+                        thumbnail: responseJson.items[i].snippet.thumbnails.medium.url,
+                        id: responseJson.items[i].id.channelId
                     });
                 }
             }
         }
-        return pay_load;
-    }, log_error).then(null, log_error);
+        return payLoad;
+    }, logError).then(null, logError);
 }
 
 export {
-    search_channel,
-    get_duration,
-    get_activities,
-    get_tags_and_duration,
-    get_video_info,
+    searchChannel,
+    getDuration,
+    getActivities,
+    getTagsAndDuration,
+    getVideoInfo,
     VIDEO_DOES_NOT_EXIST,
 };

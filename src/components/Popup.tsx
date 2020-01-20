@@ -24,7 +24,7 @@ import Badge from '@material-ui/core/Badge';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
-import { get_activities, get_video_info } from '../helpers/youtube';
+import { getActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
 import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
@@ -126,7 +126,7 @@ export default function Popup() {
   const addChannel = (channel: Channel) => {
     //console.log('selected channel:', channel);
     setIsLoading(true);
-    get_activities(channel.id, aMonthAgoDate).then((results) => {
+    getActivities(channel.id, aMonthAgoDate).then((results) => {
       //console.log(results);
       if (results?.items) {
         const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
@@ -138,7 +138,7 @@ export default function Popup() {
         }
         const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
         //console.log(videoIds);
-        get_video_info(videoIds).then((videos?: Video[]) => {
+        getVideoInfo(videoIds).then((videos?: Video[]) => {
           //console.log(videos);
           setVideos(videos || []);
           setIsLoading(false);
@@ -152,13 +152,13 @@ export default function Popup() {
   const selectChannel = (channel: Channel, index: number) => {
     //console.log('selected channel:', channel);
     setIsLoading(true);
-    get_activities(channel.id, aMonthAgoDate).then((results) => {
+    getActivities(channel.id, aMonthAgoDate).then((results) => {
       //console.log(results);
       if (results?.items) {
         setSelectedChannelIndex(index);
         const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
         //console.log(videoIds);
-        get_video_info(videoIds).then((videos?: Video[]) => {
+        getVideoInfo(videoIds).then((videos?: Video[]) => {
           //console.log(videos);
           setVideos(videos || []);
           setIsLoading(false);
@@ -196,12 +196,12 @@ export default function Popup() {
     let subPromises: Promise<any>[] = [];
     let videos: Video[]= [];
     channels.forEach((channel: Channel) => {
-      const promise = get_activities(channel.id, aMonthAgoDate).then((results) => {
+      const promise = getActivities(channel.id, aMonthAgoDate).then((results) => {
         //console.log(results);
         if (results?.items) {
           const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
           //console.log(videoIds);
-          const promise = get_video_info(videoIds).then((newVideos: Video[]) => {
+          const promise = getVideoInfo(videoIds).then((newVideos: Video[]) => {
             //console.log(channel.title, newVideos);
             videos.push(...newVideos);
           });

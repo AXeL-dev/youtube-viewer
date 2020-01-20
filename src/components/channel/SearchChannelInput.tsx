@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, fade } from '@material-ui/core/styles';
 import throttle from 'lodash/throttle';
-import { search_channel } from '../../helpers/youtube';
+import { searchChannel } from '../../helpers/youtube';
 import Avatar from '@material-ui/core/Avatar';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -129,7 +129,7 @@ export default function SearchChannelInput(props: SearchProps) {
     () =>
       throttle((input: any, callback: Function) => {
         //console.log(input);
-        search_channel(input.value, 5).then((results: Channel[]) => {
+        searchChannel(input.value, 5).then((results: Channel[]) => {
           //console.log(results);
           callback(results);
         });
