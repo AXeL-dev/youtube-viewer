@@ -123,49 +123,57 @@ export default function Popup() {
     setOpen(false);
   };
 
-  const addChannel = (channel: Channel) => {
-    //console.log('selected channel:', channel);
-    setIsLoading(true);
-    getActivities(channel.id, aMonthAgoDate).then((results) => {
-      //console.log(results);
-      if (results?.items) {
-        const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
-        if (!found) {
-          setChannels([...channels, channel]);
-          setSelectedChannelIndex(channels.length);
+  const getChannelVideos = (channel: Channel): Promise<Video[]> => {
+    return new Promise((resolve, reject) => {
+      getActivities(channel.id, aMonthAgoDate).then((results) => {
+        //console.log(results);
+        if (results?.items) {
+          const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
+          //console.log(videoIds);
+          getVideoInfo(videoIds).then((videos?: Video[]) => {
+            //console.log(videos);
+            resolve(videos || []);
+          }).catch((error) => {
+            console.error(error);
+            resolve([]);
+          });
         } else {
-          setSelectedChannelIndex(channels.indexOf(found));
+          resolve([]);
         }
-        const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
-        //console.log(videoIds);
-        getVideoInfo(videoIds).then((videos?: Video[]) => {
-          //console.log(videos);
-          setVideos(videos || []);
-          setIsLoading(false);
-        });
-      }
-    }).catch((error) => {
-      console.error(error);
+      }).catch((error) => {
+        console.error(error);
+        resolve([]);
+      });
+    });
+  };
+
+  const addChannel = (channel: Channel) => {
+    // Add channel
+    //console.log('selected channel:', channel);
+    const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
+    if (!found) {
+      setChannels([...channels, channel]);
+      setSelectedChannelIndex(channels.length);
+    } else {
+      setSelectedChannelIndex(channels.indexOf(found));
+    }
+    // Get channel videos
+    setIsLoading(true);
+    getChannelVideos(channel).then((videos: Video[]) => {
+      setVideos(videos || []);
+      setIsLoading(false);
     });
   };
 
   const selectChannel = (channel: Channel, index: number) => {
+    // Select channel
     //console.log('selected channel:', channel);
+    setSelectedChannelIndex(index);
+    // Get its videos
     setIsLoading(true);
-    getActivities(channel.id, aMonthAgoDate).then((results) => {
-      //console.log(results);
-      if (results?.items) {
-        setSelectedChannelIndex(index);
-        const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
-        //console.log(videoIds);
-        getVideoInfo(videoIds).then((videos?: Video[]) => {
-          //console.log(videos);
-          setVideos(videos || []);
-          setIsLoading(false);
-        });
-      }
-    }).catch((error) => {
-      console.error(error);
+    getChannelVideos(channel).then((videos: Video[]) => {
+      setVideos(videos || []);
+      setIsLoading(false);
     });
   };
   
@@ -189,34 +197,27 @@ export default function Popup() {
   };
 
   const showAllChannels = () => {
+    // Select "All"
     setSelectedChannelIndex(-1);
+    // Get all channels videos
     setIsLoading(true);
     setVideos([]);
     let promises: Promise<any>[] = [];
-    let subPromises: Promise<any>[] = [];
     let videos: Video[]= [];
+
     channels.forEach((channel: Channel) => {
-      const promise = getActivities(channel.id, aMonthAgoDate).then((results) => {
-        //console.log(results);
-        if (results?.items) {
-          const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
-          //console.log(videoIds);
-          const promise = getVideoInfo(videoIds).then((newVideos: Video[]) => {
-            //console.log(channel.title, newVideos);
-            videos.push(...newVideos);
-          });
-          subPromises.push(promise);
-        }
-      }).catch((error) => {
-        console.error(error);
+
+      const promise = getChannelVideos(channel).then((newVideos: Video[]) => {
+        //console.log(channel.title, newVideos);
+        videos.push(...newVideos);
       });
       promises.push(promise);
+
     });
+
     Promise.all(promises).finally(() => {
-      Promise.all(subPromises).finally(() => {
-        setVideos(videos);
-        setIsLoading(false);
-      });
+      setVideos(videos);
+      setIsLoading(false);
     });
   };
 
