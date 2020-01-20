@@ -107,6 +107,7 @@ export default function Popup() {
   const theme = useTheme();
   const [channels, setChannels] = React.useState<Channel[]>([]);
   const [videos, setVideos] = React.useState<Video[]>([]);
+  const [cache, setCache] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
@@ -125,25 +126,32 @@ export default function Popup() {
 
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
-      getActivities(channel.id, aMonthAgoDate).then((results) => {
-        //console.log(results);
-        if (results?.items) {
-          const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
-          //console.log(videoIds);
-          getVideoInfo(videoIds).then((videos?: Video[]) => {
-            //console.log(videos);
-            resolve(videos || []);
-          }).catch((error) => {
-            console.error(error);
+      if (cache[channel.id]?.length) {
+        //console.log('in cache', cache[channel.id]);
+        resolve(cache[channel.id]);
+      } else {
+        getActivities(channel.id, aMonthAgoDate).then((results) => {
+          //console.log(results);
+          if (results?.items) {
+            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
+            //console.log(videoIds);
+            getVideoInfo(videoIds).then((videos?: Video[]) => {
+              //console.log(videos);
+              cache[channel.id] = videos;
+              setCache(cache);
+              resolve(videos || []);
+            }).catch((error) => {
+              console.error(error);
+              resolve([]);
+            });
+          } else {
             resolve([]);
-          });
-        } else {
+          }
+        }).catch((error) => {
+          console.error(error);
           resolve([]);
-        }
-      }).catch((error) => {
-        console.error(error);
-        resolve([]);
-      });
+        });
+      }
     });
   };
 
