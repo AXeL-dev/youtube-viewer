@@ -183,6 +183,7 @@ export default function Popup() {
     getChannelVideos(channel).then((videos: Video[]) => {
       setVideos(videos || []);
       setIsLoading(false);
+      window.scrollTo(0, 0); // scroll to top
     });
   };
   
