@@ -28,6 +28,7 @@ import { getActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
 import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
+import VideoGrid from './video/VideoGrid';
 
 const drawerWidth = 240;
 
@@ -111,7 +112,7 @@ export default function Popup() {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
-  const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(0);
+  const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const aMonthAgoDate = getDateBefore(30);
@@ -312,7 +313,11 @@ export default function Popup() {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        <VideoList videos={videos} loading={isLoading} />
+        {selectedChannelIndex === -1 ? (
+          <VideoGrid channels={channels} videos={videos} loading={isLoading} onSelect={selectChannel} />
+        ) : (
+          <VideoList videos={videos} loading={isLoading} />
+        )}
       </main>
       <DeleteChannelDialog
         open={openDeleteChannelDialog}
