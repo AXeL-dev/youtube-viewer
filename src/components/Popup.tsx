@@ -301,7 +301,7 @@ export default function Popup() {
         className={clsx(classes.content, {
           [classes.contentShift]: open,
         })}
-        onClick={() => handleDrawerClose()}
+        //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
         <VideoList videos={videos} loading={isLoading} />
