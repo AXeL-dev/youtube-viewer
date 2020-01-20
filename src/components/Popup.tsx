@@ -20,6 +20,7 @@ import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
+import Badge from '@material-ui/core/Badge';
 import VideoList from './VideoList';
 import SearchChannelInput from './channel/Search';
 import { Channel } from '../models/Channel';
@@ -274,9 +275,11 @@ export default function Popup() {
         <List>
           <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => showAllChannels()}>
             <ListItemIcon>
-              <Avatar>
-                <SubscriptionsIcon />
-              </Avatar>
+              <Badge color="secondary" badgeContent={channels.length}>
+                <Avatar>
+                  <SubscriptionsIcon />
+                </Avatar>
+              </Badge>
             </ListItemIcon>
             <ListItemText primary="All" />
           </ListItem>

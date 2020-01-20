@@ -8,6 +8,8 @@ import { search_channel } from '../../helpers/youtube';
 import Avatar from '@material-ui/core/Avatar';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
+import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models/Channel';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   searchIcon: {
-    width: theme.spacing(7),
+    width: theme.spacing(6),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -34,11 +36,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  clearButton: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    margin: theme.spacing(0.75),
+    color: theme.palette.common.white,
+  },
   inputRoot: {
     color: 'inherit',
   },
   inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
+    padding: theme.spacing(1, 4, 1, 6),
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
@@ -101,7 +110,15 @@ export default function SearchChannelInput(props: SearchProps) {
   } = useAutocomplete({
     id: 'search-autocomplete',
     options: options,
-    getOptionLabel: option => option.title,
+    getOptionLabel: option => {
+      //console.log(option);
+      if (option?.title) {
+        setInputValue(option.title);
+        return option.title;
+      }
+      return option;
+    },
+    value: inputValue,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,6 +171,11 @@ export default function SearchChannelInput(props: SearchProps) {
           inputProps={{ ...getInputProps(), 'aria-label': 'search' }}
           onChange={handleChange}
         />
+        {inputValue?.length > 0 && (
+          <IconButton aria-label="clear" size="small" className={classes.clearButton} onClick={() => setInputValue('')}>
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        )}
       </div>
       {groupedOptions.length > 0 ? (
         <div className={classes.poper}>
