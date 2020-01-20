@@ -146,6 +146,7 @@ function searchChannel (query: string, max: number = 3) {
                 if (responseJson.items[i]) {
                     payLoad.push({
                         title: responseJson.items[i].snippet.title,
+                        description: responseJson.items[i].snippet.description,
                         thumbnail: responseJson.items[i].snippet.thumbnails.medium.url,
                         id: responseJson.items[i].id.channelId
                     });

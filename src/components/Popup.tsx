@@ -18,9 +18,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CachedIcon from '@material-ui/icons/Cached';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
+import Tooltip from '@material-ui/core/Tooltip';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
@@ -108,13 +110,13 @@ export default function Popup() {
   const theme = useTheme();
   const [channels, setChannels] = React.useState<Channel[]>([]);
   const [videos, setVideos] = React.useState<Video[]>([]);
-  const [cache, setCache] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+  let [cache, setCache] = React.useState<any>({});
   const aMonthAgoDate = getDateBefore(30);
 
   const handleDrawerOpen = () => {
@@ -231,6 +233,13 @@ export default function Popup() {
     });
   };
 
+  const refreshChannels = (event: any) => {
+    event.stopPropagation();
+    cache = {};
+    setCache(cache);
+    showAllChannels();
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -293,6 +302,13 @@ export default function Popup() {
               </Badge>
             </ListItemIcon>
             <ListItemText primary="All" />
+            {channels?.length > 0 && <ListItemSecondaryAction>
+              <Tooltip title="Refresh" aria-label="add">
+                <IconButton edge="end" aria-label="refresh" onClick={(event) => refreshChannels(event)}>
+                  <CachedIcon />
+                </IconButton>
+              </Tooltip>
+            </ListItemSecondaryAction>}
           </ListItem>
           {channels.map((channel: Channel, index: number) => (
             <ListItem button key={index} selected={index === selectedChannelIndex} onClick={() => selectChannel(channel, index)}>
