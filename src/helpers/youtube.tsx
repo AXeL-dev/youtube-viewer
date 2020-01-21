@@ -44,7 +44,7 @@ const apiRequest = (() => {
  * @param channelId 
  * @param after 
  */
-function getActivities (channelId: string, after: Date = new Date()) {
+function getChannelActivities (channelId: string, after: Date = new Date()) {
     return apiRequest("activities", {
         part: "snippet,contentDetails",
         channelId: channelId,
@@ -160,7 +160,7 @@ function searchChannel (query: string, max: number = 3) {
 export {
     searchChannel,
     getDuration,
-    getActivities,
+    getChannelActivities,
     getTagsAndDuration,
     getVideoInfo,
     VIDEO_DOES_NOT_EXIST,

@@ -26,7 +26,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
-import { getActivities, getVideoInfo } from '../helpers/youtube';
+import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
 import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
@@ -133,7 +133,7 @@ export default function Popup() {
         //console.log('in cache', cache[channel.id]);
         resolve(cache[channel.id]);
       } else {
-        getActivities(channel.id, aMonthAgoDate).then((results) => {
+        getChannelActivities(channel.id, aMonthAgoDate).then((results) => {
           //console.log(results);
           if (results?.items) {
             const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
