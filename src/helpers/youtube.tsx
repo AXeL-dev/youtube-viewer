@@ -98,14 +98,15 @@ function getTagsAndDuration (videoId: string) {
  * Return video informations
  * 
  * @param videoIdList 
+ * @param maxResults
  */
-function getVideoInfo (videoIdList: string[]) {
+function getVideoInfo (videoIdList: string[], maxResults: number = 50) {
     let joinedIds = videoIdList.join(",");
     return apiRequest("videos", {
         part: "snippet,contentDetails,statistics,id",
         fields: "items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))",
         id: joinedIds,
-        maxResults: 50,
+        maxResults: maxResults,
     }).then(response => {
         //console.log(response);
         return response.items.map((videoItem: any) => ({

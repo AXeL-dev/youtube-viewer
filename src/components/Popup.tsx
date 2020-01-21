@@ -19,6 +19,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import YoutubeSearchedForIcon from '@material-ui/icons/YoutubeSearchedFor';
+import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CachedIcon from '@material-ui/icons/Cached';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -29,6 +30,12 @@ import Box from '@material-ui/core/Box';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import RootRef from '@material-ui/core/RootRef';
+import Dialog from '@material-ui/core/Dialog';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import { TransitionProps } from '@material-ui/core/transitions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
@@ -36,6 +43,7 @@ import { Video } from '../models/Video';
 import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
+import { Settings } from '../models/Settings';
 
 const drawerWidth = 240;
 
@@ -118,6 +126,20 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       margin: '0 80px'
     },
+    settingsButton: {
+      top: '50%',
+      right: '16px',
+      position: 'absolute',
+      transform: 'translateY(-50%)',
+    },
+    settingsAppBar: {
+      position: 'relative',
+      backgroundColor: '#f44336',
+    },
+    settingsTitle: {
+      marginLeft: theme.spacing(2),
+      flex: 1,
+    },
   }),
 );
 
@@ -132,6 +154,10 @@ const getListItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   ...(isDragging && {
     background: "rgb(235,235,235)"
   })
+});
+
+const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 // a little function to help us with reordering the dnd result
@@ -154,8 +180,9 @@ export default function Popup() {
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+  const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
+  const [settings, setSettings] = React.useState<Settings>({ videosPerChannel: 6, videosAnteriority: 7 });
   let [cache, setCache] = React.useState<any>({});
-  const aMonthAgoDate = getDateBefore(30);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -172,12 +199,12 @@ export default function Popup() {
         //console.log('in cache', cache[channel.id]);
         resolve(cache[channel.id]);
       } else {
-        getChannelActivities(channel.id, aMonthAgoDate).then((results) => {
+        getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
           //console.log(results);
           if (results?.items) {
             const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
             //console.log(videoIds);
-            getVideoInfo(videoIds).then((videos?: Video[]) => {
+            getVideoInfo(videoIds, settings.videosPerChannel).then((videos?: Video[]) => {
               //console.log(videos);
               cache[channel.id] = videos;
               setCache(cache);
@@ -295,6 +322,39 @@ export default function Popup() {
     setChannels(items);
   };
 
+  const openSettings = (event: any) => {
+    event.stopPropagation();
+    setOpenSettingsDialog(true);
+  };
+
+  const closeSettings = () => {
+    setOpenSettingsDialog(false);
+  };
+
+  const saveSettings = () => {
+    // ...
+  };
+
+  const updateSettings = (event: any) => {
+    let input = event.target;
+    // Validate settings
+    //console.log(input.type, input.min, input.max, input.value);
+    if (input.type === "number") {
+      if (!input.value.match(/^\d+$/) || +input.value < +input.min) {
+        input.value = input.min;
+      } else if (+input.value > +input.max) {
+        input.value = input.max;
+      }
+    }
+    // Update settings
+    const newSettings = {
+      ...settings,
+      [input.id]: +input.value
+    };
+    //console.log(newSettings);
+    setSettings(newSettings);
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -351,7 +411,17 @@ export default function Popup() {
           <Droppable droppableId="droppable">
           {(provided: any, snapshot: any) => (
             <RootRef rootRef={provided.innerRef}>
-              <List dense subheader={<ListSubheader>Channels</ListSubheader>} style={getListStyle(snapshot.isDraggingOver)}>
+              <List
+                dense
+                subheader={<ListSubheader>Channels
+                  <Tooltip title="Settings" aria-label="add">
+                    <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => openSettings(event)}>
+                      <SettingsIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ListSubheader>}
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
                 <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => showAllChannels()}>
                   <ListItemIcon>
                     <Badge color="secondary" badgeContent={channels.length}>
@@ -402,6 +472,66 @@ export default function Popup() {
           </Droppable>
         </DragDropContext>
       </Drawer>
+      <Dialog fullScreen open={openSettingsDialog} onClose={closeSettings} TransitionComponent={settingsDialogTransition}>
+        <AppBar color="secondary" className={classes.settingsAppBar}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={closeSettings} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.settingsTitle}>
+              Settings
+            </Typography>
+            <Button autoFocus color="inherit" onClick={saveSettings}>
+              save
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <List>
+          <ListItem>
+            <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel (min: 3)" />
+            <ListItemSecondaryAction>
+              <TextField
+                id="videosPerChannel"
+                type="number"
+                size="small"
+                InputProps={{
+                  inputProps: {
+                    min: 3,
+                    max: 50,
+                    step: 3,
+                  }
+                }}
+                variant="outlined"
+                color="secondary"
+                defaultValue={settings.videosPerChannel}
+                onChange={(event) => updateSettings(event)}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" />
+            <ListItemSecondaryAction>
+              <TextField
+                id="videosAnteriority"
+                type="number"
+                size="small"
+                InputProps={{
+                  inputProps: {
+                    min: 0,
+                    max: 365,
+                    step: 7,
+                  }
+                }}
+                variant="outlined"
+                color="secondary"
+                defaultValue={settings.videosAnteriority}
+                onChange={(event) => updateSettings(event)}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+        </List>
+      </Dialog>
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,
