@@ -30,21 +30,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   divider: {
     marginBottom: theme.spacing(2.5),
   },
-  typo: {
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'default',
-  },
   link: {
     display: 'flex',
     alignItems: 'center',
     cursor: 'pointer',
   },
-  icon: {
-    marginRight: theme.spacing(0.5),
-    width: 30,
-    height: 30,
-  }
+  title: {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 interface VideoGridProps {
@@ -66,12 +59,12 @@ export default function VideoGrid(props: VideoGridProps) {
         channels.map((channel: Channel, index: number) => (
           <Box key={index}>
             <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
-              <Typography color="textPrimary" className={classes.typo}>
-                <SubscriptionsIcon className={classes.icon} />
-              </Typography>
+              <Avatar>
+                <SubscriptionsIcon />
+              </Avatar>
               <Link color="inherit" onClick={() => onSelect(channel, index)} className={classes.link}>
-                <Avatar className={classes.icon} alt={channel.title} src={channel.thumbnail} />
-                <Typography variant="subtitle2">
+                <Avatar alt={channel.title} src={channel.thumbnail} />
+                <Typography variant="subtitle1" color="textPrimary" className={classes.title}>
                   {channel.title}
                 </Typography>
               </Link>
