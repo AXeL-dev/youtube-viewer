@@ -12,6 +12,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models/Channel';
 import { getRegex } from '../../helpers/utils';
+import { RawHTML } from '../shared/RawHTML';
 
 const useStyles = makeStyles((theme: Theme) => ({
   search: {
@@ -201,7 +202,3 @@ export default function SearchChannelInput(props: SearchProps) {
     </div>
   );
 }
-
-// Stolen from: https://stackoverflow.com/a/45810395
-const RawHTML = ({children, className = ''}: any): any =>
-  <span className={className} dangerouslySetInnerHTML={{ __html: children.replace(/\n/g, '<br />')}} />
