@@ -18,12 +18,14 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
+import YoutubeSearchedForIcon from '@material-ui/icons/YoutubeSearchedFor';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CachedIcon from '@material-ui/icons/Cached';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
+import Box from '@material-ui/core/Box';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import RootRef from '@material-ui/core/RootRef';
@@ -104,6 +106,17 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
+    },
+    container: {
+      display: 'flex',
+      width: '100%',
+      height: '80vh',
+      justifyContent: 'center',
+    },
+    centered: {
+      alignSelf: 'center',
+      textAlign: 'center',
+      margin: '0 80px'
     },
   }),
 );
@@ -277,8 +290,8 @@ export default function Popup() {
       result.source.index,
       result.destination.index
     ) as Channel[];
-    console.log(items);
 
+    //console.log(items);
     setChannels(items);
   };
 
@@ -396,10 +409,16 @@ export default function Popup() {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {selectedChannelIndex === -1 ? (
+        {channels?.length ? selectedChannelIndex === -1 ? (
           <VideoGrid channels={channels} videos={videos} loading={isLoading} onSelect={selectChannel} />
         ) : (
           <VideoList videos={videos} loading={isLoading} />
+        ) : (
+          <Box className={classes.container}>
+            <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+              <YoutubeSearchedForIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+            </Typography>
+          </Box>
         )}
       </main>
       <DeleteChannelDialog
