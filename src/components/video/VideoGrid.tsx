@@ -7,6 +7,7 @@ import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import Link from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
 import { Video } from '../../models/Video';
 import { Channel } from '../../models/Channel';
 import VideoList from './VideoList';
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   breadcrumb: {
     marginBottom: theme.spacing(2.5),
   },
+  divider: {
+    marginBottom: theme.spacing(2.5),
+  },
   typo: {
     display: 'flex',
     alignItems: 'center',
@@ -38,8 +42,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   icon: {
     marginRight: theme.spacing(0.5),
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
   }
 }));
 
@@ -67,10 +71,13 @@ export default function VideoGrid(props: VideoGridProps) {
               </Typography>
               <Link color="inherit" onClick={() => onSelect(channel, index)} className={classes.link}>
                 <Avatar className={classes.icon} alt={channel.title} src={channel.thumbnail} />
-                {channel.title}
+                <Typography variant="subtitle2">
+                  {channel.title}
+                </Typography>
               </Link>
             </Breadcrumbs>
             <VideoList videos={videos.filter((video: Video) => video.channelId === channel.id)} loading={loading} maxPerLine={maxPerLine} />
+            {index < channels.length - 1 && <Divider className={classes.divider} />}
           </Box>
         ))
       ) : (

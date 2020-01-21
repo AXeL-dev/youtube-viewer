@@ -6,6 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
@@ -129,6 +130,7 @@ export default function Popup() {
 
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
+      //console.log('cache', cache);
       if (cache[channel.id]?.length) {
         //console.log('in cache', cache[channel.id]);
         resolve(cache[channel.id]);
@@ -292,7 +294,7 @@ export default function Popup() {
           </IconButton>
         </div>
         <Divider />
-        <List>
+        <List subheader={<ListSubheader>Channels</ListSubheader>} dense>
           <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => showAllChannels()}>
             <ListItemIcon>
               <Badge color="secondary" badgeContent={channels.length}>
@@ -304,8 +306,8 @@ export default function Popup() {
             <ListItemText primary="All" />
             {channels?.length > 0 && <ListItemSecondaryAction>
               <Tooltip title="Refresh" aria-label="add">
-                <IconButton edge="end" aria-label="refresh" onClick={(event) => refreshChannels(event)}>
-                  <CachedIcon />
+                <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshChannels(event)}>
+                  <CachedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
             </ListItemSecondaryAction>}
@@ -315,8 +317,8 @@ export default function Popup() {
               <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
               <ListItemText primary={channel.title} />
               <ListItemSecondaryAction>
-                <IconButton edge="end" aria-label="delete" onClick={(event) => deleteChannel(event, channel, index)}>
-                  <DeleteIcon />
+                <IconButton edge="end" aria-label="delete" size="small" onClick={(event) => deleteChannel(event, channel, index)}>
+                  <DeleteIcon fontSize="small" />
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
