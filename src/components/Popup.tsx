@@ -54,6 +54,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
+      minWidth: '700px',
+      minHeight: '500px',
     },
     appBar: {
       backgroundColor: '#f44336',
