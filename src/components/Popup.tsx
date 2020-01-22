@@ -202,6 +202,7 @@ export default function Popup(props: PopupProps) {
       'channels': channels,
       'settings': settings
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, settings]);
 
   const handleDrawerOpen = () => {
