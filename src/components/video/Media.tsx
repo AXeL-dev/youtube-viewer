@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Video } from '../../models/Video';
@@ -26,7 +27,7 @@ export default function Media(props: MediaProps) {
       {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
-            <a href={item.url} style={style.anchor} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>
+            <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => event.stopPropagation()}>
               <img style={{ width: 210, height: 118 }} alt={item.title} src={item.thumbnail} />
               <Box pr={2}>
                 <Typography gutterBottom variant="body2">
@@ -39,7 +40,7 @@ export default function Media(props: MediaProps) {
                   {`${item.views} • ${item.publishedAt}`}
                 </Typography>
               </Box>
-            </a>
+            </Link>
           ) : (
             <React.Fragment>
               <Skeleton variant="rect" width={210} height={118} />

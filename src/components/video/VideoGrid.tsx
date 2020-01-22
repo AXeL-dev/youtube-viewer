@@ -22,14 +22,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     cursor: 'pointer',
+    outline: 'none',
   },
   title: {
     marginLeft: theme.spacing(1),
   },
-  anchor: {
-    outline: 'none',
-    color: 'inherit',
-  },
+  youtube: {
+    '& :hover': {
+      color: '#f44336',
+    },
+  }
 }));
 
 interface VideoGridProps {
@@ -50,16 +52,14 @@ export default function VideoGrid(props: VideoGridProps) {
       {channels.map((channel: Channel, index: number) => (
         <Box key={index}>
           <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
-            <Avatar>
-              <a href={channel.url} className={classes.anchor} target="_blank" rel="noopener noreferrer">
-                <YouTubeIcon />
-              </a>
-            </Avatar>
-            <Link color="inherit" onClick={() => onSelect(channel, index)} className={classes.link}>
+            <Link color="inherit" className={classes.link} onClick={() => onSelect(channel, index)}>
               <Avatar alt={channel.title} src={channel.thumbnail} />
               <Typography variant="subtitle1" color="textPrimary" className={classes.title}>
                 {channel.title}
               </Typography>
+            </Link>
+            <Link color="inherit" className={`${classes.link} ${classes.youtube}`} href={channel.url} target="_blank" rel="noopener">
+              <YouTubeIcon />
             </Link>
           </Breadcrumbs>
           <VideoList videos={videos.filter((video: Video) => video.channelId === channel.id)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={maxPerChannel} />

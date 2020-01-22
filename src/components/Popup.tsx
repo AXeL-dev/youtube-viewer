@@ -27,6 +27,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
 import Box from '@material-ui/core/Box';
+import Link from '@material-ui/core/Link';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import RootRef from '@material-ui/core/RootRef';
@@ -380,7 +381,7 @@ export default function Popup() {
           </Typography>
           <SearchChannelInput onSelect={addChannel} />
           <div className={classes.grow} />
-          <a href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener noreferrer">
+          <Link href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener">
             <IconButton
               edge="end"
               aria-label="github link"
@@ -389,7 +390,7 @@ export default function Popup() {
             >
               <GitHubIcon />
             </IconButton>
-          </a>
+          </Link>
         </Toolbar>
       </AppBar>
       <Drawer
