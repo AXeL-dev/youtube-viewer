@@ -112,7 +112,7 @@ function getVideoInfo (videoIdList: string[], maxResults: number = 50) {
         return response.items.map((videoItem: any) => ({
             id: videoItem.id,
             title: videoItem.snippet.title,
-            url: 'https://youtu.be/' + videoItem.id,
+            url: 'https://www.youtube.com/watch?v=' + videoItem.id,
             duration: niceDuration(videoItem.contentDetails.duration),
             views: shortenLargeNumber(videoItem.statistics.viewCount),
             publishedAt: TimeAgo.inWords(new Date(videoItem.snippet.publishedAt).getTime()),
@@ -147,6 +147,7 @@ function searchChannel (query: string, max: number = 3) {
                 if (responseJson.items[i]) {
                     payLoad.push({
                         title: responseJson.items[i].snippet.title,
+                        url: 'https://www.youtube.com/channel/' + responseJson.items[i].id.channelId + '/videos',
                         description: responseJson.items[i].snippet.description,
                         thumbnail: responseJson.items[i].snippet.thumbnails.medium.url,
                         id: responseJson.items[i].id.channelId

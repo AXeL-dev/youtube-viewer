@@ -26,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   title: {
     marginLeft: theme.spacing(1),
   },
+  anchor: {
+    outline: 'none',
+    color: 'inherit',
+  },
 }));
 
 interface VideoGridProps {
@@ -47,7 +51,9 @@ export default function VideoGrid(props: VideoGridProps) {
         <Box key={index}>
           <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
             <Avatar>
-              <YouTubeIcon />
+              <a href={channel.url} className={classes.anchor} target="_blank" rel="noopener noreferrer">
+                <YouTubeIcon />
+              </a>
             </Avatar>
             <Link color="inherit" onClick={() => onSelect(channel, index)} className={classes.link}>
               <Avatar alt={channel.title} src={channel.thumbnail} />
