@@ -36,6 +36,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../models/Channel';
@@ -183,6 +184,7 @@ export default function Popup() {
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [settings, setSettings] = React.useState<Settings>({ videosPerChannel: 6, videosAnteriority: 7 });
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
   let [cache, setCache] = React.useState<any>({});
 
   const handleDrawerOpen = () => {
@@ -333,12 +335,17 @@ export default function Popup() {
   };
 
   const saveSettings = () => {
-    // ...
+    // Update settings
+    setSettings({
+      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
+      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value
+    });
+    closeSettings();
+    setOpenSnackbar(true);
   };
 
-  const updateSettings = (event: any) => {
+  const validateSettings = (event: any) => {
     let input = event.target;
-    // Validate settings
     //console.log(input.type, input.min, input.max, input.value);
     if (input.type === "number") {
       if (!input.value.match(/^\d+$/) || +input.value < +input.min) {
@@ -347,13 +354,6 @@ export default function Popup() {
         input.value = input.max;
       }
     }
-    // Update settings
-    const newSettings = {
-      ...settings,
-      [input.id]: +input.value
-    };
-    //console.log(newSettings);
-    setSettings(newSettings);
   };
 
   return (
@@ -495,17 +495,11 @@ export default function Popup() {
                 id="videosPerChannel"
                 type="number"
                 size="small"
-                InputProps={{
-                  inputProps: {
-                    min: 1,
-                    max: 50,
-                    step: 3,
-                  }
-                }}
                 variant="outlined"
                 color="secondary"
+                inputProps={{ min: 1, max: 50, step: 3 }}
                 defaultValue={settings.videosPerChannel}
-                onChange={(event) => updateSettings(event)}
+                onChange={(event) => validateSettings(event)}
               />
             </ListItemSecondaryAction>
           </ListItem>
@@ -517,17 +511,11 @@ export default function Popup() {
                 id="videosAnteriority"
                 type="number"
                 size="small"
-                InputProps={{
-                  inputProps: {
-                    min: 1,
-                    max: 365,
-                    step: 7,
-                  }
-                }}
                 variant="outlined"
                 color="secondary"
+                inputProps={{ min: 1, max: 365, step: 7 }}
                 defaultValue={settings.videosAnteriority}
-                onChange={(event) => updateSettings(event)}
+                onChange={(event) => validateSettings(event)}
               />
             </ListItemSecondaryAction>
           </ListItem>
@@ -558,6 +546,26 @@ export default function Popup() {
         index={channelToDeleteIndex}
         onConfirm={confirmDeleteChannel}
         onClose={closeDeleteChannelDialog}
+      />
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        message="Settings saved!"
+        action={
+          <React.Fragment>
+            <Button color="secondary" size="small" onClick={(event) => refreshChannels(event)}>
+              Refresh
+            </Button>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenSnackbar(false)}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
       />
     </div>
   );
