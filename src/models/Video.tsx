@@ -5,13 +5,7 @@ export interface Video {
   url: string,
   duration: string,
   publishedAt: string,
-  thumbnails: {
-    medium: {
-      url: string,
-      width: number,
-      height: number,
-    }
-  },
+  thumbnail: string,
   views: string,
   channelId: string,
   channelTitle: string,

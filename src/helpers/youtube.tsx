@@ -98,32 +98,41 @@ function getTagsAndDuration (videoId: string) {
  * Return video informations
  * 
  * @param videoIdList 
- * @param maxResults
+ * @param max
  */
-function getVideoInfo (videoIdList: string[], maxResults: number = 50) {
+function getVideoInfo (videoIdList: string[], max: number = 50) {
     let joinedIds = videoIdList.join(",");
     return apiRequest("videos", {
         part: "snippet,contentDetails,statistics,id",
         fields: "items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))",
         id: joinedIds,
-        maxResults: maxResults,
+        maxResults: max, // not working when id is filled (which is the case here)
     }).then(response => {
         //console.log(response);
-        return response.items.map((videoItem: any) => ({
-            id: videoItem.id,
-            title: videoItem.snippet.title,
-            url: 'https://www.youtube.com/watch?v=' + videoItem.id,
-            duration: niceDuration(videoItem.contentDetails.duration),
-            views: shortenLargeNumber(videoItem.statistics.viewCount),
-            publishedAt: TimeAgo.inWords(new Date(videoItem.snippet.publishedAt).getTime()),
-            thumbnails: videoItem.snippet.thumbnails,
-            channelId: videoItem.snippet.channelId,
-            channelTitle: videoItem.snippet.channelTitle,
-        }));
+        let payLoad: any = [];
+        if (response.items.length > 0) {
+            const howMany = Math.min(response.items.length, max);
+            for (let i = 0; i < howMany; i++) {
+                if (response.items[i]) {
+                    payLoad.push({
+                        id: response.items[i].id,
+                        title: response.items[i].snippet.title,
+                        url: 'https://www.youtube.com/watch?v=' + response.items[i].id,
+                        duration: niceDuration(response.items[i].contentDetails.duration),
+                        views: shortenLargeNumber(response.items[i].statistics.viewCount),
+                        publishedAt: TimeAgo.inWords(new Date(response.items[i].snippet.publishedAt).getTime()),
+                        thumbnail: response.items[i].snippet.thumbnails.medium.url,
+                        channelId: response.items[i].snippet.channelId,
+                        channelTitle: response.items[i].snippet.channelTitle,
+                    });
+                }
+            }
+        }
+        return payLoad;
     });
 }
 
-getVideoInfo.batch_size = 50;
+//getVideoInfo.batch_size = 50;
 
 /**
  * Request to search channel matching `query`. Return a promise that will
@@ -139,17 +148,17 @@ function searchChannel (query: string, max: number = 3) {
         order: "relevance",
         q: query
     }).then(responseJson => {
-        let payLoad: any = [];
         //console.log(responseJson);
+        let payLoad: any = [];
         if (responseJson.pageInfo.totalResults > 0) {
-            let howMany = Math.min(responseJson.pageInfo.totalResults, max);
+            const howMany = Math.min(responseJson.pageInfo.totalResults, max);
             for (let i = 0; i < howMany; i++) {
                 if (responseJson.items[i]) {
                     payLoad.push({
                         title: responseJson.items[i].snippet.title,
                         url: 'https://www.youtube.com/channel/' + responseJson.items[i].id.channelId + '/videos',
                         description: responseJson.items[i].snippet.description,
-                        thumbnail: responseJson.items[i].snippet.thumbnails.medium.url,
+                        thumbnail: responseJson.items[i].snippet.thumbnails.default.url,
                         id: responseJson.items[i].id.channelId
                     });
                 }
