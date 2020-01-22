@@ -540,9 +540,9 @@ export default function Popup() {
       >
         <div className={classes.drawerHeader} />
         {channels?.length ? selectedChannelIndex === -1 ? (
-          <VideoGrid channels={channels} videos={videos} loading={isLoading} onSelect={selectChannel} />
+          <VideoGrid channels={channels} videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onSelect={selectChannel} />
         ) : (
-          <VideoList videos={videos} loading={isLoading} />
+          <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} />
         ) : (
           <Box className={classes.container}>
             <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>

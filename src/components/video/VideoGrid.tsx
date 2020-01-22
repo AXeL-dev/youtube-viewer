@@ -3,7 +3,7 @@ import Box from '@material-ui/core/Box';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
+import YouTubeIcon from '@material-ui/icons/YouTube';
 import Link from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import Divider from '@material-ui/core/Divider';
@@ -33,13 +33,13 @@ interface VideoGridProps {
   channels: Channel[];
   videos: Video[];
   maxPerLine?: number;
-  //maxPerChannel?: number;
+  maxPerChannel?: number;
   onSelect: Function;
 }
 
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
-  const { channels, videos, loading = false, maxPerLine = 3, onSelect } = props;
+  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect } = props;
 
   return (
     <Box overflow="hidden">
@@ -47,7 +47,7 @@ export default function VideoGrid(props: VideoGridProps) {
         <Box key={index}>
           <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
             <Avatar>
-              <SubscriptionsIcon />
+              <YouTubeIcon />
             </Avatar>
             <Link color="inherit" onClick={() => onSelect(channel, index)} className={classes.link}>
               <Avatar alt={channel.title} src={channel.thumbnail} />
@@ -56,7 +56,7 @@ export default function VideoGrid(props: VideoGridProps) {
               </Typography>
             </Link>
           </Breadcrumbs>
-          <VideoList videos={videos.filter((video: Video) => video.channelId === channel.id)} loading={loading} maxPerLine={maxPerLine} />
+          <VideoList videos={videos.filter((video: Video) => video.channelId === channel.id)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={maxPerChannel} />
           {index < channels.length - 1 && <Divider className={classes.divider} />}
         </Box>
       ))}
