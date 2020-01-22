@@ -46,6 +46,7 @@ import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
+import { saveToStorage } from '../helpers/storage';
 
 const drawerWidth = 240;
 
@@ -171,10 +172,15 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
   return result;
 };
 
-export default function Popup() {
+interface PopupProps {
+  channels: Channel[];
+  settings: Settings;
+}
+
+export default function Popup(props: PopupProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const [channels, setChannels] = React.useState<Channel[]>([]);
+  const [channels, setChannels] = React.useState<Channel[]>(props.channels);
   const [videos, setVideos] = React.useState<Video[]>([]);
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -183,9 +189,20 @@ export default function Popup() {
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [settings, setSettings] = React.useState<Settings>({ videosPerChannel: 6, videosAnteriority: 7 });
+  const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   let [cache, setCache] = React.useState<any>({});
+
+  React.useEffect(() => setChannels(props.channels), [props.channels]);
+  React.useEffect(() => setSettings(props.settings), [props.settings]);
+
+  React.useEffect(() => {
+    !videos.length && showAllChannels();
+    saveToStorage({
+      'channels': channels,
+      'settings': settings
+    });
+  }, [channels, settings]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
