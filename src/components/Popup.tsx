@@ -488,7 +488,7 @@ export default function Popup() {
         </AppBar>
         <List>
           <ListItem>
-            <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel (min: 3)" />
+            <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" />
             <ListItemSecondaryAction>
               <TextField
                 id="videosPerChannel"
@@ -496,7 +496,7 @@ export default function Popup() {
                 size="small"
                 InputProps={{
                   inputProps: {
-                    min: 3,
+                    min: 1,
                     max: 50,
                     step: 3,
                   }
@@ -518,7 +518,7 @@ export default function Popup() {
                 size="small"
                 InputProps={{
                   inputProps: {
-                    min: 0,
+                    min: 1,
                     max: 365,
                     step: 7,
                   }
