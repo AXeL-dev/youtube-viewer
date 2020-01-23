@@ -19,7 +19,7 @@ class App extends React.Component<AppProps, AppState> {
     this.state = {
       channels: [],
       settings: {
-        videosPerChannel: 6,
+        videosPerChannel: 9,
         videosAnteriority: 15
       }
     };
