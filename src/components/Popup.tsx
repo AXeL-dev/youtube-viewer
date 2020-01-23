@@ -435,7 +435,7 @@ export default function Popup(props: PopupProps) {
               <List
                 dense
                 subheader={<ListSubheader>Channels
-                  <Tooltip title="Settings" aria-label="add">
+                  <Tooltip title="Settings" aria-label="settings">
                     <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => openSettings(event)}>
                       <SettingsIcon fontSize="small" />
                     </IconButton>
@@ -453,7 +453,7 @@ export default function Popup(props: PopupProps) {
                   </ListItemIcon>
                   <ListItemText primary="All" />
                   {channels?.length > 0 && <ListItemSecondaryAction>
-                    <Tooltip title="Refresh" aria-label="add">
+                    <Tooltip title="Refresh" aria-label="refresh">
                       <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshChannels(event)}>
                         <CachedIcon fontSize="small" />
                       </IconButton>
