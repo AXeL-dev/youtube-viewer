@@ -31,13 +31,6 @@ import Link from '@material-ui/core/Link';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import RootRef from '@material-ui/core/RootRef';
-import Dialog from '@material-ui/core/Dialog';
-import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Snackbar from '@material-ui/core/Snackbar';
-import { TransitionProps } from '@material-ui/core/transitions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
@@ -47,6 +40,8 @@ import { getDateBefore } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
+import { SettingsDialog } from './settings/SettingsDialog';
+import { SettingsSnackbar } from './settings/SettingsSnackbar';
 
 const drawerWidth = 240;
 
@@ -137,14 +132,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       transform: 'translateY(-50%)',
     },
-    settingsAppBar: {
-      position: 'relative',
-      backgroundColor: '#f44336',
-    },
-    settingsTitle: {
-      marginLeft: theme.spacing(2),
-      flex: 1,
-    },
   }),
 );
 
@@ -159,10 +146,6 @@ const getListItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   ...(isDragging && {
     background: "rgb(235,235,235)"
   })
-});
-
-const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 // a little function to help us with reordering the dnd result
@@ -365,16 +348,8 @@ export default function Popup(props: PopupProps) {
     setOpenSnackbar(true);
   };
 
-  const validateSettings = (event: any) => {
-    let input = event.target;
-    //console.log(input.type, input.min, input.max, input.value);
-    if (input.type === "number") {
-      if (!input.value.match(/^\d+$/) || +input.value < +input.min) {
-        input.value = input.min;
-      } else if (+input.value > +input.max) {
-        input.value = input.max;
-      }
-    }
+  const closeSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -494,71 +469,6 @@ export default function Popup(props: PopupProps) {
           </Droppable>
         </DragDropContext>
       </Drawer>
-      <Dialog fullScreen open={openSettingsDialog} onClose={closeSettings} TransitionComponent={settingsDialogTransition}>
-        <AppBar color="secondary" className={classes.settingsAppBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={closeSettings} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.settingsTitle}>
-              Settings
-            </Typography>
-            <Button autoFocus color="inherit" onClick={saveSettings}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <List>
-          <ListItem>
-            <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" />
-            <ListItemSecondaryAction>
-              <TextField
-                id="videosPerChannel"
-                type="number"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ min: 1, max: 50, step: 3 }}
-                defaultValue={settings.videosPerChannel}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" />
-            <ListItemSecondaryAction>
-              <TextField
-                id="videosAnteriority"
-                type="number"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ min: 1, max: 365, step: 7 }}
-                defaultValue={settings.videosAnteriority}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Custom API key" secondary="Replaces the youtube API key that comes by default with the extension (needs popup re-open to apply)" />
-            <ListItemSecondaryAction>
-              <TextField
-                id="apiKey"
-                type="text"
-                placeholder="AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ minLength: 39 }}
-                defaultValue={settings.apiKey}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </Dialog>
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,
@@ -585,26 +495,8 @@ export default function Popup(props: PopupProps) {
         onConfirm={confirmDeleteChannel}
         onClose={closeDeleteChannelDialog}
       />
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-        message="Settings saved!"
-        action={
-          <React.Fragment>
-            <Button color="secondary" size="small" onClick={(event) => refreshChannels(event)}>
-              Refresh
-            </Button>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={() => setOpenSnackbar(false)}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
+      <SettingsSnackbar open={openSnackbar} onClose={closeSnackbar} onRefresh={refreshChannels} />
     </div>
   );
 }
