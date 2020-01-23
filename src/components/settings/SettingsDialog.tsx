@@ -106,7 +106,12 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Custom API key" secondary="Replaces the default youtube API key provided with the extension (re-open popup required)" />
+          <ListItemText primary="Custom API key" secondary={
+            <React.Fragment>
+              <Typography variant="body2">Replaces the default youtube API key provided with the extension</Typography>
+              <Typography variant="body2">(will apply the next time you open the extension popup)</Typography>
+            </React.Fragment>
+          } />
           <ListItemSecondaryAction>
             <TextField
               id="apiKey"
