@@ -56,7 +56,7 @@ export function niceDuration (ISO_8601_string: string) {
  * // returns 0.12345
  * shortenLargeNumber(0.12345)
  */
-export function shortenLargeNumber(num: number, digits: number = 1) {
+export function shortenLargeNumber(num: number, digits: number = 0) {
   let units = ['k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'],
       decimal;
 
