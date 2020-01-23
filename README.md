@@ -4,16 +4,17 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 ![screenshot](screenshots/popup.png)
 
-> This is a fun made project in my road to practice React & to get more used to it, therefore, many aspects of the project may change over the time. Any help or feedback is welcome :pray:.
+> This is a fun made project in my road to discover & practice [React](https://reactjs.org/), therefore, many aspects of the project may change over the time. Any help or feedback is welcome :pray:.
 
 ## Installation
 
-[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](#)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](#)
+[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](screenshots/soon.gif)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](screenshots/soon.gif)
 
 ## Todo
 
 - [ ] Translations
+- [ ] Notifications for new posted videos (with auto-check every x minutes)
 
 ## Development scripts
 
