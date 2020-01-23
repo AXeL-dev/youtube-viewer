@@ -3,15 +3,16 @@ This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0.
 If a copy of the MPL was not distributed with this file,
 You can obtain one at http://mozilla.org/MPL/2.0/.
-Author: XrXr
+Author(s): XrXr, AXeL-dev
 
 This module provide functions for making api certain YouTube Data API V3
 requests. All functions return promise.
 */
 
 import { niceDuration, shortenLargeNumber, TimeAgo } from './utils';
+import { getFromStorage } from './storage';
 
-const apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
+let apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
 
 const logError = (e: any) => console.error(e);
 
@@ -19,6 +20,11 @@ const logError = (e: any) => console.error(e);
  * Send API requests to youtube
  */
 const apiRequest = (() => {
+    async function setApiKey() {
+        const [settings] = await getFromStorage('settings');
+        apiKey = settings?.apiKey?.length ? settings.apiKey : apiKey;
+    }
+
     async function makeRequest (url: string) {
         let response = await window.fetch(url);
         //console.log(`HTTP ${response.status}: ${response.url}`);
@@ -33,6 +39,8 @@ const apiRequest = (() => {
         url += new URLSearchParams({...param, key: apiKey }).toString();
         return url;
     }
+
+    setApiKey();
 
     return (action: string, apiArgs: any) => makeRequest(apiUrl(action, apiArgs));
 })();

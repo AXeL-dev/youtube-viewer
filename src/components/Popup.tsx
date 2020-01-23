@@ -358,7 +358,8 @@ export default function Popup(props: PopupProps) {
     // Update settings
     setSettings({
       videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
-      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value
+      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
+      apiKey: (document.getElementById('apiKey') as any).value
     });
     closeSettings();
     setOpenSnackbar(true);
@@ -535,6 +536,23 @@ export default function Popup(props: PopupProps) {
                 color="secondary"
                 inputProps={{ min: 1, max: 365, step: 7 }}
                 defaultValue={settings.videosAnteriority}
+                onChange={(event) => validateSettings(event)}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <ListItemText primary="Custom API key" secondary="Replaces the youtube API key that comes by default with the extension (needs popup re-open to apply)" />
+            <ListItemSecondaryAction>
+              <TextField
+                id="apiKey"
+                type="text"
+                placeholder="AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc"
+                size="small"
+                variant="outlined"
+                color="secondary"
+                inputProps={{ minLength: 39 }}
+                defaultValue={settings.apiKey}
                 onChange={(event) => validateSettings(event)}
               />
             </ListItemSecondaryAction>
