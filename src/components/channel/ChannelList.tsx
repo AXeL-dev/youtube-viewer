@@ -67,17 +67,18 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 interface ChannelListProps {
   channels: Channel[];
   settings: Settings;
-  selectedChannelIndex: number;
+  selectedIndex: number;
   onShowAll: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
   onSave: Function;
   onSaveSettings: Function;
+  onSelectedIndexChange: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, settings, selectedChannelIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings } = props;
+  const { channels, settings, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings, onSelectedIndexChange } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -92,21 +93,22 @@ export function ChannelList(props: ChannelListProps) {
     if (!result.destination) {
       return;
     }
-
     moveChannel(result.source.index, result.destination.index);
   };
 
   const moveChannel = (indexFrom: number, indexTo: number) => {
     closeMenu();
-
+    const selectedChannel: Channel | undefined = channels.find((_, i) => i === selectedIndex);
     const items: Channel[] = reorder(
       channels,
       indexFrom,
       indexTo
     ) as Channel[];
-
     //console.log(items);
     onSave(items);
+    if (selectedChannel) {
+      onSelectedIndexChange(items.indexOf(selectedChannel));
+    }
   };
 
   const deleteChannel = (channel: Channel, index: number) => {
@@ -117,7 +119,11 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const confirmDeleteChannel = () => {
+    const selectedChannel: Channel | undefined = channels.find((_, i) => i === selectedIndex);
     onDelete(channelToDeleteIndex);
+    if (selectedChannel && selectedIndex !== channelToDeleteIndex) {
+      onSelectedIndexChange(channels.filter((_, i) => i !== channelToDeleteIndex).indexOf(selectedChannel));
+    }
     closeDeleteChannelDialog();
   };
 
@@ -177,7 +183,7 @@ export function ChannelList(props: ChannelListProps) {
               </ListSubheader>}
               style={getListStyle(snapshot.isDraggingOver)}
             >
-              <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => onShowAll()}>
+              <ListItem button key="all" selected={selectedIndex === -1} onClick={() => onShowAll()}>
                 <ListItemIcon>
                   <Badge color="secondary" badgeContent={channels.length}>
                     <Avatar>
@@ -206,7 +212,7 @@ export function ChannelList(props: ChannelListProps) {
                       provided.draggableProps.style
                     )}
                     button
-                    selected={index === selectedChannelIndex}
+                    selected={index === selectedIndex}
                     onClick={() => onSelect(channel, index)}
                   >
                     <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>

@@ -305,13 +305,14 @@ export default function Popup(props: PopupProps) {
         <ChannelList
           channels={channels}
           settings={settings}
-          selectedChannelIndex={selectedChannelIndex}
+          selectedIndex={selectedChannelIndex}
           onShowAll={showAllChannels}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
           onSave={setChannels}
           onSaveSettings={setSettings}
+          onSelectedIndexChange={setSelectedChannelIndex}
         />
       </Drawer>
       <main
