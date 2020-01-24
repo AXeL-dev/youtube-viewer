@@ -8,13 +8,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import SettingsIcon from '@material-ui/icons/Settings';
-import DeleteIcon from '@material-ui/icons/Delete';
 import CachedIcon from '@material-ui/icons/Cached';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import Tooltip from '@material-ui/core/Tooltip';
 import RootRef from '@material-ui/core/RootRef';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
 import { DeleteChannelDialog } from './DeleteChannelDialog';
@@ -75,6 +77,8 @@ export function ChannelList(props: ChannelListProps) {
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openedMenuIndex, setOpenedMenuIndex] = React.useState(-1);
 
   const onDragEnd = (result: any) => {
     // dropped outside the list
@@ -82,18 +86,24 @@ export function ChannelList(props: ChannelListProps) {
       return;
     }
 
+    moveChannel(result.source.index, result.destination.index);
+  };
+
+  const moveChannel = (indexFrom: number, indexTo: number) => {
+    closeMenu();
+
     const items: Channel[] = reorder(
       channels,
-      result.source.index,
-      result.destination.index
+      indexFrom,
+      indexTo
     ) as Channel[];
 
     //console.log(items);
     onSave(items);
   };
 
-  const deleteChannel = (event: any, channel: Channel, index: number) => {
-    event.stopPropagation();
+  const deleteChannel = (channel: Channel, index: number) => {
+    closeMenu();
     setChannelToDelete(channel);
     setChannelToDeleteIndex(index);
     setOpenDeleteChannelDialog(true);
@@ -130,6 +140,17 @@ export function ChannelList(props: ChannelListProps) {
 
   const closeSnackbar = () => {
     setOpenSnackbar(false);
+  };
+
+  const openMenu = (event: any, index: number) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setOpenedMenuIndex(index);
+  };
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+    setOpenedMenuIndex(-1);
   };
 
   return (
@@ -184,9 +205,20 @@ export function ChannelList(props: ChannelListProps) {
                     <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
                     <ListItemText primary={channel.title} />
                     <ListItemSecondaryAction>
-                      <IconButton edge="end" aria-label="delete" size="small" onClick={(event) => deleteChannel(event, channel, index)}>
-                        <DeleteIcon fontSize="small" />
+                      <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, index)}>
+                        <MoreVertIcon fontSize="small" />
                       </IconButton>
+                      <Menu
+                        id={"menu-" + index}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={openedMenuIndex === index}
+                        onClose={closeMenu}
+                      >
+                        {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}>Move up</MenuItem>}
+                        {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}>Move down</MenuItem>}
+                        <MenuItem onClick={() => deleteChannel(channel, index)}>Delete</MenuItem>
+                      </Menu>
                     </ListItemSecondaryAction>
                   </ListItem>
                 )}
