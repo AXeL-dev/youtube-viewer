@@ -43,23 +43,48 @@ const getListItemStyle = (isDragging: boolean, draggableStyle: any) => ({
   })
 });
 
+// a little function to help us with reordering the dnd result
+const reorder = (list: any, startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
 interface ChannelListProps {
   channels: Channel[];
   selectedChannelIndex: number;
-  onDragEnd: Function;
   onOpenSettings: Function;
   onShowAll: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
+  onSave: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedChannelIndex = -1, onDragEnd, onOpenSettings, onShowAll, onRefresh, onSelect, onDelete } = props;
+  const { channels, selectedChannelIndex = -1, onOpenSettings, onShowAll, onRefresh, onSelect, onDelete, onSave } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+
+  const onDragEnd = (result: any) => {
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    const items: Channel[] = reorder(
+      channels,
+      result.source.index,
+      result.destination.index
+    ) as Channel[];
+
+    //console.log(items);
+    onSave(items);
+  };
 
   const deleteChannel = (event: any, channel: Channel, index: number) => {
     event.stopPropagation();
@@ -79,7 +104,7 @@ export function ChannelList(props: ChannelListProps) {
 
   return (
     <React.Fragment>
-      <DragDropContext onDragEnd={(event) => onDragEnd(event)}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
         {(provided: any, snapshot: any) => (
           <RootRef rootRef={provided.innerRef}>

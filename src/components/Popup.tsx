@@ -114,15 +114,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-// a little function to help us with reordering the dnd result
-const reorder = (list: any, startIndex: number, endIndex: number) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
 interface PopupProps {
   channels: Channel[];
   settings: Settings;
@@ -263,22 +254,6 @@ export default function Popup(props: PopupProps) {
     showAllChannels();
   };
 
-  const onChannelDragEnd = (result: any) => {
-    // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-
-    const items: Channel[] = reorder(
-      channels,
-      result.source.index,
-      result.destination.index
-    ) as Channel[];
-
-    //console.log(items);
-    setChannels(items);
-  };
-
   const openSettings = (event: any) => {
     event.stopPropagation();
     setOpenSettingsDialog(true);
@@ -358,12 +333,12 @@ export default function Popup(props: PopupProps) {
         <ChannelList
           channels={channels}
           selectedChannelIndex={selectedChannelIndex}
-          onDragEnd={onChannelDragEnd}
           onOpenSettings={openSettings}
           onShowAll={showAllChannels}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
+          onSave={setChannels}
         />
       </Drawer>
       <main
