@@ -122,7 +122,7 @@ export default function Popup(props: PopupProps) {
   const theme = useTheme();
   const [channels, setChannels] = React.useState<Channel[]>(props.channels);
   const [videos, setVideos] = React.useState<Video[]>([]);
-  const [open, setOpen] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
@@ -141,11 +141,11 @@ export default function Popup(props: PopupProps) {
   }, [channels, settings]);
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpenDrawer(true);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpenDrawer(false);
   };
 
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
@@ -257,7 +257,7 @@ export default function Popup(props: PopupProps) {
         color="secondary"
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: openDrawer,
         })}
       >
         <Toolbar>
@@ -266,7 +266,7 @@ export default function Popup(props: PopupProps) {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton, openDrawer && classes.hide)}
           >
             <MenuIcon />
           </IconButton>
@@ -291,7 +291,7 @@ export default function Popup(props: PopupProps) {
         className={classes.drawer}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={openDrawer}
         classes={{
           paper: classes.drawerPaper,
         }}
@@ -316,7 +316,7 @@ export default function Popup(props: PopupProps) {
       </Drawer>
       <main
         className={clsx(classes.content, {
-          [classes.contentShift]: open,
+          [classes.contentShift]: openDrawer,
         })}
         //onClick={() => handleDrawerClose()}
       >
