@@ -17,6 +17,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import RootRef from '@material-ui/core/RootRef';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
+import { DeleteChannelDialog } from './DeleteChannelDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,71 +57,98 @@ interface ChannelListProps {
 export function ChannelList(props: ChannelListProps) {
   const { channels, selectedChannelIndex = -1, onDragEnd, onOpenSettings, onShowAll, onRefresh, onSelect, onDelete } = props;
   const classes = useStyles();
+  const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
+  const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
+  const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+
+  const deleteChannel = (event: any, channel: Channel, index: number) => {
+    event.stopPropagation();
+    setChannelToDelete(channel);
+    setChannelToDeleteIndex(index);
+    setOpenDeleteChannelDialog(true);
+  };
+
+  const confirmDeleteChannel = () => {
+    closeDeleteChannelDialog();
+    onDelete(channelToDeleteIndex);
+  };
+
+  const closeDeleteChannelDialog = () => {
+    setOpenDeleteChannelDialog(false);
+  };
 
   return (
-    <DragDropContext onDragEnd={(event) => onDragEnd(event)}>
-      <Droppable droppableId="droppable">
-      {(provided: any, snapshot: any) => (
-        <RootRef rootRef={provided.innerRef}>
-          <List
-            dense
-            subheader={<ListSubheader>Channels
-              <Tooltip title="Settings" aria-label="settings">
-                <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => onOpenSettings(event)}>
-                  <SettingsIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </ListSubheader>}
-            style={getListStyle(snapshot.isDraggingOver)}
-          >
-            <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => onShowAll()}>
-              <ListItemIcon>
-                <Badge color="secondary" badgeContent={channels.length}>
-                  <Avatar>
-                    <SubscriptionsIcon />
-                  </Avatar>
-                </Badge>
-              </ListItemIcon>
-              <ListItemText primary="All" />
-              {channels?.length > 0 && <ListItemSecondaryAction>
-                <Tooltip title="Refresh" aria-label="refresh">
-                  <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
-                    <CachedIcon fontSize="small" />
+    <React.Fragment>
+      <DragDropContext onDragEnd={(event) => onDragEnd(event)}>
+        <Droppable droppableId="droppable">
+        {(provided: any, snapshot: any) => (
+          <RootRef rootRef={provided.innerRef}>
+            <List
+              dense
+              subheader={<ListSubheader>Channels
+                <Tooltip title="Settings" aria-label="settings">
+                  <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => onOpenSettings(event)}>
+                    <SettingsIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
-              </ListItemSecondaryAction>}
-            </ListItem>
-            {channels.map((channel: Channel, index: number) => (
-              <Draggable key={channel.id} draggableId={channel.id} index={index}>
-              {(provided: any, snapshot: any) => (
-                <ListItem
-                  ContainerProps={{ ref: provided.innerRef }}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={getListItemStyle(
-                    snapshot.isDragging,
-                    provided.draggableProps.style
-                  )}
-                  button
-                  selected={index === selectedChannelIndex}
-                  onClick={() => onSelect(channel, index)}
-                >
-                  <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
-                  <ListItemText primary={channel.title} />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete" size="small" onClick={(event) => onDelete(event, channel, index)}>
-                      <DeleteIcon fontSize="small" />
+              </ListSubheader>}
+              style={getListStyle(snapshot.isDraggingOver)}
+            >
+              <ListItem button key="all" selected={selectedChannelIndex === -1} onClick={() => onShowAll()}>
+                <ListItemIcon>
+                  <Badge color="secondary" badgeContent={channels.length}>
+                    <Avatar>
+                      <SubscriptionsIcon />
+                    </Avatar>
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary="All" />
+                {channels?.length > 0 && <ListItemSecondaryAction>
+                  <Tooltip title="Refresh" aria-label="refresh">
+                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
+                      <CachedIcon fontSize="small" />
                     </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </List>
-        </RootRef>
-      )}
-      </Droppable>
-    </DragDropContext>
+                  </Tooltip>
+                </ListItemSecondaryAction>}
+              </ListItem>
+              {channels.map((channel: Channel, index: number) => (
+                <Draggable key={channel.id} draggableId={channel.id} index={index}>
+                {(provided: any, snapshot: any) => (
+                  <ListItem
+                    ContainerProps={{ ref: provided.innerRef }}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={getListItemStyle(
+                      snapshot.isDragging,
+                      provided.draggableProps.style
+                    )}
+                    button
+                    selected={index === selectedChannelIndex}
+                    onClick={() => onSelect(channel, index)}
+                  >
+                    <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
+                    <ListItemText primary={channel.title} />
+                    <ListItemSecondaryAction>
+                      <IconButton edge="end" aria-label="delete" size="small" onClick={(event) => deleteChannel(event, channel, index)}>
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </List>
+          </RootRef>
+        )}
+        </Droppable>
+      </DragDropContext>
+      <DeleteChannelDialog
+        open={openDeleteChannelDialog}
+        channel={channelToDelete}
+        onConfirm={confirmDeleteChannel}
+        onClose={closeDeleteChannelDialog}
+      />
+    </React.Fragment>
   )
 }

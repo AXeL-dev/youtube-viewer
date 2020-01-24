@@ -10,13 +10,12 @@ import { Channel } from '../../models/Channel';
 interface DeleteChannelDialogProps {
   open: boolean;
   channel: Channel | undefined;
-  index: number;
   onClose: Function;
   onConfirm: Function;
 }
 
 export function DeleteChannelDialog(props: DeleteChannelDialogProps) {
-  const { open, channel, index, onClose, onConfirm } = props;
+  const { open, channel, onClose, onConfirm } = props;
 
   return (
     <Dialog
@@ -35,7 +34,7 @@ export function DeleteChannelDialog(props: DeleteChannelDialogProps) {
         <Button onClick={() => onClose()} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => onConfirm(index)} color="primary" autoFocus>
+        <Button onClick={() => onConfirm()} color="primary" autoFocus>
           Delete
         </Button>
       </DialogActions>

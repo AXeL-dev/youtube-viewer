@@ -20,7 +20,6 @@ import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { DeleteChannelDialog } from './channel/DeleteChannelDialog';
 import { getDateBefore } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
@@ -136,10 +135,7 @@ export default function Popup(props: PopupProps) {
   const [videos, setVideos] = React.useState<Video[]>([]);
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
-  const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
-  const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
@@ -228,23 +224,11 @@ export default function Popup(props: PopupProps) {
     });
   };
   
-  const deleteChannel = (event: any, channel: Channel, index: number) => {
-    event.stopPropagation();
-    setChannelToDelete(channel);
-    setChannelToDeleteIndex(index);
-    setOpenDeleteChannelDialog(true);
-  };
-
-  const confirmDeleteChannel = (index: number) => {
+  const deleteChannel = (index: number) => {
     setChannels(channels.filter((_, i) => i !== index));
     if (selectedChannelIndex === index) {
       setVideos([]);
     }
-    closeDeleteChannelDialog();
-  };
-
-  const closeDeleteChannelDialog = () => {
-    setOpenDeleteChannelDialog(false);
   };
 
   const showAllChannels = () => {
@@ -401,13 +385,7 @@ export default function Popup(props: PopupProps) {
           </Box>
         )}
       </main>
-      <DeleteChannelDialog
-        open={openDeleteChannelDialog}
-        channel={channelToDelete}
-        index={channelToDeleteIndex}
-        onConfirm={confirmDeleteChannel}
-        onClose={closeDeleteChannelDialog}
-      />
+      
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
       <SettingsSnackbar open={openSnackbar} onClose={closeSnackbar} onRefresh={refreshChannels} />
     </div>
