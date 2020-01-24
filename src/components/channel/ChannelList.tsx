@@ -10,6 +10,9 @@ import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CachedIcon from '@material-ui/icons/Cached';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
@@ -31,6 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
       right: '16px',
       position: 'absolute',
       transform: 'translateY(-50%)',
+    },
+    menuIcon: {
+      marginRight: theme.spacing(1),
+      fontSize: 20,
     },
   }),
 );
@@ -215,9 +222,9 @@ export function ChannelList(props: ChannelListProps) {
                         open={openedMenuIndex === index}
                         onClose={closeMenu}
                       >
-                        {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}>Move up</MenuItem>}
-                        {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}>Move down</MenuItem>}
-                        <MenuItem onClick={() => deleteChannel(channel, index)}>Delete</MenuItem>
+                        {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
+                        {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
+                        <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>
                   </ListItem>
