@@ -20,7 +20,7 @@ class App extends React.Component<AppProps, AppState> {
       channels: [],
       settings: {
         videosPerChannel: 9,
-        videosAnteriority: 15
+        videosAnteriority: 30
       }
     };
     this.getDataFromStorage();
