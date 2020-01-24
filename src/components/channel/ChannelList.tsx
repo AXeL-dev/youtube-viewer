@@ -96,9 +96,11 @@ export function ChannelList(props: ChannelListProps) {
     moveChannel(result.source.index, result.destination.index);
   };
 
+  const getSelectedChannel = (): Channel | undefined => channels.find((_, i) => i === selectedIndex);
+
   const moveChannel = (indexFrom: number, indexTo: number) => {
     closeMenu();
-    const selectedChannel: Channel | undefined = channels.find((_, i) => i === selectedIndex);
+    const selectedChannel = getSelectedChannel();
     const items: Channel[] = reorder(
       channels,
       indexFrom,
@@ -119,7 +121,7 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const confirmDeleteChannel = () => {
-    const selectedChannel: Channel | undefined = channels.find((_, i) => i === selectedIndex);
+    const selectedChannel = getSelectedChannel();
     onDelete(channelToDeleteIndex);
     if (selectedChannel && selectedIndex !== channelToDeleteIndex) {
       onSelectedIndexChange(channels.filter((_, i) => i !== channelToDeleteIndex).indexOf(selectedChannel));
