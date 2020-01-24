@@ -108,8 +108,9 @@ export function SettingsDialog(props: SettingsDialogProps) {
         <ListItem>
           <ListItemText primary="Custom API key" secondary={
             <React.Fragment>
-              <Typography variant="body2">Replaces the default youtube API key provided with the extension</Typography>
-              <Typography variant="body2">(will apply the next time you open the extension popup)</Typography>
+              <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
+              <br/>
+              <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
             </React.Fragment>
           } />
           <ListItemSecondaryAction>
