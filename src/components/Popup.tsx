@@ -24,8 +24,6 @@ import { getDateBefore } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
-import { SettingsDialog } from './settings/SettingsDialog';
-import { SettingsSnackbar } from './settings/SettingsSnackbar';
 import { ChannelList } from './channel/ChannelList';
 
 const drawerWidth = 240;
@@ -127,9 +125,7 @@ export default function Popup(props: PopupProps) {
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
-  const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
   let [cache, setCache] = React.useState<any>({});
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
@@ -254,30 +250,6 @@ export default function Popup(props: PopupProps) {
     showAllChannels();
   };
 
-  const openSettings = (event: any) => {
-    event.stopPropagation();
-    setOpenSettingsDialog(true);
-  };
-
-  const closeSettings = () => {
-    setOpenSettingsDialog(false);
-  };
-
-  const saveSettings = () => {
-    // Update settings
-    setSettings({
-      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
-      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
-      apiKey: (document.getElementById('apiKey') as any).value
-    });
-    closeSettings();
-    setOpenSnackbar(true);
-  };
-
-  const closeSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -332,13 +304,14 @@ export default function Popup(props: PopupProps) {
         <Divider />
         <ChannelList
           channels={channels}
+          settings={settings}
           selectedChannelIndex={selectedChannelIndex}
-          onOpenSettings={openSettings}
           onShowAll={showAllChannels}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
           onSave={setChannels}
+          onSaveSettings={setSettings}
         />
       </Drawer>
       <main
@@ -360,9 +333,6 @@ export default function Popup(props: PopupProps) {
           </Box>
         )}
       </main>
-      
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <SettingsSnackbar open={openSnackbar} onClose={closeSnackbar} onRefresh={refreshChannels} />
     </div>
   );
 }

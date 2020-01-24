@@ -18,6 +18,9 @@ import RootRef from '@material-ui/core/RootRef';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
 import { DeleteChannelDialog } from './DeleteChannelDialog';
+import { SettingsDialog } from '../settings/SettingsDialog';
+import { SettingsSnackbar } from '../settings/SettingsSnackbar';
+import { Settings } from '../../models/Settings';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,21 +57,24 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 
 interface ChannelListProps {
   channels: Channel[];
+  settings: Settings;
   selectedChannelIndex: number;
-  onOpenSettings: Function;
   onShowAll: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
   onSave: Function;
+  onSaveSettings: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedChannelIndex = -1, onOpenSettings, onShowAll, onRefresh, onSelect, onDelete, onSave } = props;
+  const { channels, settings, selectedChannelIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+  const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
   const onDragEnd = (result: any) => {
     // dropped outside the list
@@ -94,12 +100,36 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const confirmDeleteChannel = () => {
-    closeDeleteChannelDialog();
     onDelete(channelToDeleteIndex);
+    closeDeleteChannelDialog();
   };
 
   const closeDeleteChannelDialog = () => {
     setOpenDeleteChannelDialog(false);
+  };
+
+  const openSettings = (event: any) => {
+    event.stopPropagation();
+    setOpenSettingsDialog(true);
+  };
+
+  const closeSettings = () => {
+    setOpenSettingsDialog(false);
+  };
+
+  const saveSettings = () => {
+    // Update settings
+    onSaveSettings({
+      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
+      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
+      apiKey: (document.getElementById('apiKey') as any).value
+    });
+    closeSettings();
+    setOpenSnackbar(true);
+  };
+
+  const closeSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -112,7 +142,7 @@ export function ChannelList(props: ChannelListProps) {
               dense
               subheader={<ListSubheader>Channels
                 <Tooltip title="Settings" aria-label="settings">
-                  <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => onOpenSettings(event)}>
+                  <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => openSettings(event)}>
                     <SettingsIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -174,6 +204,8 @@ export function ChannelList(props: ChannelListProps) {
         onConfirm={confirmDeleteChannel}
         onClose={closeDeleteChannelDialog}
       />
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
+      <SettingsSnackbar open={openSnackbar} onClose={closeSnackbar} onRefresh={onRefresh} />
     </React.Fragment>
   )
 }
