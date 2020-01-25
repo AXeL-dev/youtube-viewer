@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      minWidth: '700px',
+      //minWidth: '700px',
       minHeight: '500px',
     },
     appBar: {
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       display: 'flex',
       width: '100%',
-      height: '80vh',
+      height: '80%',
       justifyContent: 'center',
     },
     centered: {
