@@ -15,6 +15,7 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
+import Fade from '@material-ui/core/Fade';
 import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
@@ -339,11 +340,13 @@ export default function Popup(props: PopupProps) {
         ) : (
           <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} />
         ) : (
-          <Box className={classes.container}>
-            <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-              <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
-            </Typography>
-          </Box>
+          <Fade in={true} timeout={3000}>
+            <Box className={classes.container}>
+              <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+                <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+              </Typography>
+            </Box>
+          </Fade>
         )}
       </main>
       <MessageSnackbar message={lastError} open={!!lastError.length} onClose={() => setLastError('')} />
