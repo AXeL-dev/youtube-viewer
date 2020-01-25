@@ -25,6 +25,7 @@ import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
 import { ChannelList } from './channel/ChannelList';
+import { MessageSnackbar } from './shared/MessageSnackbar';
 
 const drawerWidth = 240;
 
@@ -126,6 +127,7 @@ export default function Popup(props: PopupProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
+  const [lastError, setLastError] = React.useState<string>('');
   let [cache, setCache] = React.useState<any>({});
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
@@ -148,6 +150,11 @@ export default function Popup(props: PopupProps) {
     setOpenDrawer(false);
   };
 
+  const displayError = (error: string) => {
+    console.error(error);
+    setLastError(error);
+  };
+
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       //console.log('cache', cache);
@@ -166,14 +173,14 @@ export default function Popup(props: PopupProps) {
               setCache(cache);
               resolve(videos || []);
             }).catch((error) => {
-              console.error(error);
+              displayError(error);
               resolve([]);
             });
           } else {
             resolve([]);
           }
         }).catch((error) => {
-          console.error(error);
+          displayError(error);
           resolve([]);
         });
       }
@@ -334,6 +341,7 @@ export default function Popup(props: PopupProps) {
           </Box>
         )}
       </main>
+      <MessageSnackbar message={lastError} open={!!lastError.length} onClose={() => setLastError('')} />
     </div>
   );
 }
