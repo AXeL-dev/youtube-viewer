@@ -156,7 +156,7 @@ function searchChannel (query: string, max: number = 3) {
                         title: responseJson.items[i].snippet.title,
                         url: 'https://www.youtube.com/channel/' + responseJson.items[i].id.channelId + '/videos',
                         description: responseJson.items[i].snippet.description,
-                        thumbnail: responseJson.items[i].snippet.thumbnails.default.url,
+                        thumbnail: responseJson.items[i].snippet.thumbnails.medium.url,
                         id: responseJson.items[i].id.channelId
                     });
                 }
