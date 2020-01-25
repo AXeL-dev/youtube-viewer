@@ -128,7 +128,7 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [lastError, setLastError] = React.useState<string>('');
-  let [cache, setCache] = React.useState<any>({});
+  const [cache, setCache] = React.useState<any>({});
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
   React.useEffect(() => setSettings(props.settings), [props.settings]);
@@ -141,6 +141,13 @@ export default function Popup(props: PopupProps) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, settings]);
+
+  React.useEffect(() => {
+    if (Object.keys(cache).length === 0 && channels.length) {
+      showAllChannels();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cache]);
 
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
@@ -252,9 +259,7 @@ export default function Popup(props: PopupProps) {
 
   const refreshChannels = (event: any) => {
     event.stopPropagation();
-    cache = {};
-    setCache(cache);
-    showAllChannels();
+    setCache({});
   };
 
   return (
