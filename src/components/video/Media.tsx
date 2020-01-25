@@ -19,7 +19,25 @@ export default function Media(props: MediaProps) {
       textDecoration: 'none',
       color: 'inherit',
       display: 'inline-block'
-    }
+    },
+    imageContainer: {
+      position: 'relative'
+    } as React.CSSProperties,
+    image: {
+      width: 210,
+      height: 118,
+      display: 'inherit'
+    },
+    duration: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      margin: '4px',
+      color: '#fff',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      padding: '2px 4px',
+      borderRadius: '2px'
+    } as React.CSSProperties
   };
 
   return (
@@ -28,8 +46,13 @@ export default function Media(props: MediaProps) {
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
             <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => event.stopPropagation()}>
-              <img style={{ width: 210, height: 118 }} alt={item.title} src={item.thumbnail} />
-              <Box pr={2}>
+              <Box style={style.imageContainer}>
+                <img style={style.image} alt={item.title} src={item.thumbnail} />
+                <Typography variant="caption" style={style.duration}>
+                  {item.duration}
+                </Typography>
+              </Box>
+              <Box pr={2} mt={1}>
                 <Typography gutterBottom variant="body2">
                   {item.title}
                 </Typography>
