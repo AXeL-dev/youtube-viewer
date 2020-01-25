@@ -1,5 +1,10 @@
 # <img src="public/icons/128.png" alt="icon" width="32"/> Youtube viewer
 
+[![Mozilla Add-on version](https://img.shields.io/amo/v/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-shield-downloads)
+[![Mozilla Add-on downloads](https://img.shields.io/amo/dw/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-shield-downloads)
+[![Mozilla Add-on users](https://img.shields.io/amo/users/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/statistics/)
+[![Mozilla Add-on stars](https://img.shields.io/amo/stars/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/reviews/)
+
 A web extension to keep tracking your fav. youtube channels with less hassle..
 
 ![screenshot](screenshots/popup.png)
@@ -8,13 +13,14 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 ## Installation
 
-[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](screenshots/soon.gif)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](screenshots/soon.gif)
+[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/youtube-viewer/releases/download/v0.1.0/youtube_viewer-0.1.0.crx)
 
 ## Todo
 
 - [ ] Translations
 - [ ] Notifications for new posted videos (with auto-check every x minutes)
+- [ ] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
 
 ## Development scripts
 
