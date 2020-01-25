@@ -11,6 +11,12 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 > This is a fun made project in my road to discover & practice [React](https://reactjs.org/), therefore, many aspects of the project may change over the time. Any help or feedback is welcome :pray:.
 
+## Features
+
+- Handle multi channels all in one place
+- (Soon) Auto play videos on click
+- (Soon) Auto open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
+
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
@@ -21,6 +27,8 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 - [ ] Translations
 - [ ] Notifications for new posted videos (with auto-check every x minutes)
 - [ ] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
+- [ ] Option to auto-play videos once opened
+- [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
 
 ## Development scripts
 
