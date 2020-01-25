@@ -160,7 +160,7 @@ export default function Popup(props: PopupProps) {
           if (results?.items) {
             const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
             //console.log(videoIds);
-            getVideoInfo(videoIds, settings.videosPerChannel).then((videos?: Video[]) => {
+            getVideoInfo(videoIds.slice(0, settings.videosPerChannel)).then((videos?: Video[]) => {
               //console.log(videos);
               cache[channel.id] = videos;
               setCache(cache);

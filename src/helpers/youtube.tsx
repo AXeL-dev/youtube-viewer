@@ -106,37 +106,27 @@ function getTagsAndDuration (videoId: string) {
  * Return video informations
  * 
  * @param videoIdList 
- * @param max
  */
-function getVideoInfo (videoIdList: string[], max: number = 50) {
+function getVideoInfo (videoIdList: string[]) {
     let joinedIds = videoIdList.join(",");
     return apiRequest("videos", {
         part: "snippet,contentDetails,statistics,id",
         fields: "items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))",
         id: joinedIds,
-        maxResults: max, // not working when id is filled (which is the case here)
+        maxResults: 50, // not working when id is filled (which is the case here)
     }).then(response => {
         //console.log(response);
-        let payLoad: any = [];
-        if (response.items.length > 0) {
-            const howMany = Math.min(response.items.length, max);
-            for (let i = 0; i < howMany; i++) {
-                if (response.items[i]) {
-                    payLoad.push({
-                        id: response.items[i].id,
-                        title: response.items[i].snippet.title,
-                        url: 'https://www.youtube.com/watch?v=' + response.items[i].id,
-                        duration: niceDuration(response.items[i].contentDetails.duration),
-                        views: shortenLargeNumber(response.items[i].statistics.viewCount),
-                        publishedAt: TimeAgo.inWords(new Date(response.items[i].snippet.publishedAt).getTime()),
-                        thumbnail: response.items[i].snippet.thumbnails.medium.url,
-                        channelId: response.items[i].snippet.channelId,
-                        channelTitle: response.items[i].snippet.channelTitle,
-                    });
-                }
-            }
-        }
-        return payLoad;
+        return response.items.map((item: any) => ({
+            id: item.id,
+            title: item.snippet.title,
+            url: 'https://www.youtube.com/watch?v=' + item.id,
+            duration: niceDuration(item.contentDetails.duration),
+            views: shortenLargeNumber(item.statistics.viewCount),
+            publishedAt: TimeAgo.inWords(new Date(item.snippet.publishedAt).getTime()),
+            thumbnail: item.snippet.thumbnails.medium.url,
+            channelId: item.snippet.channelId,
+            channelTitle: item.snippet.channelTitle,
+        }));
     });
 }
 
