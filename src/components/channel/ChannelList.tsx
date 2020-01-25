@@ -8,7 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import SettingsIcon from '@material-ui/icons/Settings';
-import CachedIcon from '@material-ui/icons/Cached';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -198,7 +198,7 @@ export function ChannelList(props: ChannelListProps) {
                 {channels?.length > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Refresh" aria-label="refresh">
                     <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
-                      <CachedIcon fontSize="small" />
+                      <RefreshIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </ListItemSecondaryAction>}

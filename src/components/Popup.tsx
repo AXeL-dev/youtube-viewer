@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import YoutubeSearchedForIcon from '@material-ui/icons/YoutubeSearchedFor';
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
@@ -341,7 +341,7 @@ export default function Popup(props: PopupProps) {
         ) : (
           <Box className={classes.container}>
             <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-              <YoutubeSearchedForIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+              <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
             </Typography>
           </Box>
         )}
