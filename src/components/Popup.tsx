@@ -285,7 +285,7 @@ export default function Popup(props: PopupProps) {
           <Typography className={classes.title} variant="h6" noWrap>
             Youtube viewer
           </Typography>
-          <SearchChannelInput onSelect={addChannel} />
+          <SearchChannelInput onSelect={addChannel} onError={displayError} />
           <div className={classes.grow} />
           <Link href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener">
             <IconButton

@@ -96,10 +96,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface SearchProps {
   onSelect: Function;
+  onError: Function;
 }
 
 export default function SearchChannelInput(props: SearchProps) {
-  const { onSelect } = props;
+  const { onSelect, onError } = props;
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState<Channel[]>([]);
@@ -134,6 +135,8 @@ export default function SearchChannelInput(props: SearchProps) {
         searchChannel(input.value, 5).then((results: Channel[]) => {
           //console.log(results);
           callback(results);
+        }).catch((error) => {
+          onError(error);
         });
       }, 200),
     [],
