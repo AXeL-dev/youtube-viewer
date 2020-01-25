@@ -139,6 +139,7 @@ export default function SearchChannelInput(props: SearchProps) {
           onError(error);
         });
       }, 200),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
