@@ -66,7 +66,9 @@ export default function VideoGrid(props: VideoGridProps) {
                 </Typography>
               </Link>
               <Link color="inherit" className={`${classes.link} ${classes.youtube}`} href={channel.url} target="_blank" rel="noopener">
-                <YouTubeIcon />
+                <Tooltip title="Open channel" aria-label="open-channel">
+                  <YouTubeIcon />
+                </Tooltip>
               </Link>
             </Breadcrumbs>
             <VideoList videos={channelVideos.slice(0, 3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={3} />
