@@ -36,8 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'translateY(-50%)',
     },
     menuIcon: {
-      marginRight: theme.spacing(1),
       fontSize: 20,
+      marginRight: theme.spacing(1),
+      verticalAlign: 'middle',
     },
   }),
 );
