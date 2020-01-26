@@ -9,13 +9,13 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 ![screenshot](screenshots/popup.png)
 
-> This is a fun made project in my road to discover & practice [React](https://reactjs.org/), therefore, many aspects of the project may change over the time. Any help or feedback is welcome :pray:.
+> This is a fun made project with one simple goal: Discover & practice [React](https://reactjs.org/). Any help or feedback is welcome :pray:.
 
 ## Features
 
 - Handle multi channels all in one place
 - (Soon) Auto play videos on click
-- (Soon) Auto open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
+- (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
 
 ## Installation
 
@@ -30,11 +30,20 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 - [ ] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
 
-## Development scripts
+## Technical
+
+### Stack
+
+- [React](https://reactjs.org/): Core library
+- [Material-UI](https://material-ui.com/): UI toolkit
+- [lodash](https://lodash.com/): Utility library
+- [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
+
+### Scripts
 
 In the project directory, you can run:
 
-### `npm start`
+#### `npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -42,12 +51,12 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `npm test`
+#### `npm test`
 
 Launches the test runner in the interactive watch mode.<br />
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+#### `npm run build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
@@ -57,7 +66,7 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+#### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -67,7 +76,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-### `npm run package`
+#### `npm run package`
 
 **Note: the web-ext package is required. You can install it using `npm install -g web-ext`.**
 
