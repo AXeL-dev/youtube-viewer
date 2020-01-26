@@ -160,7 +160,7 @@ export default function Popup(props: PopupProps) {
 
   const displayError = (error: string) => {
     console.error(error);
-    setLastError(error);
+    setLastError(error.toString());
   };
 
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
