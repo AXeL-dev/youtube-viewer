@@ -117,6 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface PopupProps {
   channels: Channel[];
   settings: Settings;
+  cache: any;
 }
 
 export default function Popup(props: PopupProps) {
@@ -133,22 +134,18 @@ export default function Popup(props: PopupProps) {
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
   React.useEffect(() => setSettings(props.settings), [props.settings]);
+  React.useEffect(() => setCache(props.cache), [props.cache]);
 
   React.useEffect(() => {
-    !videos.length && showAllChannels();
+    if (props.channels === channels && !videos.length) {
+      showAllChannels(true);
+    }
     saveToStorage({
       'channels': channels,
       'settings': settings
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, settings]);
-
-  React.useEffect(() => {
-    if (Object.keys(cache).length === 0 && channels.length) {
-      showAllChannels();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cache]);
 
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
@@ -163,23 +160,27 @@ export default function Popup(props: PopupProps) {
     setLastError(error);
   };
 
-  const getChannelVideos = (channel: Channel): Promise<Video[]> => {
+  const getChannelVideos = (channel: Channel, ignoreCache: boolean = false): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       //console.log('cache', cache);
-      if (cache[channel.id]?.length) {
+      if (!ignoreCache && cache[channel.id]?.length) {
         //console.log('in cache', cache[channel.id]);
-        resolve(cache[channel.id]);
+        resolve(cache[channel.id].slice(0, settings.videosPerChannel));
       } else {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
           //console.log(results);
           if (results?.items) {
-            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
-            //console.log(videoIds);
-            getVideoInfo(videoIds.slice(0, settings.videosPerChannel)).then((videos?: Video[]) => {
+            const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
+            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId)
+                                          .slice(0, settings.videosPerChannel)
+                                          .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
+            //console.log({ videoIds: videoIds, cacheVideoIds: cacheVideoIds });
+            getVideoInfo(videoIds).then((videos: Video[]) => {
               //console.log(videos);
-              cache[channel.id] = videos;
+              cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]] : videos;
               setCache(cache);
-              resolve(videos || []);
+              saveToStorage({ 'cache': cache });
+              resolve(cache[channel.id].slice(0, settings.videosPerChannel) || []);
             }).catch((error: Error) => {
               displayError(error);
               resolve([]);
@@ -233,7 +234,7 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const showAllChannels = () => {
+  const showAllChannels = (ignoreCache: boolean = false) => {
     // Select "All"
     setSelectedChannelIndex(-1);
     // Get all channels videos
@@ -244,7 +245,7 @@ export default function Popup(props: PopupProps) {
 
     channels.forEach((channel: Channel) => {
 
-      const promise = getChannelVideos(channel).then((newVideos: Video[]) => {
+      const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
         //console.log(channel.title, newVideos);
         videos.push(...newVideos);
       });
@@ -260,7 +261,7 @@ export default function Popup(props: PopupProps) {
 
   const refreshChannels = (event: any) => {
     event.stopPropagation();
-    setCache({});
+    showAllChannels(true);
   };
 
   return (

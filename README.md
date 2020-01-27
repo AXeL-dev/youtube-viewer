@@ -26,7 +26,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 
 - [ ] Translations
 - [ ] Notifications for new posted videos (with auto-check every x minutes)
-- [ ] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
+- [x] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
 - [ ] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
 

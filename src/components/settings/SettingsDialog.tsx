@@ -83,7 +83,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ min: 1, max: 50, step: 3 }}
-              defaultValue={settings.videosPerChannel}
+              defaultValue={settings?.videosPerChannel}
               onChange={(event) => validateSettings(event)}
             />
           </ListItemSecondaryAction>
@@ -99,7 +99,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ min: 1, max: 365, step: 7 }}
-              defaultValue={settings.videosAnteriority}
+              defaultValue={settings?.videosAnteriority}
               onChange={(event) => validateSettings(event)}
             />
           </ListItemSecondaryAction>
@@ -122,7 +122,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ minLength: 39 }}
-              defaultValue={settings.apiKey}
+              defaultValue={settings?.apiKey}
               onChange={(event) => validateSettings(event)}
             />
           </ListItemSecondaryAction>

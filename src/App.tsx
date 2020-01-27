@@ -11,6 +11,7 @@ interface AppProps {
 interface AppState {
   channels: Channel[];
   settings: Settings;
+  cache: any;
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -21,23 +22,25 @@ class App extends React.Component<AppProps, AppState> {
       settings: {
         videosPerChannel: 9,
         videosAnteriority: 30
-      }
+      },
+      cache: {}
     };
     this.getDataFromStorage();
   }
 
   async getDataFromStorage() {
-    const [channels, settings] = await getFromStorage('channels', 'settings');
-    //console.log({channels: channels, settings: settings});
+    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
+    //console.log({channels: channels, settings: settings, cache: cache});
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
-      settings: settings ? settings : this.state.settings
+      settings: settings ? settings : this.state.settings,
+      cache: cache ? cache : this.state.cache
     });
   }
 
   render() {
     return (
-      <Popup channels={this.state.channels} settings={this.state.settings} />
+      <Popup channels={this.state.channels} settings={this.state.settings} cache={this.state.cache} />
     );
   }
 }
