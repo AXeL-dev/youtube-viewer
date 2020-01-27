@@ -21,7 +21,7 @@ import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { getDateBefore } from '../helpers/utils';
+import { getDateBefore, memorySizeOf } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
@@ -141,8 +141,8 @@ export default function Popup(props: PopupProps) {
       showAllChannels(true);
     }
     saveToStorage({
-      'channels': channels,
-      'settings': settings
+      channels: channels,
+      settings: settings
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, settings]);
@@ -179,7 +179,7 @@ export default function Popup(props: PopupProps) {
               //console.log(videos);
               cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]] : videos;
               setCache(cache);
-              saveToStorage({ 'cache': cache });
+              saveToStorage({ cache: cache });
               resolve(cache[channel.id].slice(0, settings.videosPerChannel) || []);
             }).catch((error: Error) => {
               displayError(error);
@@ -264,6 +264,17 @@ export default function Popup(props: PopupProps) {
     showAllChannels(true);
   };
 
+  const clearCache = () => {
+    setCache({});
+    saveToStorage({ cache: {} });
+  };
+
+  const getCacheSize = () => {
+    const size = memorySizeOf(cache);
+    //console.log(size);
+    return size;
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -327,6 +338,8 @@ export default function Popup(props: PopupProps) {
           onSave={setChannels}
           onSaveSettings={setSettings}
           onSelectedIndexChange={setSelectedChannelIndex}
+          cacheSize={getCacheSize()}
+          onClearCache={clearCache}
         />
       </Drawer>
       <main

@@ -39,10 +39,12 @@ interface SettingsDialogProps {
   open: boolean;
   onClose: Function;
   onSave: Function;
+  cacheSize: string;
+  onClearCache: Function;
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { settings, open, onClose, onSave } = props;
+  const { settings, open, onClose, onSave, cacheSize, onClearCache } = props;
   const classes = useStyles();
 
   const validateSettings = (event: any) => {
@@ -125,6 +127,13 @@ export function SettingsDialog(props: SettingsDialogProps) {
               defaultValue={settings?.apiKey}
               onChange={(event) => validateSettings(event)}
             />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem button onClick={() => onClearCache()}>
+          <ListItemText primary="Clear videos cache" secondary="Videos cache may speed up loading time & reduce API quota consumption" />
+          <ListItemSecondaryAction>
+            <Typography variant="caption">{cacheSize}</Typography>
           </ListItemSecondaryAction>
         </ListItem>
       </List>

@@ -76,16 +76,19 @@ interface ChannelListProps {
   onSave: Function;
   onSaveSettings: Function;
   onSelectedIndexChange: Function;
+  cacheSize: string;
+  onClearCache: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, settings, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings, onSelectedIndexChange } = props;
+  const { channels, settings, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings, onSelectedIndexChange, cacheSize, onClearCache } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState(-1);
 
@@ -151,6 +154,7 @@ export function ChannelList(props: ChannelListProps) {
       apiKey: (document.getElementById('apiKey') as any).value
     });
     closeSettings();
+    setSnackbarMessage('Settings saved!');
     setOpenSnackbar(true);
   };
 
@@ -167,6 +171,13 @@ export function ChannelList(props: ChannelListProps) {
   const closeMenu = () => {
     setAnchorEl(null);
     setOpenedMenuIndex(-1);
+  };
+
+  const clearCache = () => {
+    onClearCache();
+    closeSettings();
+    setSnackbarMessage('Cache cleared!');
+    setOpenSnackbar(true);
   };
 
   return (
@@ -252,8 +263,8 @@ export function ChannelList(props: ChannelListProps) {
         onConfirm={confirmDeleteChannel}
         onClose={closeDeleteChannelDialog}
       />
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <SettingsSnackbar open={openSnackbar} onClose={closeSnackbar} onRefresh={onRefresh} />
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} cacheSize={cacheSize} onClearCache={clearCache} />
+      <SettingsSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar} onRefresh={onRefresh} />
     </React.Fragment>
   )
 }

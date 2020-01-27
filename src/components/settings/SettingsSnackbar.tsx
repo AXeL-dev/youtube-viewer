@@ -6,12 +6,13 @@ import CloseIcon from '@material-ui/icons/Close';
 
 interface SettingsSnackbarProps {
   open: boolean;
+  message: string;
   onClose: Function;
   onRefresh: Function;
 }
 
 export function SettingsSnackbar(props: SettingsSnackbarProps) {
-  const { open, onClose, onRefresh } = props;
+  const { open, message, onClose, onRefresh } = props;
 
   return (
     <Snackbar
@@ -22,7 +23,7 @@ export function SettingsSnackbar(props: SettingsSnackbarProps) {
       open={open}
       autoHideDuration={6000}
       onClose={() => onClose()}
-      message="Settings saved!"
+      message={message}
       action={
         <React.Fragment>
           <Button color="secondary" size="small" onClick={(event) => onRefresh(event)}>
