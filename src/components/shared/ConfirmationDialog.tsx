@@ -5,17 +5,20 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Channel } from '../../models/Channel';
+import { RawHTML } from './RawHTML';
 
-interface DeleteChannelDialogProps {
+interface ConfirmationDialogProps {
   open: boolean;
-  channel: Channel | undefined;
+  title: string;
+  description: string;
+  confirmButtonText?: string;
+  cancelButtonText?: string;
   onClose: Function;
   onConfirm: Function;
 }
 
-export function DeleteChannelDialog(props: DeleteChannelDialogProps) {
-  const { open, channel, onClose, onConfirm } = props;
+export function ConfirmationDialog(props: ConfirmationDialogProps) {
+  const { open, title, description, confirmButtonText = 'Confirm', cancelButtonText = 'Cancel',  onClose, onConfirm } = props;
 
   return (
     <Dialog
@@ -24,18 +27,18 @@ export function DeleteChannelDialog(props: DeleteChannelDialogProps) {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">Delete Channel</DialogTitle>
+    <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Would you like to delete <strong>{channel?.title}</strong> channel?
+          <RawHTML>{description}</RawHTML>
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => onClose()} color="primary">
-          Cancel
+          {cancelButtonText}
         </Button>
         <Button onClick={() => onConfirm()} color="primary" autoFocus>
-          Delete
+          {confirmButtonText}
         </Button>
       </DialogActions>
     </Dialog>

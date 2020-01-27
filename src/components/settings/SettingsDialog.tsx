@@ -1,10 +1,6 @@
 import React from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
@@ -20,6 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
+import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -153,27 +150,14 @@ export function SettingsDialog(props: SettingsDialogProps) {
           </ListItem>
         </List>
       </Dialog>
-      <Dialog
+      <ConfirmationDialog
         open={openClearCacheDialog}
+        title="Clear cache"
+        description="This action is irreversible, would you like to confirm?"
+        confirmButtonText="Clear"
         onClose={closeClearCacheDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Clear cache</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            This action is irreversible, would you like to confirm?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeClearCacheDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirmClearCache} color="primary" autoFocus>
-            Clear
-          </Button>
-        </DialogActions>
-      </Dialog>
+        onConfirm={confirmClearCache}
+      />
     </React.Fragment>
   )
 }

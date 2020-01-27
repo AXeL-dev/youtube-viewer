@@ -22,7 +22,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
-import { DeleteChannelDialog } from './DeleteChannelDialog';
+import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { SettingsDialog } from '../settings/SettingsDialog';
 import { SettingsSnackbar } from '../settings/SettingsSnackbar';
 import { Settings } from '../../models/Settings';
@@ -257,11 +257,13 @@ export function ChannelList(props: ChannelListProps) {
         )}
         </Droppable>
       </DragDropContext>
-      <DeleteChannelDialog
+      <ConfirmationDialog
         open={openDeleteChannelDialog}
-        channel={channelToDelete}
-        onConfirm={confirmDeleteChannel}
+        title="Delete Channel"
+        description={"Would you like to delete <strong>" + channelToDelete?.title + "</strong> channel?"}
+        confirmButtonText="Delete"
         onClose={closeDeleteChannelDialog}
+        onConfirm={confirmDeleteChannel}
       />
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} cacheSize={cacheSize} onConfirmClearCache={clearCache} />
       <SettingsSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar} onRefresh={onRefresh} />
