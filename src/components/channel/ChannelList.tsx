@@ -263,7 +263,7 @@ export function ChannelList(props: ChannelListProps) {
         onConfirm={confirmDeleteChannel}
         onClose={closeDeleteChannelDialog}
       />
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} cacheSize={cacheSize} onClearCache={clearCache} />
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} cacheSize={cacheSize} onConfirmClearCache={clearCache} />
       <SettingsSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar} onRefresh={onRefresh} />
     </React.Fragment>
   )
