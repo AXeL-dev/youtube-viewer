@@ -128,7 +128,7 @@ export default function Popup(props: PopupProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
-  const [lastError, setLastError] = React.useState<string>('');
+  const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
@@ -158,9 +158,9 @@ export default function Popup(props: PopupProps) {
     setOpenDrawer(false);
   };
 
-  const displayError = (error: string) => {
+  const displayError = (error: Error) => {
     console.error(error);
-    setLastError(error.toString());
+    setLastError(error);
   };
 
   const getChannelVideos = (channel: Channel): Promise<Video[]> => {
@@ -180,14 +180,14 @@ export default function Popup(props: PopupProps) {
               cache[channel.id] = videos;
               setCache(cache);
               resolve(videos || []);
-            }).catch((error) => {
+            }).catch((error: Error) => {
               displayError(error);
               resolve([]);
             });
           } else {
             resolve([]);
           }
-        }).catch((error) => {
+        }).catch((error: Error) => {
           displayError(error);
           resolve([]);
         });
@@ -349,7 +349,7 @@ export default function Popup(props: PopupProps) {
           </Fade>
         )}
       </main>
-      <MessageSnackbar message={lastError} open={!!lastError.length} onClose={() => setLastError('')} />
+      <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
     </div>
   );
 }

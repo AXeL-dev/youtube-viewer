@@ -29,7 +29,9 @@ const apiRequest = (() => {
         let response = await window.fetch(url);
         //console.log(`HTTP ${response.status}: ${response.url}`);
         if (!response.ok) {
-            throw Error(`HTTP ${response.status}: ${response.url}`);
+            const json = await response.json();
+            //console.log(json);
+            throw Error(json?.error?.errors[0] ? `<strong>${json.error.errors[0].reason}</strong>: ${json.error.errors[0].message}` : `HTTP ${response.status}: ${response.url}`);
         }
         return await response.json();
     }

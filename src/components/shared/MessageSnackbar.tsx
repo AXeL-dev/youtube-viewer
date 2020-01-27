@@ -1,9 +1,10 @@
 import React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
+import { RawHTML } from './RawHTML';
 
 interface MessageSnackbarProps {
-  message: string;
+  message: string|undefined;
   open: boolean;
   onClose: Function;
   autoHideDuration?: number;
@@ -19,7 +20,7 @@ export function MessageSnackbar(props: MessageSnackbarProps) {
       open={open}
       autoHideDuration={autoHideDuration}
       onClose={() => onClose()}
-      message={message}
+      message={message && <RawHTML>{message}</RawHTML>}
       action={
         <Button color="secondary" size="small" onClick={() => onClose()}>
           Close
