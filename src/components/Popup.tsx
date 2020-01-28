@@ -12,6 +12,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import SettingsIcon from '@material-ui/icons/Settings';
+import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
@@ -27,6 +29,8 @@ import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
 import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
+import { SettingsDialog } from './settings/SettingsDialog';
+import { SettingsSnackbar } from './settings/SettingsSnackbar';
 import { debug } from '../helpers/debug';
 
 const drawerWidth = 240;
@@ -61,9 +65,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     grow: {
       flexGrow: 1,
-    },
-    white: {
-      color: '#fff',
     },
     title: {
       display: 'none',
@@ -112,6 +113,14 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       margin: '0 80px'
     },
+    heartIcon: {
+      color: '#e25555',
+      fontSize: 16,
+      verticalAlign: 'middle',
+    },
+    madeWithLove: {
+      margin: theme.spacing(1, 0),
+    },
   }),
 );
 
@@ -130,6 +139,8 @@ export default function Popup(props: PopupProps) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
+  const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
+  const [settingsSnackbarMessage, setSettingsSnackbarMessage] = React.useState('');
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
 
@@ -268,12 +279,37 @@ export default function Popup(props: PopupProps) {
   const clearCache = () => {
     setCache({});
     saveToStorage({ cache: {} });
+    setSettingsSnackbarMessage('Cache cleared!');
   };
 
   const getCacheSize = () => {
     const size = memorySizeOf(cache);
     //console.log(size);
     return size;
+  };
+
+  const openSettings = (event: any) => {
+    event.stopPropagation();
+    setOpenSettingsDialog(true);
+  };
+
+  const closeSettings = () => {
+    setOpenSettingsDialog(false);
+  };
+
+  const saveSettings = () => {
+    // Update settings
+    setSettings({
+      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
+      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
+      apiKey: (document.getElementById('apiKey') as any).value
+    });
+    closeSettings();
+    setSettingsSnackbarMessage('Settings saved!');
+  };
+
+  const closeSettingsSnackbar = () => {
+    setSettingsSnackbarMessage('');
   };
 
   return (
@@ -301,16 +337,9 @@ export default function Popup(props: PopupProps) {
           </Typography>
           <SearchChannelInput onSelect={addChannel} onError={displayError} />
           <div className={classes.grow} />
-          <Link href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener">
-            <IconButton
-              edge="end"
-              aria-label="github link"
-              color="inherit"
-              className={classes.white}
-            >
-              <GitHubIcon />
-            </IconButton>
-          </Link>
+          <IconButton edge="end" aria-label="settings" color="inherit" onClick={(event) => openSettings(event)}>
+            <SettingsIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -330,18 +359,26 @@ export default function Popup(props: PopupProps) {
         <Divider />
         <ChannelList
           channels={channels}
-          settings={settings}
           selectedIndex={selectedChannelIndex}
           onShowAll={showAllChannels}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
           onSave={setChannels}
-          onSaveSettings={setSettings}
           onSelectedIndexChange={setSelectedChannelIndex}
           cacheSize={getCacheSize()}
           onClearCache={clearCache}
         />
+        <div className={classes.grow} />
+        <Divider />
+        <Typography variant="caption" align="center" className={classes.madeWithLove}>
+          Made with <FavoriteRoundedIcon className={classes.heartIcon} /> by AXeL
+          <Link href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener">
+            <IconButton edge="end" size="small" aria-label="github link">
+              <GitHubIcon fontSize="inherit" />
+            </IconButton>
+          </Link>
+        </Typography>
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -364,7 +401,9 @@ export default function Popup(props: PopupProps) {
           </Fade>
         )}
       </main>
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
+      <SettingsSnackbar open={!!settingsSnackbarMessage.length} message={settingsSnackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
       <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
     </div>
-  );
+  )
 }

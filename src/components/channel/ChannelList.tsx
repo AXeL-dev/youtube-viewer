@@ -7,7 +7,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
-import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
@@ -24,9 +23,6 @@ import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
-import { SettingsDialog } from '../settings/SettingsDialog';
-import { SettingsSnackbar } from '../settings/SettingsSnackbar';
-import { Settings } from '../../models/Settings';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       verticalAlign: 'middle',
     },
+    subheader: {
+      position: 'relative',
+    }
   }),
 );
 
@@ -68,28 +67,24 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 
 interface ChannelListProps {
   channels: Channel[];
-  settings: Settings;
   selectedIndex: number;
   onShowAll: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
   onSave: Function;
-  onSaveSettings: Function;
   onSelectedIndexChange: Function;
   cacheSize: string;
   onClearCache: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, settings, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSaveSettings, onSelectedIndexChange, cacheSize, onClearCache } = props;
+  const { channels, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, onClearCache } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
-  const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
@@ -139,31 +134,6 @@ export function ChannelList(props: ChannelListProps) {
     setOpenDeleteChannelDialog(false);
   };
 
-  const openSettings = (event: any) => {
-    event.stopPropagation();
-    setOpenSettingsDialog(true);
-  };
-
-  const closeSettings = () => {
-    setOpenSettingsDialog(false);
-  };
-
-  const saveSettings = () => {
-    // Update settings
-    onSaveSettings({
-      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
-      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
-      apiKey: (document.getElementById('apiKey') as any).value
-    });
-    closeSettings();
-    setSnackbarMessage('Settings saved!');
-    setOpenSnackbar(true);
-  };
-
-  const closeSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
   const openMenu = (event: any, index: number) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
@@ -178,8 +148,6 @@ export function ChannelList(props: ChannelListProps) {
   const confirmClearCache = () => {
     onClearCache();
     closeClearCacheDialog();
-    setSnackbarMessage('Cache cleared!');
-    setOpenSnackbar(true);
   };
 
   const closeClearCacheDialog = () => {
@@ -194,15 +162,10 @@ export function ChannelList(props: ChannelListProps) {
           <RootRef rootRef={provided.innerRef}>
             <List
               dense
-              subheader={<ListSubheader>Channels
+              subheader={<ListSubheader className={classes.subheader}>Channels
                 <Tooltip title={"Clear cache (" + cacheSize + ")"} aria-label="clear-cache">
                   <IconButton edge="end" aria-label="clear-cache" size="small" className={classes.clearCacheIcon} onClick={() => setOpenClearCacheDialog(true)}>
                     <ClearAllRoundedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Settings" aria-label="settings">
-                  <IconButton edge="end" aria-label="settings" size="small" onClick={(event) => openSettings(event)}>
-                    <SettingsIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
               </ListSubheader>}
@@ -284,8 +247,6 @@ export function ChannelList(props: ChannelListProps) {
         onClose={closeDeleteChannelDialog}
         onConfirm={confirmDeleteChannel}
       />
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <SettingsSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar} onRefresh={onRefresh} />
     </React.Fragment>
   )
 }
