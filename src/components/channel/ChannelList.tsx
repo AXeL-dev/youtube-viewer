@@ -234,7 +234,7 @@ export function ChannelList(props: ChannelListProps) {
       <ConfirmationDialog
         open={openClearCacheDialog}
         title="Clear cache"
-        description="This action is irreversible, would you like to confirm?"
+        description="Cache may speed up loading time & reduce API quota consumption.<br/>This action is irreversible, would you like to continue?"
         confirmButtonText="Clear"
         onClose={closeClearCacheDialog}
         onConfirm={confirmClearCache}
