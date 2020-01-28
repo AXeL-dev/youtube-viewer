@@ -231,6 +231,7 @@ export default function Popup(props: PopupProps) {
     setChannels(channels.filter((_, i) => i !== index));
     if (selectedChannelIndex === index) {
       setVideos([]);
+      setSelectedChannelIndex(-2);
     }
   };
 
