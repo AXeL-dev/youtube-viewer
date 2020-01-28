@@ -198,7 +198,7 @@ export default function Popup(props: PopupProps) {
 
   const addChannel = (channel: Channel) => {
     // Add channel
-    debug('selected channel:', channel);
+    //debug('selected channel:', channel);
     const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
     if (!found) {
       setChannels([...channels, channel]);
@@ -216,7 +216,7 @@ export default function Popup(props: PopupProps) {
 
   const selectChannel = (channel: Channel, index: number) => {
     // Select channel
-    debug('selected channel:', channel);
+    //debug('selected channel:', channel);
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);

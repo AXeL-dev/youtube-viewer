@@ -12,6 +12,7 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import ClearAllRoundedIcon from '@material-ui/icons/ClearAllRounded';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -29,7 +30,7 @@ import { Settings } from '../../models/Settings';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    settingsButton: {
+    clearCacheIcon: {
       top: '50%',
       right: '16px',
       position: 'absolute',
@@ -91,6 +92,7 @@ export function ChannelList(props: ChannelListProps) {
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState(-1);
+  const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
 
   const onDragEnd = (result: any) => {
     // dropped outside the list
@@ -173,11 +175,15 @@ export function ChannelList(props: ChannelListProps) {
     setOpenedMenuIndex(-1);
   };
 
-  const clearCache = () => {
+  const confirmClearCache = () => {
     onClearCache();
-    closeSettings();
+    closeClearCacheDialog();
     setSnackbarMessage('Cache cleared!');
     setOpenSnackbar(true);
+  };
+
+  const closeClearCacheDialog = () => {
+    setOpenClearCacheDialog(false);
   };
 
   return (
@@ -189,8 +195,13 @@ export function ChannelList(props: ChannelListProps) {
             <List
               dense
               subheader={<ListSubheader>Channels
+                <Tooltip title={"Clear cache (" + cacheSize + ")"} aria-label="clear-cache">
+                  <IconButton edge="end" aria-label="clear-cache" size="small" className={classes.clearCacheIcon} onClick={() => setOpenClearCacheDialog(true)}>
+                    <ClearAllRoundedIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="Settings" aria-label="settings">
-                  <IconButton edge="end" aria-label="settings" size="small" className={classes.settingsButton} onClick={(event) => openSettings(event)}>
+                  <IconButton edge="end" aria-label="settings" size="small" onClick={(event) => openSettings(event)}>
                     <SettingsIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
@@ -258,6 +269,14 @@ export function ChannelList(props: ChannelListProps) {
         </Droppable>
       </DragDropContext>
       <ConfirmationDialog
+        open={openClearCacheDialog}
+        title="Clear cache"
+        description="This action is irreversible, would you like to confirm?"
+        confirmButtonText="Clear"
+        onClose={closeClearCacheDialog}
+        onConfirm={confirmClearCache}
+      />
+      <ConfirmationDialog
         open={openDeleteChannelDialog}
         title="Delete Channel"
         description={"Would you like to delete <strong>" + channelToDelete?.title + "</strong> channel?"}
@@ -265,7 +284,7 @@ export function ChannelList(props: ChannelListProps) {
         onClose={closeDeleteChannelDialog}
         onConfirm={confirmDeleteChannel}
       />
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} cacheSize={cacheSize} onConfirmClearCache={clearCache} />
+      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
       <SettingsSnackbar open={openSnackbar} message={snackbarMessage} onClose={closeSnackbar} onRefresh={onRefresh} />
     </React.Fragment>
   )

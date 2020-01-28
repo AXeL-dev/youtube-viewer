@@ -16,7 +16,6 @@ import Divider from '@material-ui/core/Divider';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
-import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,14 +39,11 @@ interface SettingsDialogProps {
   open: boolean;
   onClose: Function;
   onSave: Function;
-  cacheSize: string;
-  onConfirmClearCache: Function;
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { settings, open, onClose, onSave, cacheSize, onConfirmClearCache } = props;
+  const { settings, open, onClose, onSave } = props;
   const classes = useStyles();
-  const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
 
   const validateSettings = (event: any) => {
     let input = event.target;
@@ -59,15 +55,6 @@ export function SettingsDialog(props: SettingsDialogProps) {
         input.value = input.max;
       }
     }
-  };
-
-  const closeClearCacheDialog = () => {
-    setOpenClearCacheDialog(false);
-  };
-
-  const confirmClearCache = () => {
-    onConfirmClearCache();
-    closeClearCacheDialog();
   };
 
   return (
@@ -141,23 +128,8 @@ export function SettingsDialog(props: SettingsDialogProps) {
               />
             </ListItemSecondaryAction>
           </ListItem>
-          <Divider />
-          <ListItem button onClick={() => setOpenClearCacheDialog(true)}>
-            <ListItemText primary="Clear videos cache" secondary="Videos cache may speed up loading time & reduce API quota consumption" />
-            <ListItemSecondaryAction>
-              <Typography variant="caption">{cacheSize}</Typography>
-            </ListItemSecondaryAction>
-          </ListItem>
         </List>
       </Dialog>
-      <ConfirmationDialog
-        open={openClearCacheDialog}
-        title="Clear cache"
-        description="This action is irreversible, would you like to confirm?"
-        confirmButtonText="Clear"
-        onClose={closeClearCacheDialog}
-        onConfirm={confirmClearCache}
-      />
     </React.Fragment>
   )
 }
