@@ -58,78 +58,76 @@ export function SettingsDialog(props: SettingsDialogProps) {
   };
 
   return (
-    <React.Fragment>
-      <Dialog fullScreen open={open} onClose={() => onClose()} TransitionComponent={settingsDialogTransition}>
-        <AppBar color="secondary" className={classes.settingsAppBar}>
-          <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={() => onClose()} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.settingsTitle}>
-              Settings
-            </Typography>
-            <Button autoFocus color="inherit" onClick={() => onSave()}>
-              save
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <List>
-          <ListItem>
-            <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" />
-            <ListItemSecondaryAction>
-              <TextField
-                id="videosPerChannel"
-                type="number"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ min: 1, max: 50, step: 3 }}
-                defaultValue={settings?.videosPerChannel}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" />
-            <ListItemSecondaryAction>
-              <TextField
-                id="videosAnteriority"
-                type="number"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ min: 1, max: 365, step: 7 }}
-                defaultValue={settings?.videosAnteriority}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-          <ListItem>
-            <ListItemText primary="Custom API key" secondary={
-              <React.Fragment>
-                <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
-                <br/>
-                <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
-              </React.Fragment>
-            } />
-            <ListItemSecondaryAction>
-              <TextField
-                id="apiKey"
-                type="text"
-                placeholder="AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc"
-                size="small"
-                variant="outlined"
-                color="secondary"
-                inputProps={{ minLength: 39 }}
-                defaultValue={settings?.apiKey}
-                onChange={(event) => validateSettings(event)}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </Dialog>
-    </React.Fragment>
+    <Dialog fullScreen open={open} onClose={() => onClose()} TransitionComponent={settingsDialogTransition}>
+      <AppBar color="secondary" className={classes.settingsAppBar}>
+        <Toolbar>
+          <IconButton edge="start" color="inherit" onClick={() => onClose()} aria-label="close">
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.settingsTitle}>
+            Settings
+          </Typography>
+          <Button autoFocus color="inherit" onClick={() => onSave()}>
+            save
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <List>
+        <ListItem>
+          <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" />
+          <ListItemSecondaryAction>
+            <TextField
+              id="videosPerChannel"
+              type="number"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              inputProps={{ min: 1, max: 50, step: 3 }}
+              defaultValue={settings?.videosPerChannel}
+              onChange={(event) => validateSettings(event)}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" />
+          <ListItemSecondaryAction>
+            <TextField
+              id="videosAnteriority"
+              type="number"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              inputProps={{ min: 1, max: 365, step: 7 }}
+              defaultValue={settings?.videosAnteriority}
+              onChange={(event) => validateSettings(event)}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Custom API key" secondary={
+            <React.Fragment>
+              <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
+              <br/>
+              <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
+            </React.Fragment>
+          } />
+          <ListItemSecondaryAction>
+            <TextField
+              id="apiKey"
+              type="text"
+              placeholder="AIzaSyDOkg-u9jnhP-WnzX5WPJyV1sc5QQrtuyc"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              inputProps={{ minLength: 39 }}
+              defaultValue={settings?.apiKey}
+              onChange={(event) => validateSettings(event)}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+      </List>
+    </Dialog>
   )
 }
