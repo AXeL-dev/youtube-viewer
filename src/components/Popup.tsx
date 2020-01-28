@@ -27,6 +27,7 @@ import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
 import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
+import { debug } from '../helpers/debug';
 
 const drawerWidth = 240;
 
@@ -162,19 +163,18 @@ export default function Popup(props: PopupProps) {
 
   const getChannelVideos = (channel: Channel, ignoreCache: boolean = false): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
-      //console.log('cache', cache);
       if (!ignoreCache && cache[channel.id]?.length) {
-        //console.log('in cache', cache[channel.id]);
+        debug('load videos from cache', cache[channel.id]);
         resolve(cache[channel.id].slice(0, settings.videosPerChannel));
       } else {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
-          //console.log(results);
+          debug('activities', results);
           if (results?.items) {
             const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
             const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId)
                                           .slice(0, settings.videosPerChannel)
                                           .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
-            //console.log({ videoIds: videoIds, cacheVideoIds: cacheVideoIds });
+            debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
             getVideoInfo(videoIds).then((videos: Video[]) => {
               //console.log(videos);
               cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]] : videos;
@@ -198,7 +198,7 @@ export default function Popup(props: PopupProps) {
 
   const addChannel = (channel: Channel) => {
     // Add channel
-    //console.log('selected channel:', channel);
+    debug('selected channel:', channel);
     const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
     if (!found) {
       setChannels([...channels, channel]);
@@ -216,7 +216,7 @@ export default function Popup(props: PopupProps) {
 
   const selectChannel = (channel: Channel, index: number) => {
     // Select channel
-    //console.log('selected channel:', channel);
+    debug('selected channel:', channel);
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);
@@ -247,7 +247,7 @@ export default function Popup(props: PopupProps) {
     channels.forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
-        //console.log(channel.title, newVideos);
+        debug(channel.title, newVideos);
         videos.push(...newVideos);
       });
       promises.push(promise);

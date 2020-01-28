@@ -25,7 +25,7 @@ function __get(key: string): Promise<any> {
       });
     }
     catch(error) {
-      console.log(error.message);
+      //console.log(error.message);
       const value: any = localStorage.getItem(key);
       let finalValue: any;
       try {
@@ -62,7 +62,7 @@ function __save(key: string, value: any): Promise<void> {
       });
     }
     catch(error) {
-      console.log(error.message);
+      //console.log(error.message);
       let finalValue: any;
       try {
         finalValue = JSON.stringify(value);
