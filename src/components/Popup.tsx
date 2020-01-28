@@ -177,7 +177,7 @@ export default function Popup(props: PopupProps) {
             debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
             getVideoInfo(videoIds).then((videos: Video[]) => {
               //console.log(videos);
-              cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]] : videos;
+              cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]].sort((a: Video, b: Video) => b.publishedAt - a.publishedAt) : videos;
               setCache(cache);
               saveToStorage({ cache: cache });
               resolve(cache[channel.id].slice(0, settings.videosPerChannel) || []);

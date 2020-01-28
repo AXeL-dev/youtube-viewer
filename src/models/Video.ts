@@ -4,7 +4,7 @@ export interface Video {
   title: string,
   url: string,
   duration: string,
-  publishedAt: string,
+  publishedAt: number,
   thumbnail: string,
   views: string,
   channelId: string,

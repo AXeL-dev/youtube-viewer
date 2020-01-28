@@ -5,6 +5,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Video } from '../../models/Video';
+import { TimeAgo } from '../../helpers/utils';
 
 interface MediaProps {
   loading?: boolean;
@@ -40,14 +41,18 @@ export default function Media(props: MediaProps) {
     } as React.CSSProperties
   };
 
+  const openVideo = (event: any) => {
+    event.stopPropagation();
+  };
+
   return (
     <Grid container wrap="nowrap">
       {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
-            <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => event.stopPropagation()}>
+            <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => openVideo(event)}>
               <Box style={style.imageContainer}>
-                <img style={style.image} alt={item.title} src={item.thumbnail} />
+                <img style={style.image} alt="" src={item.thumbnail} />
                 <Typography variant="caption" style={style.duration}>
                   {item.duration}
                 </Typography>
@@ -60,7 +65,7 @@ export default function Media(props: MediaProps) {
                   {item.channelTitle}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {`${item.views} • ${item.publishedAt}`}
+                  {`${item.views} • ${TimeAgo.inWords(item.publishedAt)}`}
                 </Typography>
               </Box>
             </Link>

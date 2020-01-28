@@ -9,7 +9,7 @@ This module provide functions for making api certain YouTube Data API V3
 requests. All functions return promise.
 */
 
-import { niceDuration, shortenLargeNumber, TimeAgo } from './utils';
+import { niceDuration, shortenLargeNumber } from './utils';
 import { getFromStorage } from './storage';
 
 let apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
@@ -124,7 +124,7 @@ function getVideoInfo (videoIdList: string[]) {
             url: 'https://www.youtube.com/watch?v=' + item.id,
             duration: niceDuration(item.contentDetails.duration),
             views: shortenLargeNumber(item.statistics.viewCount),
-            publishedAt: TimeAgo.inWords(new Date(item.snippet.publishedAt).getTime()),
+            publishedAt: new Date(item.snippet.publishedAt).getTime(),
             thumbnail: item.snippet.thumbnails.medium.url,
             channelId: item.snippet.channelId,
             channelTitle: item.snippet.channelTitle,
