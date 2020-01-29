@@ -21,7 +21,8 @@ class App extends React.Component<AppProps, AppState> {
       channels: [],
       settings: {
         videosPerChannel: 9,
-        videosAnteriority: 30
+        videosAnteriority: 30,
+        clearCacheOnClose: false
       },
       cache: {}
     };
@@ -34,7 +35,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
       settings: settings ? settings : this.state.settings,
-      cache: cache ? cache : this.state.cache
+      cache: !settings?.clearCacheOnClose && cache ? cache : this.state.cache
     });
   }
 

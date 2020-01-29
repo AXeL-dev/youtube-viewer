@@ -14,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
 import Slide from '@material-ui/core/Slide';
+import Switch from '@material-ui/core/Switch';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
 
@@ -124,6 +125,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
               inputProps={{ minLength: 39 }}
               defaultValue={settings?.apiKey}
               onChange={(event) => validateSettings(event)}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" />
+          <ListItemSecondaryAction>
+            <Switch
+              id="clearCacheOnClose"
+              defaultChecked={settings?.clearCacheOnClose}
+              color="secondary"
             />
           </ListItemSecondaryAction>
         </ListItem>

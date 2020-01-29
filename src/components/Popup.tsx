@@ -302,7 +302,8 @@ export default function Popup(props: PopupProps) {
     setSettings({
       videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
       videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
-      apiKey: (document.getElementById('apiKey') as any).value
+      apiKey: (document.getElementById('apiKey') as any).value,
+      clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
     });
     closeSettings();
     setSettingsSnackbarMessage('Settings saved!');
