@@ -23,6 +23,7 @@ class App extends React.Component<AppProps, AppState> {
         videosPerChannel: 9,
         videosAnteriority: 30,
         autoPlayVideos: false,
+        openVideosInInactiveTabs: false,
         clearCacheOnClose: false
       },
       cache: {}

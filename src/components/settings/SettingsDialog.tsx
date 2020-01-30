@@ -141,6 +141,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Open videos in inactive tabs" secondary="Will open videos in new tabs without losing focus of the current tab" />
+          <ListItemSecondaryAction>
+            <Switch
+              id="openVideosInInactiveTabs"
+              defaultChecked={settings?.openVideosInInactiveTabs}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" />
           <ListItemSecondaryAction>
             <Switch

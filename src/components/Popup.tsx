@@ -305,6 +305,7 @@ export default function Popup(props: PopupProps) {
       videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
       apiKey: (document.getElementById('apiKey') as any).value,
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
+      openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
       clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
     });
     closeSettings();
@@ -320,7 +321,7 @@ export default function Popup(props: PopupProps) {
     const videoUrl = event.currentTarget.href;
     if (isWebExtension() && videoUrl) {
       event.preventDefault();
-      createTab(videoUrl, true).then((tab: any) => {
+      createTab(videoUrl, !settings.openVideosInInactiveTabs).then((tab: any) => {
         if (settings.autoPlayVideos) {
           executeScript(tab.id, `document.querySelector('#player video').play();`);
         }

@@ -4,5 +4,6 @@ export interface Settings {
   videosAnteriority: number,
   apiKey?: string,
   autoPlayVideos: boolean,
+  openVideosInInactiveTabs: boolean,
   clearCacheOnClose: boolean,
 }
