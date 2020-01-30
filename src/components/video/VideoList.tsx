@@ -8,10 +8,11 @@ interface VideoListProps {
   videos: Video[];
   maxPerLine?: number;
   maxPerChannel?: number;
+  onVideoClick: Function;
 }
 
 export default function VideoList(props: VideoListProps) {
-  const { videos, loading = false, maxPerLine = 3, maxPerChannel = 6 } = props;
+  const { videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onVideoClick } = props;
 
   const numberOfLines = (): number => (maxPerChannel - restOfLines()) / maxPerLine; // ToDo: review this code for extra-cases
 
@@ -22,14 +23,14 @@ export default function VideoList(props: VideoListProps) {
       {loading ? (
         <React.Fragment>
           {Array.from(new Array(numberOfLines())).map((_, index) => (
-            <Media key={index} loading maxPerLine={maxPerLine} />
+            <Media key={index} loading maxPerLine={maxPerLine} onClick={onVideoClick} />
           ))}
-          {restOfLines() > 0 && <Media loading maxPerLine={restOfLines()} />}
+          {restOfLines() > 0 && <Media loading maxPerLine={restOfLines()} onClick={onVideoClick} />}
         </React.Fragment>
       ) : (
         walk(videos, maxPerLine, (data: Video[], index: number) => {
           //console.log('data', data);
-          return (<Media key={index} data={data} maxPerLine={maxPerLine} />);
+          return (<Media key={index} data={data} maxPerLine={maxPerLine} onClick={onVideoClick} />);
         })
       )}
     </Box>

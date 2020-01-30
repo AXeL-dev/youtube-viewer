@@ -44,12 +44,13 @@ interface VideoGridProps {
   maxPerLine?: number;
   maxPerChannel?: number;
   onSelect: Function;
+  onVideoClick: Function;
 }
 
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect } = props;
+  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick } = props;
   const [expandedIndexes, setExpandedIndexes] = React.useState<number[]>([]);
 
   return (
@@ -71,11 +72,11 @@ export default function VideoGrid(props: VideoGridProps) {
                 </Tooltip>
               </Link>
             </Breadcrumbs>
-            <VideoList videos={channelVideos.slice(0, 3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={3} />
+            <VideoList videos={channelVideos.slice(0, 3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={3} onVideoClick={onVideoClick} />
             {channelVideos.length > 3 && 
               <React.Fragment>
                 {expandedIndexes.indexOf(index) > -1 ? (
-                  <VideoList videos={channelVideos.slice(3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={maxPerChannel} />
+                  <VideoList videos={channelVideos.slice(3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={maxPerChannel} onVideoClick={onVideoClick} />
                 ) : (
                   <Tooltip title="Show more" aria-label="show-more">
                     <IconButton edge="end" aria-label="show-more" size="small" style={{ marginBottom: theme.spacing(2.5) }} onClick={() => setExpandedIndexes([...expandedIndexes, index])}>

@@ -22,6 +22,7 @@ class App extends React.Component<AppProps, AppState> {
       settings: {
         videosPerChannel: 9,
         videosAnteriority: 30,
+        autoPlayVideos: false,
         clearCacheOnClose: false
       },
       cache: {}

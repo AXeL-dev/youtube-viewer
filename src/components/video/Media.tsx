@@ -11,10 +11,11 @@ interface MediaProps {
   loading?: boolean;
   data?: Video[];
   maxPerLine: number;
+  onClick: Function;
 }
 
 export default function Media(props: MediaProps) {
-  const { loading = false, data = [], maxPerLine } = props;
+  const { loading = false, data = [], maxPerLine, onClick } = props;
   const style = {
     anchor: {
       textDecoration: 'none',
@@ -41,16 +42,12 @@ export default function Media(props: MediaProps) {
     } as React.CSSProperties
   };
 
-  const openVideo = (event: any) => {
-    event.stopPropagation();
-  };
-
   return (
     <Grid container wrap="nowrap">
       {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
           {item ? (
-            <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => openVideo(event)}>
+            <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => onClick(event)}>
               <Box style={style.imageContainer}>
                 <img style={style.image} alt="" src={item.thumbnail} />
                 <Typography variant="caption" style={style.duration}>

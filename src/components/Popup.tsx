@@ -31,6 +31,7 @@ import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
 import { SettingsDialog } from './settings/SettingsDialog';
 import { SettingsSnackbar } from './settings/SettingsSnackbar';
+import { isWebExtension, createTab, executeScript } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 
 const drawerWidth = 240;
@@ -303,6 +304,7 @@ export default function Popup(props: PopupProps) {
       videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
       videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
       apiKey: (document.getElementById('apiKey') as any).value,
+      autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
     });
     closeSettings();
@@ -311,6 +313,19 @@ export default function Popup(props: PopupProps) {
 
   const closeSettingsSnackbar = () => {
     setSettingsSnackbarMessage('');
+  };
+
+  const openVideo = (event: any) => {
+    event.stopPropagation();
+    const videoUrl = event.currentTarget.href;
+    if (isWebExtension() && videoUrl) {
+      event.preventDefault();
+      createTab(videoUrl, true).then((tab: any) => {
+        if (settings.autoPlayVideos) {
+          executeScript(tab.id, `document.querySelector('#player video').play();`);
+        }
+      });
+    }
   };
 
   return (
@@ -389,9 +404,9 @@ export default function Popup(props: PopupProps) {
       >
         <div className={classes.drawerHeader} />
         {channels?.length ? selectedChannelIndex === -1 ? (
-          <VideoGrid channels={channels} videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onSelect={selectChannel} />
+          <VideoGrid channels={channels} videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onSelect={selectChannel} onVideoClick={openVideo} />
         ) : (
-          <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} />
+          <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
         ) : (
           <Fade in={true} timeout={3000}>
             <Box className={classes.container}>

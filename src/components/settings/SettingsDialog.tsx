@@ -130,6 +130,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Auto play videos" secondary="Auto-play permissions should be granted for youtube.com" />
+          <ListItemSecondaryAction>
+            <Switch
+              id="autoPlayVideos"
+              defaultChecked={settings?.autoPlayVideos}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" />
           <ListItemSecondaryAction>
             <Switch
