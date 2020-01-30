@@ -14,7 +14,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 ## Features
 
 - Handle multi channels all in one place
-- (Soon) Auto play videos on click
+- Auto play videos on click
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
 
 ## Installation
@@ -27,7 +27,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 - [ ] Translations
 - [ ] Notifications for new posted videos (with auto-check every x minutes)
 - [x] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
-- [ ] Option to auto-play videos once opened
+- [x] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
 
 ## Technical
