@@ -20,7 +20,7 @@ A web extension to keep tracking your fav. youtube channels with less hassle..
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/youtube-viewer/releases/download/v0.1.0/youtube_viewer-0.1.0.crx)
+[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/youtube-viewer/releases)
 
 ## Todo
 
