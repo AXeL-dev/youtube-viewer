@@ -5,11 +5,13 @@
 [![Mozilla Add-on users](https://img.shields.io/amo/users/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/statistics/)
 [![Mozilla Add-on stars](https://img.shields.io/amo/stars/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/reviews/)
 
-A web extension to keep tracking your fav. youtube channels with less hassle..
+A web extension to keep tracking your favorite youtube channels with less hassle.
 
 ![screenshot](screenshots/popup.png)
 
-> This is a fun made project with one simple goal: Discover & practice [React](https://reactjs.org/). Any help or feedback is welcome :pray:.
+## Motivations
+
+This is a fun made project with one simple goal: Discover & practice [React](https://reactjs.org/). Any help or feedback is welcome :pray:.
 
 ## Features
 
