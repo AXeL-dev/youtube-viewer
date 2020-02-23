@@ -15,6 +15,7 @@ import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import DeleteIcon from '@material-ui/icons/Delete';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
@@ -27,6 +28,7 @@ import { Channel } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
 import { download } from '../../helpers/download';
+import { isWebExtension, createTab } from '../../helpers/browser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -137,6 +139,14 @@ export function ChannelList(props: ChannelListProps) {
 
   const closeDeleteChannelDialog = () => {
     setOpenDeleteChannelDialog(false);
+  };
+
+  const openChannel = (channel: Channel) => {
+    if (isWebExtension()) {
+      createTab(channel.url);
+    } else {
+      window.open(channel.url, '_blank');
+    }
   };
 
   const openMenu = (event: any, index: number|string) => {
@@ -269,6 +279,7 @@ export function ChannelList(props: ChannelListProps) {
                         open={openedMenuIndex === index}
                         onClose={closeMenu}
                       >
+                        <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
                         {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
                         {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
                         <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>

@@ -10,10 +10,10 @@ export function isWebExtension(): boolean {
   }
 }
 
-export function createTab(url: string, active: boolean = true): Promise<any> {
+export function createTab(url: string, isActive: boolean = true): Promise<any> {
   return browser.tabs.create({
     url: url,
-    active: active
+    active: isActive
   });
 }
 
