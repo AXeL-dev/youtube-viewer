@@ -256,7 +256,7 @@ export default function Popup(props: PopupProps) {
     setVideos([]);
     let promises: Promise<any>[] = [];
     let videos: Video[]= [];
-    let channelsList = customChannels || channels;
+    const channelsList = customChannels || channels;
 
     channelsList.forEach((channel: Channel) => {
 
