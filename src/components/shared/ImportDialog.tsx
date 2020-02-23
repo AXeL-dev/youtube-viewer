@@ -63,7 +63,7 @@ export function ImportDialog(props: ImportDialogDialogProps) {
           label={textFieldLabel}
           error={textFieldError}
           multiline
-          rows="12"
+          rows="10"
           variant="outlined"
           fullWidth
         />
