@@ -142,6 +142,7 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const openChannel = (channel: Channel) => {
+    closeMenu();
     if (isWebExtension()) {
       createTab(channel.url);
     } else {
