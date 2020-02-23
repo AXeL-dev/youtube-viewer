@@ -183,9 +183,10 @@ export default function Popup(props: PopupProps) {
           debug('activities', results);
           if (results?.items) {
             const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId)
-                                          .slice(0, settings.videosPerChannel)
-                                          .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
+            let videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
+            videoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
+                               .slice(0, settings.videosPerChannel)
+                               .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
             debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
             getVideoInfo(videoIds).then((videos: Video[]) => {
               //console.log(videos);
