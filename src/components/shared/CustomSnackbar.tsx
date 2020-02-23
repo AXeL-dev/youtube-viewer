@@ -4,14 +4,14 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
-interface SettingsSnackbarProps {
+interface CustomSnackbarProps {
   open: boolean;
   message: string;
   onClose: Function;
   onRefresh: Function;
 }
 
-export function SettingsSnackbar(props: SettingsSnackbarProps) {
+export function CustomSnackbar(props: CustomSnackbarProps) {
   const { open, message, onClose, onRefresh } = props;
 
   return (

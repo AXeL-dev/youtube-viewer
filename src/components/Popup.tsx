@@ -30,7 +30,7 @@ import { saveToStorage } from '../helpers/storage';
 import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
 import { SettingsDialog } from './settings/SettingsDialog';
-import { SettingsSnackbar } from './settings/SettingsSnackbar';
+import { CustomSnackbar } from './shared/CustomSnackbar';
 import { isWebExtension, createTab, executeScript } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 
@@ -141,7 +141,7 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [settingsSnackbarMessage, setSettingsSnackbarMessage] = React.useState('');
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
 
@@ -285,13 +285,13 @@ export default function Popup(props: PopupProps) {
     // Update channels
     setChannels(channelsList);
     showAllChannels(true, channelsList);
-    setSettingsSnackbarMessage('Channels imported!');
+    setSnackbarMessage('Channels imported!');
   };
 
   const clearCache = () => {
     setCache({});
     saveToStorage({ cache: {} });
-    setSettingsSnackbarMessage('Cache cleared!');
+    setSnackbarMessage('Cache cleared!');
   };
 
   const getCacheSize = () => {
@@ -320,11 +320,11 @@ export default function Popup(props: PopupProps) {
       clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
     });
     closeSettings();
-    setSettingsSnackbarMessage('Settings saved!');
+    setSnackbarMessage('Settings saved!');
   };
 
   const closeSettingsSnackbar = () => {
-    setSettingsSnackbarMessage('');
+    setSnackbarMessage('');
   };
 
   const openVideo = (event: any) => {
@@ -431,7 +431,7 @@ export default function Popup(props: PopupProps) {
         )}
       </main>
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <SettingsSnackbar open={!!settingsSnackbarMessage.length} message={settingsSnackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
+      <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
       <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
     </div>
   )
