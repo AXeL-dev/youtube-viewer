@@ -180,6 +180,17 @@ export function ChannelList(props: ChannelListProps) {
     closeImportChannelsDialog();
   };
 
+  const validateChannels = (channelsList: Channel[]): boolean => {
+    let isValid = true;
+    channelsList.forEach((channel: Channel) => {
+      if (!channel.id || !channel.title || !channel.thumbnail || !channel.description || !channel.url) {
+        //return false; // not working in foreach loop @see https://medium.com/front-end-weekly/3-things-you-didnt-know-about-the-foreach-loop-in-js-ff02cec465b1
+        isValid = false;
+      }
+    });
+    return isValid;
+  };
+
   const clearCache = () => {
     closeMenu();
     setOpenClearCacheDialog(true);
@@ -297,6 +308,7 @@ export function ChannelList(props: ChannelListProps) {
         textFieldLabel="Channels (json)"
         onClose={closeImportChannelsDialog}
         onConfirm={confirmImportChannels}
+        onValidate={validateChannels}
       />
     </React.Fragment>
   )

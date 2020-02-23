@@ -18,18 +18,22 @@ interface ImportDialogDialogProps {
   cancelButtonText?: string;
   onClose: Function;
   onConfirm: Function;
+  onValidate: Function;
 }
 
 export function ImportDialog(props: ImportDialogDialogProps) {
-  const { open, title, description, textFieldId, textFieldLabel, confirmButtonText = 'Import', cancelButtonText = 'Cancel', onClose, onConfirm } = props;
+  const { open, title, description, textFieldId, textFieldLabel, confirmButtonText = 'Import', cancelButtonText = 'Cancel', onClose, onConfirm, onValidate } = props;
   const [textFieldError, setTextFieldError] = React.useState(false);
 
   const confirm = () => {
     try {
       const json = (document.getElementById(textFieldId) as any).value;
       const data = JSON.parse(json);
-      setTextFieldError(false);
-      onConfirm(data);
+      const isValid = onValidate(data);
+      setTextFieldError(!isValid); // == false when isValid is true & vise versa
+      if (isValid) {
+        onConfirm(data);
+      }
     } catch(error) {
       setTextFieldError(true);
     }
