@@ -18,7 +18,7 @@ interface ConfirmationDialogProps {
 }
 
 export function ConfirmationDialog(props: ConfirmationDialogProps) {
-  const { open, title, description, confirmButtonText = 'Confirm', cancelButtonText = 'Cancel',  onClose, onConfirm } = props;
+  const { open, title, description, confirmButtonText = 'Confirm', cancelButtonText = 'Cancel', onClose, onConfirm } = props;
 
   return (
     <Dialog

@@ -247,7 +247,7 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const showAllChannels = (ignoreCache: boolean = false) => {
+  const showAllChannels = (ignoreCache: boolean = false, customChannels?: Channel[]) => {
     // Select "All"
     setSelectedChannelIndex(-1);
     // Get all channels videos
@@ -255,8 +255,9 @@ export default function Popup(props: PopupProps) {
     setVideos([]);
     let promises: Promise<any>[] = [];
     let videos: Video[]= [];
+    let channelsList = customChannels || channels;
 
-    channels.forEach((channel: Channel) => {
+    channelsList.forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
         debug(channel.title, newVideos);
@@ -272,9 +273,19 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const refreshChannels = (event: any) => {
-    event.stopPropagation();
+  const refreshChannels = (event?: any) => {
+    if (event) {
+      event.stopPropagation();
+    }
     showAllChannels(true);
+  };
+
+  const importChannels = (channelsList: Channel[]) => {
+    debug('importing channels', channelsList);
+    // Update channels
+    setChannels(channelsList);
+    showAllChannels(true, channelsList);
+    setSettingsSnackbarMessage('Channels imported!');
   };
 
   const clearCache = () => {
@@ -385,6 +396,7 @@ export default function Popup(props: PopupProps) {
           onSelectedIndexChange={setSelectedChannelIndex}
           cacheSize={getCacheSize()}
           onClearCache={clearCache}
+          onImport={importChannels}
         />
         <div className={classes.grow} />
         <Divider />

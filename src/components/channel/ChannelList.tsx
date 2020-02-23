@@ -11,7 +11,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import ClearAllRoundedIcon from '@material-ui/icons/ClearAllRounded';
+import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -23,10 +25,12 @@ import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
+import { ImportDialog } from '../shared/ImportDialog';
+import { download } from '../../helpers/download';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    clearCacheIcon: {
+    channelsOptionsIcon: {
       top: '50%',
       right: '16px',
       position: 'absolute',
@@ -76,18 +80,19 @@ interface ChannelListProps {
   onSelectedIndexChange: Function;
   cacheSize: string;
   onClearCache: Function;
+  onImport: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, onClearCache } = props;
+  const { channels, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, onClearCache, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
-  
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openedMenuIndex, setOpenedMenuIndex] = React.useState(-1);
+  const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
+  const [openImportChannelsDialog, setOpenImportChannelsDialog] = React.useState(false);
 
   const onDragEnd = (result: any) => {
     // dropped outside the list
@@ -134,7 +139,7 @@ export function ChannelList(props: ChannelListProps) {
     setOpenDeleteChannelDialog(false);
   };
 
-  const openMenu = (event: any, index: number) => {
+  const openMenu = (event: any, index: number|string) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setOpenedMenuIndex(index);
@@ -154,6 +159,32 @@ export function ChannelList(props: ChannelListProps) {
     setOpenClearCacheDialog(false);
   };
 
+  const exportChannels = () => {
+    closeMenu();
+    const data = JSON.stringify(channels, null, 4);
+    const file = new Blob([data], {type: 'text/json'});
+    download(file, 'channels.json');
+  };
+
+  const importChannels = () => {
+    closeMenu();
+    setOpenImportChannelsDialog(true);
+  };
+
+  const closeImportChannelsDialog = () => {
+    setOpenImportChannelsDialog(false);
+  };
+
+  const confirmImportChannels = (channelsList: Channel[]) => {
+    onImport(channelsList);
+    closeImportChannelsDialog();
+  };
+
+  const clearCache = () => {
+    closeMenu();
+    setOpenClearCacheDialog(true);
+  };
+
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -163,11 +194,22 @@ export function ChannelList(props: ChannelListProps) {
             <List
               dense
               subheader={<ListSubheader className={classes.subheader}>Channels
-                <Tooltip title={"Clear cache (" + cacheSize + ")"} aria-label="clear-cache">
-                  <IconButton edge="end" aria-label="clear-cache" size="small" className={classes.clearCacheIcon} onClick={() => setOpenClearCacheDialog(true)}>
-                    <ClearAllRoundedIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
+                <IconButton edge="end" aria-label="channels-options" size="small" className={classes.channelsOptionsIcon} onClick={(event) => openMenu(event, 'channels-options')}>
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+                <Menu
+                  id="menu-channels-options"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={openedMenuIndex === 'channels-options'}
+                  onClose={closeMenu}
+                >
+                  <MenuItem onClick={() => exportChannels()}><GetAppIcon className={classes.menuIcon} /> Export</MenuItem>
+                  <MenuItem onClick={() => importChannels()}><ImportExportIcon className={classes.menuIcon} />Import</MenuItem>
+                  <Tooltip title={"Cache size: " + cacheSize} aria-label="clear-cache">
+                    <MenuItem onClick={() => clearCache()}><DeleteSweepIcon className={classes.menuIcon} />Clear cache</MenuItem>
+                  </Tooltip>
+                </Menu>
               </ListSubheader>}
               style={getListStyle(snapshot.isDraggingOver)}
             >
@@ -246,6 +288,15 @@ export function ChannelList(props: ChannelListProps) {
         confirmButtonText="Delete"
         onClose={closeDeleteChannelDialog}
         onConfirm={confirmDeleteChannel}
+      />
+      <ImportDialog
+        open={openImportChannelsDialog}
+        title="Import Channels"
+        description="Copy & paste below the content of <strong>channels.json</strong> file. Notice that your current channels list will be overrided!"
+        textFieldId="channels-to-import"
+        textFieldLabel="Channels (json)"
+        onClose={closeImportChannelsDialog}
+        onConfirm={confirmImportChannels}
       />
     </React.Fragment>
   )
