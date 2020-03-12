@@ -9,7 +9,7 @@ A web extension to keep tracking your favorite youtube channels with less hassle
 
 ![screenshot](screenshots/popup.png)
 
-## Motivations
+## Motivation
 
 This is a fun made project with one simple goal: Discover & practice [React](https://reactjs.org/). Any help or feedback is welcome :pray:.
 
@@ -17,6 +17,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 
 - Handle multi channels all in one place
 - Auto play videos on click
+- Export/import channels list
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
 
 ## Installation
