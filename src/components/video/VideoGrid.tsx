@@ -55,7 +55,7 @@ export default function VideoGrid(props: VideoGridProps) {
 
   return (
     <Box overflow="hidden">
-      {channels.map((channel: Channel, index: number) => {
+      {channels.filter((channel: Channel) => !channel.isHidden).map((channel: Channel, index: number) => {
         const channelVideos: Video[] = videos.filter((video: Video) => video.channelId === channel.id);
         return (
           <Box key={index}>

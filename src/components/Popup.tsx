@@ -258,7 +258,7 @@ export default function Popup(props: PopupProps) {
     let videos: Video[]= [];
     const channelsList = customChannels || channels;
 
-    channelsList.forEach((channel: Channel) => {
+    channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
         debug(channel.title, newVideos);

@@ -29,6 +29,8 @@ import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
 import { download } from '../../helpers/download';
 import { isWebExtension, createTab } from '../../helpers/browser';
+import BlurOffIcon from '@material-ui/icons/BlurOff';
+import BlurOnIcon from '@material-ui/icons/BlurOn';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,12 +55,14 @@ const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',
 });
 
-const getListItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+const getListItemStyle = (isDragging: boolean, isHidden: boolean, draggableStyle: any) => ({
   // styles we need to apply on draggables
   ...draggableStyle,
-
   ...(isDragging && {
     background: "rgb(235,235,235)"
+  }),
+  ...(isHidden && {
+    opacity: 0.5
   })
 });
 
@@ -148,6 +152,25 @@ export function ChannelList(props: ChannelListProps) {
     } else {
       window.open(channel.url, '_blank');
     }
+  };
+
+  const setChannel = (channel: Channel, index: number) => {
+    closeMenu();
+    channels[index] = channel;
+    onSave([...channels]);
+    if (selectedIndex === -1) {
+      onRefresh();
+    }
+  };
+
+  const hideChannel = (channel: Channel, index: number) => {
+    channel.isHidden = true;
+    setChannel(channel, index);
+  };
+
+  const unhideChannel = (channel: Channel, index: number) => {
+    channel.isHidden = false;
+    setChannel(channel, index);
   };
 
   const openMenu = (event: any, index: number|string) => {
@@ -261,6 +284,7 @@ export function ChannelList(props: ChannelListProps) {
                     {...provided.dragHandleProps}
                     style={getListItemStyle(
                       snapshot.isDragging,
+                      channel.isHidden,
                       provided.draggableProps.style
                     )}
                     button
@@ -283,6 +307,10 @@ export function ChannelList(props: ChannelListProps) {
                         <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
                         {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
                         {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
+                        {channel.isHidden ? 
+                          <MenuItem onClick={() => unhideChannel(channel, index)}><BlurOnIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
+                          <MenuItem onClick={() => hideChannel(channel, index)}><BlurOffIcon className={classes.menuIcon} /> Hide</MenuItem>
+                        }
                         <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>

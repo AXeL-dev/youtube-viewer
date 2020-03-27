@@ -5,4 +5,5 @@ export interface Channel {
   title: string,
   url: string,
   description: string,
+  isHidden: boolean
 }
