@@ -15,7 +15,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 
 ## Features
 
-- Handle multi channels all in one place
+- Track multi channels all in one place
 - Auto play videos on click
 - Export/import channels list
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
