@@ -62,7 +62,8 @@ const getListItemStyle = (isDragging: boolean, isHidden: boolean, draggableStyle
     background: "rgb(235,235,235)"
   }),
   ...(isHidden && {
-    opacity: 0.5
+    opacity: 0.5,
+    textDecoration: "line-through"
   })
 });
 
