@@ -153,8 +153,10 @@ export default function Popup(props: PopupProps) {
     if (props.channels === channels && !videos.length) {
       showAllChannels(true);
     }
-    saveToStorage({
+    saveToStorage(channels?.length ? {
       channels: channels,
+      settings: settings
+    } : {
       settings: settings
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
