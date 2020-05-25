@@ -29,8 +29,8 @@ import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
 import { download } from '../../helpers/download';
 import { isWebExtension, createTab } from '../../helpers/browser';
-import BlurOffIcon from '@material-ui/icons/BlurOff';
-import BlurOnIcon from '@material-ui/icons/BlurOn';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -309,8 +309,8 @@ export function ChannelList(props: ChannelListProps) {
                         {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
                         {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
                         {channel.isHidden ? 
-                          <MenuItem onClick={() => unhideChannel(channel, index)}><BlurOnIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
-                          <MenuItem onClick={() => hideChannel(channel, index)}><BlurOffIcon className={classes.menuIcon} /> Hide</MenuItem>
+                          <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
+                          <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         }
                         <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
