@@ -229,13 +229,13 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const selectChannel = (channel: Channel, index: number) => {
+  const selectChannel = (channel: Channel, index: number, ignoreCache: boolean = false) => {
     // Select channel
     //debug('selected channel:', channel);
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);
-    getChannelVideos(channel).then((videos: Video[]) => {
+    getChannelVideos(channel, ignoreCache).then((videos: Video[]) => {
       setVideos(videos || []);
       setIsLoading(false);
       window.scrollTo(0, 0); // scroll to top

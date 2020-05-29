@@ -155,6 +155,11 @@ export function ChannelList(props: ChannelListProps) {
     }
   };
 
+  const refreshChannel = (channel: Channel, index: number) => {
+    closeMenu();
+    onSelect(channel, index, true);
+  };
+
   const setChannel = (channel: Channel, index: number) => {
     closeMenu();
     channels[index] = channel;
@@ -306,6 +311,7 @@ export function ChannelList(props: ChannelListProps) {
                         onClose={closeMenu}
                       >
                         <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
+                        <MenuItem onClick={() => refreshChannel(channel, index)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
                         {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
                         {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
                         {channel.isHidden ? 
