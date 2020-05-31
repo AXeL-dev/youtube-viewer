@@ -29,10 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    selectContainer: {
-      width: '223px',
-      //height: '40px',
-    },
     select: {
       padding: '10px 26px 10px 12px',
       '&:-moz-focusring': { // removes the ugly dotted outline around the selected option in Firefox
@@ -126,7 +122,6 @@ export function SettingsDialog(props: SettingsDialogProps) {
               inputProps={{ id: 'sortVideosBy', className: classes.select }}
               variant="outlined"
               color="secondary"
-              className={classes.selectContainer}
               defaultValue={settings?.sortVideosBy}
             >
               <option value="date">Date</option>
