@@ -29,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
+    container: {
+      width: '223px',
+      height: '40px',
+    },
     select: {
       padding: '10px 26px 10px 12px',
       '&:-moz-focusring': { // removes the ugly dotted outline around the selected option in Firefox
@@ -92,6 +96,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ min: 1, max: 50, step: 3 }}
+              className={classes.container}
               defaultValue={settings?.videosPerChannel}
               onChange={(event) => validateSettings(event)}
             />
@@ -108,6 +113,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ min: 1, max: 365, step: 7 }}
+              className={classes.container}
               defaultValue={settings?.videosAnteriority}
               onChange={(event) => validateSettings(event)}
             />
@@ -122,6 +128,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               inputProps={{ id: 'sortVideosBy', className: classes.select }}
               variant="outlined"
               color="secondary"
+              className={classes.container}
               defaultValue={settings?.sortVideosBy}
             >
               <option value="date">Date</option>
@@ -147,6 +154,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               variant="outlined"
               color="secondary"
               inputProps={{ minLength: 39 }}
+              className={classes.container}
               defaultValue={settings?.apiKey}
               onChange={(event) => validateSettings(event)}
             />
