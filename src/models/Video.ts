@@ -6,7 +6,10 @@ export interface Video {
   duration: string,
   publishedAt: number,
   thumbnail: string,
-  views: string,
+  views: {
+    count: number,
+    asString: string,
+  },
   channelId: string,
   channelTitle: string,
 }

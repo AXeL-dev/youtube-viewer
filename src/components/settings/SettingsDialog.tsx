@@ -15,6 +15,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Divider from '@material-ui/core/Divider';
 import Slide from '@material-ui/core/Slide';
 import Switch from '@material-ui/core/Switch';
+import Select from '@material-ui/core/Select';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
 
@@ -27,6 +28,17 @@ const useStyles = makeStyles((theme: Theme) =>
     settingsTitle: {
       marginLeft: theme.spacing(2),
       flex: 1,
+    },
+    selectContainer: {
+      width: '223px',
+      //height: '40px',
+    },
+    select: {
+      padding: '10px 26px 10px 12px',
+      '&:-moz-focusring': { // removes the ugly dotted outline around the selected option in Firefox
+        color: 'transparent',
+        textShadow: '0 0 0 #000',
+      },
     },
   }),
 );
@@ -103,6 +115,23 @@ export function SettingsDialog(props: SettingsDialogProps) {
               defaultValue={settings?.videosAnteriority}
               onChange={(event) => validateSettings(event)}
             />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Sort videos by" secondary="Define videos order" />
+          <ListItemSecondaryAction>
+            <Select
+              native
+              inputProps={{ id: 'sortVideosBy', className: classes.select }}
+              variant="outlined"
+              color="secondary"
+              className={classes.selectContainer}
+              defaultValue={settings?.sortVideosBy}
+            >
+              <option value="date">Date</option>
+              <option value="views">Views</option>
+            </Select>
           </ListItemSecondaryAction>
         </ListItem>
         <Divider />

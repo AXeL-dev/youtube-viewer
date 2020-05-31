@@ -62,7 +62,7 @@ export default function Media(props: MediaProps) {
                   {item.channelTitle}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
-                  {`${item.views} • ${TimeAgo.inWords(item.publishedAt)}`}
+                  {`${item.views.asString || item.views} • ${TimeAgo.inWords(item.publishedAt)}`}
                 </Typography>
               </Box>
             </Link>

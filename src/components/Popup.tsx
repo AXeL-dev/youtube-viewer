@@ -190,12 +190,19 @@ export default function Popup(props: PopupProps) {
                                .slice(0, settings.videosPerChannel)
                                .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
             debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
-            getVideoInfo(videoIds).then((videos: Video[]) => {
-              //console.log(videos);
-              cache[channel.id] = cache[channel.id]?.length ? [...videos, ...cache[channel.id]].sort((a: Video, b: Video) => b.publishedAt - a.publishedAt) : videos;
+            getVideoInfo(videoIds).then((videosData: Video[]) => {
+              //console.log(videosData);
+              cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
+              const videos = cache[channel.id].sort((a: Video, b: Video) => {
+                if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
+                  return b.views.count - a.views.count;
+                } else {
+                  return b.publishedAt - a.publishedAt;
+                }
+              }).slice(0, settings.videosPerChannel);
               setCache(cache);
               saveToStorage({ cache: cache });
-              resolve(cache[channel.id].slice(0, settings.videosPerChannel) || []);
+              resolve(videos || []);
             }).catch((error: Error) => {
               displayError(error);
               resolve([]);
@@ -317,6 +324,7 @@ export default function Popup(props: PopupProps) {
     setSettings({
       videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
       videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
+      sortVideosBy: (document.getElementById('sortVideosBy') as any).value,
       apiKey: (document.getElementById('apiKey') as any).value,
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,

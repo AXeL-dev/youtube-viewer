@@ -123,7 +123,10 @@ function getVideoInfo (videoIdList: string[]) {
             title: item.snippet.title,
             url: 'https://www.youtube.com/watch?v=' + item.id,
             duration: niceDuration(item.contentDetails.duration),
-            views: shortenLargeNumber(item.statistics.viewCount),
+            views: {
+                count: item.statistics.viewCount,
+                asString: shortenLargeNumber(item.statistics.viewCount),
+            },
             publishedAt: new Date(item.snippet.publishedAt).getTime(),
             thumbnail: item.snippet.thumbnails.medium.url,
             channelId: item.snippet.channelId,

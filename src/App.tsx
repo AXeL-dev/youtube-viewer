@@ -22,6 +22,7 @@ class App extends React.Component<AppProps, AppState> {
       settings: {
         videosPerChannel: 9,
         videosAnteriority: 30,
+        sortVideosBy: 'date',
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         clearCacheOnClose: false
@@ -36,7 +37,7 @@ class App extends React.Component<AppProps, AppState> {
     //console.log({channels: channels, settings: settings, cache: cache});
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
-      settings: settings ? settings : this.state.settings,
+      settings: settings ? {...this.state.settings, ...settings} : this.state.settings,
       cache: !settings?.clearCacheOnClose && cache ? cache : this.state.cache
     });
   }
