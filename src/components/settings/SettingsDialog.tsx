@@ -115,7 +115,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Sort videos by" secondary="Define videos order" />
+          <ListItemText primary="Sort videos by" secondary="Defines videos order" />
           <ListItemSecondaryAction>
             <Select
               native
