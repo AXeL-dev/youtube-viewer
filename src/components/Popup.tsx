@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme: Theme) =>
       verticalAlign: 'middle',
     },
     madeWithLove: {
-      margin: theme.spacing(1, 0),
+      padding: theme.spacing(1, 0),
     },
   }),
 );
