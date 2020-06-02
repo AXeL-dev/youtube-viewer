@@ -13,6 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { Video } from '../../models/Video';
 import { Channel } from '../../models/Channel';
 import VideoList from './VideoList';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles((theme: Theme) => ({
   breadcrumb: {
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     cursor: 'pointer',
     outline: 'none',
+    '&:hover': {
+      backgroundColor: 'transparent'
+    },
   },
   title: {
     marginLeft: theme.spacing(1),
@@ -45,13 +49,26 @@ interface VideoGridProps {
   maxPerChannel?: number;
   onSelect: Function;
   onVideoClick: Function;
+  onSave: Function;
+  onRefresh: Function;
 }
 
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick } = props;
+  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
   const [expandedIndexes, setExpandedIndexes] = React.useState<number[]>([]);
+
+  const hideChannel = (channel: Channel) => {
+    channels.forEach((c: Channel) => {
+      if (c.id === channel.id) {
+        c.isHidden = true;
+        onSave([...channels]);
+        onRefresh();
+        return;
+      }
+    });
+  };
 
   return (
     <Box overflow="hidden">
@@ -71,6 +88,11 @@ export default function VideoGrid(props: VideoGridProps) {
                   <YouTubeIcon />
                 </Tooltip>
               </Link>
+              <IconButton color="inherit" className={classes.link} onClick={() => hideChannel(channel)}>
+                <Tooltip title="Hide channel" aria-label="hide-channel">
+                  <VisibilityOffIcon />
+                </Tooltip>
+              </IconButton>
             </Breadcrumbs>
             <VideoList videos={channelVideos.slice(0, 3)} loading={loading} maxPerLine={maxPerLine} maxPerChannel={3} onVideoClick={onVideoClick} />
             {channelVideos.length > 3 && 

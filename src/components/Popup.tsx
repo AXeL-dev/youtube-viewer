@@ -428,7 +428,16 @@ export default function Popup(props: PopupProps) {
       >
         <div className={classes.drawerHeader} />
         {channels?.length ? selectedChannelIndex === -1 ? (
-          <VideoGrid channels={channels} videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onSelect={selectChannel} onVideoClick={openVideo} />
+          <VideoGrid
+            channels={channels}
+            videos={videos}
+            loading={isLoading}
+            maxPerChannel={settings.videosPerChannel}
+            onSelect={selectChannel}
+            onVideoClick={openVideo}
+            onSave={setChannels}
+            onRefresh={refreshChannels}
+          />
         ) : (
           <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
         ) : (
