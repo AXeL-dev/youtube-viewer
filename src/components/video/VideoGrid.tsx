@@ -88,7 +88,7 @@ export default function VideoGrid(props: VideoGridProps) {
                   <YouTubeIcon />
                 </Tooltip>
               </Link>
-              <IconButton color="inherit" className={classes.link} onClick={() => hideChannel(channel)}>
+              <IconButton size="small" className={classes.link} onClick={() => hideChannel(channel)}>
                 <Tooltip title="Hide channel" aria-label="hide-channel">
                   <VisibilityOffIcon />
                 </Tooltip>
