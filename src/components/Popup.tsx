@@ -33,6 +33,9 @@ import { SettingsDialog } from './settings/SettingsDialog';
 import { CustomSnackbar } from './shared/CustomSnackbar';
 import { isWebExtension, createTab, executeScript } from '../helpers/browser';
 import { debug } from '../helpers/debug';
+// @ts-ignore
+import ReactPullToRefresh from 'react-pull-to-refresh';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
 const drawerWidth = 240;
 
@@ -242,7 +245,7 @@ export default function Popup(props: PopupProps) {
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);
-    getChannelVideos(channel, ignoreCache).then((videos: Video[]) => {
+    return getChannelVideos(channel, ignoreCache).then((videos: Video[]) => {
       setVideos(videos || []);
       setIsLoading(false);
       window.scrollTo(0, 0); // scroll to top
@@ -277,7 +280,7 @@ export default function Popup(props: PopupProps) {
 
     });
 
-    Promise.all(promises).finally(() => {
+    return Promise.all(promises).finally(() => {
       setVideos(videos);
       setIsLoading(false);
     });
@@ -287,7 +290,7 @@ export default function Popup(props: PopupProps) {
     if (event) {
       event.stopPropagation();
     }
-    showAllChannels(true);
+    return showAllChannels(true);
   };
 
   const importChannels = (channelsList: Channel[]) => {
@@ -349,6 +352,20 @@ export default function Popup(props: PopupProps) {
         }
       });
     }
+  };
+
+  const handlePullToRefresh = (resolve: Function, reject: Function) => {
+    let promise: Promise<any>;
+    if (selectedChannelIndex === -1) {
+      promise = refreshChannels();
+    } else {
+      promise = selectChannel(channels[selectedChannelIndex], selectedChannelIndex, true);
+    }
+    promise.then(() => {
+      resolve();
+    }).catch(() => {
+      reject();
+    });
   };
 
   return (
@@ -427,28 +444,37 @@ export default function Popup(props: PopupProps) {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {channels?.length ? selectedChannelIndex === -1 ? (
-          <VideoGrid
-            channels={channels}
-            videos={videos}
-            loading={isLoading}
-            maxPerChannel={settings.videosPerChannel}
-            onSelect={selectChannel}
-            onVideoClick={openVideo}
-            onSave={setChannels}
-            onRefresh={refreshChannels}
-          />
-        ) : (
-          <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
-        ) : (
-          <Fade in={true} timeout={3000}>
-            <Box className={classes.container}>
-              <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
-              </Typography>
-            </Box>
-          </Fade>
-        )}
+        <ReactPullToRefresh
+          onRefresh={handlePullToRefresh}
+          icon={<ArrowDownwardIcon className="arrowicon" />}
+          style={{
+            position: 'relative',
+            height: '100%'
+          }}
+        >
+          {channels?.length ? selectedChannelIndex === -1 ? (
+            <VideoGrid
+              channels={channels}
+              videos={videos}
+              loading={isLoading}
+              maxPerChannel={settings.videosPerChannel}
+              onSelect={selectChannel}
+              onVideoClick={openVideo}
+              onSave={setChannels}
+              onRefresh={refreshChannels}
+            />
+          ) : (
+            <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
+          ) : (
+            <Fade in={true} timeout={3000}>
+              <Box className={classes.container}>
+                <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+                  <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+                </Typography>
+              </Box>
+            </Fade>
+          )}
+        </ReactPullToRefresh>
       </main>
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
       <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
