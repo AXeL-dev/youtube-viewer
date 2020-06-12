@@ -74,6 +74,7 @@ export default function VideoGrid(props: VideoGridProps) {
     <Box overflow="hidden">
       {channels.map((channel: Channel, index: number) => {
         if (channel.isHidden) {
+          // eslint-disable-next-line
           return;
         }
         const channelVideos: Video[] = videos.filter((video: Video) => video.channelId === channel.id);

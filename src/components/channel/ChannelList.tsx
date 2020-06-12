@@ -234,7 +234,7 @@ export function ChannelList(props: ChannelListProps) {
 
   const moveChannelToPosition = (position: number) => {
     const indexTo = position - 1;
-    if (indexTo != moveToPositionChannelIndex) {
+    if (indexTo !== moveToPositionChannelIndex) {
       moveChannel(moveToPositionChannelIndex, indexTo);
     }
     closeMoveChannelToPositionDialog();
