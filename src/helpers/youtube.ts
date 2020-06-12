@@ -14,8 +14,6 @@ import { getFromStorage } from './storage';
 
 let apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
 
-const logError = (e: any) => console.error(e);
-
 /**
  * Send API requests to youtube
  */
@@ -168,7 +166,7 @@ function searchChannel (query: string, max: number = 3) {
             }
         }
         return payLoad;
-    }, logError).then(null, logError);
+    });
 }
 
 export {
