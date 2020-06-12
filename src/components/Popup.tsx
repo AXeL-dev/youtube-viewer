@@ -447,6 +447,7 @@ export default function Popup(props: PopupProps) {
         <ReactPullToRefresh
           onRefresh={handlePullToRefresh}
           icon={<ArrowDownwardIcon className="arrowicon" />}
+          distanceToRefresh={50}
           style={{
             position: 'relative',
             height: '100%'

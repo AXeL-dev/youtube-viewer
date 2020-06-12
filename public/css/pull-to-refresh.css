@@ -12,6 +12,7 @@
 }
 
 .ptr-element .arrowicon {
+	font-size: 1.5rem;
 	opacity: .6;
 	transition: all .25s ease;
 	margin-top: 5px;
