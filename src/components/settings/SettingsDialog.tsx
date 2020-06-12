@@ -16,6 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import Slide from '@material-ui/core/Slide';
 import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
+import Link from '@material-ui/core/Link';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
 
@@ -142,6 +143,8 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <React.Fragment>
               <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
               <br/>
+              <Link href="https://www.slickremix.com/docs/get-api-key-for-youtube/" target="_blank" rel="noopener">How to get an API key?</Link>
+              &nbsp;
               <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
             </React.Fragment>
           } />
