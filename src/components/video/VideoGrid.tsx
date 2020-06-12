@@ -12,6 +12,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Video } from '../../models/Video';
 import { Channel } from '../../models/Channel';
+import { Settings } from '../../models/Settings';
 import VideoList from './VideoList';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
@@ -45,6 +46,7 @@ interface VideoGridProps {
   loading?: boolean;
   channels: Channel[];
   videos: Video[];
+  settings: Settings;
   maxPerLine?: number;
   maxPerChannel?: number;
   onSelect: Function;
@@ -56,7 +58,7 @@ interface VideoGridProps {
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
+  const { channels, videos, settings, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
   const [expandedIndexes, setExpandedIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
@@ -70,6 +72,13 @@ export default function VideoGrid(props: VideoGridProps) {
     });
   };
 
+  const onChannelNameClick = (event: any, channel: Channel, index: number) => {
+    if (!settings?.openChannelsOnNameClick) {
+      event.preventDefault();
+      onSelect(channel, index);
+    }
+  };
+
   return (
     <Box overflow="hidden">
       {channels.map((channel: Channel, index: number) => {
@@ -81,17 +90,19 @@ export default function VideoGrid(props: VideoGridProps) {
         return (
           <Box key={index}>
             <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
-              <Link color="inherit" className={classes.link} onClick={() => onSelect(channel, index)}>
+              <Link color="inherit" className={classes.link} href={channel.url} target="_blank" rel="noopener" onClick={(event: any) => onChannelNameClick(event, channel, index)}>
                 <Avatar alt={channel.title} src={channel.thumbnail} />
                 <Typography variant="subtitle1" color="textPrimary" className={classes.title}>
                   {channel.title}
                 </Typography>
               </Link>
-              <Link color="inherit" className={`${classes.link} ${classes.youtube}`} href={channel.url} target="_blank" rel="noopener">
-                <Tooltip title="Open channel" aria-label="open-channel">
-                  <YouTubeIcon />
-                </Tooltip>
-              </Link>
+              {!settings?.openChannelsOnNameClick && 
+                <Link color="inherit" className={`${classes.link} ${classes.youtube}`} href={channel.url} target="_blank" rel="noopener">
+                  <Tooltip title="Open channel" aria-label="open-channel">
+                    <YouTubeIcon />
+                  </Tooltip>
+                </Link>
+              }
               <IconButton size="small" className={classes.link} onClick={() => hideChannel(channel)}>
                 <Tooltip title="Hide channel" aria-label="hide-channel">
                   <VisibilityOffIcon />

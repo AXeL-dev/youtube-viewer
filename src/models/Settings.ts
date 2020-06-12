@@ -6,5 +6,6 @@ export interface Settings {
   apiKey?: string,
   autoPlayVideos: boolean,
   openVideosInInactiveTabs: boolean,
+  openChannelsOnNameClick: boolean,
   clearCacheOnClose: boolean,
 }

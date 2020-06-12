@@ -331,6 +331,7 @@ export default function Popup(props: PopupProps) {
       apiKey: (document.getElementById('apiKey') as any).value,
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
+      openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,
       clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
     });
     closeSettings();
@@ -457,6 +458,7 @@ export default function Popup(props: PopupProps) {
             <VideoGrid
               channels={channels}
               videos={videos}
+              settings={settings}
               loading={isLoading}
               maxPerChannel={settings.videosPerChannel}
               onSelect={selectChannel}

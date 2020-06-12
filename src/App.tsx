@@ -25,6 +25,7 @@ class App extends React.Component<AppProps, AppState> {
         sortVideosBy: 'date',
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
+        openChannelsOnNameClick: false,
         clearCacheOnClose: false
       },
       cache: {}

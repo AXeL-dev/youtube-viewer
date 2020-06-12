@@ -187,6 +187,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" view' />
+          <ListItemSecondaryAction>
+            <Switch
+              id="openChannelsOnNameClick"
+              defaultChecked={settings?.openChannelsOnNameClick}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" />
           <ListItemSecondaryAction>
             <Switch
