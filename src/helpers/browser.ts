@@ -24,3 +24,11 @@ export function executeScript(tabId: number, code: string) {
     }
   );
 }
+
+export function isFirefox(): boolean {
+  return navigator.userAgent.indexOf("Firefox") != -1;
+}
+
+export function isChrome(): boolean {
+  return navigator.userAgent.indexOf("Chrome") != -1;
+}

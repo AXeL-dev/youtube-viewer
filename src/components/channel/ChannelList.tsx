@@ -27,10 +27,12 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
+import { MoveToPositionDialog } from '../shared/MoveToPositionDialog';
 import { download } from '../../helpers/download';
-import { isWebExtension, createTab } from '../../helpers/browser';
+import { isWebExtension, createTab, isFirefox } from '../../helpers/browser';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -100,6 +102,7 @@ export function ChannelList(props: ChannelListProps) {
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
   const [openImportChannelsDialog, setOpenImportChannelsDialog] = React.useState(false);
+  const [moveToPositionChannelIndex, setMoveToPositionChannelIndex] = React.useState<number>(-1);
 
   const onDragEnd = (result: any) => {
     // dropped outside the list
@@ -220,6 +223,23 @@ export function ChannelList(props: ChannelListProps) {
     closeImportChannelsDialog();
   };
 
+  const openMoveChannelToPositionDialog = (channelIndex: number) => {
+    closeMenu();
+    setMoveToPositionChannelIndex(channelIndex);
+  };
+
+  const closeMoveChannelToPositionDialog = () => {
+    setMoveToPositionChannelIndex(-1);
+  };
+
+  const moveChannelToPosition = (position: number) => {
+    const indexTo = position - 1;
+    if (indexTo != moveToPositionChannelIndex) {
+      moveChannel(moveToPositionChannelIndex, indexTo);
+    }
+    closeMoveChannelToPositionDialog();
+  };
+
   const validateChannels = (channelsList: Channel[]): boolean => {
     let isValid = true;
     channelsList.forEach((channel: Channel) => {
@@ -312,8 +332,9 @@ export function ChannelList(props: ChannelListProps) {
                       >
                         <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
                         <MenuItem onClick={() => refreshChannel(channel, index)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                        {index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
-                        {index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
+                        {isFirefox() && index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
+                        {isFirefox() && index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
+                        {isFirefox() && <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}><ControlCameraIcon className={classes.menuIcon} />Move to position</MenuItem>}
                         {channel.isHidden ? 
                           <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
@@ -356,6 +377,16 @@ export function ChannelList(props: ChannelListProps) {
         onClose={closeImportChannelsDialog}
         onConfirm={confirmImportChannels}
         onValidate={validateChannels}
+      />
+      <MoveToPositionDialog
+        open={moveToPositionChannelIndex > -1}
+        title="Move Channel To Position"
+        min={1}
+        max={channels.length}
+        positionFieldId="channel-position"
+        positionFieldLabel="Position"
+        onClose={closeMoveChannelToPositionDialog}
+        onConfirm={moveChannelToPosition}
       />
     </React.Fragment>
   )
