@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import SearchIcon from '@material-ui/icons/Search';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -470,7 +470,7 @@ export default function Popup(props: PopupProps) {
             <Fade in={true} timeout={3000}>
               <Box className={classes.container}>
                 <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                  <PlaylistAddIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+                  <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
                 </Typography>
               </Box>
             </Fade>
