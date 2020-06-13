@@ -453,6 +453,7 @@ export default function Popup(props: PopupProps) {
             onRefresh={handlePullToRefresh}
             icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
+            resistance={5}
             style={{
               position: 'relative',
               height: '100%'
