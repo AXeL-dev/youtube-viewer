@@ -87,7 +87,7 @@ Packages the app in a zip file.
 
 ## Setup your own Youtube API key
 
-Create a `.env` file in the root directory of the project & put inside your API key like this:
+Create a `.env` file in the root directory of the project & put inside your API key like so:
 
 ```
 REACT_APP_YOUTUBE_API_KEY=replace_this_with_your_api_key
