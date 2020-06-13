@@ -132,6 +132,7 @@ interface PopupProps {
   channels: Channel[];
   settings: Settings;
   cache: any;
+  isReady: boolean;
 }
 
 export default function Popup(props: PopupProps) {
@@ -140,6 +141,7 @@ export default function Popup(props: PopupProps) {
   const [channels, setChannels] = React.useState<Channel[]>(props.channels);
   const [videos, setVideos] = React.useState<Video[]>([]);
   const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(-1);
   const [settings, setSettings] = React.useState<Settings>(props.settings);
@@ -151,6 +153,7 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => setChannels(props.channels), [props.channels]);
   React.useEffect(() => setSettings(props.settings), [props.settings]);
   React.useEffect(() => setCache(props.cache), [props.cache]);
+  React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {
     if (props.channels === channels && !videos.length) {
@@ -445,39 +448,41 @@ export default function Popup(props: PopupProps) {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        <ReactPullToRefresh
-          onRefresh={handlePullToRefresh}
-          icon={<ArrowDownwardIcon className="arrowicon" />}
-          distanceToRefresh={50}
-          style={{
-            position: 'relative',
-            height: '100%'
-          }}
-        >
-          {channels?.length ? selectedChannelIndex === -1 ? (
-            <VideoGrid
-              channels={channels}
-              videos={videos}
-              settings={settings}
-              loading={isLoading}
-              maxPerChannel={settings.videosPerChannel}
-              onSelect={selectChannel}
-              onVideoClick={openVideo}
-              onSave={setChannels}
-              onRefresh={refreshChannels}
-            />
-          ) : (
-            <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
-          ) : (
-            <Fade in={true} timeout={3000}>
-              <Box className={classes.container}>
-                <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                  <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
-                </Typography>
-              </Box>
-            </Fade>
-          )}
-        </ReactPullToRefresh>
+        {isReady &&
+          <ReactPullToRefresh
+            onRefresh={handlePullToRefresh}
+            icon={<ArrowDownwardIcon className="arrowicon" />}
+            distanceToRefresh={50}
+            style={{
+              position: 'relative',
+              height: '100%'
+            }}
+          >
+            {channels?.length ? selectedChannelIndex === -1 ? (
+              <VideoGrid
+                channels={channels}
+                videos={videos}
+                settings={settings}
+                loading={isLoading}
+                maxPerChannel={settings.videosPerChannel}
+                onSelect={selectChannel}
+                onVideoClick={openVideo}
+                onSave={setChannels}
+                onRefresh={refreshChannels}
+              />
+            ) : (
+              <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
+            ) : (
+              <Fade in={true} timeout={3000}>
+                <Box className={classes.container}>
+                  <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+                    <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+                  </Typography>
+                </Box>
+              </Fade>
+            )}
+          </ReactPullToRefresh>
+        }
       </main>
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
       <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />

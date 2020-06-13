@@ -12,6 +12,7 @@ interface AppState {
   channels: Channel[];
   settings: Settings;
   cache: any;
+  isReady: boolean;
 }
 
 class App extends React.Component<AppProps, AppState> {
@@ -28,7 +29,8 @@ class App extends React.Component<AppProps, AppState> {
         openChannelsOnNameClick: false,
         clearCacheOnClose: false
       },
-      cache: {}
+      cache: {},
+      isReady: false
     };
     this.getDataFromStorage();
   }
@@ -39,13 +41,14 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
       settings: settings ? {...this.state.settings, ...settings} : this.state.settings,
-      cache: !settings?.clearCacheOnClose && cache ? cache : this.state.cache
+      cache: !settings?.clearCacheOnClose && cache ? cache : this.state.cache,
+      isReady: true
     });
   }
 
   render() {
     return (
-      <Popup channels={this.state.channels} settings={this.state.settings} cache={this.state.cache} />
+      <Popup channels={this.state.channels} settings={this.state.settings} cache={this.state.cache} isReady={this.state.isReady} />
     );
   }
 }
