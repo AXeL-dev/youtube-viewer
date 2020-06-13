@@ -157,7 +157,7 @@ export default function Popup(props: PopupProps) {
 
   React.useEffect(() => {
     if (isReady) {
-      if (channels.length && !videos.length && selectedChannelIndex == -1) {
+      if (channels.length && !videos.length && selectedChannelIndex === -1) {
         showAllChannels(true);
       }
       saveToStorage({
