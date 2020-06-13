@@ -12,7 +12,7 @@ requests. All functions return promise.
 import { niceDuration, shortenLargeNumber } from './utils';
 import { getFromStorage } from './storage';
 
-let apiKey = "AIzaSyB6mi40O6WOd17yjeYkK-y5lIU4FvoR8fo";
+let apiKey = "AIzaSyAxR86SkaDVGieWJn0P8wh8kA1yf_5v2hA";
 
 /**
  * Send API requests to youtube
