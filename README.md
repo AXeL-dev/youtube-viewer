@@ -85,6 +85,16 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Packages the app in a zip file.
 
+## Setup your own Youtube API key
+
+Create a `.env` file in the root directory of the project & put inside your API key like this:
+
+```
+REACT_APP_YOUTUBE_API_KEY=replace_this_with_your_api_key
+```
+
+Save, then start or build the app.
+
 ## Credits
 
 Icon made by [Vectorgraphit](https://www.iconfinder.com/vectorgraphit) and is licensed under [Creative Commons Attribution 3.0 Unported License](https://creativecommons.org/licenses/by/3.0/).

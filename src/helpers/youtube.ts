@@ -12,7 +12,7 @@ requests. All functions return promise.
 import { niceDuration, shortenLargeNumber } from './utils';
 import { getFromStorage } from './storage';
 
-let apiKey = "AIzaSyAxR86SkaDVGieWJn0P8wh8kA1yf_5v2hA";
+let apiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
 
 /**
  * Send API requests to youtube
