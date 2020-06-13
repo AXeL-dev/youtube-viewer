@@ -156,15 +156,15 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {
-    if (props.channels === channels && !videos.length) {
-      showAllChannels(true);
+    if (isReady) {
+      if (channels.length && !videos.length && selectedChannelIndex == -1) {
+        showAllChannels(true);
+      }
+      saveToStorage({
+        channels: channels,
+        settings: settings
+      });
     }
-    saveToStorage(channels?.length ? {
-      channels: channels,
-      settings: settings
-    } : {
-      settings: settings
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels, settings]);
 
@@ -259,7 +259,7 @@ export default function Popup(props: PopupProps) {
     setChannels(channels.filter((_, i) => i !== index));
     if (selectedChannelIndex === index) {
       setVideos([]);
-      setSelectedChannelIndex(-2);
+      setSelectedChannelIndex(-2); // -2 == no selected channel
     }
   };
 
