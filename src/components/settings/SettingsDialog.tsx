@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme: Theme) =>
         textShadow: '0 0 0 #000',
       },
     },
+    optionLabel: {
+      maxWidth: '70%',
+    },
   }),
 );
 
@@ -88,7 +91,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       </AppBar>
       <List>
         <ListItem>
-          <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" />
+          <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <TextField
               id="videosPerChannel"
@@ -105,7 +108,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" />
+          <ListItemText primary="Anteriority of videos (in days)" secondary="Number of days to subtract from the current date" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <TextField
               id="videosAnteriority"
@@ -122,7 +125,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Sort videos by" secondary="Defines videos order" />
+          <ListItemText primary="Sort videos by" secondary="Defines videos order" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Select
               native
@@ -147,7 +150,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               &nbsp;
               <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
             </React.Fragment>
-          } />
+          } className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <TextField
               id="apiKey"
@@ -165,7 +168,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Auto play videos" secondary="Auto-play permissions should be granted for youtube.com" />
+          <ListItemText primary="Auto play videos" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="autoPlayVideos"
@@ -176,7 +179,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Open videos in inactive tabs" secondary="Will open videos in new tabs without losing focus of the current tab" />
+          <ListItemText primary="Open videos in inactive tabs" secondary="Will open videos in new tabs without losing focus of the current tab" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="openVideosInInactiveTabs"
@@ -187,7 +190,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" view' />
+          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" view' className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="openChannelsOnNameClick"
@@ -198,7 +201,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" />
+          <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="clearCacheOnClose"
