@@ -89,6 +89,9 @@
 	z-index: 20;
 	background: #fafafa;
 	height: 100%;
+	-webkit-backface-visibility: hidden;
+	-webkit-perspective: 1000;
+	box-sizing: border-box;
 }
 
 .ptr-loading .refresh-view, .ptr-reset .refresh-view,

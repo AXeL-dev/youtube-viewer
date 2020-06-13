@@ -448,18 +448,15 @@ export default function Popup(props: PopupProps) {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {isReady &&
+        {isReady && (channels?.length ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
             icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
-            style={{
-              position: 'relative',
-              height: '100%'
-            }}
+            style={{ position: 'relative' }}
           >
-            {channels?.length ? selectedChannelIndex === -1 ? (
+            {selectedChannelIndex === -1 ? (
               <VideoGrid
                 channels={channels}
                 videos={videos}
@@ -473,17 +470,17 @@ export default function Popup(props: PopupProps) {
               />
             ) : (
               <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
-            ) : (
-              <Fade in={true} timeout={3000}>
-                <Box className={classes.container}>
-                  <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                    <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
-                  </Typography>
-                </Box>
-              </Fade>
             )}
           </ReactPullToRefresh>
-        }
+        ) : (
+          <Fade in={true} timeout={3000}>
+            <Box className={classes.container}>
+              <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+                <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
+              </Typography>
+            </Box>
+          </Fade>
+        ))}
       </main>
       <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
       <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
