@@ -42,10 +42,16 @@ export default function Media(props: MediaProps) {
     } as React.CSSProperties
   };
 
+  const cancelEvent = (event: any) => {
+    event.stopPropagation();
+    event.preventDefault();
+    return false;
+  };
+
   return (
     <Grid container wrap="nowrap">
       {(loading ? Array.from(new Array(maxPerLine)) : data).map((item, index) => (
-        <Box key={index} width={210} marginRight={0.5} marginBottom={3}>
+        <Box key={index} width={210} marginRight={0.5} marginBottom={3} draggable="false" onMouseDown={(event: any) => cancelEvent(event)}>
           {item ? (
             <Link href={item.url} style={style.anchor} target="_blank" rel="noopener" onClick={(event: any) => onClick(event)}>
               <Box style={style.imageContainer}>
