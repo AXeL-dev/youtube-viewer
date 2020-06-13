@@ -1,4 +1,4 @@
-import process from "process";
+// no need to import process Object since it will be defined by create-react-app
 
 export const isDevEnv: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
