@@ -195,24 +195,29 @@ export default function Popup(props: PopupProps) {
             videoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
                                .slice(0, settings.videosPerChannel)
                                .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
-            debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
-            getVideoInfo(videoIds).then((videosData: Video[]) => {
-              //console.log(videosData);
-              cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
-              const videos = cache[channel.id].sort((a: Video, b: Video) => {
-                if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
-                  return b.views.count - a.views.count;
-                } else {
-                  return b.publishedAt - a.publishedAt;
-                }
-              }).slice(0, settings.videosPerChannel);
-              setCache(cache);
-              saveToStorage({ cache: cache });
-              resolve(videos || []);
-            }).catch((error: Error) => {
-              displayError(error);
-              resolve([]);
-            });
+            if (videoIds.length) {
+              debug('getting videos', { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
+              getVideoInfo(videoIds).then((videosData: Video[]) => {
+                //console.log(videosData);
+                cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
+                const videos = cache[channel.id].sort((a: Video, b: Video) => {
+                  if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
+                    return b.views.count - a.views.count;
+                  } else {
+                    return b.publishedAt - a.publishedAt;
+                  }
+                }).slice(0, settings.videosPerChannel);
+                setCache(cache);
+                saveToStorage({ cache: cache });
+                resolve(videos || []);
+              }).catch((error: Error) => {
+                displayError(error);
+                resolve([]);
+              });
+            } else {
+              debug('no recent videos for this channel');
+              resolve(cache[channel.id] || []);
+            }
           } else {
             resolve([]);
           }
