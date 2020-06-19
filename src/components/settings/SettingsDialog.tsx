@@ -186,7 +186,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Auto play videos" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
+          <ListItemText primary="Auto play videos once opened" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="autoPlayVideos"
@@ -208,7 +208,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" view' className={classes.optionLabel} />
+          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" or "Recent videos" view' className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="openChannelsOnNameClick"
@@ -219,11 +219,11 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Clear videos cache on close" secondary="Cache may speed up loading time & reduce API quota consumption" className={classes.optionLabel} />
+          <ListItemText primary="Auto clear videos cache" secondary="Cache may speed up loading time & reduce API quota consumption" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
-              id="clearCacheOnClose"
-              defaultChecked={settings?.clearCacheOnClose}
+              id="autoClearCache"
+              defaultChecked={settings?.autoClearCache}
               color="secondary"
             />
           </ListItemSecondaryAction>

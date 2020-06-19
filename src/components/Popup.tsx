@@ -157,8 +157,8 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {
+    warn('channels or settings changed', isReady);
     if (isReady) {
-      warn('channels or settings changed', isReady);
       if (channels.length && !videos.length) {
         if (settings.defaultChannelSelection === ChannelSelection.All) {
           showAllChannels(true);
@@ -417,7 +417,7 @@ export default function Popup(props: PopupProps) {
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
       openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,
-      clearCacheOnClose: (document.getElementById('clearCacheOnClose') as any).checked
+      autoClearCache: (document.getElementById('autoClearCache') as any).checked
     });
     closeSettings();
     setSnackbarMessage('Settings saved!');

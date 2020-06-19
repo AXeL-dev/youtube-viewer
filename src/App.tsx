@@ -28,7 +28,7 @@ class App extends React.Component<AppProps, AppState> {
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
-        clearCacheOnClose: false
+        autoClearCache: false
       },
       cache: {},
       isReady: false
@@ -42,7 +42,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
       settings: settings ? {...this.state.settings, ...settings} : this.state.settings,
-      cache: !settings?.clearCacheOnClose && cache ? cache : this.state.cache,
+      cache: !settings?.autoClearCache && cache ? cache : this.state.cache,
       isReady: true
     });
   }
