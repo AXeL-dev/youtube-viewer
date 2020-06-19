@@ -215,16 +215,18 @@ export default function Popup(props: PopupProps) {
           debug('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
-            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
-            const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            const recentVideoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
-                               .slice(0, settings.videosPerChannel)
-                               .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
+            const videoIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
+            const cacheVideoIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
+            const recentVideoIds: string[] = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
+                                                     .slice(0, settings.videosPerChannel)
+                                                     .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
             // update old videos cache (keep only today's recent videos)
+            let cacheHasChanged: boolean = false;
             if (cache[channel.id]?.length) {
               cache[channel.id] = cache[channel.id].map((video: Video) => {
                 if (!isInToday(video.publishedAt)) {
                   video.isRecent = false;
+                  cacheHasChanged = true;
                 }
                 return video;
               });
@@ -232,7 +234,7 @@ export default function Popup(props: PopupProps) {
             // get recent videos informations
             if (!recentVideoIds.length) {
               debug('no recent videos for this channel');
-              if (cache[channel.id]?.length) {
+              if (cacheHasChanged) {
                 // update cache
                 setCache({...cache});
                 saveToStorage({ cache: cache });
