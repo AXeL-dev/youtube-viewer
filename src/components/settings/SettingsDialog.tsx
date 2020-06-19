@@ -19,6 +19,7 @@ import Select from '@material-ui/core/Select';
 import Link from '@material-ui/core/Link';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
+import { ChannelSelection } from '../../models/Channel';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +92,23 @@ export function SettingsDialog(props: SettingsDialogProps) {
       </AppBar>
       <List>
         <ListItem>
+          <ListItemText primary="Default channel selection" secondary="The default selected channels menu" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Select
+              native
+              inputProps={{ id: 'defaultChannelSelection', className: classes.select }}
+              variant="outlined"
+              color="secondary"
+              className={classes.container}
+              defaultValue={settings?.defaultChannelSelection}
+            >
+              <option value={ChannelSelection.All}>All</option>
+              <option value={ChannelSelection.RecentVideos}>Recent videos</option>
+            </Select>
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Max videos per channel" secondary="The maximum number of videos to show per channel" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <TextField
@@ -125,7 +143,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Sort videos by" secondary="Defines videos order" className={classes.optionLabel} />
+          <ListItemText primary="Sort videos by" secondary="Videos sorting criteria" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Select
               native

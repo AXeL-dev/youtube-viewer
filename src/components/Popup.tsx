@@ -158,8 +158,13 @@ export default function Popup(props: PopupProps) {
 
   React.useEffect(() => {
     if (isReady) {
-      if (channels.length && !videos.length && selectedChannelIndex === ChannelSelection.All) {
-        showAllChannels(true);
+      warn('channels or settings changed', isReady);
+      if (channels.length && !videos.length) {
+        if (settings.defaultChannelSelection === ChannelSelection.All) {
+          showAllChannels(true);
+        } else if (settings.defaultChannelSelection === ChannelSelection.RecentVideos) {
+          showRecentVideos(true);
+        }
       }
       saveToStorage({
         channels: channels,
@@ -404,6 +409,7 @@ export default function Popup(props: PopupProps) {
   const saveSettings = () => {
     // Update settings
     setSettings({
+      defaultChannelSelection: +(document.getElementById('defaultChannelSelection') as any).value,
       videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
       videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
       sortVideosBy: (document.getElementById('sortVideosBy') as any).value,
@@ -530,7 +536,7 @@ export default function Popup(props: PopupProps) {
         {isReady && (channels?.length ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={videos?.length && <ArrowDownwardIcon className="arrowicon" />}
+            icon={videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
             distanceToRefresh={50}
             resistance={5}
             style={{ position: 'relative' }}

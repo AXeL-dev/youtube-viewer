@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import Popup from './components/Popup';
 import { getFromStorage } from './helpers/storage';
-import { Channel } from './models/Channel';
+import { Channel, ChannelSelection } from './models/Channel';
 import { Settings } from './models/Settings';
 
 interface AppProps {
@@ -21,8 +21,9 @@ class App extends React.Component<AppProps, AppState> {
     this.state = {
       channels: [],
       settings: {
+        defaultChannelSelection: ChannelSelection.All,
         videosPerChannel: 9,
-        videosAnteriority: 30,
+        videosAnteriority: 30, // days
         sortVideosBy: 'date',
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
