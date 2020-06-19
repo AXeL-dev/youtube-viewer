@@ -210,7 +210,7 @@ export default function Popup(props: PopupProps) {
           debug('activities of', channel.title, results);
           if (results?.items) {
             const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            let videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId);
+            let videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
             videoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
                                .slice(0, settings.videosPerChannel)
                                .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
