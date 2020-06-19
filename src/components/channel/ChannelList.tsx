@@ -172,7 +172,7 @@ export function ChannelList(props: ChannelListProps) {
     channels[index] = channel;
     onSave([...channels]);
     if (selectedIndex === ChannelSelection.All) {
-      onRefresh();
+      refreshAll();
     }
   };
 
@@ -270,6 +270,10 @@ export function ChannelList(props: ChannelListProps) {
     onClearRecentVideos();
   };
 
+  const refreshAll = (event?: any) => {
+    onRefresh(event, ChannelSelection.All);
+  };
+
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -309,7 +313,7 @@ export function ChannelList(props: ChannelListProps) {
                 <ListItemText primary="All" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Refresh" aria-label="refresh">
-                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event, ChannelSelection.All)}>
+                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshAll(event)}>
                       <RefreshIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
