@@ -23,7 +23,7 @@ import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel, ChannelSelection } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { getDateBefore, memorySizeOf } from '../helpers/utils';
+import { getDateBefore, memorySizeOf, isInToday } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
@@ -214,26 +214,39 @@ export default function Popup(props: PopupProps) {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
           debug('activities of', channel.title, results);
           if (results?.items) {
+            // get recent videos ids
+            const videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
             const cacheVideoIds = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            let videoIds = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
-            videoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
+            const recentVideoIds = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
                                .slice(0, settings.videosPerChannel)
                                .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
-            if (videoIds.length) {
-              debug('getting recent videos of', channel.title, { videoIds: videoIds, cacheVideoIds: cacheVideoIds });
-              getVideoInfo(videoIds).then((videosData: Video[]) => {
+            // update old videos cache (keep only today's recent videos)
+            if (cache[channel.id]?.length) {
+              cache[channel.id] = cache[channel.id].map((video: Video) => {
+                if (!isInToday(video.publishedAt)) {
+                  video.isRecent = false;
+                }
+                return video;
+              });
+            }
+            // get recent videos informations
+            if (!recentVideoIds.length) {
+              debug('no recent videos for this channel');
+              if (cache[channel.id]?.length) {
+                // update cache
+                setCache({...cache});
+                saveToStorage({ cache: cache });
+              }
+              resolve(cache[channel.id] || []);
+            } else {
+              debug('getting recent videos of', channel.title, { recentVideoIds: recentVideoIds, cacheVideoIds: cacheVideoIds });
+              getVideoInfo(recentVideoIds).then((videosData: Video[]) => {
+                // mark all new videos as recent
                 //console.log(videosData);
-                videosData = videosData.map((video: Video) => { // mark all new videos as recent
+                videosData = videosData.map((video: Video) => {
                   video.isRecent = true;
                   return video;
                 });
-                // unmark old videos
-                if (cache[channel.id]?.length) {
-                  cache[channel.id] = cache[channel.id].map((video: Video) => {
-                    video.isRecent = false;
-                    return video;
-                  });
-                }
                 // merge cached & new videos
                 cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
                 // sort videos
@@ -244,6 +257,7 @@ export default function Popup(props: PopupProps) {
                     return b.publishedAt - a.publishedAt;
                   }
                 }).slice(0, settings.videosPerChannel);
+                // save to cache
                 setCache({...cache});
                 saveToStorage({ cache: cache });
                 resolve(videos || []);
@@ -251,9 +265,6 @@ export default function Popup(props: PopupProps) {
                 displayError(error);
                 resolve([]);
               });
-            } else {
-              debug('no recent videos for this channel');
-              resolve(cache[channel.id] || []);
             }
           } else {
             resolve([]);

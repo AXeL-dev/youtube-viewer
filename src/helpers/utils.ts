@@ -150,6 +150,23 @@ export function getDateBefore(before: number = 0): Date {
 // -------------------------------------------------------------------
 
 /**
+ * Check if the given timestamp is in today's date
+ * Stolen from: https://stackoverflow.com/a/40628566
+ * 
+ * @param timestamp 
+ */
+export function isInToday(timestamp: number) {
+  let today = new Date();
+  if (today.setHours(0, 0, 0, 0) === new Date(timestamp).setHours(0, 0, 0, 0)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// -------------------------------------------------------------------
+
+/**
  * Return a new RegExp object instance
  * 
  * @param pattern 
