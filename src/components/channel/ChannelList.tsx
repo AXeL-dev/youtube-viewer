@@ -92,11 +92,12 @@ interface ChannelListProps {
   cacheSize: string;
   recentVideosCount: number;
   onClearCache: Function;
+  onClearRecentVideos: Function;
   onImport: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = ChannelSelection.All, onShowAll, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, recentVideosCount, onClearCache, onImport } = props;
+  const { channels, selectedIndex = ChannelSelection.All, onShowAll, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, recentVideosCount, onClearCache, onClearRecentVideos, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -298,7 +299,7 @@ export function ChannelList(props: ChannelListProps) {
                 <ListItemText primary="All" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Refresh" aria-label="refresh">
-                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
+                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event, ChannelSelection.All)}>
                       <RefreshIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
@@ -314,11 +315,19 @@ export function ChannelList(props: ChannelListProps) {
                 </ListItemIcon>
                 <ListItemText primary="Recent videos" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
-                  <Tooltip title="Refresh" aria-label="refresh">
-                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
-                      <RefreshIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.RecentVideos)}>
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                  <Menu
+                    id="menu-recent-videos"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={openedMenuIndex === ChannelSelection.RecentVideos}
+                    onClose={closeMenu}
+                  >
+                    <MenuItem onClick={(event) => onRefresh(event, ChannelSelection.RecentVideos)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
+                    {recentVideosCount > 0 && <MenuItem onClick={() => onClearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
+                  </Menu>
                 </ListItemSecondaryAction>}
               </ListItem>
               {channels.map((channel: Channel, index: number) => (

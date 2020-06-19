@@ -32,7 +32,7 @@ import { MessageSnackbar } from './shared/MessageSnackbar';
 import { SettingsDialog } from './settings/SettingsDialog';
 import { CustomSnackbar } from './shared/CustomSnackbar';
 import { isWebExtension, createTab, executeScript } from '../helpers/browser';
-import { debug } from '../helpers/debug';
+import { debug, warn } from '../helpers/debug';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
@@ -170,7 +170,7 @@ export default function Popup(props: PopupProps) {
   }, [channels, settings]);
 
   React.useEffect(() => {
-    console.warn('cache or channels changed', isReady);
+    warn('cache or channels changed', isReady);
     if (isReady) {
       debug('counting recent videos');
       const count = Object.keys(cache).reduce((total: number, channelId: string) => {
@@ -351,11 +351,25 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const refreshChannels = (event?: any) => {
+  const clearRecentVideos = () => {
+    Object.keys(cache).forEach((channelId: string) => {
+      cache[channelId] = cache[channelId].map((video: Video) => {
+        video.isRecent = false;
+        return video;
+      });
+    });
+    setCache({...cache});
+    saveToStorage({ cache: cache });
+    if (selectedChannelIndex === ChannelSelection.RecentVideos) {
+      refreshChannels();
+    }
+  };
+
+  const refreshChannels = (event?: any, selection?: ChannelSelection) => {
     if (event) {
       event.stopPropagation();
     }
-    return selectedChannelIndex === ChannelSelection.All ? showAllChannels(true) : showRecentVideos(true);
+    return (!selection && selectedChannelIndex === ChannelSelection.RecentVideos) || selection === ChannelSelection.RecentVideos ? showRecentVideos(true) : showAllChannels(true);
   };
 
   const importChannels = (channelsList: Channel[]) => {
@@ -492,6 +506,7 @@ export default function Popup(props: PopupProps) {
           cacheSize={getCacheSize()}
           recentVideosCount={recentVideosCount}
           onClearCache={clearCache}
+          onClearRecentVideos={clearRecentVideos}
           onImport={importChannels}
         />
         <div className={classes.grow} />
@@ -515,7 +530,7 @@ export default function Popup(props: PopupProps) {
         {isReady && (channels?.length ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={<ArrowDownwardIcon className="arrowicon" />}
+            icon={videos?.length && <ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
             style={{ position: 'relative' }}
