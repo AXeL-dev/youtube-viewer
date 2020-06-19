@@ -24,7 +24,7 @@ import RootRef from '@material-ui/core/RootRef';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Channel } from '../../models/Channel';
+import { Channel, ChannelSelection } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
 import { MoveToPositionDialog } from '../shared/MoveToPositionDialog';
@@ -33,6 +33,7 @@ import { isWebExtension, createTab, isFirefox } from '../../helpers/browser';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
+import AccessTimeIcon from '@material-ui/icons/AccessTime';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,18 +83,20 @@ interface ChannelListProps {
   channels: Channel[];
   selectedIndex: number;
   onShowAll: Function;
+  onShowRecentVideos: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
   onSave: Function;
   onSelectedIndexChange: Function;
   cacheSize: string;
+  recentVideosCount: number;
   onClearCache: Function;
   onImport: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = -1, onShowAll, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, onClearCache, onImport } = props;
+  const { channels, selectedIndex = ChannelSelection.All, onShowAll, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, recentVideosCount, onClearCache, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -167,7 +170,7 @@ export function ChannelList(props: ChannelListProps) {
     closeMenu();
     channels[index] = channel;
     onSave([...channels]);
-    if (selectedIndex === -1) {
+    if (selectedIndex === ChannelSelection.All) {
       onRefresh();
     }
   };
@@ -284,7 +287,7 @@ export function ChannelList(props: ChannelListProps) {
               </ListSubheader>}
               style={getListStyle(snapshot.isDraggingOver)}
             >
-              <ListItem button key="all" selected={selectedIndex === -1} onClick={() => onShowAll()}>
+              <ListItem button key="all" selected={selectedIndex === ChannelSelection.All} onClick={() => onShowAll()}>
                 <ListItemIcon>
                   <Badge color="secondary" badgeContent={channels.length}>
                     <Avatar>
@@ -293,6 +296,23 @@ export function ChannelList(props: ChannelListProps) {
                   </Badge>
                 </ListItemIcon>
                 <ListItemText primary="All" />
+                {channels?.length > 0 && <ListItemSecondaryAction>
+                  <Tooltip title="Refresh" aria-label="refresh">
+                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>}
+              </ListItem>
+              <ListItem button key="recent" selected={selectedIndex === ChannelSelection.RecentVideos} onClick={() => onShowRecentVideos()}>
+                <ListItemIcon>
+                  <Badge color="secondary" badgeContent={recentVideosCount}>
+                    <Avatar>
+                      <AccessTimeIcon />
+                    </Avatar>
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary="Recent videos" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Refresh" aria-label="refresh">
                     <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => onRefresh(event)}>

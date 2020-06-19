@@ -7,3 +7,9 @@ export interface Channel {
   description: string,
   isHidden: boolean
 }
+
+export enum ChannelSelection {
+  All = -1,
+  None = -2,
+  RecentVideos = -3
+}
