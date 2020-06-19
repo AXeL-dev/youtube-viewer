@@ -5,7 +5,7 @@ declare var browser: any;
 /**
  * Get data from storage
  * 
- * EX: getManyFromStorage('key1', 'key2', ...)
+ * EX: getFromStorage('key1', 'key2', ...)
  * 
  * @param keys 
  */
@@ -42,7 +42,7 @@ function __get(key: string): Promise<any> {
 /**
  * Save data to storage
  * 
- * EX: saveManyToStorage({ key1: value1, key2: value2, ... })
+ * EX: saveToStorage({ key1: value1, key2: value2, ... })
  * 
  * @param values 
  */
