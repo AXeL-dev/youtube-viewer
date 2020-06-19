@@ -260,6 +260,16 @@ export function ChannelList(props: ChannelListProps) {
     setOpenClearCacheDialog(true);
   };
 
+  const refreshRecentVideos = (event: any) => {
+    closeMenu();
+    onRefresh(event, ChannelSelection.RecentVideos);
+  };
+
+  const clearRecentVideos = () => {
+    closeMenu();
+    onClearRecentVideos();
+  };
+
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -325,8 +335,8 @@ export function ChannelList(props: ChannelListProps) {
                     open={openedMenuIndex === ChannelSelection.RecentVideos}
                     onClose={closeMenu}
                   >
-                    <MenuItem onClick={(event) => onRefresh(event, ChannelSelection.RecentVideos)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                    {recentVideosCount > 0 && <MenuItem onClick={() => onClearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
+                    <MenuItem onClick={(event) => refreshRecentVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
+                    {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
                   </Menu>
                 </ListItemSecondaryAction>}
               </ListItem>
