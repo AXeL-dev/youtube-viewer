@@ -103,6 +103,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               defaultValue={settings?.defaultChannelSelection}
             >
               <option value={ChannelSelection.All}>All</option>
+              <option value={ChannelSelection.TodaysVideos}>Today's videos</option>
               <option value={ChannelSelection.RecentVideos}>Recent videos</option>
             </Select>
           </ListItemSecondaryAction>

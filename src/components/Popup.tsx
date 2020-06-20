@@ -150,6 +150,7 @@ export default function Popup(props: PopupProps) {
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
+  const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
   React.useEffect(() => setSettings(props.settings), [props.settings]);
@@ -159,10 +160,16 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => {
     warn('isReady changed', isReady);
     if (isReady && channels.length && !videos.length) {
-      if (settings.defaultChannelSelection === ChannelSelection.All) {
-        showAllChannels(true);
-      } else if (settings.defaultChannelSelection === ChannelSelection.RecentVideos) {
-        showRecentVideos(true);
+      switch(settings.defaultChannelSelection) {
+        case ChannelSelection.TodaysVideos:
+          showTodaysVideos(true);
+          break;
+        case ChannelSelection.RecentVideos:
+          showRecentVideos(true);
+          break;
+        case ChannelSelection.All:
+        default:
+          showAllChannels(true);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,18 +195,22 @@ export default function Popup(props: PopupProps) {
     warn('cache or channels changed', { isReady: isReady });
     if (isReady) {
       debug('----------------------');
-      debug('counting recent videos');
-      const count = Object.keys(cache).reduce((total: number, channelId: string) => {
+      debug('counting todays & recent videos');
+      let totalRecentVideosCount: number = 0, totalTodaysVideosCount: number = 0;
+      Object.keys(cache).forEach((channelId: string) => {
         const channel = channels.find((c: Channel) => c.id === channelId);
         if (!channel || channel.isHidden) {
-          return total;
+          return;
         }
-        const countPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
-        debug(channel.title, countPerChannel);
-        return total + countPerChannel;
-      }, 0);
-      debug('total count', count);
-      setRecentVideosCount(count);
+        const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
+        const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
+        debug(channel.title, { recent: recentVideosCountPerChannel, todays: todaysVideosCountPerChannel });
+        totalRecentVideosCount += recentVideosCountPerChannel;
+        totalTodaysVideosCount += todaysVideosCountPerChannel;
+      });
+      debug('total count', { recent: totalRecentVideosCount, todays: totalTodaysVideosCount });
+      setRecentVideosCount(totalRecentVideosCount);
+      setTodaysVideosCount(totalTodaysVideosCount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache, channels]);
@@ -361,6 +372,32 @@ export default function Popup(props: PopupProps) {
     });
   };
 
+  const showTodaysVideos = (ignoreCache: boolean = false) => {
+    // Select "Today's videos"
+    setSelectedChannelIndex(ChannelSelection.TodaysVideos);
+    // Get todays videos
+    setIsLoading(true);
+    setVideos([]);
+    let promises: Promise<any>[] = [];
+    let videos: Video[] = [];
+
+    channels.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
+
+      const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
+        debug('----------------------');
+        debug(channel.title, newVideos);
+        videos.push(...newVideos.filter((video: Video) => isInToday(video.publishedAt)));
+      });
+      promises.push(promise);
+
+    });
+
+    return Promise.all(promises).finally(() => {
+      setVideos(videos);
+      setIsLoading(false);
+    });
+  };
+
   const showRecentVideos = (ignoreCache: boolean = false) => {
     // Select "Recent videos"
     setSelectedChannelIndex(ChannelSelection.RecentVideos);
@@ -397,15 +434,26 @@ export default function Popup(props: PopupProps) {
     setCache({...cache});
     saveToStorage({ cache: cache });
     if (selectedChannelIndex === ChannelSelection.RecentVideos) {
-      refreshChannels();
+      refreshChannels(ChannelSelection.RecentVideos);
     }
   };
 
-  const refreshChannels = (event?: any, selection?: ChannelSelection) => {
+  const refreshChannels = (selection?: ChannelSelection, event?: any) => {
     if (event) {
       event.stopPropagation();
     }
-    return (!selection && selectedChannelIndex === ChannelSelection.RecentVideos) || selection === ChannelSelection.RecentVideos ? showRecentVideos(true) : showAllChannels(true);
+    if (selection === undefined || selection === null) {
+      selection = selectedChannelIndex;
+    }
+    switch(selection) {
+      case ChannelSelection.TodaysVideos:
+        return showTodaysVideos(true);
+      case ChannelSelection.RecentVideos:
+        return showRecentVideos(true);
+      case ChannelSelection.All:
+      default:
+        return showAllChannels(true);
+    }
   };
 
   const importChannels = (channelsList: Channel[]) => {
@@ -475,10 +523,10 @@ export default function Popup(props: PopupProps) {
 
   const handlePullToRefresh = (resolve: Function, reject: Function) => {
     let promise: Promise<any>;
-    if (selectedChannelIndex === ChannelSelection.All || selectedChannelIndex === ChannelSelection.RecentVideos) {
-      promise = refreshChannels();
-    } else {
+    if (selectedChannelIndex >= 0) {
       promise = selectChannel(channels[selectedChannelIndex], selectedChannelIndex, true);
+    } else {
+      promise = refreshChannels(selectedChannelIndex);
     }
     promise.then(() => {
       resolve();
@@ -535,15 +583,17 @@ export default function Popup(props: PopupProps) {
         <ChannelList
           channels={channels}
           selectedIndex={selectedChannelIndex}
+          cacheSize={getCacheSize()}
+          todaysVideosCount={todaysVideosCount}
+          recentVideosCount={recentVideosCount}
           onShowAll={showAllChannels}
+          onShowTodaysVideos={showTodaysVideos}
           onShowRecentVideos={showRecentVideos}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
           onSave={setChannels}
           onSelectedIndexChange={setSelectedChannelIndex}
-          cacheSize={getCacheSize()}
-          recentVideosCount={recentVideosCount}
           onClearCache={clearCache}
           onClearRecentVideos={clearRecentVideos}
           onImport={importChannels}
@@ -566,7 +616,7 @@ export default function Popup(props: PopupProps) {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {isReady && (channels?.length ? (
+        {isReady && (channels?.length && selectedChannelIndex !== ChannelSelection.None ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
             icon={videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
@@ -574,7 +624,7 @@ export default function Popup(props: PopupProps) {
             resistance={5}
             style={{ position: 'relative' }}
           >
-            {selectedChannelIndex === ChannelSelection.All || selectedChannelIndex === ChannelSelection.RecentVideos ? (
+            {selectedChannelIndex < 0 ? (
               <VideoGrid
                 channels={channels}
                 videos={videos}

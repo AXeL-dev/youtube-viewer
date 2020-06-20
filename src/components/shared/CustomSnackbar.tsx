@@ -26,7 +26,7 @@ export function CustomSnackbar(props: CustomSnackbarProps) {
       message={message}
       action={
         <React.Fragment>
-          <Button color="secondary" size="small" onClick={(event) => onRefresh(event)}>
+          <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
             Refresh
           </Button>
           <IconButton size="small" aria-label="close" color="inherit" onClick={() => onClose()}>

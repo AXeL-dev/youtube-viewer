@@ -34,6 +34,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import TodayIcon from '@material-ui/icons/Today';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,22 +83,24 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 interface ChannelListProps {
   channels: Channel[];
   selectedIndex: number;
+  cacheSize: string;
+  todaysVideosCount: number;
+  recentVideosCount: number;
   onShowAll: Function;
+  onShowTodaysVideos: Function;
   onShowRecentVideos: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
   onSave: Function;
   onSelectedIndexChange: Function;
-  cacheSize: string;
-  recentVideosCount: number;
   onClearCache: Function;
   onClearRecentVideos: Function;
   onImport: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = ChannelSelection.All, onShowAll, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, cacheSize, recentVideosCount, onClearCache, onClearRecentVideos, onImport } = props;
+  const { channels, selectedIndex = ChannelSelection.All, cacheSize, todaysVideosCount, recentVideosCount, onShowAll, onShowTodaysVideos, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearCache, onClearRecentVideos, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -172,8 +175,8 @@ export function ChannelList(props: ChannelListProps) {
     closeMenu();
     channels[index] = channel;
     onSave([...channels]);
-    if (selectedIndex === ChannelSelection.All) {
-      refreshAll();
+    if (selectedIndex < 0 && selectedIndex !== ChannelSelection.None) {
+      onRefresh(selectedIndex);
     }
   };
 
@@ -263,7 +266,7 @@ export function ChannelList(props: ChannelListProps) {
 
   const refreshRecentVideos = (event: any) => {
     closeMenu();
-    onRefresh(event, ChannelSelection.RecentVideos);
+    onRefresh(ChannelSelection.RecentVideos, event);
   };
 
   const clearRecentVideos = () => {
@@ -281,7 +284,12 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const refreshAll = (event?: any) => {
-    onRefresh(event, ChannelSelection.All);
+    onRefresh(ChannelSelection.All, event);
+  };
+
+  const refreshTodaysVideos = (event: any) => {
+    closeMenu();
+    onRefresh(ChannelSelection.TodaysVideos, event);
   };
 
   return (
@@ -324,6 +332,23 @@ export function ChannelList(props: ChannelListProps) {
                 {channels?.length > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Refresh" aria-label="refresh">
                     <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshAll(event)}>
+                      <RefreshIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </ListItemSecondaryAction>}
+              </ListItem>
+              <ListItem button key="today" selected={selectedIndex === ChannelSelection.TodaysVideos} onClick={() => onShowTodaysVideos()}>
+                <ListItemIcon>
+                  <Badge color="secondary" badgeContent={todaysVideosCount}>
+                    <Avatar>
+                      <TodayIcon />
+                    </Avatar>
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary="Today's videos" />
+                {channels?.length > 0 && <ListItemSecondaryAction>
+                  <Tooltip title="Refresh" aria-label="refresh">
+                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshTodaysVideos(event)}>
                       <RefreshIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
