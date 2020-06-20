@@ -42,7 +42,8 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
             // set recent videos count
             if (recentVideoIds.length) {
               log(recentVideoIds.length, 'recent videos');
-              notificationMessages.push(`${channel.title} posted ${recentVideoIds.length} recent videos.`);
+              const suffix = recentVideoIds.length > 1 ? 's' : '';
+              notificationMessages.push(`${channel.title} posted ${recentVideoIds.length} recent video${suffix}.`);
               count += recentVideoIds.length;
             } else {
               log('no recent videos for this channel');
