@@ -247,10 +247,12 @@ export default function Popup(props: PopupProps) {
             } else {
               debug('getting recent videos of', channel.title, { recentVideoIds: recentVideoIds, cacheVideoIds: cacheVideoIds });
               getVideoInfo(recentVideoIds).then((videosData: Video[]) => {
-                // mark all new videos as recent
-                //console.log(videosData);
+                debug('recent videos data', videosData);
+                // mark today's videos as recent
                 videosData = videosData.map((video: Video) => {
-                  video.isRecent = true;
+                  if (isInToday(video.publishedAt)) {
+                    video.isRecent = true;
+                  }
                   return video;
                 });
                 // merge cached & new videos
