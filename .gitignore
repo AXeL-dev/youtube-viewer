@@ -12,6 +12,7 @@
 /build
 /old
 *.zip
+*.xpi
 *.crx
 *.pem
 public/js/compiled
