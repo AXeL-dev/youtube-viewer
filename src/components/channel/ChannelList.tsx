@@ -105,6 +105,7 @@ export function ChannelList(props: ChannelListProps) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
+  const [openClearRecentVideosDialog, setOpenClearRecentVideosDialog] = React.useState(false);
   const [openImportChannelsDialog, setOpenImportChannelsDialog] = React.useState(false);
   const [moveToPositionChannelIndex, setMoveToPositionChannelIndex] = React.useState<number>(-1);
 
@@ -267,7 +268,16 @@ export function ChannelList(props: ChannelListProps) {
 
   const clearRecentVideos = () => {
     closeMenu();
+    setOpenClearRecentVideosDialog(true);
+  };
+
+  const confirmClearRecentVideos = () => {
     onClearRecentVideos();
+    closeClearRecentVideosDialog();
+  };
+
+  const closeClearRecentVideosDialog = () => {
+    setOpenClearRecentVideosDialog(false);
   };
 
   const refreshAll = (event?: any) => {
@@ -402,6 +412,14 @@ export function ChannelList(props: ChannelListProps) {
         confirmButtonText="Clear"
         onClose={closeClearCacheDialog}
         onConfirm={confirmClearCache}
+      />
+      <ConfirmationDialog
+        open={openClearRecentVideosDialog}
+        title="Clear recent videos"
+        description="Would you like to reset/clear recent videos?"
+        confirmButtonText="Clear"
+        onClose={closeClearRecentVideosDialog}
+        onConfirm={confirmClearRecentVideos}
       />
       <ConfirmationDialog
         open={openDeleteChannelDialog}
