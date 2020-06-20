@@ -4,7 +4,7 @@ import { Video } from '../models/Video';
 import { getFromStorage } from '../helpers/storage';
 import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
-import { setBadgeText, setBadgeColors, getBadgeText } from '../helpers/browser';
+import { setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
 
 const defaultVideosCheckRate = 30;
 
@@ -16,14 +16,15 @@ function getAutoCheckRate(): Promise<number> {
 }
 
 function log(message: any, ...params: any) {
-  console.log(message, ...params);
+  //console.log(message, ...params); // comment/uncomment this to manually enable/disable logs
 }
 
-function getRecentVideosCount(channels: Channel[], settings: Settings, cache: any): Promise<number> {
+function getRecentVideosCount(channels: Channel[], settings: Settings, cache: any): Promise<[number, string[]]> {
 
   return new Promise((resolve, reject) => {
 
     let count: number = 0;
+    let notificationMessages: string[] = [];
     let promises: Promise<any>[] = [];
 
     channels.filter((channel) => !channel.isHidden).forEach((channel) => {
@@ -41,6 +42,7 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
             // set recent videos count
             if (recentVideoIds.length) {
               log(recentVideoIds.length, 'recent videos');
+              notificationMessages.push(`${channel.title} posted ${recentVideoIds.length} recent videos.`);
               count += recentVideoIds.length;
             } else {
               log('no recent videos for this channel');
@@ -54,7 +56,7 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
     });
 
     Promise.all(promises).finally(() => {
-      resolve(count);
+      resolve([count, notificationMessages]);
     });
 
   });
@@ -72,7 +74,7 @@ async function autoCheckLoop(rate?: number) {
     const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
     log('Storage data:', { channels: channels, settings: settings, cache: cache });
     // Check for recent videos
-    const recentVideosCount: number = await getRecentVideosCount(channels, settings, cache);
+    const [recentVideosCount, notificationMessages] = await getRecentVideosCount(channels, settings, cache);
     const badgeText: string = await getBadgeText();
     log('Recent videos count:', recentVideosCount);
     log('Badge text:', badgeText);
@@ -83,9 +85,14 @@ async function autoCheckLoop(rate?: number) {
     }
     log('Total count:', totalRecentVideosCount);
     setBadgeText(totalRecentVideosCount);
-    // ToDo: Notify
+    // Notify
+    if (settings.enableRecentVideosNotifications && recentVideosCount > 0) {
+      notificationMessages.forEach((message: string) => {
+        sendNotification(message);
+      });
+    }
     // Re-loop
-    autoCheckLoop(settings.autoVideosCheckRate);
+    autoCheckLoop(settings.autoVideosCheckRate || defaultVideosCheckRate);
   }, rate * 60 * 1000); // convert minutes to milliseconds
 }
 

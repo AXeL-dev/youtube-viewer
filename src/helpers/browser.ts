@@ -25,6 +25,15 @@ export function executeScript(tabId: number, code: string): void {
   );
 }
 
+export function sendNotification(message: string, type: string|any = 'basic') {
+  browser.notifications.create({
+    type: type,
+    title: 'Youtube viewer',
+    iconUrl: 'icons/128.png',
+    message: message
+  });
+}
+
 export function setBadgeText(text: string|number): void {
   browser.browserAction.setBadgeText({
     text: text === 0 ? '' : text.toString()

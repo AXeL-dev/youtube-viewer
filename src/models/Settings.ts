@@ -7,6 +7,7 @@ export interface Settings {
   sortVideosBy: string,
   apiKey?: string,
   autoVideosCheckRate: number,
+  enableRecentVideosNotifications: boolean,
   autoPlayVideos: boolean,
   openVideosInInactiveTabs: boolean,
   openChannelsOnNameClick: boolean,

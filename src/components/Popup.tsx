@@ -428,6 +428,7 @@ export default function Popup(props: PopupProps) {
       sortVideosBy: (document.getElementById('sortVideosBy') as any).value,
       apiKey: (document.getElementById('apiKey') as any).value,
       autoVideosCheckRate: +(document.getElementById('autoVideosCheckRate') as any).value,
+      enableRecentVideosNotifications: (document.getElementById('enableRecentVideosNotifications') as any).checked,
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
       openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,

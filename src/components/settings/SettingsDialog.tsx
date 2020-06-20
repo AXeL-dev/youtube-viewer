@@ -203,6 +203,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Enable recent videos notifications" secondary="Notify you when recent videos get posted" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Switch
+              id="enableRecentVideosNotifications"
+              defaultChecked={settings?.enableRecentVideosNotifications}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Auto play videos once opened" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch

@@ -27,6 +27,7 @@ class App extends React.Component<AppProps, AppState> {
         videosAnteriority: 30, // days
         sortVideosBy: 'date',
         autoVideosCheckRate: 30, // minutes
+        enableRecentVideosNotifications: true,
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
