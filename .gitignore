@@ -10,6 +10,7 @@
 
 # production
 /build
+/old
 *.zip
 *.crx
 *.pem
