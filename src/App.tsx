@@ -1,11 +1,12 @@
 import React from 'react';
 import './App.css';
 import Popup from './components/Popup';
-import { getFromStorage } from './helpers/storage';
+import { getFromStorage, saveToStorage } from './helpers/storage';
 import { Channel, ChannelSelection } from './models/Channel';
 import { Settings } from './models/Settings';
 import { isWebExtension, setBadgeText } from './helpers/browser';
 import { debug } from './helpers/debug';
+import { Video } from './models/Video';
 
 interface AppProps {}
 
@@ -36,15 +37,31 @@ class App extends React.Component<AppProps, AppState> {
       cache: {},
       isReady: false
     };
-    this.getDataFromStorage();
+    this.updateState();
     if (isWebExtension()) {
       setBadgeText(''); // reset webextension badge
     }
   }
 
-  async getDataFromStorage() {
-    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
+  async updateState() {
+    // get data from storage
+    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache'); // to know: const object properties can be modified only reference cannot be changed
     debug('Storage data:', {channels: channels, settings: settings, cache: cache});
+    // update cache (reset recent videos count)
+    let cacheHasChanged: boolean = false;
+    Object.keys(cache).forEach((channelId: string) => {
+      cache[channelId] = cache[channelId].map((video: Video) => {
+        if (video.isRecent) {
+          video.isRecent = false;
+          cacheHasChanged = true;
+        }
+        return video;
+      });
+    });
+    if (cacheHasChanged) {
+      saveToStorage({ cache: cache });
+    }
+    // update state
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
       settings: settings ? {...this.state.settings, ...settings} : this.state.settings,

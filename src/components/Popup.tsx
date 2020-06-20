@@ -245,25 +245,9 @@ export default function Popup(props: PopupProps) {
             const recentVideoIds: string[] = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
                                                      .slice(0, settings.videosPerChannel)
                                                      .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
-            // update old videos cache (keep only today's recent videos)
-            let cacheHasChanged: boolean = false;
-            if (cache[channel.id]?.length) {
-              cache[channel.id] = cache[channel.id].map((video: Video) => {
-                if (video.isRecent && !isInToday(video.publishedAt)) {
-                  video.isRecent = false;
-                  cacheHasChanged = true;
-                }
-                return video;
-              });
-            }
             // get recent videos informations
             if (!recentVideoIds.length) {
-              debug('no recent videos for this channel', { cacheHasChanged: cacheHasChanged });
-              if (cacheHasChanged) {
-                // update cache
-                setCache({...cache});
-                saveToStorage({ cache: cache });
-              }
+              debug('no recent videos for this channel');
               resolve(cache[channel.id] || []);
             } else {
               debug('getting recent videos of', channel.title, { recentVideoIds: recentVideoIds, cacheVideoIds: cacheVideoIds });
@@ -271,7 +255,7 @@ export default function Popup(props: PopupProps) {
                 debug('recent videos data', videosData);
                 // mark today's videos as recent
                 videosData = videosData.map((video: Video) => {
-                  if (isInToday(video.publishedAt)) {
+                  if (isInToday(video.publishedAt)) { // avoid marking too old videos as recent when cache is empty
                     video.isRecent = true;
                   }
                   return video;
