@@ -157,15 +157,20 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {
-    warn('channels or settings changed', isReady);
-    if (isReady) {
-      if (channels.length && !videos.length) {
-        if (settings.defaultChannelSelection === ChannelSelection.All) {
-          showAllChannels(true);
-        } else if (settings.defaultChannelSelection === ChannelSelection.RecentVideos) {
-          showRecentVideos(true);
-        }
+    warn('isReady changed', isReady);
+    if (isReady && channels.length && !videos.length) {
+      if (settings.defaultChannelSelection === ChannelSelection.All) {
+        showAllChannels(true);
+      } else if (settings.defaultChannelSelection === ChannelSelection.RecentVideos) {
+        showRecentVideos(true);
       }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isReady]);
+
+  React.useEffect(() => {
+    warn('channels or settings changed', { isReady: isReady });
+    if (isReady) {
       saveToStorage({
         channels: channels,
         settings: settings
@@ -175,7 +180,7 @@ export default function Popup(props: PopupProps) {
   }, [channels, settings]);
 
   React.useEffect(() => {
-    warn('cache or channels changed', isReady);
+    warn('cache or channels changed', { isReady: isReady });
     if (isReady) {
       debug('----------------------');
       debug('counting recent videos');
