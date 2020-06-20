@@ -16,6 +16,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 ## Features
 
 - Track multi channels all in one place
+- Get notifications about new posted videos
 - Auto play videos on click
 - Export/import channels list
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
@@ -27,11 +28,11 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 
 ## Todo
 
-- [ ] Translations
-- [ ] Notifications for new posted videos (with auto-check every x minutes)
+- [x] Notifications for new posted videos (with auto-check every x minutes)
 - [x] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
 - [x] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
+- [ ] Translations
 
 ## Technical
 
@@ -41,6 +42,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 - [Material-UI](https://material-ui.com/): UI toolkit
 - [lodash](https://lodash.com/): Utility library
 - [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
+- [Gulp.js](https://gulpjs.com/): Workflow automation toolkit
 
 ### Scripts
 
