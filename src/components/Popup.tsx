@@ -177,13 +177,15 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => {
     warn('cache or channels changed', isReady);
     if (isReady) {
+      debug('----------------------');
       debug('counting recent videos');
       const count = Object.keys(cache).reduce((total: number, channelId: string) => {
-        if (channels.find((channel: Channel) => channel.id === channelId)?.isHidden) {
+        const channel = channels.find((c: Channel) => c.id === channelId);
+        if (!channel || channel.isHidden) {
           return total;
         }
         const countPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
-        debug(channelId, countPerChannel);
+        debug(channel.title, countPerChannel);
         return total + countPerChannel;
       }, 0);
       debug('total count', count);
