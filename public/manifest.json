@@ -18,6 +18,17 @@
     "default_popup": "index.html"
   },
 
+  "background": {
+    "scripts": [
+      "js/browser-polyfill.min.js",
+      "js/compiled/helpers/storage.js",
+      "js/compiled/helpers/utils.js",
+      "js/compiled/helpers/youtube.js",
+      "js/compiled/helpers/browser.js",
+      "js/compiled/scripts/background.js"
+    ]
+  },
+
   "author": "AXeL-dev",
   "homepage_url": "https://github.com/AXeL-dev/youtube-viewer",
 

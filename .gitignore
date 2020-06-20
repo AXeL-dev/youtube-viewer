@@ -13,6 +13,7 @@
 *.zip
 *.crx
 *.pem
+public/js/compiled
 
 # misc
 .DS_Store

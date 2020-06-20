@@ -186,6 +186,23 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Auto videos check rate (in minutes)" secondary="Number of minutes to wait before auto-checking for new videos" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <TextField
+              id="autoVideosCheckRate"
+              type="number"
+              size="small"
+              variant="outlined"
+              color="secondary"
+              inputProps={{ min: 5, max: 720, step: 5 }}
+              className={classes.container}
+              defaultValue={settings?.autoVideosCheckRate}
+              onChange={(event) => validateSettings(event)}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Auto play videos once opened" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch

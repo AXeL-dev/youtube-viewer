@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "build": "gulp compile:background-scripts && INLINE_RUNTIME_CHUNK=false react-scripts build",
     "package": "web-ext build --source-dir=build --artifacts-dir=.",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -46,6 +46,10 @@
   "devDependencies": {
     "@types/lodash": "^4.14.149",
     "@types/react-beautiful-dnd": "^11.0.4",
+    "gulp": "^4.0.2",
+    "gulp-file": "^0.4.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-shell": "^0.8.0",
     "webextension-polyfill": "^0.6.0",
     "webextension-polyfill-ts": "^0.11.0"
   }

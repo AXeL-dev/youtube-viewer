@@ -4,9 +4,10 @@ import Popup from './components/Popup';
 import { getFromStorage } from './helpers/storage';
 import { Channel, ChannelSelection } from './models/Channel';
 import { Settings } from './models/Settings';
+import { isWebExtension, setBadgeText } from './helpers/browser';
+import { debug } from './helpers/debug';
 
-interface AppProps {
-}
+interface AppProps {}
 
 interface AppState {
   channels: Channel[];
@@ -25,6 +26,7 @@ class App extends React.Component<AppProps, AppState> {
         videosPerChannel: 9,
         videosAnteriority: 30, // days
         sortVideosBy: 'date',
+        autoVideosCheckRate: 30, // minutes
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
@@ -34,11 +36,14 @@ class App extends React.Component<AppProps, AppState> {
       isReady: false
     };
     this.getDataFromStorage();
+    if (isWebExtension()) {
+      setBadgeText(''); // reset webextension badge
+    }
   }
 
   async getDataFromStorage() {
     const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
-    //console.log({channels: channels, settings: settings, cache: cache});
+    debug('Storage data:', {channels: channels, settings: settings, cache: cache});
     this.setState({
       channels: channels?.length ? channels : this.state.channels,
       settings: settings ? {...this.state.settings, ...settings} : this.state.settings,
