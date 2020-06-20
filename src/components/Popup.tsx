@@ -169,15 +169,20 @@ export default function Popup(props: PopupProps) {
   }, [isReady]);
 
   React.useEffect(() => {
-    warn('channels or settings changed', { isReady: isReady });
+    warn('channels changed', { isReady: isReady });
     if (isReady) {
-      saveToStorage({
-        channels: channels,
-        settings: settings
-      });
+      saveToStorage({ channels: channels });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channels, settings]);
+  }, [channels]);
+
+  React.useEffect(() => {
+    warn('settings changed', { isReady: isReady });
+    if (isReady) {
+      saveToStorage({ settings: settings });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]);
 
   React.useEffect(() => {
     warn('cache or channels changed', { isReady: isReady });
