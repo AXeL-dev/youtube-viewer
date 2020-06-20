@@ -475,7 +475,7 @@ export default function Popup(props: PopupProps) {
 
   const handlePullToRefresh = (resolve: Function, reject: Function) => {
     let promise: Promise<any>;
-    if (selectedChannelIndex === ChannelSelection.All) {
+    if (selectedChannelIndex === ChannelSelection.All || selectedChannelIndex === ChannelSelection.RecentVideos) {
       promise = refreshChannels();
     } else {
       promise = selectChannel(channels[selectedChannelIndex], selectedChannelIndex, true);
