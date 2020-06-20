@@ -335,6 +335,7 @@ export default function Popup(props: PopupProps) {
     channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
+        debug('----------------------');
         debug(channel.title, newVideos);
         videos.push(...newVideos);
       });
@@ -360,6 +361,7 @@ export default function Popup(props: PopupProps) {
     channels.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
+        debug('----------------------');
         debug(channel.title, newVideos);
         videos.push(...newVideos.filter((video: Video) => video.isRecent));
       });
