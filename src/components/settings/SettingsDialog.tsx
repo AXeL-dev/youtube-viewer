@@ -92,7 +92,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       </AppBar>
       <List>
         <ListItem>
-          <ListItemText primary="Default channel selection" secondary="The default selected channels menu" className={classes.optionLabel} />
+          <ListItemText primary="Default channel selection" secondary="The channel menu that would be selected by default" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Select
               native
@@ -160,12 +160,12 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Custom API key" secondary={
+          <ListItemText primary={
+            <Typography variant="body1" component="span">Custom API key (<Link href="https://www.slickremix.com/docs/get-api-key-for-youtube/" target="_blank" rel="noopener">How to get an API key?</Link>)</Typography>
+          } secondary={
             <React.Fragment>
               <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
               <br/>
-              <Link href="https://www.slickremix.com/docs/get-api-key-for-youtube/" target="_blank" rel="noopener">How to get an API key?</Link>
-              &nbsp;
               <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
             </React.Fragment>
           } className={classes.optionLabel} />
@@ -186,7 +186,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Auto videos check rate (in minutes)" secondary="Number of minutes to wait before auto-checking for new videos" className={classes.optionLabel} />
+          <ListItemText primary="Auto videos check rate (in minutes)" secondary="Number of minutes to wait before auto-checking for recent videos" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <TextField
               id="autoVideosCheckRate"
@@ -203,7 +203,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Enable recent videos notifications" secondary="Notify you when recent videos get posted" className={classes.optionLabel} />
+          <ListItemText primary="Enable recent videos notifications" secondary="Notifies you when recent videos get posted" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="enableRecentVideosNotifications"
@@ -214,7 +214,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Auto play videos once opened" secondary="Auto-play permissions should be granted for youtube.com" className={classes.optionLabel} />
+          <ListItemText primary="Auto play videos once opened" secondary="Auto-play permission should be granted for youtube.com" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="autoPlayVideos"
