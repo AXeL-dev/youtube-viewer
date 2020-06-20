@@ -6,7 +6,7 @@ import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
 import { setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
 
-const defaultVideosCheckRate = 30;
+const defaultVideosCheckRate: number = 30;
 
 function getAutoCheckRate(): Promise<number> {
   return new Promise(async (resolve, reject) => {
