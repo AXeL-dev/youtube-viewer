@@ -25,7 +25,7 @@ export function executeScript(tabId: number, code: string): void {
   );
 }
 
-export function sendNotification(message: string, type: string|any = 'basic') {
+export function sendNotification(message: string, type: string|any = 'basic'): void {
   browser.notifications.create({
     type: type,
     title: 'Youtube viewer',
