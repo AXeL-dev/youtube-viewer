@@ -210,10 +210,12 @@ export default function Popup(props: PopupProps) {
   const getChannelVideos = (channel: Channel, ignoreCache: boolean = false): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       if (!ignoreCache && cache[channel.id]?.length) {
+        debug('----------------------');
         debug('load videos from cache', channel.title, cache[channel.id]);
         resolve(cache[channel.id].slice(0, settings.videosPerChannel));
       } else {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
+          debug('----------------------');
           debug('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
@@ -226,7 +228,7 @@ export default function Popup(props: PopupProps) {
             let cacheHasChanged: boolean = false;
             if (cache[channel.id]?.length) {
               cache[channel.id] = cache[channel.id].map((video: Video) => {
-                if (!isInToday(video.publishedAt)) {
+                if (video.isRecent && !isInToday(video.publishedAt)) {
                   video.isRecent = false;
                   cacheHasChanged = true;
                 }
@@ -235,7 +237,7 @@ export default function Popup(props: PopupProps) {
             }
             // get recent videos informations
             if (!recentVideoIds.length) {
-              debug('no recent videos for this channel');
+              debug('no recent videos for this channel', { cacheHasChanged: cacheHasChanged });
               if (cacheHasChanged) {
                 // update cache
                 setCache({...cache});
