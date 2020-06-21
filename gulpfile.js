@@ -3,20 +3,10 @@ const file = require('gulp-file');
 const replace = require('gulp-replace');
 const shell = require('gulp-shell');
 const argv = require('yargs').option('new-version', { alias: 'nv' })
-                             .option('commit', { boolean: true, default: true })
+                             .option('commit', { boolean: true, default: true }) // use --no-commit to bypass git commit
                              .argv;
 const fs = require('fs');
 const del = require('del');
-
-/**
- * Arguments
- */
-const newVersion = argv.newVersion;
-const commit = argv.commit; // use --no-commit to bypass git commit
-
-// Parse arguments
-console.log('newVersion:', newVersion);
-console.log('commit:', commit);
 
 /**
  * Global constants
@@ -102,12 +92,12 @@ gulp.task('delete-models', function() {
 
 gulp.task('update-manifest-version', function() {
   return file('manifest.json', getFileContent('public/manifest.json'), { src: true })
-    .pipe(replace(/^(\s*"version": ").+(",$\s*)/gm, `$1${newVersion}$2`))
+    .pipe(replace(/^(\s*"version": ").+(",$\s*)/gm, `$1${argv.newVersion}$2`))
     .pipe(gulp.dest('public'));
 });
 
 gulp.task('run-npm-version',
-  shell.task(`npm version ${newVersion} --no-git-tag-version --allow-same-version${commit ? ` && git add -A && git commit -a -m "Release v${newVersion}"` : ''}`)
+  shell.task(`npm version ${argv.newVersion} --no-git-tag-version --allow-same-version${argv.commit ? ` && git add -A && git commit -a -m "Release v${argv.newVersion}"` : ''}`)
 );
 
 // Main tasks
@@ -121,7 +111,7 @@ gulp.task('compile:background-scripts', gulp.series(
   'delete-models'
 ));
 
-gulp.task('bump:version', runIf(newVersion !== undefined,
+gulp.task('bump:version', runIf(argv.newVersion !== undefined,
   'update-manifest-version',
   'run-npm-version'
 ));
