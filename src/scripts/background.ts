@@ -40,8 +40,8 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
             const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
             const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
                                                        .slice(0, settings.videosPerChannel)
-                                                       .filter((videoId: string) => !checkedVideosIds[channel.id] || checkedVideosIds[channel.id].indexOf(videoId) === -1) // do not refetch videos already checked
-                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // do not refetch videos already in cache
+                                                       .filter((videoId: string) => !checkedVideosIds[channel.id] || checkedVideosIds[channel.id].indexOf(videoId) === -1) // remove videos already checked
+                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
             // set recent videos count
             if (recentVideosIds.length) {
               log(recentVideosIds.length, 'recent videos');

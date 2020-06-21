@@ -244,7 +244,7 @@ export default function Popup(props: PopupProps) {
             const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
             const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
                                                        .slice(0, settings.videosPerChannel)
-                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // do not refetch videos already in cache
+                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
             // get recent videos informations
             if (!recentVideosIds.length) {
               debug('no recent videos for this channel');
