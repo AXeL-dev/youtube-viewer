@@ -2,8 +2,18 @@ const gulp = require('gulp');
 const file = require('gulp-file');
 const replace = require('gulp-replace');
 const shell = require('gulp-shell');
+const argv = require('yargs').option('new-version', { alias: 'nv' })
+                             .option('commit', { alias: 'c', boolean: true, default: true })
+                             .argv;
 const fs = require('fs');
 const del = require('del');
+
+/**
+ * Arguments
+ */
+const newVersion = argv.newVersion;
+const commit = argv.commit; // use --no-commit to bypass git commit
+//console.log(newVersion, commit);
 
 /**
  * Global constants
@@ -18,6 +28,17 @@ const youtubeApiKey = env.split('=')[1].replace(/(\r\n|\n|\r)/gm, '');
  */
 function getFileContent(file, encoding = 'utf8') {
   return fs.readFileSync(file, encoding);
+}
+
+function runIf(condition, ...tasks) {
+  const task = gulp.series(...tasks);
+  return function(cb) {
+    if (condition) {
+      task(cb);
+    } else {
+      cb();
+    }
+  }
 }
 
 /**
@@ -72,7 +93,17 @@ gulp.task('delete-models', function() {
   return del(`${outDir}/models/**`, { force: true });
 });
 
-// Main task
+gulp.task('update-manifest-version', function() {
+  return file('manifest.json', getFileContent('public/manifest.json'), { src: true })
+    .pipe(replace(/^(\s*"version": ").+(",$\s*)/gm, `$1${newVersion}$2`))
+    .pipe(gulp.dest('public'));
+});
+
+gulp.task('run-npm-version',
+  shell.task(`npm version ${newVersion} --no-git-tag-version --allow-same-version${commit ? ` && git add -A && git commit -a -m "Release v${newVersion}"` : ''}`)
+);
+
+// Main tasks
 gulp.task('compile:background-scripts', gulp.series(
   'transpile-background-script',
   'cleanup-background-script',
@@ -81,4 +112,9 @@ gulp.task('compile:background-scripts', gulp.series(
   'cleanup-utils-helper',
   'cleanup-youtube-helper',
   'delete-models'
+));
+
+gulp.task('bump:version', runIf(newVersion !== undefined,
+  'update-manifest-version',
+  'run-npm-version'
 ));
