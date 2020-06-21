@@ -10,8 +10,8 @@ const del = require('del');
  */
 const outDir = 'public/js/compiled';
 const env = getFileContent('.env');
-const ytApiKey = env.split('=')[1].replace(/(\r\n|\n|\r)/gm, '');
-//console.log(ytApiKey);
+const youtubeApiKey = env.split('=')[1].replace(/(\r\n|\n|\r)/gm, '');
+//console.log(youtubeApiKey);
 
 /**
  * Functions
@@ -64,7 +64,7 @@ gulp.task('cleanup-youtube-helper', function() {
     .pipe(replace(/^\s*import .+;$\s*/gm, ''))
     .pipe(replace(/^\s*export .+;$\s*/gm, ''))
     .pipe(replace(/^\s*export /gm, ''))
-    .pipe(replace('process.env.REACT_APP_YOUTUBE_API_KEY', `'${ytApiKey}'`))
+    .pipe(replace('process.env.REACT_APP_YOUTUBE_API_KEY', `'${youtubeApiKey}'`))
     .pipe(gulp.dest(`${outDir}/helpers`));
 });
 
