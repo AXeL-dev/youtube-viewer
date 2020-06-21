@@ -32,6 +32,7 @@ class App extends React.Component<AppProps, AppState> {
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
+        autoClearRecentVideos: true,
         autoClearCache: false
       },
       cache: {},
@@ -45,21 +46,24 @@ class App extends React.Component<AppProps, AppState> {
 
   async updateState() {
     // get data from storage
-    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache'); // to know: const object properties can be modified only reference cannot be changed
+    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache'); // to know: const object properties can be modified, only reference cannot be changed
     debug('Storage data:', {channels: channels, settings: settings, cache: cache});
-    // update cache (reset recent videos count)
-    let cacheHasChanged: boolean = false;
-    Object.keys(cache).forEach((channelId: string) => {
-      cache[channelId] = cache[channelId].map((video: Video) => {
-        if (video.isRecent) {
-          video.isRecent = false;
-          cacheHasChanged = true;
-        }
-        return video;
+    // clear recent videos
+    if (settings.autoClearRecentVideos) {
+      let cacheHasChanged: boolean = false;
+      Object.keys(cache).forEach((channelId: string) => {
+        cache[channelId] = cache[channelId].map((video: Video) => {
+          if (video.isRecent) {
+            video.isRecent = false;
+            cacheHasChanged = true;
+          }
+          return video;
+        });
       });
-    });
-    if (cacheHasChanged) {
-      saveToStorage({ cache: cache });
+      // update cache
+      if (cacheHasChanged) {
+        saveToStorage({ cache: cache });
+      }
     }
     // update state
     this.setState({

@@ -445,6 +445,7 @@ export default function Popup(props: PopupProps) {
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
       openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,
+      autoClearRecentVideos: (document.getElementById('autoClearRecentVideos') as any).checked,
       autoClearCache: (document.getElementById('autoClearCache') as any).checked
     });
     closeSettings();

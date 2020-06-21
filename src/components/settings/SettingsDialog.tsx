@@ -248,6 +248,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
+          <ListItemText primary="Auto clear recent videos" secondary="Auto-clear recent videos before each startup" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Switch
+              id="autoClearRecentVideos"
+              defaultChecked={settings?.autoClearRecentVideos}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
           <ListItemText primary="Auto clear videos cache" secondary="Cache may speed up loading time & reduce API quota consumption" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
