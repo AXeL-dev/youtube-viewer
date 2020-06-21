@@ -3,7 +3,7 @@ const file = require('gulp-file');
 const replace = require('gulp-replace');
 const shell = require('gulp-shell');
 const argv = require('yargs').option('new-version', { alias: 'nv' })
-                             .option('commit', { alias: 'c', boolean: true, default: true })
+                             .option('commit', { boolean: true, default: true })
                              .argv;
 const fs = require('fs');
 const del = require('del');
@@ -13,21 +13,28 @@ const del = require('del');
  */
 const newVersion = argv.newVersion;
 const commit = argv.commit; // use --no-commit to bypass git commit
-//console.log(newVersion, commit);
+
+// Parse arguments
+console.log('newVersion:', newVersion);
+console.log('commit:', commit);
 
 /**
  * Global constants
  */
 const outDir = 'public/js/compiled';
-const env = getFileContent('.env');
-const youtubeApiKey = env.split('=')[1].replace(/(\r\n|\n|\r)/gm, '');
-//console.log(youtubeApiKey);
 
 /**
  * Functions
  */
 function getFileContent(file, encoding = 'utf8') {
   return fs.readFileSync(file, encoding);
+}
+
+function getYoutubeAPIKey() {
+  const env = getFileContent('.env');
+  const youtubeApiKey = env.split('=')[1].replace(/(\r\n|\n|\r)/gm, '');
+  console.log('Youtube API key:', youtubeApiKey);
+  return youtubeApiKey;
 }
 
 function runIf(condition, ...tasks) {
@@ -85,7 +92,7 @@ gulp.task('cleanup-youtube-helper', function() {
     .pipe(replace(/^\s*import .+;$\s*/gm, ''))
     .pipe(replace(/^\s*export .+;$\s*/gm, ''))
     .pipe(replace(/^\s*export /gm, ''))
-    .pipe(replace('process.env.REACT_APP_YOUTUBE_API_KEY', `'${youtubeApiKey}'`))
+    .pipe(replace('process.env.REACT_APP_YOUTUBE_API_KEY', `'${getYoutubeAPIKey()}'`))
     .pipe(gulp.dest(`${outDir}/helpers`));
 });
 
