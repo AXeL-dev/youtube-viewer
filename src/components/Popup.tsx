@@ -240,18 +240,18 @@ export default function Popup(props: PopupProps) {
           debug('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
-            const videoIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
-            const cacheVideoIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            const recentVideoIds: string[] = videoIds.filter((videoId: string, index: number) => videoIds.indexOf(videoId) === index) // remove duplicates
-                                                     .slice(0, settings.videosPerChannel)
-                                                     .filter((videoId: string) => cacheVideoIds.indexOf(videoId) === -1); // no need to refetch videos already in cache
+            const videosIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
+            const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
+            const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
+                                                       .slice(0, settings.videosPerChannel)
+                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // do not refetch videos already in cache
             // get recent videos informations
-            if (!recentVideoIds.length) {
+            if (!recentVideosIds.length) {
               debug('no recent videos for this channel');
               resolve(cache[channel.id] || []);
             } else {
-              debug('getting recent videos of', channel.title, { recentVideoIds: recentVideoIds, cacheVideoIds: cacheVideoIds });
-              getVideoInfo(recentVideoIds).then((videosData: Video[]) => {
+              debug('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
+              getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
                 debug('recent videos data', videosData);
                 // mark today's videos as recent
                 videosData = videosData.map((video: Video) => {
@@ -359,8 +359,8 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const showAllChannels = (ignoreCache: boolean = false, customChannels?: Channel[]) => {
-    return fetchChannelsVideos(ChannelSelection.All, null, ignoreCache, customChannels);
+  const showAllChannels = (ignoreCache: boolean = false) => {
+    return fetchChannelsVideos(ChannelSelection.All, null, ignoreCache);
   };
 
   const showTodaysVideos = (ignoreCache: boolean = false) => {
@@ -407,7 +407,7 @@ export default function Popup(props: PopupProps) {
     debug('importing channels', channelsList);
     // Update channels
     setChannels(channelsList);
-    showAllChannels(true, channelsList);
+    fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);
     setSnackbarMessage('Channels imported!');
   };
 
