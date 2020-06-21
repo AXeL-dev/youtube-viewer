@@ -603,7 +603,7 @@ export default function Popup(props: PopupProps) {
         {isReady && (channels?.length && selectedChannelIndex !== ChannelSelection.None ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
+            icon={selectedChannelIndex < 0 || videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
             distanceToRefresh={50}
             resistance={5}
             style={{ position: 'relative' }}
