@@ -329,10 +329,10 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const showAllChannels = (ignoreCache: boolean = false, customChannels?: Channel[]) => {
-    // Select "All"
-    setSelectedChannelIndex(ChannelSelection.All);
-    // Get all channels videos
+  const fetchChannelsVideos = (selection: ChannelSelection, filterFunction: Function|null = null, ignoreCache: boolean = false, customChannels?: Channel[]) => {
+    // Update channel selection
+    setSelectedChannelIndex(selection);
+    // Get channels videos
     setIsLoading(true);
     setVideos([]);
     let promises: Promise<any>[] = [];
@@ -344,6 +344,9 @@ export default function Popup(props: PopupProps) {
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
         debug('----------------------');
         debug(channel.title, newVideos);
+        if (filterFunction) {
+          newVideos = newVideos.filter((video: Video) => filterFunction(video));
+        }
         videos.push(...newVideos);
       });
       promises.push(promise);
@@ -356,56 +359,16 @@ export default function Popup(props: PopupProps) {
     });
   };
 
+  const showAllChannels = (ignoreCache: boolean = false, customChannels?: Channel[]) => {
+    return fetchChannelsVideos(ChannelSelection.All, null, ignoreCache, customChannels);
+  };
+
   const showTodaysVideos = (ignoreCache: boolean = false) => {
-    // Select "Today's videos"
-    setSelectedChannelIndex(ChannelSelection.TodaysVideos);
-    // Get todays videos
-    setIsLoading(true);
-    setVideos([]);
-    let promises: Promise<any>[] = [];
-    let videos: Video[] = [];
-
-    channels.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
-
-      const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
-        debug('----------------------');
-        debug(channel.title, newVideos);
-        videos.push(...newVideos.filter((video: Video) => isInToday(video.publishedAt)));
-      });
-      promises.push(promise);
-
-    });
-
-    return Promise.all(promises).finally(() => {
-      setVideos(videos);
-      setIsLoading(false);
-    });
+    return fetchChannelsVideos(ChannelSelection.TodaysVideos, (video: Video) => isInToday(video.publishedAt), ignoreCache);
   };
 
   const showRecentVideos = (ignoreCache: boolean = false) => {
-    // Select "Recent videos"
-    setSelectedChannelIndex(ChannelSelection.RecentVideos);
-    // Get recent videos
-    setIsLoading(true);
-    setVideos([]);
-    let promises: Promise<any>[] = [];
-    let videos: Video[] = [];
-
-    channels.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
-
-      const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
-        debug('----------------------');
-        debug(channel.title, newVideos);
-        videos.push(...newVideos.filter((video: Video) => video.isRecent));
-      });
-      promises.push(promise);
-
-    });
-
-    return Promise.all(promises).finally(() => {
-      setVideos(videos);
-      setIsLoading(false);
-    });
+    return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, ignoreCache);
   };
 
   const clearRecentVideos = () => {
@@ -600,7 +563,7 @@ export default function Popup(props: PopupProps) {
         //onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {isReady && (channels?.length && selectedChannelIndex !== ChannelSelection.None ? (
+        {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
             icon={selectedChannelIndex < 0 || videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
