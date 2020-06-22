@@ -167,6 +167,21 @@ export function isInToday(timestamp: number) {
 // -------------------------------------------------------------------
 
 /**
+ * Returns hours difference between two dates
+ * Stolen from: https://www.w3resource.com/javascript-exercises/javascript-date-exercise-45.php
+ * 
+ * @param dt1 
+ * @param dt2 
+ */
+export function diffHours(dt1: Date, dt2: Date): number {
+  let diff = (dt2.getTime() - dt1.getTime()) / 1000;
+  diff /= (60 * 60);
+  return Math.abs(Math.round(diff));
+}
+
+// -------------------------------------------------------------------
+
+/**
  * Return a new RegExp object instance
  * 
  * @param pattern 

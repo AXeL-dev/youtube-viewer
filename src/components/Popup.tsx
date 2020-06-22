@@ -23,7 +23,7 @@ import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel, ChannelSelection } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
-import { getDateBefore, memorySizeOf, isInToday } from '../helpers/utils';
+import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../helpers/utils';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
@@ -253,9 +253,11 @@ export default function Popup(props: PopupProps) {
               debug('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
               getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
                 debug('recent videos data', videosData);
-                // mark today's videos as recent
+                // mark new videos as recent
+                const now = new Date();
                 videosData = videosData.map((video: Video) => {
-                  if (isInToday(video.publishedAt)) { // avoid marking too old videos as recent when cache is empty
+                  const videoDate = new Date(video.publishedAt); // convert timestamp to Date object
+                  if (diffHours(now, videoDate) <= 24) { // avoid marking too old videos as recent when cache is empty
                     video.isRecent = true;
                   }
                   return video;
