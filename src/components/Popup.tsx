@@ -569,7 +569,7 @@ export default function Popup(props: PopupProps) {
       >
         <div className={classes.drawerHeader} />
         {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
-          ((selectedChannelIndex < 0 && getNotHiddenChannelsCount() > 0) || videos?.length > 0) &&
+          ((selectedChannelIndex === ChannelSelection.All && getNotHiddenChannelsCount() > 0) || videos?.length > 0 || isLoading) &&
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
             icon={<ArrowDownwardIcon className="arrowicon" />}
@@ -583,6 +583,7 @@ export default function Popup(props: PopupProps) {
                 videos={videos}
                 settings={settings}
                 loading={isLoading}
+                selectedChannelIndex={selectedChannelIndex}
                 maxPerChannel={settings.videosPerChannel}
                 onSelect={selectChannel}
                 onVideoClick={openVideo}

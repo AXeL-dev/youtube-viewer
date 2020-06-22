@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Video } from '../../models/Video';
-import { Channel } from '../../models/Channel';
+import { Channel, ChannelSelection } from '../../models/Channel';
 import { Settings } from '../../models/Settings';
 import VideoList from './VideoList';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
@@ -47,6 +47,7 @@ interface VideoGridProps {
   channels: Channel[];
   videos: Video[];
   settings: Settings;
+  selectedChannelIndex: number;
   maxPerLine?: number;
   maxPerChannel?: number;
   onSelect: Function;
@@ -58,7 +59,7 @@ interface VideoGridProps {
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, settings, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
+  const { channels, videos, settings, selectedChannelIndex, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
   const [expandedIndexes, setExpandedIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
@@ -87,6 +88,11 @@ export default function VideoGrid(props: VideoGridProps) {
           return;
         }
         const channelVideos: Video[] = videos.filter((video: Video) => video.channelId === channel.id);
+        // hide empty channels when selecting today's or recent videos
+        if (!loading && channelVideos.length === 0 && (selectedChannelIndex === ChannelSelection.TodaysVideos || selectedChannelIndex === ChannelSelection.RecentVideos)) {
+          // eslint-disable-next-line
+          return;
+        }
         return (
           <Box key={index}>
             <Breadcrumbs aria-label="breadcrumb" className={classes.breadcrumb}>
