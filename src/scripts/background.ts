@@ -74,11 +74,7 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
 
 }
 
-async function autoCheckLoop(rate?: number) {
-  if (!rate) {
-    rate = await getAutoCheckRate();
-    log('Rate:', rate);
-  }
+function autoCheckLoop(rate: number) {
   setTimeout(async () => {
     // Get storage data
     const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
@@ -106,9 +102,11 @@ async function autoCheckLoop(rate?: number) {
   }, rate * 60 * 1000); // convert minutes to milliseconds
 }
 
-function init() {
+async function init() {
   setBadgeColors('#666', '#fff');
-  autoCheckLoop();
+  const rate = await getAutoCheckRate();
+  log('Rate:', rate);
+  autoCheckLoop(rate);
 }
 
 init();
