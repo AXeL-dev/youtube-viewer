@@ -483,6 +483,10 @@ export default function Popup(props: PopupProps) {
     });
   };
 
+  const getNotHiddenChannelsCount = () => {
+    return channels.filter((channel: Channel) => !channel.isHidden)?.length;
+  };
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -565,9 +569,10 @@ export default function Popup(props: PopupProps) {
       >
         <div className={classes.drawerHeader} />
         {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
+          ((selectedChannelIndex < 0 && getNotHiddenChannelsCount() > 0) || videos?.length > 0) &&
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={selectedChannelIndex < 0 || videos?.length ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
+            icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
             style={{ position: 'relative' }}
