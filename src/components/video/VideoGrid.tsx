@@ -47,7 +47,6 @@ interface VideoGridProps {
   channels: Channel[];
   videos: Video[];
   settings: Settings;
-  selectedChannelIndex: number;
   maxPerLine?: number;
   maxPerChannel?: number;
   onSelect: Function;
@@ -59,7 +58,7 @@ interface VideoGridProps {
 export default function VideoGrid(props: VideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, settings, selectedChannelIndex, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
+  const { channels, videos, settings, loading = false, maxPerLine = 3, maxPerChannel = 6, onSelect, onVideoClick, onSave, onRefresh } = props;
   const [expandedIndexes, setExpandedIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
@@ -88,8 +87,8 @@ export default function VideoGrid(props: VideoGridProps) {
           return;
         }
         const channelVideos: Video[] = videos.filter((video: Video) => video.channelId === channel.id);
-        // hide empty channels when selecting today's or recent videos
-        if (!loading && channelVideos.length === 0 && (selectedChannelIndex === ChannelSelection.TodaysVideos || selectedChannelIndex === ChannelSelection.RecentVideos)) {
+        // hide empty channels
+        if (!loading && settings.hideEmptyChannels && channelVideos.length === 0) {
           // eslint-disable-next-line
           return;
         }

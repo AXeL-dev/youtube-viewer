@@ -237,11 +237,22 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name in the "All" or "Recent videos" view' className={classes.optionLabel} />
+          <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name, replaces the icon button "open channel"' className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Switch
               id="openChannelsOnNameClick"
               defaultChecked={settings?.openChannelsOnNameClick}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Hide empty channels" secondary="Hide all empty channels by default" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Switch
+              id="hideEmptyChannels"
+              defaultChecked={settings?.hideEmptyChannels}
               color="secondary"
             />
           </ListItemSecondaryAction>

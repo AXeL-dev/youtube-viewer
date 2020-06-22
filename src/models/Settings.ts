@@ -11,6 +11,7 @@ export interface Settings {
   autoPlayVideos: boolean,
   openVideosInInactiveTabs: boolean,
   openChannelsOnNameClick: boolean,
+  hideEmptyChannels: boolean,
   autoClearRecentVideos: boolean,
   autoClearCache: boolean,
 }

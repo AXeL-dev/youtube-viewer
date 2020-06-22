@@ -32,6 +32,7 @@ class App extends React.Component<AppProps, AppState> {
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
+        hideEmptyChannels: false,
         autoClearRecentVideos: true,
         autoClearCache: false
       },

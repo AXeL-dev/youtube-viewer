@@ -445,6 +445,7 @@ export default function Popup(props: PopupProps) {
       autoPlayVideos: (document.getElementById('autoPlayVideos') as any).checked,
       openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any).checked,
       openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,
+      hideEmptyChannels: (document.getElementById('hideEmptyChannels') as any).checked,
       autoClearRecentVideos: (document.getElementById('autoClearRecentVideos') as any).checked,
       autoClearCache: (document.getElementById('autoClearCache') as any).checked
     });
@@ -569,10 +570,9 @@ export default function Popup(props: PopupProps) {
       >
         <div className={classes.drawerHeader} />
         {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
-          ((selectedChannelIndex === ChannelSelection.All && getNotHiddenChannelsCount() > 0) || videos?.length > 0 || isLoading) &&
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={<ArrowDownwardIcon className="arrowicon" />}
+            icon={(!settings.hideEmptyChannels && selectedChannelIndex < 0 && getNotHiddenChannelsCount() > 0) || videos?.length > 0 ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
             distanceToRefresh={50}
             resistance={5}
             style={{ position: 'relative' }}
@@ -583,7 +583,6 @@ export default function Popup(props: PopupProps) {
                 videos={videos}
                 settings={settings}
                 loading={isLoading}
-                selectedChannelIndex={selectedChannelIndex}
                 maxPerChannel={settings.videosPerChannel}
                 onSelect={selectChannel}
                 onVideoClick={openVideo}
