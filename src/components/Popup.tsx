@@ -248,7 +248,7 @@ export default function Popup(props: PopupProps) {
             // get recent videos informations
             if (!recentVideosIds.length) {
               debug('no recent videos for this channel');
-              resolve(cache[channel.id] || []);
+              resolve(cache[channel.id]?.slice(0, settings.videosPerChannel) || []);
             } else {
               debug('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
               getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
