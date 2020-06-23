@@ -50,7 +50,7 @@ class App extends React.Component<AppProps, AppState> {
     const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache'); // to know: const object properties can be modified, only reference cannot be changed
     debug('Storage data:', {channels: channels, settings: settings, cache: cache});
     // clear recent videos
-    if (settings?.autoClearRecentVideos) {
+    if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
       Object.keys(cache).forEach((channelId: string) => {
         cache[channelId] = cache[channelId].map((video: Video) => {
