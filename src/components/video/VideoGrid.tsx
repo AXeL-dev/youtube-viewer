@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Video } from '../../models/Video';
-import { Channel, ChannelSelection } from '../../models/Channel';
+import { Channel } from '../../models/Channel';
 import { Settings } from '../../models/Settings';
 import VideoList from './VideoList';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
