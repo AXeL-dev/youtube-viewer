@@ -3,7 +3,7 @@
 
   "applications": {
     "gecko": {
-      "id": "youtube-viewer@axel-dev",
+      "id": "{d5970ac0-2c7c-453d-af91-b660bd64f88b}",
       "strict_min_version": "52.0"
     }
   },
