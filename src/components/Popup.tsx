@@ -159,17 +159,21 @@ export default function Popup(props: PopupProps) {
 
   React.useEffect(() => {
     warn('isReady changed', isReady);
-    if (isReady && channels.length && !videos.length) {
-      switch(settings.defaultChannelSelection) {
-        case ChannelSelection.TodaysVideos:
-          showTodaysVideos(true);
-          break;
-        case ChannelSelection.RecentVideos:
-          showRecentVideos(true);
-          break;
-        case ChannelSelection.All:
-        default:
-          showAllChannels(true);
+    if (isReady) {
+      if (channels.length && !videos.length) {
+        switch(settings.defaultChannelSelection) {
+          case ChannelSelection.TodaysVideos:
+            showTodaysVideos(true);
+            break;
+          case ChannelSelection.RecentVideos:
+            showRecentVideos(true);
+            break;
+          case ChannelSelection.All:
+          default:
+            showAllChannels(true);
+        }
+      } else if (selectedChannelIndex !== settings.defaultChannelSelection) {
+        setSelectedChannelIndex(settings.defaultChannelSelection);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
