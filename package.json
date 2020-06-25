@@ -28,6 +28,9 @@
     "package:dev": "cd build && zip -r -FS ../youtube_viewer-dev.zip *",
     "release": "npm run build && npm run package",
     "release:dev": "npm run build && npm run package:dev",
+    "build:github": "PUBLIC_URL=/youtube-viewer/ npm run build && npm run remove-browser-polyfill",
+    "deploy:github": "ngh --dir=build",
+    "remove-browser-polyfill": "sed -i 's/<script type=\"application\\/javascript\" src=\"js\\/browser-polyfill.min.js\"><\\/script>//' build/index.html && rm build/js/browser-polyfill.min.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
