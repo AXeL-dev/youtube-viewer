@@ -20,6 +20,7 @@ import Link from '@material-ui/core/Link';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Settings } from '../../models/Settings';
 import { ChannelSelection } from '../../models/Channel';
+import { isWebExtension } from '../../helpers/browser';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -167,7 +168,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <React.Fragment>
               <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
               <br/>
-              <Typography variant="body2" component="span">(will apply the next time you open the extension popup)</Typography>
+              <Typography variant="body2" component="span">(will apply the next time you {isWebExtension() ? 'open the extension popup' : 'reload the app'})</Typography>
             </React.Fragment>
           } className={classes.optionLabel} />
           <ListItemSecondaryAction>
@@ -185,56 +186,60 @@ export function SettingsDialog(props: SettingsDialogProps) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemText primary="Auto videos check rate (in minutes)" secondary="Number of minutes to wait before auto-checking for recent videos" className={classes.optionLabel} />
-          <ListItemSecondaryAction>
-            <TextField
-              id="autoVideosCheckRate"
-              type="number"
-              size="small"
-              variant="outlined"
-              color="secondary"
-              inputProps={{ min: 5, max: 720, step: 5 }}
-              className={classes.container}
-              defaultValue={settings?.autoVideosCheckRate}
-              onChange={(event) => validateSettings(event)}
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemText primary="Enable recent videos notifications" secondary="Notifies you when recent videos get posted" className={classes.optionLabel} />
-          <ListItemSecondaryAction>
-            <Switch
-              id="enableRecentVideosNotifications"
-              defaultChecked={settings?.enableRecentVideosNotifications}
-              color="secondary"
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemText primary="Auto play videos once opened" secondary="Auto-play permission should be granted for youtube.com" className={classes.optionLabel} />
-          <ListItemSecondaryAction>
-            <Switch
-              id="autoPlayVideos"
-              defaultChecked={settings?.autoPlayVideos}
-              color="secondary"
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
-        <Divider />
-        <ListItem>
-          <ListItemText primary="Open videos in inactive tabs" secondary="Will open videos in new tabs without losing focus of the current tab" className={classes.optionLabel} />
-          <ListItemSecondaryAction>
-            <Switch
-              id="openVideosInInactiveTabs"
-              defaultChecked={settings?.openVideosInInactiveTabs}
-              color="secondary"
-            />
-          </ListItemSecondaryAction>
-        </ListItem>
+        {isWebExtension() &&
+          <React.Fragment>
+            <Divider />
+            <ListItem>
+              <ListItemText primary="Auto videos check rate (in minutes)" secondary="Number of minutes to wait before auto-checking for recent videos" className={classes.optionLabel} />
+              <ListItemSecondaryAction>
+                <TextField
+                  id="autoVideosCheckRate"
+                  type="number"
+                  size="small"
+                  variant="outlined"
+                  color="secondary"
+                  inputProps={{ min: 5, max: 720, step: 5 }}
+                  className={classes.container}
+                  defaultValue={settings?.autoVideosCheckRate}
+                  onChange={(event) => validateSettings(event)}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemText primary="Enable recent videos notifications" secondary="Notifies you when recent videos get posted" className={classes.optionLabel} />
+              <ListItemSecondaryAction>
+                <Switch
+                  id="enableRecentVideosNotifications"
+                  defaultChecked={settings?.enableRecentVideosNotifications}
+                  color="secondary"
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemText primary="Auto play videos once opened" secondary="Auto-play permission should be granted for youtube.com" className={classes.optionLabel} />
+              <ListItemSecondaryAction>
+                <Switch
+                  id="autoPlayVideos"
+                  defaultChecked={settings?.autoPlayVideos}
+                  color="secondary"
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemText primary="Open videos in inactive tabs" secondary="Will open videos in new tabs without losing focus of the current tab" className={classes.optionLabel} />
+              <ListItemSecondaryAction>
+                <Switch
+                  id="openVideosInInactiveTabs"
+                  defaultChecked={settings?.openVideosInInactiveTabs}
+                  color="secondary"
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          </React.Fragment>
+        }
         <Divider />
         <ListItem>
           <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name, replaces the icon button "open channel"' className={classes.optionLabel} />
