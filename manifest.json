@@ -1,0 +1,48 @@
+{
+  "manifest_version": 2,
+
+  "applications": {
+    "gecko": {
+      "id": "{d5970ac0-2c7c-453d-af91-b660bd64f88b}",
+      "strict_min_version": "52.0"
+    }
+  },
+
+  "name": "__MSG_extensionName__",
+  "version": "0.5.1",
+
+  "default_locale": "en",
+  "description": "__MSG_extensionDesc__",
+  "icons": {
+    "128": "icons/128.png",
+    "256": "icons/256.png"
+  },
+
+  "web_accessible_resources": ["icons/*.png"],
+
+  "browser_action": {
+    "default_icon": "icons/128.png",
+    "default_popup": "index.html"
+  },
+
+  "background": {
+    "scripts": [
+      "js/browser-polyfill.min.js",
+      "js/compiled/helpers/storage.js",
+      "js/compiled/helpers/utils.js",
+      "js/compiled/helpers/youtube.js",
+      "js/compiled/helpers/browser.js",
+      "js/compiled/scripts/background.js"
+    ]
+  },
+
+  "author": "AXeL-dev",
+  "homepage_url": "https://github.com/AXeL-dev/youtube-viewer",
+
+  "permissions": [
+    "storage",
+    "notifications",
+    "tabs",
+    "<all_urls>"
+  ]
+}
