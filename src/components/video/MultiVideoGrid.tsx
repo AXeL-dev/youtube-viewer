@@ -121,7 +121,7 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
                 </IconButton>
               </Tooltip>
             }
-            {index < channels.length - 1 && <Divider className={classes.divider} />}
+            {index < channels.filter((c: Channel) => !c.isHidden).length - 1 && <Divider className={classes.divider} />}
           </Box>
       )}
     )}
