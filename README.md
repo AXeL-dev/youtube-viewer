@@ -26,6 +26,8 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
 [![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/youtube-viewer/releases)
 
+Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
+
 ## Todo
 
 - [x] Notifications for new posted videos (with auto-check every x minutes)
