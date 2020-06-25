@@ -18,12 +18,12 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Fade from '@material-ui/core/Fade';
-import VideoList from './video/VideoList';
 import SearchChannelInput from './channel/SearchChannelInput';
 import { Channel, ChannelSelection } from '../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../helpers/youtube';
 import { Video } from '../models/Video';
 import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../helpers/utils';
+import MultiVideoGrid from './video/MultiVideoGrid';
 import VideoGrid from './video/VideoGrid';
 import { Settings } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
@@ -584,7 +584,7 @@ export default function Popup(props: PopupProps) {
             style={{ position: 'relative' }}
           >
             {selectedChannelIndex < 0 ? (
-              <VideoGrid
+              <MultiVideoGrid
                 channels={channels}
                 videos={videos}
                 settings={settings}
@@ -596,7 +596,12 @@ export default function Popup(props: PopupProps) {
                 onRefresh={refreshChannels}
               />
             ) : (
-              <VideoList videos={videos} loading={isLoading} maxPerChannel={settings.videosPerChannel} onVideoClick={openVideo} />
+              <VideoGrid
+                videos={videos}
+                loading={isLoading}
+                maxPerChannel={settings.videosPerChannel}
+                onVideoClick={openVideo}
+              />
             )}
           </ReactPullToRefresh>
         ) : (

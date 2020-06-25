@@ -118,7 +118,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               size="small"
               variant="outlined"
               color="secondary"
-              inputProps={{ min: 1, max: 50, step: 3 }}
+              inputProps={{ min: 3, max: 50, step: 3 }}
               className={classes.container}
               defaultValue={settings?.videosPerChannel}
               onChange={(event) => validateSettings(event)}
