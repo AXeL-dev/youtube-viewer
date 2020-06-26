@@ -39,6 +39,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     '& :hover': {
       color: '#f44336',
     },
+  },
+  box: {
+    '& :last-child': {
+      '& hr.divider': {
+        display: 'none'
+      }
+    }
   }
 }));
 
@@ -79,7 +86,7 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
   };
 
   return (
-    <Box overflow="hidden">
+    <Box overflow="hidden" className={classes.box}>
       {channels.map((channel: Channel, index: number) => {
         if (channel.isHidden) {
           // eslint-disable-next-line
@@ -121,7 +128,7 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
                 </IconButton>
               </Tooltip>
             }
-            {index < channels.filter((c: Channel) => !c.isHidden).length - 1 && <Divider className={classes.divider} />}
+            <Divider className={`divider ${classes.divider}`} />
           </Box>
       )}
     )}
