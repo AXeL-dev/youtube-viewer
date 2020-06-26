@@ -10,7 +10,7 @@
 
 # production
 /build
-/build-*
+/dist
 /old
 *.zip
 *.xpi

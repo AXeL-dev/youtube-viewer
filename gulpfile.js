@@ -4,6 +4,7 @@ const replace = require('gulp-replace');
 const shell = require('gulp-shell');
 const argv = require('yargs').option('new-version', { alias: 'nv' })
                              .option('build-directory', { alias: 'build-dir' })
+                             .option('destination-directory', { alias: 'dest-dir' })
                              .option('commit', { boolean: true, default: true }) // use --no-commit to bypass git commit
                              .argv;
 const fs = require('fs');
@@ -14,6 +15,7 @@ const del = require('del');
  */
 const outDir = 'build/js/compiled';
 const buildDir = argv.buildDirectory === undefined ? 'build' : argv.buildDirectory;
+const destDir = argv.destinationDirectory === undefined ? 'dist' : argv.destinationDirectory;
 
 /**
  * Functions
@@ -106,6 +108,10 @@ gulp.task('remove-browser-polyfill',
   shell.task(`sed -i 's/<script type="application\\/javascript" src="js\\/browser-polyfill.min.js"><\\/script>//' ${buildDir}/index.html && rm ${buildDir}/js/browser-polyfill.min.js`)
 );
 
+gulp.task('move-build-to',
+  shell.task(`rm -rf ${destDir} && mkdir -p ${destDir} && cp -r ${buildDir}/. ${destDir} && rm -rf ${buildDir}`)
+);
+
 // Main tasks
 gulp.task('compile:background-scripts', gulp.series(
   'transpile-background-script',
@@ -120,4 +126,14 @@ gulp.task('compile:background-scripts', gulp.series(
 gulp.task('bump:version', runIf(argv.newVersion !== undefined,
   'update-manifest-version',
   'run-npm-version'
+));
+
+gulp.task('postbuild:web-ext', gulp.series(
+  'compile:background-scripts',
+  'move-build-to'
+));
+
+gulp.task('postbuild:github', gulp.series(
+  'remove-browser-polyfill',
+  'move-build-to'
 ));
