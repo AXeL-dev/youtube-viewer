@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       minWidth: '700px',
-      minHeight: '500px',
+      minHeight: isWebExtension() ? '500px' : '100vh',
       maxWidth: isWebExtension() && isFirefox() ? '700px' : 'none',
     },
     appBar: {
