@@ -6,14 +6,18 @@ import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
 import { setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
 
-const defaultVideosCheckRate: number = 30;
+const defaults: any = {
+  videosCheckRate: 30, // minutes
+  videosAnteriority: 30, // days
+  videosPerChannel: 9,
+};
 let totalRecentVideosCount: number = 0;
 let checkedVideosIds: any = {};
 
 function getAutoCheckRate(): Promise<number> {
   return new Promise(async (resolve, reject) => {
     const [settings] = await getFromStorage('settings');
-    resolve(settings.autoVideosCheckRate || defaultVideosCheckRate);
+    resolve(settings?.autoVideosCheckRate || defaults.videosCheckRate);
   });
 }
 
@@ -32,14 +36,14 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
     channels.filter((channel) => !channel.isHidden).forEach((channel) => {
 
       promises.push(
-        getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
+        getChannelActivities(channel.id, getDateBefore(settings?.videosAnteriority || defaults.videosAnteriority)).then((results) => {
           log('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
             const videosIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
             const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
             const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
-                                                       .slice(0, settings.videosPerChannel)
+                                                       .slice(0, settings?.videosPerChannel || defaults.videosPerChannel)
                                                        .filter((videoId: string) => !checkedVideosIds[channel.id] || checkedVideosIds[channel.id].indexOf(videoId) === -1) // remove videos already checked
                                                        .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
             // set recent videos count
@@ -92,13 +96,13 @@ function autoCheckLoop(rate: number) {
     log('Total count:', totalRecentVideosCount);
     setBadgeText(totalRecentVideosCount);
     // Notify
-    if (settings.enableRecentVideosNotifications && recentVideosCount > 0) {
+    if (settings?.enableRecentVideosNotifications && recentVideosCount > 0) {
       notificationMessages.forEach((message: string) => {
         sendNotification(message);
       });
     }
     // Re-loop
-    autoCheckLoop(settings.autoVideosCheckRate || defaultVideosCheckRate);
+    autoCheckLoop(settings?.autoVideosCheckRate || defaults.videosCheckRate);
   }, rate * 60 * 1000); // convert minutes to milliseconds
 }
 
