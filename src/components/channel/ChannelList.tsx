@@ -410,9 +410,9 @@ export function ChannelList(props: ChannelListProps) {
                       >
                         <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
                         <MenuItem onClick={() => refreshChannel(channel, index)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                        {isFirefox() && index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
-                        {isFirefox() && index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
-                        {isFirefox() && <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}><ControlCameraIcon className={classes.menuIcon} />Move to position</MenuItem>}
+                        {isWebExtension() && isFirefox() && index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
+                        {isWebExtension() && isFirefox() && index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
+                        {isWebExtension() && isFirefox() && <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}><ControlCameraIcon className={classes.menuIcon} />Move to position</MenuItem>}
                         {channel.isHidden ? 
                           <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
