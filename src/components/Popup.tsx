@@ -31,7 +31,7 @@ import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
 import { SettingsDialog } from './settings/SettingsDialog';
 import { CustomSnackbar } from './shared/CustomSnackbar';
-import { isWebExtension, createTab, executeScript } from '../helpers/browser';
+import { isWebExtension, isFirefox, createTab, executeScript } from '../helpers/browser';
 import { debug, warn } from '../helpers/debug';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       minWidth: '700px',
       minHeight: '500px',
+      maxWidth: isWebExtension() && isFirefox() ? '700px' : 'none',
     },
     appBar: {
       backgroundColor: '#f44336',
