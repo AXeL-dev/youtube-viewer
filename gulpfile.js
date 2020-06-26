@@ -3,6 +3,7 @@ const file = require('gulp-file');
 const replace = require('gulp-replace');
 const shell = require('gulp-shell');
 const argv = require('yargs').option('new-version', { alias: 'nv' })
+                             .option('build-directory', { alias: 'build-dir' })
                              .option('commit', { boolean: true, default: true }) // use --no-commit to bypass git commit
                              .argv;
 const fs = require('fs');
@@ -11,7 +12,8 @@ const del = require('del');
 /**
  * Global constants
  */
-const outDir = 'public/js/compiled';
+const outDir = 'build/js/compiled';
+const buildDir = argv.buildDirectory === undefined ? 'build' : argv.buildDirectory;
 
 /**
  * Functions
@@ -98,6 +100,10 @@ gulp.task('update-manifest-version', function() {
 
 gulp.task('run-npm-version',
   shell.task(`npm version ${argv.newVersion} --no-git-tag-version --allow-same-version${argv.commit ? ` && git add -A && git commit -a -m "Release v${argv.newVersion}"` : ''}`)
+);
+
+gulp.task('remove-browser-polyfill',
+  shell.task(`sed -i 's/<script type="application\\/javascript" src="js\\/browser-polyfill.min.js"><\\/script>//' ${buildDir}/index.html && rm ${buildDir}/js/browser-polyfill.min.js`)
 );
 
 // Main tasks

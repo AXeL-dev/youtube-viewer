@@ -10,12 +10,12 @@
 
 # production
 /build
+/build-*
 /old
 *.zip
 *.xpi
 *.crx
 *.pem
-public/js/compiled
 
 # misc
 .DS_Store

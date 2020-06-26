@@ -23,14 +23,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "gulp compile:background-scripts && INLINE_RUNTIME_CHUNK=false react-scripts build",
-    "package": "web-ext build --source-dir=build --artifacts-dir=. --overwrite-dest",
-    "package:dev": "cd build && zip -r -FS ../youtube_viewer-dev.zip *",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build && gulp compile:background-scripts && rm -rf build-web-ext && mv build build-web-ext",
+    "package": "web-ext build --source-dir=build-web-ext --artifacts-dir=. --overwrite-dest",
+    "package:dev": "cd build-web-ext && zip -r -FS ../youtube_viewer-dev.zip *",
     "release": "npm run build && npm run package",
     "release:dev": "npm run build && npm run package:dev",
-    "build:github": "PUBLIC_URL=/youtube-viewer/ npm run build && npm run remove-browser-polyfill",
+    "build:github": "PUBLIC_URL=/youtube-viewer/ react-scripts build && gulp remove-browser-polyfill",
     "deploy:github": "ngh --dir=build",
-    "remove-browser-polyfill": "sed -i 's/<script type=\"application\\/javascript\" src=\"js\\/browser-polyfill.min.js\"><\\/script>//' build/index.html && rm build/js/browser-polyfill.min.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
