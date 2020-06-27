@@ -162,17 +162,7 @@ export default function Popup(props: PopupProps) {
     warn('isReady changed', isReady);
     if (isReady) {
       if (channels.length && !videos.length) {
-        switch(settings.defaultChannelSelection) {
-          case ChannelSelection.TodaysVideos:
-            showTodaysVideos(true);
-            break;
-          case ChannelSelection.RecentVideos:
-            showRecentVideos(true);
-            break;
-          case ChannelSelection.All:
-          default:
-            showAllChannels(true);
-        }
+        showChannelSelection(settings.defaultChannelSelection, true);
       } else if (selectedChannelIndex !== settings.defaultChannelSelection) {
         setSelectedChannelIndex(settings.defaultChannelSelection);
       }
@@ -378,6 +368,18 @@ export default function Popup(props: PopupProps) {
     return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, ignoreCache);
   };
 
+  const showChannelSelection = (selection: ChannelSelection, ignoreCache: boolean = false) => {
+    switch(selection) {
+      case ChannelSelection.TodaysVideos:
+        return showTodaysVideos(ignoreCache);
+      case ChannelSelection.RecentVideos:
+        return showRecentVideos(ignoreCache);
+      case ChannelSelection.All:
+      default:
+        return showAllChannels(ignoreCache);
+    }
+  };
+
   const clearRecentVideos = () => {
     Object.keys(cache).forEach((channelId: string) => {
       cache[channelId] = cache[channelId].map((video: Video) => {
@@ -399,14 +401,10 @@ export default function Popup(props: PopupProps) {
     if (selection === undefined || selection === null) {
       selection = selectedChannelIndex;
     }
-    switch(selection) {
-      case ChannelSelection.TodaysVideos:
-        return showTodaysVideos(true);
-      case ChannelSelection.RecentVideos:
-        return showRecentVideos(true);
-      case ChannelSelection.All:
-      default:
-        return showAllChannels(true);
+    if (selection > 0) {
+      return selectChannel(channels[selection], selection, true);
+    } else {
+      return showChannelSelection(selection, true);
     }
   };
 
