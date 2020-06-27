@@ -401,7 +401,7 @@ export default function Popup(props: PopupProps) {
     if (selection === undefined || selection === null) {
       selection = selectedChannelIndex;
     }
-    if (selection > 0) {
+    if (selection >= 0) {
       return selectChannel(channels[selection], selection, true);
     } else {
       return showChannelSelection(selection, true);
