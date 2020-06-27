@@ -25,7 +25,7 @@ import { Video } from '../models/Video';
 import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../helpers/utils';
 import MultiVideoGrid from './video/MultiVideoGrid';
 import VideoGrid from './video/VideoGrid';
-import { Settings } from '../models/Settings';
+import { Settings, SettingsType } from '../models/Settings';
 import { saveToStorage } from '../helpers/storage';
 import { ChannelList } from './channel/ChannelList';
 import { MessageSnackbar } from './shared/MessageSnackbar';
@@ -437,22 +437,39 @@ export default function Popup(props: PopupProps) {
     setOpenSettingsDialog(false);
   };
 
+  const getSettingsValue = (id: string, type: SettingsType) => {
+    const element = document.getElementById(id) as any;
+    if (element) {
+      switch(type) {
+        case SettingsType.Number:
+          return +element.value;
+        case SettingsType.Boolean:
+          return element.checked;
+        case SettingsType.String:
+        default:
+          return element.value;
+      }
+    } else {
+      return (settings as any)[id];
+    }
+  };
+
   const saveSettings = () => {
     // Update settings
     setSettings({
-      defaultChannelSelection: +(document.getElementById('defaultChannelSelection') as any).value,
-      videosPerChannel: +(document.getElementById('videosPerChannel') as any).value,
-      videosAnteriority: +(document.getElementById('videosAnteriority') as any).value,
-      sortVideosBy: (document.getElementById('sortVideosBy') as any).value,
-      apiKey: (document.getElementById('apiKey') as any).value,
-      autoVideosCheckRate: +(document.getElementById('autoVideosCheckRate') as any)?.value || settings.autoVideosCheckRate,
-      enableRecentVideosNotifications: (document.getElementById('enableRecentVideosNotifications') as any)?.checked || settings.enableRecentVideosNotifications,
-      autoPlayVideos: (document.getElementById('autoPlayVideos') as any)?.checked || settings.autoPlayVideos,
-      openVideosInInactiveTabs: (document.getElementById('openVideosInInactiveTabs') as any)?.checked || settings.openVideosInInactiveTabs,
-      openChannelsOnNameClick: (document.getElementById('openChannelsOnNameClick') as any).checked,
-      hideEmptyChannels: (document.getElementById('hideEmptyChannels') as any).checked,
-      autoClearRecentVideos: (document.getElementById('autoClearRecentVideos') as any).checked,
-      autoClearCache: (document.getElementById('autoClearCache') as any).checked
+      defaultChannelSelection: getSettingsValue('defaultChannelSelection', SettingsType.Number),
+      videosPerChannel: getSettingsValue('videosPerChannel', SettingsType.Number),
+      videosAnteriority: getSettingsValue('videosAnteriority', SettingsType.Number),
+      sortVideosBy: getSettingsValue('sortVideosBy', SettingsType.String),
+      apiKey: getSettingsValue('apiKey', SettingsType.String),
+      autoVideosCheckRate: getSettingsValue('autoVideosCheckRate', SettingsType.Number),
+      enableRecentVideosNotifications: getSettingsValue('enableRecentVideosNotifications', SettingsType.Boolean),
+      autoPlayVideos: getSettingsValue('autoPlayVideos', SettingsType.Boolean),
+      openVideosInInactiveTabs: getSettingsValue('openVideosInInactiveTabs', SettingsType.Boolean),
+      openChannelsOnNameClick: getSettingsValue('openChannelsOnNameClick', SettingsType.Boolean),
+      hideEmptyChannels: getSettingsValue('hideEmptyChannels', SettingsType.Boolean),
+      autoClearRecentVideos: getSettingsValue('autoClearRecentVideos', SettingsType.Boolean),
+      autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
     closeSettings();
     setSnackbarMessage('Settings saved!');

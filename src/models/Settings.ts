@@ -15,3 +15,9 @@ export interface Settings {
   autoClearRecentVideos: boolean,
   autoClearCache: boolean,
 }
+
+export enum SettingsType {
+  String,
+  Number,
+  Boolean
+}
