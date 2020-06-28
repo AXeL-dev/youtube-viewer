@@ -166,7 +166,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <Typography variant="body1" component="span">Custom API key (<Link href="https://www.slickremix.com/docs/get-api-key-for-youtube/" target="_blank" rel="noopener">How to get an API key?</Link>)</Typography>
           } secondary={
             <React.Fragment>
-              <Typography variant="body2" component="span">Replaces the default youtube API key provided with the extension</Typography>
+              <Typography variant="body2" component="span">Replaces the default youtube API key used to fetch channels & videos data</Typography>
               <br/>
               <Typography variant="body2" component="span">(will apply the next time you {isWebExtension() ? 'open the extension popup' : 'reload the app'})</Typography>
             </React.Fragment>
