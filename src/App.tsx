@@ -47,8 +47,10 @@ class App extends React.Component<AppProps, AppState> {
 
   async updateState() {
     // get data from storage
-    const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache'); // to know: const object properties can be modified, only reference cannot be changed
+    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
     debug('Storage data:', {channels: channels, settings: settings, cache: cache});
+    // set/merge settings
+    settings = settings ? {...this.state.settings, ...settings} : this.state.settings;
     // clear recent videos
     if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
@@ -68,9 +70,9 @@ class App extends React.Component<AppProps, AppState> {
     }
     // update state
     this.setState({
-      channels: channels?.length ? channels : this.state.channels,
-      settings: settings ? {...this.state.settings, ...settings} : this.state.settings,
-      cache: !settings?.autoClearCache && cache ? cache : this.state.cache,
+      channels: channels?.length ? channels : [],
+      settings: settings,
+      cache: !settings?.autoClearCache && cache ? cache : {},
       isReady: true
     });
   }
