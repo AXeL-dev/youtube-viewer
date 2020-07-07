@@ -108,7 +108,7 @@ gulp.task('remove-browser-polyfill',
   shell.task(`sed -i 's/<script type="application\\/javascript" src="js\\/browser-polyfill.min.js"><\\/script>//' ${buildDir}/index.html && rm ${buildDir}/js/browser-polyfill.min.js`)
 );
 
-gulp.task('move-build-to',
+gulp.task('move-build-dir',
   shell.task(`rm -rf ${destDir} && mkdir -p ${destDir} && cp -r ${buildDir}/. ${destDir} && rm -rf ${buildDir}`)
 );
 
@@ -130,10 +130,10 @@ gulp.task('bump:version', runIf(argv.newVersion !== undefined,
 
 gulp.task('postbuild:web-ext', gulp.series(
   'compile:background-scripts',
-  'move-build-to'
+  'move-build-dir'
 ));
 
 gulp.task('postbuild:github', gulp.series(
   'remove-browser-polyfill',
-  'move-build-to'
+  'move-build-dir'
 ));
