@@ -588,7 +588,7 @@ export default function Popup(props: PopupProps) {
         className={clsx(classes.content, {
           [classes.contentShift]: openDrawer,
         })}
-        //onClick={() => handleDrawerClose()}
+        onClick={() => handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
         {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
