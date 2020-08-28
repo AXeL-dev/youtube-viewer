@@ -7,8 +7,8 @@ import { getChannelActivities } from '../helpers/youtube';
 import { setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
 
 const defaults: any = {
-  videosCheckRate: 30, // minutes
-  videosAnteriority: 30, // days
+  videosCheckRate: 30, // minute(s)
+  videosAnteriority: 1, // day(s)
   videosPerChannel: 9,
 };
 let totalRecentVideosCount: number = 0;
@@ -36,7 +36,7 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
     channels.filter((channel) => !channel.isHidden).forEach((channel) => {
 
       promises.push(
-        getChannelActivities(channel.id, getDateBefore(settings?.videosAnteriority || defaults.videosAnteriority)).then((results) => {
+        getChannelActivities(channel.id, getDateBefore(defaults.videosAnteriority)).then((results) => {
           log('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
