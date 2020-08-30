@@ -4,6 +4,7 @@
 [![Mozilla Add-on downloads](https://img.shields.io/amo/dw/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-shield-downloads)
 [![Mozilla Add-on users](https://img.shields.io/amo/users/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/statistics/)
 [![Mozilla Add-on stars](https://img.shields.io/amo/stars/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/reviews/)
+[![Donate](https://img.shields.io/badge/PayPal-Donate-gray.svg?style=flat&logo=paypal&colorA=0071bb&logoColor=fff)](https://www.paypal.me/axeldev)
 
 A web extension to keep tracking your favorite youtube channels with less hassle.
 
