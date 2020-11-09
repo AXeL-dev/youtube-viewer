@@ -36,6 +36,7 @@ import { debug, warn } from '../helpers/debug';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 
 const drawerWidth = 240;
 
@@ -112,6 +113,9 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '80%',
       justifyContent: 'center',
+      '&.expanded': {
+        height: '80vh',
+      },
     },
     centered: {
       alignSelf: 'center',
@@ -599,7 +603,15 @@ export default function Popup(props: PopupProps) {
             resistance={5}
             style={{ position: 'relative' }}
           >
-            {selectedChannelIndex < 0 ? (
+            {videos?.length === 0 && !isLoading ? (
+              <Fade in={true} timeout={3000}>
+                <Box className={`${classes.container} expanded`}>
+                  <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
+                    <VideocamOffIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> No videos available
+                  </Typography>
+                </Box>
+              </Fade>
+            ) : selectedChannelIndex < 0 ? (
               <MultiVideoGrid
                 channels={channels}
                 videos={videos}

@@ -311,7 +311,7 @@ export function ChannelList(props: ChannelListProps) {
                   open={openedMenuIndex === 'channels-options'}
                   onClose={closeMenu}
                 >
-                  <MenuItem onClick={() => exportChannels()}><GetAppIcon className={classes.menuIcon} /> Export</MenuItem>
+                  <MenuItem onClick={() => exportChannels()}><GetAppIcon className={classes.menuIcon} />Export</MenuItem>
                   <MenuItem onClick={() => importChannels()}><ImportExportIcon className={classes.menuIcon} />Import</MenuItem>
                   <Tooltip title={"Cache size: " + cacheSize} aria-label="clear-cache">
                     <MenuItem onClick={() => clearCache()}><DeleteSweepIcon className={classes.menuIcon} />Clear cache</MenuItem>
