@@ -35,6 +35,8 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import ControlCameraIcon from '@material-ui/icons/ControlCamera';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import TodayIcon from '@material-ui/icons/Today';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -187,6 +189,16 @@ export function ChannelList(props: ChannelListProps) {
 
   const unhideChannel = (channel: Channel, index: number) => {
     channel.isHidden = false;
+    setChannel(channel, index);
+  };
+
+  const disableChannelNotifications = (channel: Channel, index: number) => {
+    channel.notificationsDisabled = true;
+    setChannel(channel, index);
+  };
+
+  const enableChannelNotifications = (channel: Channel, index: number) => {
+    channel.notificationsDisabled = false;
     setChannel(channel, index);
   };
 
@@ -416,6 +428,10 @@ export function ChannelList(props: ChannelListProps) {
                         {channel.isHidden ? 
                           <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
+                        }
+                        {channel.notificationsDisabled ? 
+                          <MenuItem onClick={() => enableChannelNotifications(channel, index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
+                          <MenuItem onClick={() => disableChannelNotifications(channel, index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
                         }
                         <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>

@@ -33,7 +33,7 @@ function getRecentVideosCount(channels: Channel[], settings: Settings, cache: an
     let notificationMessages: string[] = [];
     let promises: Promise<any>[] = [];
 
-    channels.filter((channel) => !channel.isHidden).forEach((channel) => {
+    channels.filter((channel) => !channel.isHidden && !channel.notificationsDisabled).forEach((channel) => {
 
       promises.push(
         getChannelActivities(channel.id, getDateBefore(defaults.videosAnteriority)).then((results) => {
