@@ -604,7 +604,7 @@ export default function Popup(props: PopupProps) {
             style={{ position: 'relative' }}
           >
             {videos?.length === 0 && !isLoading ? (
-              <Fade in={true}>
+              <Fade in={true} timeout={1000}>
                 <Box className={`${classes.container} expanded`}>
                   <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
                     <VideocamOffIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> No videos available
