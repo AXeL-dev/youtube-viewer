@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       minWidth: '700px',
       minHeight: isWebExtension() ? '500px' : '100vh',
+      maxHeight: isWebExtension() ? '500px' : 'none',
       maxWidth: isWebExtension() && isFirefox() ? '700px' : 'none',
     },
     appBar: {
@@ -94,7 +95,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      //padding: theme.spacing(3),
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -114,13 +115,12 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '80%',
       justifyContent: 'center',
       '&.expanded': {
-        height: 'calc(100vh - 112px)',
+        height: '100%',
       },
     },
     centered: {
       alignSelf: 'center',
       textAlign: 'center',
-      margin: '0 80px'
     },
     heartIcon: {
       color: '#e25555',
@@ -510,10 +510,6 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const getNotHiddenChannelsCount = () => {
-    return channels.filter((channel: Channel) => !channel.isHidden)?.length;
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -598,10 +594,10 @@ export default function Popup(props: PopupProps) {
         {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
           <ReactPullToRefresh
             onRefresh={handlePullToRefresh}
-            icon={(!settings.hideEmptyChannels && selectedChannelIndex < 0 && getNotHiddenChannelsCount() > 0) || videos?.length > 0 ? <ArrowDownwardIcon className="arrowicon" /> : <i></i>}
+            icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
-            style={{ position: 'relative' }}
+            style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'auto' }}
           >
             {videos?.length === 0 && !isLoading ? (
               <Fade in={true} timeout={1000}>

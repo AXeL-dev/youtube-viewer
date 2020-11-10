@@ -2,7 +2,7 @@
 
 .ptr-element {
 	position: absolute;
-	top: 0;
+	top: 24px;
 	left: 0;
 	width: 100%;
 	z-index: 10;
@@ -92,6 +92,8 @@
 	-webkit-backface-visibility: hidden;
 	-webkit-perspective: 1000;
 	box-sizing: border-box;
+	padding: 24px;
+	padding-right: 18px;
 }
 
 .ptr-loading .refresh-view, .ptr-reset .refresh-view,
