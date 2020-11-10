@@ -13,7 +13,6 @@ const del = require('del');
 /**
  * Global constants
  */
-const outDir = 'build/js/compiled';
 const buildDir = argv.buildDirectory === undefined ? 'build' : argv.buildDirectory;
 const destDir = argv.destinationDirectory === undefined ? 'dist' : argv.destinationDirectory;
 
@@ -63,6 +62,10 @@ gulp.task('move-build-dir',
   shell.task(`rm -rf ${destDir} && mkdir -p ${destDir} && cp -r ${buildDir}/. ${destDir} && rm -rf ${buildDir}`)
 );
 
+gulp.task('delete-nojekyll', function() {
+  return del(`${buildDir}/.nojekyll`, { force: true });
+});
+
 // Main tasks
 gulp.task('bump:version', runIf(argv.newVersion !== undefined,
   'update-manifest-version',
@@ -70,6 +73,7 @@ gulp.task('bump:version', runIf(argv.newVersion !== undefined,
 ));
 
 gulp.task('postbuild:web-ext', gulp.series(
+  'delete-nojekyll',
   'move-build-dir'
 ));
 
