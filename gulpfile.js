@@ -45,55 +45,6 @@ function runIf(condition, ...tasks) {
 /**
  * Tasks
  */
-gulp.task('transpile-background-script',
-  shell.task(`tsc src/scripts/background.ts --target es2017 --moduleResolution node --removeComments --outDir ${outDir}`)
-);
-
-gulp.task('cleanup-background-script', function() {
-  return file('background.js', getFileContent(`${outDir}/scripts/background.js`), { src: true })
-    .pipe(replace(/^\s*import .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export /gm, ''))
-    .pipe(gulp.dest(`${outDir}/scripts`));
-});
-
-gulp.task('cleanup-browser-helper', function() {
-  return file('browser.js', getFileContent(`${outDir}/helpers/browser.js`), { src: true })
-    .pipe(replace(/^\s*import .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export /gm, ''))
-    .pipe(gulp.dest(`${outDir}/helpers`));
-});
-
-gulp.task('cleanup-storage-helper', function() {
-  return file('storage.js', getFileContent(`${outDir}/helpers/storage.js`), { src: true })
-    .pipe(replace(/^\s*import .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export /gm, ''))
-    .pipe(gulp.dest(`${outDir}/helpers`));
-});
-
-gulp.task('cleanup-utils-helper', function() {
-  return file('utils.js', getFileContent(`${outDir}/helpers/utils.js`), { src: true })
-    .pipe(replace(/^\s*import .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export /gm, ''))
-    .pipe(gulp.dest(`${outDir}/helpers`));
-});
-
-gulp.task('cleanup-youtube-helper', function() {
-  return file('youtube.js', getFileContent(`${outDir}/helpers/youtube.js`), { src: true })
-    .pipe(replace(/^\s*import .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export .+;$\s*/gm, ''))
-    .pipe(replace(/^\s*export /gm, ''))
-    .pipe(replace('process.env.REACT_APP_YOUTUBE_API_KEY', `'${getYoutubeAPIKey()}'`))
-    .pipe(gulp.dest(`${outDir}/helpers`));
-});
-
-gulp.task('delete-models', function() {
-  return del(`${outDir}/models/**`, { force: true });
-});
-
 gulp.task('update-manifest-version', function() {
   return file('manifest.json', getFileContent('public/manifest.json'), { src: true })
     .pipe(replace(/^(\s*"version": ").+(",$\s*)/gm, `$1${argv.newVersion}$2`))
@@ -113,23 +64,12 @@ gulp.task('move-build-dir',
 );
 
 // Main tasks
-gulp.task('compile:background-scripts', gulp.series(
-  'transpile-background-script',
-  'cleanup-background-script',
-  'cleanup-browser-helper',
-  'cleanup-storage-helper',
-  'cleanup-utils-helper',
-  'cleanup-youtube-helper',
-  'delete-models'
-));
-
 gulp.task('bump:version', runIf(argv.newVersion !== undefined,
   'update-manifest-version',
   'run-npm-version'
 ));
 
 gulp.task('postbuild:web-ext', gulp.series(
-  'compile:background-scripts',
   'move-build-dir'
 ));
 

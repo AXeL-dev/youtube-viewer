@@ -1,10 +1,11 @@
+import React from 'react';
 import { Channel } from '../models/Channel';
 import { Settings } from '../models/Settings';
 import { Video } from '../models/Video';
 import { getFromStorage } from '../helpers/storage';
 import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
-import { setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
+import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
 
 const defaults: any = {
   videosCheckRate: 30, // minute(s)
@@ -113,4 +114,21 @@ async function init() {
   autoCheckLoop(rate);
 }
 
-init();
+interface BackgroundProps {}
+
+class Background extends React.Component<BackgroundProps> {
+  constructor(props: BackgroundProps) {
+    super(props);
+    if (isWebExtension()) {
+      init();
+    }
+  }
+
+  render() {
+    return (
+      <span>Silence is golden!</span>
+    );
+  }
+}
+
+export default Background;
