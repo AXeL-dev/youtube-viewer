@@ -597,7 +597,7 @@ export default function Popup(props: PopupProps) {
             icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
-            style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'auto' }}
+            style={{ position: 'relative', height: isWebExtension() ? 'calc(100% - 64px)' : 'calc(100vh - 64px)', overflow: 'auto' }}
           >
             {videos?.length === 0 && !isLoading ? (
               <Fade in={true} timeout={1000}>
