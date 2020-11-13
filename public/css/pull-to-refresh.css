@@ -93,7 +93,7 @@
 	-webkit-perspective: 1000;
 	box-sizing: border-box;
 	padding: 24px;
-	padding-right: 18px;
+	padding-right: 0;
 }
 
 .ptr-loading .refresh-view, .ptr-reset .refresh-view,
