@@ -429,10 +429,10 @@ export function ChannelList(props: ChannelListProps) {
                           <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         }
-                        {channel.notificationsDisabled ? 
+                        {isWebExtension() && (channel.notificationsDisabled ? 
                           <MenuItem onClick={() => enableChannelNotifications(channel, index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
                           <MenuItem onClick={() => disableChannelNotifications(channel, index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
-                        }
+                        )}
                         <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>
