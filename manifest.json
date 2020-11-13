@@ -9,7 +9,7 @@
   },
 
   "name": "__MSG_extensionName__",
-  "version": "0.5.2",
+  "version": "0.6.0",
 
   "default_locale": "en",
   "description": "__MSG_extensionDesc__",
@@ -26,14 +26,7 @@
   },
 
   "background": {
-    "scripts": [
-      "js/browser-polyfill.min.js",
-      "js/compiled/helpers/storage.js",
-      "js/compiled/helpers/utils.js",
-      "js/compiled/helpers/youtube.js",
-      "js/compiled/helpers/browser.js",
-      "js/compiled/scripts/background.js"
-    ]
+    "page": "index.html#background"
   },
 
   "author": "AXeL-dev",
