@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models/Channel';
-import { getRegex, throttle } from '../../helpers/utils';
+import { getRegex, debounce } from '../../helpers/utils';
 import { RawHTML } from '../shared/RawHTML';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -129,7 +129,7 @@ export default function SearchChannelInput(props: SearchProps) {
 
   const fetch = React.useMemo(
     () =>
-      throttle((input: any, callback: Function) => {
+      debounce((input: any, callback: Function) => {
         //console.log(input);
         searchChannel(input.value, 5).then((results: Channel[]) => {
           //console.log(results);

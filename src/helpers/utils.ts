@@ -257,3 +257,24 @@ export function throttle(callback: Function, timeFrame: number): Function {
     }
   };
 }
+
+// -------------------------------------------------------------------
+
+/**
+ * Create a new function that calls func with thisArg and args.
+ * Stolen from: https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_debounce
+ * 
+ * @param func 
+ * @param wait 
+ */
+export function debounce(func: Function, wait: number): Function {
+  let timeout: any = null;
+  return function(this: any) {
+    const context = this, args = arguments;
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      timeout = null;
+      func.apply(context, args);
+    }, wait);
+  };
+}
