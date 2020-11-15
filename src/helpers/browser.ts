@@ -25,8 +25,9 @@ export function executeScript(tabId: number, code: string): void {
   );
 }
 
-export function sendNotification(message: string, type: string|any = 'basic'): void {
-  browser.notifications.create({
+export function sendNotification(message: string, url?: string, type: string|any = 'basic'): void {
+  const id = url?.length ? new Date().getTime() + '::' + url : ''; // id will be auto-generated if empty
+  browser.notifications.create(id, {
     type: type,
     title: 'Youtube viewer',
     iconUrl: 'icons/128.png',

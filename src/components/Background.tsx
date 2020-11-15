@@ -5,7 +5,10 @@ import { Video } from '../models/Video';
 import { getFromStorage } from '../helpers/storage';
 import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
-import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification } from '../helpers/browser';
+import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab } from '../helpers/browser';
+import { Notification } from '../models/Notification';
+
+declare var browser: any;
 
 const defaults: any = {
   videosCheckRate: 30, // minute(s)
@@ -38,6 +41,14 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     const rate = await this.getAutoCheckRate();
     this.log('Rate:', rate);
     this.autoCheckLoop(rate);
+    // Handle click on notifications
+    browser.notifications.onClicked.addListener((notificationId: string) => {
+      this.log('Notification clicked:', notificationId);
+      const [ id, url ] = notificationId.split('::');
+      if (url) {
+        createTab(url);
+      }
+    });
   }
 
   log(message: any, ...params: any) {
@@ -50,7 +61,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       const [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
       this.log('Storage data:', { channels: channels, settings: settings, cache: cache });
       // Check for recent videos
-      const [recentVideosCount, notificationMessages] = await this.getRecentVideosCount(channels, settings, cache);
+      const [recentVideosCount, notifications] = await this.getRecentVideosCount(channels, settings, cache);
       const badgeText: string = await getBadgeText();
       let { totalRecentVideosCount } = this.state;
       this.log('Recent videos count:', recentVideosCount);
@@ -65,8 +76,8 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       setBadgeText(totalRecentVideosCount);
       // Notify
       if (settings?.enableRecentVideosNotifications && recentVideosCount > 0) {
-        notificationMessages.forEach((message: string) => {
-          sendNotification(message);
+        notifications.forEach((notification: Notification) => {
+          sendNotification(notification.message, notification.url);
         });
       }
       // Re-loop
@@ -81,12 +92,12 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     });
   }
 
-  getRecentVideosCount(channels: Channel[], settings: Settings, cache: any): Promise<[number, string[]]> {
+  getRecentVideosCount(channels: Channel[], settings: Settings, cache: any): Promise<[number, Notification[]]> {
 
     return new Promise((resolve, reject) => {
   
       let count: number = 0;
-      let notificationMessages: string[] = [];
+      let notifications: Notification[] = [];
       let promises: Promise<any>[] = [];
       let { checkedVideosIds } = this.state;
   
@@ -113,7 +124,10 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
                 checkedVideosIds[channel.id].push(...recentVideosIds);
                 // generate notification messages
                 const suffix = recentVideosIds.length > 1 ? 's' : '';
-                notificationMessages.push(`${channel.title} posted ${recentVideosIds.length} recent video${suffix}`);
+                notifications.push({
+                  message: `${channel.title} posted ${recentVideosIds.length} recent video${suffix}`,
+                  url: channel.url
+                });
                 // update count
                 count += recentVideosIds.length;
               } else {
@@ -129,7 +143,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
   
       Promise.all(promises).finally(() => {
         this.setState({ checkedVideosIds: checkedVideosIds });
-        resolve([count, notificationMessages]);
+        resolve([count, notifications]);
       });
   
     });
