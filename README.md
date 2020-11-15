@@ -43,7 +43,6 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 
 - [React](https://reactjs.org/): Core library
 - [Material-UI](https://material-ui.com/): UI toolkit
-- [lodash](https://lodash.com/): Utility library
 - [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
 - [Gulp.js](https://gulpjs.com/): Workflow automation toolkit
 

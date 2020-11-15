@@ -3,7 +3,6 @@ import useAutocomplete from '@material-ui/lab/useAutocomplete';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, Theme, fade } from '@material-ui/core/styles';
-import throttle from 'lodash/throttle';
 import { searchChannel } from '../../helpers/youtube';
 import Avatar from '@material-ui/core/Avatar';
 import InputBase from '@material-ui/core/InputBase';
@@ -11,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models/Channel';
-import { getRegex } from '../../helpers/utils';
+import { getRegex, throttle } from '../../helpers/utils';
 import { RawHTML } from '../shared/RawHTML';
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -200,7 +200,7 @@ export function getRegex(pattern: string, modifiers: string): RegExp {
  * @param obj 
  */
 export function memorySizeOf(obj: any) {
-  var bytes = 0;
+  let bytes = 0;
 
   function sizeOf(obj: any) {
       if(obj !== null && obj !== undefined) {
@@ -215,9 +215,9 @@ export function memorySizeOf(obj: any) {
               bytes += 4;
               break;
           case 'object':
-              var objClass = Object.prototype.toString.call(obj).slice(8, -1);
+              let objClass = Object.prototype.toString.call(obj).slice(8, -1);
               if(objClass === 'Object' || objClass === 'Array') {
-                  for(var key in obj) {
+                  for(let key in obj) {
                       if(!obj.hasOwnProperty(key)) continue;
                       sizeOf(obj[key]);
                   }
@@ -236,4 +236,24 @@ export function memorySizeOf(obj: any) {
   }
 
   return formatByteSize(sizeOf(obj));
+}
+
+// -------------------------------------------------------------------
+
+/**
+ * Create a new function that limits calls to func to once every given timeframe.
+ * Stolen from: https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_throttle
+ * 
+ * @param func 
+ * @param timeFrame 
+ */
+export function throttle(callback: Function, timeFrame: number): Function {
+  let lastTime = 0;
+  return (...args: any) => {
+    let now = new Date().getTime();
+    if (now - lastTime >= timeFrame) {
+      callback(...args);
+      lastTime = now;
+    }
+  };
 }
