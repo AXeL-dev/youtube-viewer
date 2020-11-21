@@ -44,8 +44,8 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     // Handle click on notifications
     browser.notifications.onClicked.addListener((notificationId: string) => {
       this.log('Notification clicked:', notificationId);
-      const [ id, url ] = notificationId.split('::');
-      if (url) {
+      const [ , url ] = notificationId.split('::');
+      if (url?.length) {
         createTab(url);
       }
     });
