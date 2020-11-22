@@ -145,7 +145,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
         </ListItem>
         <Divider />
         <ListItem>
-          <ListItemText primary="Sort videos by" secondary="Videos sorting criteria" className={classes.optionLabel} />
+          <ListItemText primary="Sort videos by" secondary="Videos sorting criteria (requires clearing cache)" className={classes.optionLabel} />
           <ListItemSecondaryAction>
             <Select
               native
