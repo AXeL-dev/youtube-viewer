@@ -1,5 +1,5 @@
 
 export interface Notification {
   message: string,
-  url?: string
+  id: string // == channel id
 }

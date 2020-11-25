@@ -20,7 +20,12 @@ interface BackgroundProps {}
 
 interface BackgroundState {
   totalRecentVideosCount: number;
-  checkedVideosIds: any;
+  checkedChannels: {
+    [key: string]: { // key == channel.id
+      videosIds: string[],
+      url: string
+    }
+  };
 }
 
 class Background extends React.Component<BackgroundProps, BackgroundState> {
@@ -28,7 +33,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     super(props);
     this.state = {
       totalRecentVideosCount: 0,
-      checkedVideosIds: {}
+      checkedChannels: {}
     };
     if (isWebExtension()) {
       this.init();
@@ -44,7 +49,8 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     // Handle click on notifications
     browser.notifications.onClicked.addListener((notificationId: string) => {
       this.log('Notification clicked:', notificationId);
-      const [ , url ] = notificationId.split('::');
+      const [ , id ] = notificationId.split('::');
+      const url = this.state.checkedChannels[id]?.url;
       if (url?.length) {
         createTab(url);
       }
@@ -77,7 +83,8 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       // Notify
       if (settings?.enableRecentVideosNotifications && recentVideosCount > 0) {
         notifications.forEach((notification: Notification) => {
-          sendNotification(notification.message, notification.url);
+          const id = notification.id?.length ? new Date().getTime() + '::' + notification.id : '';
+          sendNotification(notification.message, id);
         });
       }
       // Re-loop
@@ -99,9 +106,9 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       let count: number = 0;
       let notifications: Notification[] = [];
       let promises: Promise<any>[] = [];
-      let { checkedVideosIds } = this.state;
+      let { checkedChannels } = this.state;
   
-      channels.filter((channel) => !channel.isHidden && !channel.notificationsDisabled).forEach((channel) => {
+      channels.filter((channel: Channel) => !channel.isHidden && !channel.notificationsDisabled).forEach((channel) => {
   
         promises.push(
           getChannelActivities(channel.id, getDateBefore(defaults.videosAnteriority)).then((results) => {
@@ -112,21 +119,22 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
               const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
               const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
                                                          .slice(0, settings?.videosPerChannel || defaults.videosPerChannel)
-                                                         .filter((videoId: string) => !checkedVideosIds[channel.id] || checkedVideosIds[channel.id].indexOf(videoId) === -1) // remove videos already checked
+                                                         .filter((videoId: string) => !checkedChannels[channel.id] || checkedChannels[channel.id].videosIds.indexOf(videoId) === -1) // remove videos already checked
                                                          .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
               // set recent videos count
               if (recentVideosIds.length) {
                 this.log(recentVideosIds.length, 'recent videos');
                 // update checked videos ids
-                if (!checkedVideosIds[channel.id]) {
-                  checkedVideosIds[channel.id] = [];
+                if (!checkedChannels[channel.id]) {
+                  checkedChannels[channel.id].videosIds = [];
+                  checkedChannels[channel.id].url = channel.url;
                 }
-                checkedVideosIds[channel.id].push(...recentVideosIds);
+                checkedChannels[channel.id].videosIds.push(...recentVideosIds);
                 // generate notification messages
                 const suffix = recentVideosIds.length > 1 ? 's' : '';
                 notifications.push({
                   message: `${channel.title} posted ${recentVideosIds.length} recent video${suffix}`,
-                  url: channel.url
+                  id: channel.id
                 });
                 // update count
                 count += recentVideosIds.length;
@@ -142,7 +150,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       });
   
       Promise.all(promises).finally(() => {
-        this.setState({ checkedVideosIds: checkedVideosIds });
+        this.setState({ checkedChannels: checkedChannels });
         resolve([count, notifications]);
       });
   
