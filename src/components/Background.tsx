@@ -126,8 +126,10 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
                 this.log(recentVideosIds.length, 'recent videos');
                 // update checked videos ids
                 if (!checkedChannels[channel.id]) {
-                  checkedChannels[channel.id].videosIds = [];
-                  checkedChannels[channel.id].url = channel.url;
+                  checkedChannels[channel.id] = {
+                    videosIds: [],
+                    url: channel.url
+                  };
                 }
                 checkedChannels[channel.id].videosIds.push(...recentVideosIds);
                 // generate notification messages
