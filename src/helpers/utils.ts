@@ -278,3 +278,12 @@ export function debounce(func: Function, wait: number): Function {
     }, wait);
   };
 }
+
+/**
+ * Generates 26 [a-z0-9] characters, yielding a UID that is both shorter and more unique than RFC compliant GUIDs.
+ * Dashes can be trivially added if human-readability matters.
+ * Stolen from: https://stackoverflow.com/a/13403498
+ */
+export function generateGuid() {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
