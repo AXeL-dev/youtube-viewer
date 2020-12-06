@@ -13,5 +13,6 @@ export enum ChannelSelection {
   All = -1,
   None = -2,
   RecentVideos = -3,
-  TodaysVideos = -4
+  TodaysVideos = -4,
+  WatchLaterVideos = -5
 }

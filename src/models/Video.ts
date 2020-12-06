@@ -12,5 +12,6 @@ export interface Video {
   },
   channelId: string,
   channelTitle: string,
-  isRecent?: boolean
+  isRecent?: boolean,
+  isToWatchLater?: boolean
 }

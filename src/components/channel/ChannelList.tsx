@@ -37,6 +37,7 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import TodayIcon from '@material-ui/icons/Today';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,9 +89,11 @@ interface ChannelListProps {
   cacheSize: string;
   todaysVideosCount: number;
   recentVideosCount: number;
+  watchLaterVideosCount: number;
   onShowAll: Function;
   onShowTodaysVideos: Function;
   onShowRecentVideos: Function;
+  onShowWatchLaterVideos: Function;
   onRefresh: Function;
   onSelect: Function;
   onDelete: Function;
@@ -98,11 +101,16 @@ interface ChannelListProps {
   onSelectedIndexChange: Function;
   onClearCache: Function;
   onClearRecentVideos: Function;
+  onClearWatchLaterVideos: Function;
   onImport: Function;
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = ChannelSelection.All, cacheSize, todaysVideosCount, recentVideosCount, onShowAll, onShowTodaysVideos, onShowRecentVideos, onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearCache, onClearRecentVideos, onImport } = props;
+  const { channels, selectedIndex = ChannelSelection.All, cacheSize,
+          todaysVideosCount, recentVideosCount, watchLaterVideosCount,
+          onShowAll, onShowTodaysVideos, onShowRecentVideos, onShowWatchLaterVideos,
+          onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearCache,
+          onClearRecentVideos, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -111,6 +119,7 @@ export function ChannelList(props: ChannelListProps) {
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
   const [openClearRecentVideosDialog, setOpenClearRecentVideosDialog] = React.useState(false);
+  const [openClearWatchLaterVideosDialog, setOpenClearWatchLaterVideosDialog] = React.useState(false);
   const [openImportChannelsDialog, setOpenImportChannelsDialog] = React.useState(false);
   const [moveToPositionChannelIndex, setMoveToPositionChannelIndex] = React.useState<number>(-1);
 
@@ -300,8 +309,21 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const refreshTodaysVideos = (event: any) => {
-    closeMenu();
+    //closeMenu(); // no need to
     onRefresh(ChannelSelection.TodaysVideos, event);
+  };
+
+  const clearWatchLaterVideos = () => {
+    setOpenClearWatchLaterVideosDialog(true);
+  };
+
+  const confirmClearWatchLaterVideos = () => {
+    onClearWatchLaterVideos();
+    closeClearWatchLaterVideosDialog();
+  };
+
+  const closeClearWatchLaterVideosDialog = () => {
+    setOpenClearWatchLaterVideosDialog(false);
   };
 
   return (
@@ -370,7 +392,7 @@ export function ChannelList(props: ChannelListProps) {
                 <ListItemIcon>
                   <Badge color="secondary" badgeContent={recentVideosCount}>
                     <Avatar>
-                      <AccessTimeIcon />
+                      <NotificationsNoneIcon />
                     </Avatar>
                   </Badge>
                 </ListItemIcon>
@@ -389,6 +411,23 @@ export function ChannelList(props: ChannelListProps) {
                     <MenuItem onClick={(event) => refreshRecentVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
                     {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
                   </Menu>
+                </ListItemSecondaryAction>}
+              </ListItem>
+              <ListItem button key="watchLater" selected={selectedIndex === ChannelSelection.WatchLaterVideos} onClick={() => onShowWatchLaterVideos()}>
+                <ListItemIcon>
+                  <Badge color="secondary" badgeContent={watchLaterVideosCount}>
+                    <Avatar>
+                      <AccessTimeIcon />
+                    </Avatar>
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary="Watch later" />
+                {watchLaterVideosCount > 0 && <ListItemSecondaryAction>
+                  <Tooltip title="Clear" aria-label="clear">
+                    <IconButton edge="end" aria-label="clear" size="small" onClick={() => clearWatchLaterVideos()}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </ListItemSecondaryAction>}
               </ListItem>
               {channels.map((channel: Channel, index: number) => (
@@ -461,6 +500,14 @@ export function ChannelList(props: ChannelListProps) {
         confirmButtonText="Clear"
         onClose={closeClearRecentVideosDialog}
         onConfirm={confirmClearRecentVideos}
+      />
+      <ConfirmationDialog
+        open={openClearWatchLaterVideosDialog}
+        title="Clear watch later videos"
+        description="Would you like to reset/clear watch later videos?"
+        confirmButtonText="Clear"
+        onClose={closeClearWatchLaterVideosDialog}
+        onConfirm={confirmClearWatchLaterVideos}
       />
       <ConfirmationDialog
         open={openDeleteChannelDialog}
