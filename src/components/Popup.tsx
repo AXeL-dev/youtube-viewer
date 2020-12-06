@@ -152,10 +152,13 @@ export default function Popup(props: PopupProps) {
   const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarAutoHideDuration, setSnackbarAutoHideDuration] = React.useState(5000);
+  const [showSnackbarRefreshButton, setShowSnackbarRefreshButton] = React.useState(true);
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
+  const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
   React.useEffect(() => setChannels(props.channels), [props.channels]);
   React.useEffect(() => setSettings(props.settings), [props.settings]);
@@ -195,7 +198,9 @@ export default function Popup(props: PopupProps) {
     if (isReady) {
       debug('----------------------');
       debug('counting todays & recent videos');
-      let totalRecentVideosCount: number = 0, totalTodaysVideosCount: number = 0;
+      let totalRecentVideosCount: number = 0,
+          totalTodaysVideosCount: number = 0,
+          totalWatchLaterVideosCount: number = 0;
       Object.keys(cache).forEach((channelId: string) => {
         const channel = channels.find((c: Channel) => c.id === channelId);
         if (!channel || channel.isHidden) {
@@ -203,13 +208,24 @@ export default function Popup(props: PopupProps) {
         }
         const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
         const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
-        debug(channel.title, { recent: recentVideosCountPerChannel, todays: todaysVideosCountPerChannel });
+        const watchLaterVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isToWatchLater)).length;
+        debug(channel.title, {
+          recent: recentVideosCountPerChannel,
+          todays: todaysVideosCountPerChannel,
+          watchLater: watchLaterVideosCountPerChannel,
+        });
         totalRecentVideosCount += recentVideosCountPerChannel;
         totalTodaysVideosCount += todaysVideosCountPerChannel;
+        totalWatchLaterVideosCount += watchLaterVideosCountPerChannel;
       });
-      debug('total count', { recent: totalRecentVideosCount, todays: totalTodaysVideosCount });
+      debug('total count', {
+        recent: totalRecentVideosCount,
+        todays: totalTodaysVideosCount,
+        watchLater: totalWatchLaterVideosCount,
+      });
       setRecentVideosCount(totalRecentVideosCount);
       setTodaysVideosCount(totalTodaysVideosCount);
+      setWatchLaterVideosCount(totalWatchLaterVideosCount);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache, channels]);
@@ -372,12 +388,18 @@ export default function Popup(props: PopupProps) {
     return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, ignoreCache);
   };
 
+  const showWatchLaterVideos = (ignoreCache: boolean = false) => {
+    return fetchChannelsVideos(ChannelSelection.WatchLaterVideos, (video: Video) => video.isToWatchLater, ignoreCache);
+  };
+
   const showChannelSelection = (selection: ChannelSelection, ignoreCache: boolean = false) => {
     switch(selection) {
       case ChannelSelection.TodaysVideos:
         return showTodaysVideos(ignoreCache);
       case ChannelSelection.RecentVideos:
         return showRecentVideos(ignoreCache);
+      case ChannelSelection.WatchLaterVideos:
+        return showWatchLaterVideos(ignoreCache);
       case ChannelSelection.All:
       default:
         return showAllChannels(ignoreCache);
@@ -395,6 +417,20 @@ export default function Popup(props: PopupProps) {
     saveToStorage({ cache: cache });
     if (selectedChannelIndex === ChannelSelection.RecentVideos) {
       refreshChannels(ChannelSelection.RecentVideos);
+    }
+  };
+
+  const clearWatchLaterVideos = () => { // ToDo: merge boilerplate code (see above function)
+    Object.keys(cache).forEach((channelId: string) => {
+      cache[channelId] = cache[channelId].map((video: Video) => {
+        video.isToWatchLater = false;
+        return video;
+      });
+    });
+    setCache({...cache});
+    saveToStorage({ cache: cache });
+    if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+      refreshChannels(ChannelSelection.WatchLaterVideos);
     }
   };
 
@@ -417,13 +453,13 @@ export default function Popup(props: PopupProps) {
     // Update channels
     setChannels(channelsList);
     fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);
-    setSnackbarMessage('Channels imported!');
+    openSnackbar('Channels imported!');
   };
 
   const clearCache = () => {
     setCache({});
     saveToStorage({ cache: {} });
-    setSnackbarMessage('Cache cleared!');
+    openSnackbar('Cache cleared!');
   };
 
   const getCacheSize = () => {
@@ -476,23 +512,60 @@ export default function Popup(props: PopupProps) {
       autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
     closeSettings();
-    setSnackbarMessage('Settings saved!');
+    openSnackbar('Settings saved!');
   };
 
-  const closeSettingsSnackbar = () => {
+  const openSnackbar = (message: string, duration: number = 5000, showRefreshButton: boolean = true) => {
+    setSnackbarAutoHideDuration(duration);
+    setShowSnackbarRefreshButton(showRefreshButton);
+    setSnackbarMessage(message);
+  };
+
+  const closeSnackbar = () => {
     setSnackbarMessage('');
   };
 
-  const openVideo = (event: any) => {
+  const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();
-    const videoUrl = event.currentTarget.href;
-    if (isWebExtension() && videoUrl) {
+    if (isWebExtension() && video?.url) {
       event.preventDefault();
-      createTab(videoUrl, !settings.openVideosInInactiveTabs).then((tab: any) => {
+      createTab(video.url, !settings.openVideosInInactiveTabs).then((tab: any) => {
         if (settings.autoPlayVideos) {
           executeScript(tab.id, `document.querySelector('#player video').play();`);
         }
       });
+    }
+    if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+      unmarkVideoAsWatchLater(video);
+    }
+  };
+
+  const markVideoAsWatchLater = (event: Event, video: Video) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+    if (videoIndex > -1) {
+      if (!cache[video.channelId][videoIndex].isToWatchLater) {
+        cache[video.channelId][videoIndex].isToWatchLater = true;
+        setCache({...cache});
+        saveToStorage({ cache: cache });
+        openSnackbar('Video added to watch later list!', 1000, false);
+      } else {
+        openSnackbar('Video is already on watch later list!', 1000, false);
+      }
+    }
+  };
+
+  const unmarkVideoAsWatchLater = (video: Video) => {
+    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+    if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
+      // exclude video from shown videos
+      setVideos(videos.filter((v: Video) => v.id !== video.id)); // To Fix: warning => Can't perform a React state update on an unmounted component.
+      //refreshChannels(ChannelSelection.WatchLaterVideos);
+      // update cache
+      cache[video.channelId][videoIndex].isToWatchLater = false;
+      setCache({...cache});
+      saveToStorage({ cache: cache });
     }
   };
 
@@ -561,9 +634,11 @@ export default function Popup(props: PopupProps) {
           cacheSize={getCacheSize()}
           todaysVideosCount={todaysVideosCount}
           recentVideosCount={recentVideosCount}
+          watchLaterVideosCount={watchLaterVideosCount}
           onShowAll={showAllChannels}
           onShowTodaysVideos={showTodaysVideos}
           onShowRecentVideos={showRecentVideos}
+          onShowWatchLaterVideos={showWatchLaterVideos}
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
@@ -571,6 +646,7 @@ export default function Popup(props: PopupProps) {
           onSelectedIndexChange={setSelectedChannelIndex}
           onClearCache={clearCache}
           onClearRecentVideos={clearRecentVideos}
+          onClearWatchLaterVideos={clearWatchLaterVideos}
           onImport={importChannels}
         />
         <div className={classes.grow} />
@@ -610,21 +686,25 @@ export default function Popup(props: PopupProps) {
             ) : selectedChannelIndex < 0 ? (
               <MultiVideoGrid
                 channels={channels}
+                selectedChannelIndex={selectedChannelIndex}
                 videos={videos}
                 settings={settings}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
                 onSelect={selectChannel}
                 onVideoClick={openVideo}
+                onVideoWatchLaterClick={markVideoAsWatchLater}
                 onSave={setChannels}
                 onRefresh={refreshChannels}
               />
             ) : (
               <VideoGrid
+                selectedChannelIndex={selectedChannelIndex}
                 videos={videos}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
                 onVideoClick={openVideo}
+                onVideoWatchLaterClick={markVideoAsWatchLater}
               />
             )}
           </ReactPullToRefresh>
@@ -638,9 +718,25 @@ export default function Popup(props: PopupProps) {
           </Fade>
         ))}
       </main>
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
-      <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
+      <SettingsDialog
+        settings={settings}
+        open={openSettingsDialog}
+        onClose={closeSettings}
+        onSave={saveSettings}
+      />
+      <CustomSnackbar
+        open={!!snackbarMessage.length}
+        message={snackbarMessage}
+        autoHideDuration={snackbarAutoHideDuration}
+        showRefreshButton={showSnackbarRefreshButton}
+        onClose={closeSnackbar}
+        onRefresh={refreshChannels}
+      />
+      <MessageSnackbar
+        message={lastError?.message}
+        open={!!lastError}
+        onClose={() => setLastError(null)}
+      />
     </div>
   )
 }

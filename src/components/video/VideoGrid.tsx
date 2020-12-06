@@ -8,14 +8,16 @@ import { debug } from '../../helpers/debug';
 
 interface VideoGridProps {
   loading?: boolean;
+  selectedChannelIndex: number;
   videos: Video[];
   maxPerChannel?: number;
   maxSkeletons?: number;
   onVideoClick: Function;
+  onVideoWatchLaterClick: Function;
 }
 
 export default function VideoGrid(props: VideoGridProps) {
-  const { videos, loading = false, maxPerChannel = 9, maxSkeletons = 9, onVideoClick } = props;
+  const { selectedChannelIndex, videos, loading = false, maxPerChannel = 9, maxSkeletons = 9, onVideoClick, onVideoWatchLaterClick } = props;
   const [preventLongPress, setPreventLongPress] = React.useState(false);
   const style = {
     grid: {
@@ -48,7 +50,12 @@ export default function VideoGrid(props: VideoGridProps) {
       {(loading ? Array.from(new Array(Math.min(maxPerChannel, maxSkeletons))) : videos.slice(0, maxPerChannel)).map((item, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3} draggable="false">
           {item ? (
-            <Media item={item} onClick={onVideoClick}></Media>
+            <Media
+              item={item}
+              selectedChannelIndex={selectedChannelIndex}
+              onClick={onVideoClick}
+              onWatchLaterClick={onVideoWatchLaterClick}
+            ></Media>
           ) : (
             <React.Fragment>
               <Skeleton variant="rect" width={210} height={118} />

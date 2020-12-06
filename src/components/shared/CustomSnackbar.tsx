@@ -9,10 +9,12 @@ interface CustomSnackbarProps {
   message: string;
   onClose: Function;
   onRefresh: Function;
+  autoHideDuration?: number;
+  showRefreshButton?: boolean
 }
 
 export function CustomSnackbar(props: CustomSnackbarProps) {
-  const { open, message, onClose, onRefresh } = props;
+  const { open, message, onClose, onRefresh, autoHideDuration = 6000, showRefreshButton = true } = props;
 
   return (
     <Snackbar
@@ -21,14 +23,14 @@ export function CustomSnackbar(props: CustomSnackbarProps) {
         horizontal: 'left',
       }}
       open={open}
-      autoHideDuration={6000}
+      autoHideDuration={autoHideDuration}
       onClose={() => onClose()}
       message={message}
       action={
         <React.Fragment>
-          <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
+          {showRefreshButton && <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
             Refresh
-          </Button>
+          </Button>}
           <IconButton size="small" aria-label="close" color="inherit" onClick={() => onClose()}>
             <CloseIcon fontSize="small" />
           </IconButton>

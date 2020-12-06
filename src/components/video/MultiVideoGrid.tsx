@@ -36,12 +36,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: theme.spacing(1),
   },
   youtube: {
-    '& :hover': {
+    '&:hover': {
       color: '#f44336',
     },
   },
   box: {
-    '& :last-child': {
+    '&:last-child': {
       '& hr.divider': {
         display: 'none'
       }
@@ -52,11 +52,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface MultiVideoGridProps {
   loading?: boolean;
   channels: Channel[];
+  selectedChannelIndex: number;
   videos: Video[];
   settings: Settings;
   maxPerChannel?: number;
   onSelect: Function;
   onVideoClick: Function;
+  onVideoWatchLaterClick: Function;
   onSave: Function;
   onRefresh: Function;
 }
@@ -64,7 +66,7 @@ interface MultiVideoGridProps {
 export default function MultiVideoGrid(props: MultiVideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, settings, loading = false, maxPerChannel = 9, onSelect, onVideoClick, onSave, onRefresh } = props;
+  const { channels, selectedChannelIndex, videos, settings, loading = false, maxPerChannel = 9, onSelect, onVideoClick, onVideoWatchLaterClick, onSave, onRefresh } = props;
   const [expandedChannelsIndexes, setExpandedChannelsIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
@@ -120,7 +122,15 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
                 </Tooltip>
               </IconButton>
             </Breadcrumbs>
-            <VideoGrid videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, 3)} loading={loading} maxPerChannel={maxPerChannel} maxSkeletons={3} onVideoClick={onVideoClick} />
+            <VideoGrid
+              selectedChannelIndex={selectedChannelIndex}
+              videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, 3)}
+              loading={loading}
+              maxPerChannel={maxPerChannel}
+              maxSkeletons={3}
+              onVideoClick={onVideoClick}
+              onVideoWatchLaterClick={onVideoWatchLaterClick}
+            />
             {channelVideos.length > 3 && expandedChannelsIndexes.indexOf(index) === -1 &&
               <Tooltip title="Show more" aria-label="show-more">
                 <IconButton edge="end" aria-label="show-more" size="small" style={{ marginBottom: theme.spacing(2.5) }} onClick={() => setExpandedChannelsIndexes([...expandedChannelsIndexes, index])}>
