@@ -560,11 +560,8 @@ export default function Popup(props: PopupProps) {
     const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
-      const index = videos.findIndex((v: Video) => v.id === video.id);
-      if (index > -1) {
-        videos.splice(index, 1);
-        setVideos(videos);
-      }
+      setVideos(videos.filter((v: Video) => v.id !== video.id)); // To Fix: warning => Can't perform a React state update on an unmounted component.
+      //refreshChannels(ChannelSelection.WatchLaterVideos);
       // update cache
       cache[video.channelId][videoIndex].isToWatchLater = false;
       setCache({...cache});

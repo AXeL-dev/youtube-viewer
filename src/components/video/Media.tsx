@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0.5),
   },
   optionsIcon: {
-    fontSize: '1.7em',
+    fontSize: '1.6em',
     //verticalAlign: 'middle',
     '&.bigger': {
       fontSize: '2.2em',
@@ -98,8 +98,8 @@ export default function Media(props: MediaProps) {
     <Link href={item.url} className={classes.anchor} target="_blank" rel="noopener" onClick={(event: any) => onClick(event, item)}>
       <Box className={classes.imageContainer}>
         <img className={classes.image} alt="" src={item.thumbnail} />
-        <div className={`${classes.overlay} overlay`}></div>
-        <div className={`${classes.options} options`}>
+        <Box className={`${classes.overlay} overlay`}></Box>
+        <Box className={`${classes.options} options`}>
           {selectedChannelIndex !== ChannelSelection.WatchLaterVideos && 
           <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => onWatchLaterClick(event, item)}>
             <Tooltip title="Watch later" aria-label="watch-later">
@@ -111,7 +111,7 @@ export default function Media(props: MediaProps) {
               <PlayArrowIcon className={`${classes.optionsIcon} bigger`} />
             </Tooltip>
           </IconButton>
-        </div>
+        </Box>
         <Typography variant="caption" className={classes.duration}>
           {item.duration}
         </Typography>
