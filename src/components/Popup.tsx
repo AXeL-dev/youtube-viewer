@@ -152,6 +152,8 @@ export default function Popup(props: PopupProps) {
   const [settings, setSettings] = React.useState<Settings>(props.settings);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [snackbarAutoHideDuration, setSnackbarAutoHideDuration] = React.useState(5000);
+  const [showSnackbarRefreshButton, setShowSnackbarRefreshButton] = React.useState(true);
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = React.useState<any>({});
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
@@ -451,13 +453,13 @@ export default function Popup(props: PopupProps) {
     // Update channels
     setChannels(channelsList);
     fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);
-    setSnackbarMessage('Channels imported!');
+    openSnackbar('Channels imported!');
   };
 
   const clearCache = () => {
     setCache({});
     saveToStorage({ cache: {} });
-    setSnackbarMessage('Cache cleared!');
+    openSnackbar('Cache cleared!');
   };
 
   const getCacheSize = () => {
@@ -510,10 +512,16 @@ export default function Popup(props: PopupProps) {
       autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
     closeSettings();
-    setSnackbarMessage('Settings saved!');
+    openSnackbar('Settings saved!');
   };
 
-  const closeSettingsSnackbar = () => {
+  const openSnackbar = (message: string, duration: number = 5000, showRefreshButton: boolean = true) => {
+    setSnackbarAutoHideDuration(duration);
+    setShowSnackbarRefreshButton(showRefreshButton);
+    setSnackbarMessage(message);
+  };
+
+  const closeSnackbar = () => {
     setSnackbarMessage('');
   };
 
@@ -541,9 +549,9 @@ export default function Popup(props: PopupProps) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
         setCache({...cache});
         saveToStorage({ cache: cache });
-        setSnackbarMessage('Video added to watch later list!');
+        openSnackbar('Video added to watch later list!', 1000, false);
       } else {
-        setSnackbarMessage('Video is already on watch later list!');
+        openSnackbar('Video is already on watch later list!', 1000, false);
       }
     }
   };
@@ -713,9 +721,25 @@ export default function Popup(props: PopupProps) {
           </Fade>
         ))}
       </main>
-      <SettingsDialog settings={settings} open={openSettingsDialog} onClose={closeSettings} onSave={saveSettings} />
-      <CustomSnackbar open={!!snackbarMessage.length} message={snackbarMessage} onClose={closeSettingsSnackbar} onRefresh={refreshChannels} />
-      <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
+      <SettingsDialog
+        settings={settings}
+        open={openSettingsDialog}
+        onClose={closeSettings}
+        onSave={saveSettings}
+      />
+      <CustomSnackbar
+        open={!!snackbarMessage.length}
+        message={snackbarMessage}
+        autoHideDuration={snackbarAutoHideDuration}
+        showRefreshButton={showSnackbarRefreshButton}
+        onClose={closeSnackbar}
+        onRefresh={refreshChannels}
+      />
+      <MessageSnackbar
+        message={lastError?.message}
+        open={!!lastError}
+        onClose={() => setLastError(null)}
+      />
     </div>
   )
 }
