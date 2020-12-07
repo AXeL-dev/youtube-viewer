@@ -536,11 +536,11 @@ export default function Popup(props: PopupProps) {
       });
     }
     if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
-      unmarkVideoAsWatchLater(video);
+      removeVideoFromWatchLater(video);
     }
   };
 
-  const markVideoAsWatchLater = (event: Event, video: Video) => {
+  const addVideoToWatchLater = (event: Event, video: Video) => {
     event.stopPropagation();
     event.preventDefault();
     const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
@@ -556,7 +556,7 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const unmarkVideoAsWatchLater = (video: Video) => {
+  const removeVideoFromWatchLater = (video: Video) => {
     const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
@@ -569,7 +569,7 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const markAllVideosAsWatchLater = () => {
+  const addAllVideosToWatchLater = () => {
     let cacheUpdated: boolean = false;
     videos.forEach((video: Video) => {
       const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
@@ -662,7 +662,7 @@ export default function Popup(props: PopupProps) {
           onSelectedIndexChange={setSelectedChannelIndex}
           onClearCache={clearCache}
           onClearRecentVideos={clearRecentVideos}
-          onAddVideosToWatchLater={markAllVideosAsWatchLater}
+          onAddVideosToWatchLater={addAllVideosToWatchLater}
           onClearWatchLaterVideos={clearWatchLaterVideos}
           onImport={importChannels}
         />
@@ -710,7 +710,7 @@ export default function Popup(props: PopupProps) {
                 maxPerChannel={settings.videosPerChannel}
                 onSelect={selectChannel}
                 onVideoClick={openVideo}
-                onVideoWatchLaterClick={markVideoAsWatchLater}
+                onVideoWatchLaterClick={addVideoToWatchLater}
                 onSave={setChannels}
                 onRefresh={refreshChannels}
               />
@@ -721,7 +721,7 @@ export default function Popup(props: PopupProps) {
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
                 onVideoClick={openVideo}
-                onVideoWatchLaterClick={markVideoAsWatchLater}
+                onVideoWatchLaterClick={addVideoToWatchLater}
               />
             )}
           </ReactPullToRefresh>
