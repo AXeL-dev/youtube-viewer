@@ -569,6 +569,22 @@ export default function Popup(props: PopupProps) {
     }
   };
 
+  const markAllVideosAsWatchLater = () => {
+    let cacheUpdated: boolean = false;
+    videos.forEach((video: Video) => {
+      const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+      if (videoIndex > -1 && !cache[video.channelId][videoIndex].isToWatchLater) {
+        cache[video.channelId][videoIndex].isToWatchLater = true;
+        cacheUpdated = true;
+      }
+    });
+    if (cacheUpdated) {
+      setCache({...cache});
+      saveToStorage({ cache: cache });
+      openSnackbar('All videos added to watch later list!', 3000, false);
+    }
+  };
+
   const handlePullToRefresh = (resolve: Function, reject: Function) => {
     let promise: Promise<any>;
     if (selectedChannelIndex >= 0) {
@@ -646,6 +662,7 @@ export default function Popup(props: PopupProps) {
           onSelectedIndexChange={setSelectedChannelIndex}
           onClearCache={clearCache}
           onClearRecentVideos={clearRecentVideos}
+          onAddVideosToWatchLater={markAllVideosAsWatchLater}
           onClearWatchLaterVideos={clearWatchLaterVideos}
           onImport={importChannels}
         />

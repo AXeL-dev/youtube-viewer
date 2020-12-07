@@ -101,6 +101,7 @@ interface ChannelListProps {
   onSelectedIndexChange: Function;
   onClearCache: Function;
   onClearRecentVideos: Function;
+  onAddVideosToWatchLater: Function;
   onClearWatchLaterVideos: Function;
   onImport: Function;
 }
@@ -110,7 +111,7 @@ export function ChannelList(props: ChannelListProps) {
           todaysVideosCount, recentVideosCount, watchLaterVideosCount,
           onShowAll, onShowTodaysVideos, onShowRecentVideos, onShowWatchLaterVideos,
           onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearCache,
-          onClearRecentVideos, onClearWatchLaterVideos, onImport } = props;
+          onClearRecentVideos, onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
@@ -304,6 +305,11 @@ export function ChannelList(props: ChannelListProps) {
     setOpenClearRecentVideosDialog(false);
   };
 
+  const addRecentVideosToWatchLater = () => {
+    closeMenu();
+    onAddVideosToWatchLater();
+  };
+
   const refreshAll = (event?: any) => {
     onRefresh(ChannelSelection.All, event);
   };
@@ -409,6 +415,7 @@ export function ChannelList(props: ChannelListProps) {
                     onClose={closeMenu}
                   >
                     <MenuItem onClick={(event) => refreshRecentVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
+                    {recentVideosCount > 0 && selectedIndex === ChannelSelection.RecentVideos && <MenuItem onClick={() => addRecentVideosToWatchLater()}><AccessTimeIcon className={classes.menuIcon} /> Add all to watch later list</MenuItem>}
                     {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
                   </Menu>
                 </ListItemSecondaryAction>}
