@@ -35,6 +35,7 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 - [x] Improve caching (videos cache could be saved in the storage which may reduce API quota consumption)
 - [x] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
+- [ ] Better state management @see [Redux](https://redux.js.org/)
 - [ ] Translations
 
 ## Technical
