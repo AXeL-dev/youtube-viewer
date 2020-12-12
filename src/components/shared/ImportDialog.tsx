@@ -30,7 +30,7 @@ export function ImportDialog(props: ImportDialogDialogProps) {
       const json = (document.getElementById(textFieldId) as any).value;
       const data = JSON.parse(json);
       const isValid = onValidate(data);
-      setTextFieldError(!isValid); // == false when isValid is true & vise versa
+      setTextFieldError(!isValid); // == false when isValid is true & vice versa
       if (isValid) {
         onConfirm(data);
       }
@@ -51,7 +51,7 @@ export function ImportDialog(props: ImportDialogDialogProps) {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-    <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           <RawHTML>{description}</RawHTML>
