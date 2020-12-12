@@ -31,7 +31,7 @@ class Main extends React.Component<MainProps, MainState> {
         autoPlayVideos: false,
         openVideosInInactiveTabs: false,
         openChannelsOnNameClick: false,
-        hideEmptyChannels: false,
+        hideEmptyChannels: true,
         autoClearRecentVideos: true,
         autoClearCache: false
       },
