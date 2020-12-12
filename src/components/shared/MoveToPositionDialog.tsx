@@ -28,7 +28,7 @@ export function MoveToPositionDialog(props: MoveToPositionDialogProps) {
   const confirm = () => {
     const position = (document.getElementById(positionFieldId) as any).value;
     const isValid = isNumber(position);
-    setPositionFieldError(!isValid); // == false when isValid is true & vise versa
+    setPositionFieldError(!isValid); // == false when isValid is true & vice versa
     if (isValid) {
       onConfirm(+position);
     }
@@ -45,7 +45,7 @@ export function MoveToPositionDialog(props: MoveToPositionDialogProps) {
       onClose={close}
       aria-labelledby="alert-dialog-title"
     >
-    <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
