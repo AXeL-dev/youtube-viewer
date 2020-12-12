@@ -25,9 +25,11 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 ## Installation
 
 [![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
-[![Get it for Chrome!](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_206x58.png)](https://github.com/AXeL-dev/youtube-viewer/releases)
+[![Get it for Chrome!](https://i.imgur.com/B0i5sn3.png)](https://github.com/AXeL-dev/youtube-viewer/releases)
 
 Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
+
+[How to install?](https://github.com/AXeL-dev/install-webextension)
 
 ## Todo
 
