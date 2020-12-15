@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
@@ -38,25 +37,7 @@ import TodayIcon from '@material-ui/icons/Today';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    channelsOptionsIcon: {
-      top: '50%',
-      right: '16px',
-      position: 'absolute',
-      transform: 'translateY(-50%)',
-    },
-    menuIcon: {
-      fontSize: 20,
-      marginRight: theme.spacing(1),
-      verticalAlign: 'middle',
-    },
-    subheader: {
-      position: 'relative',
-    }
-  }),
-);
+import { useStyles } from './ChannelList.styles';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',

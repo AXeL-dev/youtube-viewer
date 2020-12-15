@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
-import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import YouTubeIcon from '@material-ui/icons/YouTube';
@@ -15,39 +15,7 @@ import { Channel } from '../../models/Channel';
 import { Settings } from '../../models/Settings';
 import VideoGrid from './VideoGrid';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-
-const useStyles = makeStyles((theme: Theme) => ({
-  breadcrumb: {
-    marginBottom: theme.spacing(2.5),
-  },
-  divider: {
-    marginBottom: theme.spacing(2.5),
-  },
-  link: {
-    display: 'flex',
-    alignItems: 'center',
-    cursor: 'pointer',
-    outline: 'none',
-    '&:hover': {
-      backgroundColor: 'transparent'
-    },
-  },
-  title: {
-    marginLeft: theme.spacing(1),
-  },
-  youtube: {
-    '&:hover': {
-      color: '#f44336',
-    },
-  },
-  box: {
-    '&:last-child': {
-      '& hr.divider': {
-        display: 'none'
-      }
-    }
-  }
-}));
+import { useStyles } from './MultiVideoGrid.styles';
 
 interface MultiVideoGridProps {
   loading?: boolean;

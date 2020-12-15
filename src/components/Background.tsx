@@ -16,7 +16,7 @@ const defaults: any = {
   videosPerChannel: 9,
 };
 
-interface BackgroundProps {}
+interface BackgroundProps { }
 
 interface BackgroundState {
   totalRecentVideosCount: number;

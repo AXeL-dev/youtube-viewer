@@ -1,5 +1,5 @@
 import React from 'react';
-import Popup from './Popup';
+import Popup from './popup/Popup';
 import { getFromStorage, saveToStorage } from '../helpers/storage';
 import { Channel, ChannelSelection } from '../models/Channel';
 import { Settings } from '../models/Settings';
@@ -7,7 +7,7 @@ import { isWebExtension, setBadgeText } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 import { Video } from '../models/Video';
 
-interface MainProps {}
+interface MainProps { }
 
 interface MainState {
   channels: Channel[];
