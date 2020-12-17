@@ -38,37 +38,36 @@ import { useStyles } from './Popup.styles';
 import ReactPullToRefresh from 'react-pull-to-refresh';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import { useAtom } from 'jotai';
+import { channelsAtom } from '../../atoms/channels';
+import { videosAtom } from '../../atoms/videos';
+import { settingsAtom } from '../../atoms/settings';
+import { cacheAtom } from '../../atoms/cache';
 
 interface PopupProps {
-  channels: Channel[];
-  settings: Settings;
-  cache: any;
   isReady: boolean;
 }
 
 export default function Popup(props: PopupProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const [channels, setChannels] = React.useState<Channel[]>(props.channels);
-  const [videos, setVideos] = React.useState<Video[]>([]);
+  const [channels, setChannels] = useAtom(channelsAtom);
+  const [videos, setVideos] = useAtom(videosAtom);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(ChannelSelection.All);
-  const [settings, setSettings] = React.useState<Settings>(props.settings);
+  const [settings, setSettings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [snackbarAutoHideDuration, setSnackbarAutoHideDuration] = React.useState(5000);
   const [showSnackbarRefreshButton, setShowSnackbarRefreshButton] = React.useState(true);
   const [lastError, setLastError] = React.useState<Error|null>(null);
-  const [cache, setCache] = React.useState<any>({});
+  const [cache, setCache] = useAtom(cacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
-  React.useEffect(() => setChannels(props.channels), [props.channels]);
-  React.useEffect(() => setSettings(props.settings), [props.settings]);
-  React.useEffect(() => setCache(props.cache), [props.cache]);
   React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {

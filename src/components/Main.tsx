@@ -1,60 +1,48 @@
 import React from 'react';
 import Popup from './popup/Popup';
 import { getFromStorage, saveToStorage } from '../helpers/storage';
-import { Channel, ChannelSelection } from '../models/Channel';
-import { Settings } from '../models/Settings';
 import { isWebExtension, setBadgeText } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 import { Video } from '../models/Video';
+import { useConstructor } from '../hooks/useConstructor';
+import { useAtom } from 'jotai';
+import { channelsAtom } from '../atoms/channels';
+import { settingsAtom } from '../atoms/settings';
+import { cacheAtom } from '../atoms/cache';
 
-interface MainProps { }
-
-interface MainState {
-  channels: Channel[];
-  settings: Settings;
-  cache: any;
-  isReady: boolean;
-}
-
-class Main extends React.Component<MainProps, MainState> {
-  constructor(props: MainProps) {
-    super(props);
-    this.state = {
-      channels: [],
-      settings: {
-        defaultChannelSelection: ChannelSelection.All,
-        videosPerChannel: 9,
-        videosAnteriority: 30, // days
-        sortVideosBy: 'date',
-        autoVideosCheckRate: 30, // minutes
-        enableRecentVideosNotifications: true,
-        autoPlayVideos: false,
-        openVideosInInactiveTabs: false,
-        openChannelsOnNameClick: false,
-        hideEmptyChannels: true,
-        autoClearRecentVideos: true,
-        autoClearCache: false
-      },
-      cache: {},
-      isReady: false
-    };
-    this.updateState();
+export default function Main() {
+  useConstructor(() => {
+    fetchData();
     if (isWebExtension()) {
       setBadgeText(''); // reset webextension badge
     }
-  }
+  });
 
-  async updateState() {
+  const [channels, setChannels] = useAtom(channelsAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
+  const [cache, setCache] = useAtom(cacheAtom);
+  const [isReady, setIsReady] = React.useState(false);
+
+  async function fetchData() {
     // get data from storage
-    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
-    debug('Storage data:', {channels: channels, settings: settings, cache: cache});
+    const storage = await getFromStorage('channels', 'settings', 'cache');
+    const data = {
+      channels: storage[0],
+      settings: storage[1],
+      cache: storage[2]
+    };
+    debug('Storage data:', {
+      channels: data.channels,
+      settings: data.settings,
+      cache: data.cache
+    });
     // set/merge settings
-    settings = settings ? {...this.state.settings, ...settings} : this.state.settings;
+    data.settings = data.settings ? {settings, ...data.settings} : settings;
     // clear recent videos
-    if (settings?.autoClearRecentVideos && cache) {
+    if (data.settings?.autoClearRecentVideos && data.cache) {
       let cacheHasChanged: boolean = false;
-      Object.keys(cache).forEach((channelId: string) => {
-        cache[channelId] = cache[channelId].map((video: Video) => {
+      Object.keys(data.cache).forEach((channelId: string) => {
+        data.cache[channelId] = data.cache[channelId].map((video: Video) => {
           if (video.isRecent) {
             video.isRecent = false;
             cacheHasChanged = true;
@@ -64,23 +52,17 @@ class Main extends React.Component<MainProps, MainState> {
       });
       // update cache
       if (cacheHasChanged) {
-        saveToStorage({ cache: cache });
+        saveToStorage({ cache: data.cache });
       }
     }
     // update state
-    this.setState({
-      channels: channels?.length ? channels : [],
-      settings: settings,
-      cache: !settings?.autoClearCache && cache ? cache : {},
-      isReady: true
-    });
+    setChannels(data.channels?.length ? data.channels : []);
+    setSettings(data.settings);
+    setCache(!data.settings?.autoClearCache && data.cache ? data.cache : {});
+    setIsReady(true);
   }
 
-  render() {
-    return (
-      <Popup channels={this.state.channels} settings={this.state.settings} cache={this.state.cache} isReady={this.state.isReady} />
-    );
-  }
+  return (
+    <Popup isReady={isReady} />
+  );
 }
-
-export default Main;
