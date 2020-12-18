@@ -189,7 +189,7 @@ export default function Popup(props: PopupProps) {
                 // merge cached & new videos
                 cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
                 // sort videos
-                const videos = cache[channel.id].sort((a: Video, b: Video) => {
+                const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
                   if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
                     return b.views.count - a.views.count;
                   } else {
@@ -199,7 +199,7 @@ export default function Popup(props: PopupProps) {
                 // save to cache
                 setCache({...cache});
                 saveToStorage({ cache: cache });
-                resolve(videos || []);
+                resolve(sortedVideos || []);
               }).catch((error: Error) => {
                 displayError(error);
                 resolve([]);
@@ -228,8 +228,8 @@ export default function Popup(props: PopupProps) {
     }
     // Get channel videos
     setIsLoading(true);
-    getChannelVideos(channel).then((videos: Video[]) => {
-      setVideos(videos || []);
+    getChannelVideos(channel).then((results: Video[]) => {
+      setVideos(results || []);
       setIsLoading(false);
     });
   };
@@ -240,8 +240,8 @@ export default function Popup(props: PopupProps) {
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);
-    return getChannelVideos(channel, ignoreCache).then((videos: Video[]) => {
-      setVideos(videos || []);
+    return getChannelVideos(channel, ignoreCache).then((results: Video[]) => {
+      setVideos(results || []);
       setIsLoading(false);
       window.scrollTo(0, 0); // scroll to top
     });
@@ -262,7 +262,7 @@ export default function Popup(props: PopupProps) {
     setIsLoading(true);
     setVideos([]);
     let promises: Promise<any>[] = [];
-    let videos: Video[] = [];
+    let results: Video[] = [];
     const channelsList = customChannels || channels;
 
     channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
@@ -273,14 +273,14 @@ export default function Popup(props: PopupProps) {
         if (filterFunction) {
           newVideos = newVideos.filter((video: Video) => filterFunction(video));
         }
-        videos.push(...newVideos);
+        results.push(...newVideos);
       });
       promises.push(promise);
 
     });
 
     return Promise.all(promises).finally(() => {
-      setVideos(videos);
+      setVideos(results);
       setIsLoading(false);
     });
   };
@@ -347,7 +347,7 @@ export default function Popup(props: PopupProps) {
     if (event) {
       event.stopPropagation();
     }
-    if (selection === undefined || selection === null) {
+    if (selection === undefined || selection === null) {
       selection = selectedChannelIndex;
     }
     if (selection >= 0) {
