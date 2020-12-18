@@ -61,9 +61,7 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const snackbar = useAtomValue(snackbarAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
-  const closeSnackbar = useUpdateAtom(closeSnackbarAtom);
+  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = useAtom(cacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
@@ -80,6 +78,7 @@ export default function Popup(props: PopupProps) {
       } else if (selectedChannelIndex !== settings.defaultChannelSelection) {
         setSelectedChannelIndex(settings.defaultChannelSelection);
       }
+      countVideos();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
@@ -103,39 +102,43 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => {
     warn('cache or channels changed', { isReady: isReady });
     if (isReady) {
-      debug('----------------------');
-      debug('counting todays & recent videos');
-      let totalRecentVideosCount: number = 0,
-          totalTodaysVideosCount: number = 0,
-          totalWatchLaterVideosCount: number = 0;
-      Object.keys(cache).forEach((channelId: string) => {
-        const channel = channels.find((c: Channel) => c.id === channelId);
-        if (!channel || channel.isHidden) {
-          return;
-        }
-        const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
-        const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
-        const watchLaterVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isToWatchLater)).length;
-        debug(channel.title, {
-          recent: recentVideosCountPerChannel,
-          todays: todaysVideosCountPerChannel,
-          watchLater: watchLaterVideosCountPerChannel,
-        });
-        totalRecentVideosCount += recentVideosCountPerChannel;
-        totalTodaysVideosCount += todaysVideosCountPerChannel;
-        totalWatchLaterVideosCount += watchLaterVideosCountPerChannel;
-      });
-      debug('total count', {
-        recent: totalRecentVideosCount,
-        todays: totalTodaysVideosCount,
-        watchLater: totalWatchLaterVideosCount,
-      });
-      setRecentVideosCount(totalRecentVideosCount);
-      setTodaysVideosCount(totalTodaysVideosCount);
-      setWatchLaterVideosCount(totalWatchLaterVideosCount);
+      countVideos();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache, channels]);
+
+  const countVideos = () => {
+    debug('----------------------');
+    debug('counting todays & recent videos');
+    let totalRecentVideosCount: number = 0,
+        totalTodaysVideosCount: number = 0,
+        totalWatchLaterVideosCount: number = 0;
+    Object.keys(cache).forEach((channelId: string) => {
+      const channel = channels.find((c: Channel) => c.id === channelId);
+      if (!channel || channel.isHidden) {
+        return;
+      }
+      const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
+      const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
+      const watchLaterVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isToWatchLater)).length;
+      debug(channel.title, {
+        recent: recentVideosCountPerChannel,
+        todays: todaysVideosCountPerChannel,
+        watchLater: watchLaterVideosCountPerChannel,
+      });
+      totalRecentVideosCount += recentVideosCountPerChannel;
+      totalTodaysVideosCount += todaysVideosCountPerChannel;
+      totalWatchLaterVideosCount += watchLaterVideosCountPerChannel;
+    });
+    debug('total count', {
+      recent: totalRecentVideosCount,
+      todays: totalTodaysVideosCount,
+      watchLater: totalWatchLaterVideosCount,
+    });
+    setRecentVideosCount(totalRecentVideosCount);
+    setTodaysVideosCount(totalTodaysVideosCount);
+    setWatchLaterVideosCount(totalWatchLaterVideosCount);
+  };
 
   const handleDrawerOpen = () => {
     setOpenDrawer(true);
