@@ -31,7 +31,7 @@ import { ChannelList } from '../channel/ChannelList';
 import { MessageSnackbar } from '../shared/MessageSnackbar';
 import { SettingsDialog } from '../settings/SettingsDialog';
 import { CustomSnackbar } from '../shared/CustomSnackbar';
-import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
+import { isWebExtension } from '../../helpers/browser';
 import { debug, warn } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
 // @ts-ignore
@@ -39,7 +39,7 @@ import ReactPullToRefresh from 'react-pull-to-refresh';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import { useAtom } from 'jotai';
-import { channelsAtom } from '../../atoms/channels';
+import { channelsAtom, selectedChannelIndexAtom } from '../../atoms/channels';
 import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
@@ -56,7 +56,7 @@ export default function Popup(props: PopupProps) {
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedChannelIndex, setSelectedChannelIndex] = React.useState(ChannelSelection.All);
+  const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -430,50 +430,6 @@ export default function Popup(props: PopupProps) {
     setSnackbarMessage('');
   };
 
-  const openVideo = (event: Event, video: Video) => {
-    event.stopPropagation();
-    if (isWebExtension() && video?.url) {
-      event.preventDefault();
-      createTab(video.url, !settings.openVideosInInactiveTabs).then((tab: any) => {
-        if (settings.autoPlayVideos) {
-          executeScript(tab.id, `document.querySelector('#player video').play();`);
-        }
-      });
-    }
-    if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
-      removeVideoFromWatchLater(video);
-    }
-  };
-
-  const addVideoToWatchLater = (event: Event, video: Video) => {
-    event.stopPropagation();
-    event.preventDefault();
-    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
-    if (videoIndex > -1) {
-      if (!cache[video.channelId][videoIndex].isToWatchLater) {
-        cache[video.channelId][videoIndex].isToWatchLater = true;
-        setCache({...cache});
-        saveToStorage({ cache: cache });
-        openSnackbar('Video added to watch later list!', 1000, false);
-      } else {
-        openSnackbar('Video is already on watch later list!', 1000, false);
-      }
-    }
-  };
-
-  const removeVideoFromWatchLater = (video: Video) => {
-    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
-    if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
-      // exclude video from shown videos
-      setVideos(videos.filter((v: Video) => v.id !== video.id)); // To Fix: warning => Can't perform a React state update on an unmounted component.
-      //refreshChannels(ChannelSelection.WatchLaterVideos);
-      // update cache
-      cache[video.channelId][videoIndex].isToWatchLater = false;
-      setCache({...cache});
-      saveToStorage({ cache: cache });
-    }
-  };
-
   const addAllVideosToWatchLater = () => {
     let cacheUpdated: boolean = false;
     videos.forEach((video: Video) => {
@@ -608,25 +564,19 @@ export default function Popup(props: PopupProps) {
             ) : selectedChannelIndex < 0 ? (
               <MultiVideoGrid
                 channels={channels}
-                selectedChannelIndex={selectedChannelIndex}
                 videos={videos}
                 settings={settings}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
                 onSelect={selectChannel}
-                onVideoClick={openVideo}
-                onVideoWatchLaterClick={addVideoToWatchLater}
                 onSave={setChannels}
                 onRefresh={refreshChannels}
               />
             ) : (
               <VideoGrid
-                selectedChannelIndex={selectedChannelIndex}
                 videos={videos}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
-                onVideoClick={openVideo}
-                onVideoWatchLaterClick={addVideoToWatchLater}
               />
             )}
           </ReactPullToRefresh>
