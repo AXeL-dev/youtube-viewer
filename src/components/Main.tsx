@@ -7,7 +7,7 @@ import { Video } from '../models/Video';
 import { useConstructor } from '../hooks/useConstructor';
 import { useAtom } from 'jotai';
 import { channelsAtom } from '../atoms/channels';
-import { settingsAtom } from '../atoms/settings';
+import { settingsAtom, defaultSettings } from '../atoms/settings';
 import { cacheAtom } from '../atoms/cache';
 
 export default function Main() {
@@ -18,31 +18,26 @@ export default function Main() {
     }
   });
 
-  const [channels, setChannels] = useAtom(channelsAtom);
-  const [settings, setSettings] = useAtom(settingsAtom);
-  const [cache, setCache] = useAtom(cacheAtom);
+  const [, setChannels] = useAtom(channelsAtom);
+  const [, setSettings] = useAtom(settingsAtom);
+  const [, setCache] = useAtom(cacheAtom);
   const [isReady, setIsReady] = React.useState(false);
 
   async function fetchData() {
     // get data from storage
-    const storage = await getFromStorage('channels', 'settings', 'cache');
-    const data = {
-      channels: storage[0],
-      settings: storage[1],
-      cache: storage[2]
-    };
+    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
     debug('Storage data:', {
-      channels: data.channels,
-      settings: data.settings,
-      cache: data.cache
+      channels: channels,
+      settings: settings,
+      cache: cache
     });
     // set/merge settings
-    data.settings = data.settings ? {settings, ...data.settings} : settings;
+    settings = settings ? {defaultSettings, ...settings} : defaultSettings;
     // clear recent videos
-    if (data.settings?.autoClearRecentVideos && data.cache) {
+    if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
-      Object.keys(data.cache).forEach((channelId: string) => {
-        data.cache[channelId] = data.cache[channelId].map((video: Video) => {
+      Object.keys(cache).forEach((channelId: string) => {
+        cache[channelId] = cache[channelId].map((video: Video) => {
           if (video.isRecent) {
             video.isRecent = false;
             cacheHasChanged = true;
@@ -52,13 +47,13 @@ export default function Main() {
       });
       // update cache
       if (cacheHasChanged) {
-        saveToStorage({ cache: data.cache });
+        saveToStorage({ cache: cache });
       }
     }
     // update state
-    setChannels(data.channels?.length ? data.channels : []);
-    setSettings(data.settings);
-    setCache(!data.settings?.autoClearCache && data.cache ? data.cache : {});
+    setChannels(channels || []);
+    setSettings(settings);
+    setCache(!settings?.autoClearCache && cache ? cache : {});
     setIsReady(true);
   }
 

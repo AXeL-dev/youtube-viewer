@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { ChannelSelection } from '../models/Channel';
 import { Settings } from '../models/Settings';
 
-export const settingsAtom = atom({
+export const defaultSettings: Settings = {
   defaultChannelSelection: ChannelSelection.All,
   videosPerChannel: 9,
   videosAnteriority: 30, // days
@@ -15,4 +15,6 @@ export const settingsAtom = atom({
   hideEmptyChannels: true,
   autoClearRecentVideos: true,
   autoClearCache: false
-} as Settings);
+};
+
+export const settingsAtom = atom(defaultSettings);

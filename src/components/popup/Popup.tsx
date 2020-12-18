@@ -25,7 +25,7 @@ import { Video } from '../../models/Video';
 import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../../helpers/utils';
 import MultiVideoGrid from '../video/MultiVideoGrid';
 import VideoGrid from '../video/VideoGrid';
-import { Settings, SettingsType } from '../../models/Settings';
+import { SettingsType } from '../../models/Settings';
 import { saveToStorage } from '../../helpers/storage';
 import { ChannelList } from '../channel/ChannelList';
 import { MessageSnackbar } from '../shared/MessageSnackbar';
