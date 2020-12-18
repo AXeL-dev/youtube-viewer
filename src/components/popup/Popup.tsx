@@ -39,10 +39,12 @@ import ReactPullToRefresh from 'react-pull-to-refresh';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import { useAtom } from 'jotai';
+import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { channelsAtom, selectedChannelIndexAtom } from '../../atoms/channels';
 import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
+import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
 
 interface PopupProps {
   isReady: boolean;
@@ -59,9 +61,9 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings, setSettings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [snackbarMessage, setSnackbarMessage] = React.useState('');
-  const [snackbarAutoHideDuration, setSnackbarAutoHideDuration] = React.useState(5000);
-  const [showSnackbarRefreshButton, setShowSnackbarRefreshButton] = React.useState(true);
+  const snackbar = useAtomValue(snackbarAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const closeSnackbar = useUpdateAtom(closeSnackbarAtom);
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = useAtom(cacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
@@ -420,16 +422,6 @@ export default function Popup(props: PopupProps) {
     openSnackbar('Settings saved!');
   };
 
-  const openSnackbar = (message: string, duration: number = 5000, showRefreshButton: boolean = true) => {
-    setSnackbarAutoHideDuration(duration);
-    setShowSnackbarRefreshButton(showRefreshButton);
-    setSnackbarMessage(message);
-  };
-
-  const closeSnackbar = () => {
-    setSnackbarMessage('');
-  };
-
   const addAllVideosToWatchLater = () => {
     let cacheUpdated: boolean = false;
     videos.forEach((video: Video) => {
@@ -442,7 +434,11 @@ export default function Popup(props: PopupProps) {
     if (cacheUpdated) {
       setCache({...cache});
       saveToStorage({ cache: cache });
-      openSnackbar('All videos added to watch later list!', 3000, false);
+      openSnackbar({
+        message: 'All videos added to watch later list!',
+        autoHideDuration: 3000,
+        showRefreshButton: false
+      });
     }
   };
 
@@ -597,10 +593,10 @@ export default function Popup(props: PopupProps) {
         onSave={saveSettings}
       />
       <CustomSnackbar
-        open={!!snackbarMessage.length}
-        message={snackbarMessage}
-        autoHideDuration={snackbarAutoHideDuration}
-        showRefreshButton={showSnackbarRefreshButton}
+        open={!!snackbar.message?.length}
+        message={snackbar.message}
+        autoHideDuration={snackbar.autoHideDuration}
+        showRefreshButton={snackbar.showRefreshButton}
         onClose={closeSnackbar}
         onRefresh={refreshChannels}
       />

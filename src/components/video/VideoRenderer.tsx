@@ -12,11 +12,13 @@ import { ChannelSelection } from '../../models/Channel';
 import { useStyles } from './VideoRenderer.styles';
 import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
 import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { saveToStorage } from '../../helpers/storage';
 import { selectedChannelIndexAtom } from '../../atoms/channels';
+import { openSnackbarAtom } from '../../atoms/snackbar';
 
 interface VideoRendererProps {
   video: Video;
@@ -29,6 +31,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
   const [cache, setCache] = useAtom(cacheAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
 
   const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();
@@ -54,9 +57,17 @@ export default function VideoRenderer(props: VideoRendererProps) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
         setCache({...cache});
         saveToStorage({ cache: cache });
-        //openSnackbar('Video added to watch later list!', 1000, false);
+        openSnackbar({
+          message: 'Video added to watch later list!',
+          autoHideDuration: 1000,
+          showRefreshButton: false
+        });
       } else {
-        //openSnackbar('Video is already on watch later list!', 1000, false);
+        openSnackbar({
+          message: 'Video is already on watch later list!',
+          autoHideDuration: 1000,
+          showRefreshButton: false
+        });
       }
     }
   };
