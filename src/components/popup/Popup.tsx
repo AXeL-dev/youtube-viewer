@@ -596,7 +596,7 @@ export default function Popup(props: PopupProps) {
         onSave={saveSettings}
       />
       <CustomSnackbar
-        open={!!snackbar.message?.length}
+        open={snackbar.isOpen}
         message={snackbar.message}
         autoHideDuration={snackbar.autoHideDuration}
         showRefreshButton={snackbar.showRefreshButton}
