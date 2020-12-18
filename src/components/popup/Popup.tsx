@@ -25,7 +25,6 @@ import { Video } from '../../models/Video';
 import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../../helpers/utils';
 import MultiVideoGrid from '../video/MultiVideoGrid';
 import VideoGrid from '../video/VideoGrid';
-import { SettingsType } from '../../models/Settings';
 import { saveToStorage } from '../../helpers/storage';
 import { ChannelList } from '../channel/ChannelList';
 import { MessageSnackbar } from '../shared/MessageSnackbar';
@@ -59,7 +58,7 @@ export default function Popup(props: PopupProps) {
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
-  const [settings, setSettings] = useAtom(settingsAtom);
+  const [settings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
@@ -387,44 +386,6 @@ export default function Popup(props: PopupProps) {
     setOpenSettingsDialog(false);
   };
 
-  const getSettingsValue = (id: string, type: SettingsType) => {
-    const element = document.getElementById(id) as any;
-    if (element) {
-      switch(type) {
-        case SettingsType.Number:
-          return +element.value;
-        case SettingsType.Boolean:
-          return element.checked;
-        case SettingsType.String:
-        default:
-          return element.value;
-      }
-    } else {
-      return (settings as any)[id];
-    }
-  };
-
-  const saveSettings = () => {
-    // Update settings
-    setSettings({
-      defaultChannelSelection: getSettingsValue('defaultChannelSelection', SettingsType.Number),
-      videosPerChannel: getSettingsValue('videosPerChannel', SettingsType.Number),
-      videosAnteriority: getSettingsValue('videosAnteriority', SettingsType.Number),
-      sortVideosBy: getSettingsValue('sortVideosBy', SettingsType.String),
-      apiKey: getSettingsValue('apiKey', SettingsType.String),
-      autoVideosCheckRate: getSettingsValue('autoVideosCheckRate', SettingsType.Number),
-      enableRecentVideosNotifications: getSettingsValue('enableRecentVideosNotifications', SettingsType.Boolean),
-      autoPlayVideos: getSettingsValue('autoPlayVideos', SettingsType.Boolean),
-      openVideosInInactiveTabs: getSettingsValue('openVideosInInactiveTabs', SettingsType.Boolean),
-      openChannelsOnNameClick: getSettingsValue('openChannelsOnNameClick', SettingsType.Boolean),
-      hideEmptyChannels: getSettingsValue('hideEmptyChannels', SettingsType.Boolean),
-      autoClearRecentVideos: getSettingsValue('autoClearRecentVideos', SettingsType.Boolean),
-      autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
-    });
-    closeSettings();
-    openSnackbar('Settings saved!');
-  };
-
   const addAllVideosToWatchLater = () => {
     let cacheUpdated: boolean = false;
     videos.forEach((video: Video) => {
@@ -590,10 +551,8 @@ export default function Popup(props: PopupProps) {
         ))}
       </main>
       <SettingsDialog
-        settings={settings}
         open={openSettingsDialog}
         onClose={closeSettings}
-        onSave={saveSettings}
       />
       <CustomSnackbar
         open={snackbar.isOpen}
