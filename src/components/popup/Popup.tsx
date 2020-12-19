@@ -257,7 +257,12 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const fetchChannelsVideos = (selection: ChannelSelection, filterFunction: Function|null = null, ignoreCache: boolean = false, customChannels?: Channel[]) => {
+  const fetchChannelsVideos = (
+    selection: ChannelSelection,
+    filterFunction: ((video: Video) => void)|null = null,
+    ignoreCache: boolean = false,
+    customChannels?: Channel[]
+  ) => {
     // Update channel selection
     setSelectedChannelIndex(selection);
     // Get channels videos
@@ -317,25 +322,33 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const bulkUpdateVideos = (callback: (video: Video) => void, selection?: ChannelSelection) => {
+  const bulkUpdateVideos = (updateFunction: (video: Video) => void, callback?: () => void) => {
     Object.keys(cache).forEach((channelId: string) => {
       cache[channelId] = cache[channelId].map((video: Video) => {
-        callback(video);
+        updateFunction(video);
         return video;
       });
     });
     setCache({...cache});
-    if (selection && selectedChannelIndex === selection) {
-      refreshChannels(selection);
+    if (callback) {
+      callback();
     }
   };
 
   const clearRecentVideos = () => {
-    bulkUpdateVideos((video: Video) => video.isRecent = false, ChannelSelection.RecentVideos);
+    bulkUpdateVideos((video: Video) => video.isRecent = false, () => {
+      if (selectedChannelIndex === ChannelSelection.RecentVideos) {
+        refreshChannels(ChannelSelection.RecentVideos);
+      }
+    });
   };
 
   const clearWatchLaterVideos = () => {
-    bulkUpdateVideos((video: Video) => video.isToWatchLater = false, ChannelSelection.WatchLaterVideos);
+    bulkUpdateVideos((video: Video) => video.isToWatchLater = false, () => {
+      if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+        setVideos([]);
+      }
+    });
   };
 
   const refreshChannels = (selection?: ChannelSelection, event?: any) => {
