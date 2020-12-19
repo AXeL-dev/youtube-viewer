@@ -39,7 +39,6 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { useStyles } from './ChannelList.styles';
 import { memorySizeOf } from '../../helpers/utils';
-import { saveToStorage } from '../../helpers/storage';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { cacheAtom } from '../../atoms/cache';
@@ -212,7 +211,6 @@ export function ChannelList(props: ChannelListProps) {
 
   const confirmClearCache = () => {
     setCache({});
-    saveToStorage({ cache: {} });
     openSnackbar('Cache cleared!');
     closeClearCacheDialog();
   };

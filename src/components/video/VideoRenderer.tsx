@@ -16,7 +16,6 @@ import { useUpdateAtom } from 'jotai/utils';
 import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
-import { saveToStorage } from '../../helpers/storage';
 import { selectedChannelIndexAtom } from '../../atoms/channels';
 import { openSnackbarAtom } from '../../atoms/snackbar';
 
@@ -56,7 +55,6 @@ export default function VideoRenderer(props: VideoRendererProps) {
       if (!cache[video.channelId][videoIndex].isToWatchLater) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
         setCache({...cache});
-        saveToStorage({ cache: cache });
         openSnackbar({
           message: 'Video added to watch later list!',
           autoHideDuration: 1000,
@@ -80,7 +78,6 @@ export default function VideoRenderer(props: VideoRendererProps) {
       // update cache
       cache[video.channelId][videoIndex].isToWatchLater = false;
       setCache({...cache});
-      saveToStorage({ cache: cache });
     }
   };
 

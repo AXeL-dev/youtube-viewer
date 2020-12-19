@@ -99,6 +99,14 @@ export default function Popup(props: PopupProps) {
   }, [settings]);
 
   React.useEffect(() => {
+    warn('cache changed', { isReady: isReady });
+    if (isReady) {
+      saveToStorage({ cache: cache });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cache]);
+
+  React.useEffect(() => {
     warn('cache or channels changed', { isReady: isReady });
     if (isReady) {
       countVideos();
@@ -198,7 +206,6 @@ export default function Popup(props: PopupProps) {
                 }).slice(0, settings.videosPerChannel);
                 // save to cache
                 setCache({...cache});
-                saveToStorage({ cache: cache });
                 resolve(sortedVideos || []);
               }).catch((error: Error) => {
                 displayError(error);
@@ -323,7 +330,6 @@ export default function Popup(props: PopupProps) {
       });
     });
     setCache({...cache});
-    saveToStorage({ cache: cache });
     if (selection && selectedChannelIndex === selection) {
       refreshChannels(selection);
     }
@@ -379,7 +385,6 @@ export default function Popup(props: PopupProps) {
     });
     if (cacheUpdated) {
       setCache({...cache});
-      saveToStorage({ cache: cache });
       openSnackbar({
         message: 'All videos added to watch later list!',
         autoHideDuration: 3000,
