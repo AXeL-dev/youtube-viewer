@@ -15,7 +15,7 @@ function SlideTransition(props: TransitionProps) {
 
 interface BottomSnackbarProps {
   open: boolean;
-  snackbarKey?: number; // used when displaying multiple consecutive snackbars
+  snackbarKey?: string|number; // used when displaying multiple consecutive snackbars
   message: string;
   icon?: SnackbarIcon,
   onClose: Function;

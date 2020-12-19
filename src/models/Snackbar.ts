@@ -10,5 +10,5 @@ export type SnackbarIcon = 'error' | 'info' | 'success' | 'warning';
 
 export interface Snackbar extends SnackbarOptions {
   isOpen: boolean,
-  key?: number
+  key?: string|number
 }
