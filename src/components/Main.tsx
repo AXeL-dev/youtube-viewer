@@ -5,7 +5,7 @@ import { isWebExtension, setBadgeText } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 import { Video } from '../models/Video';
 import { useConstructor } from '../hooks/useConstructor';
-import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 import { channelsAtom } from '../atoms/channels';
 import { settingsAtom, defaultSettings } from '../atoms/settings';
 import { cacheAtom } from '../atoms/cache';
@@ -18,9 +18,9 @@ export default function Main() {
     }
   });
 
-  const [, setChannels] = useAtom(channelsAtom);
-  const [, setSettings] = useAtom(settingsAtom);
-  const [, setCache] = useAtom(cacheAtom);
+  const setChannels = useUpdateAtom(channelsAtom);
+  const setSettings = useUpdateAtom(settingsAtom);
+  const setCache = useUpdateAtom(cacheAtom);
   const [isReady, setIsReady] = React.useState(false);
 
   async function fetchData() {
