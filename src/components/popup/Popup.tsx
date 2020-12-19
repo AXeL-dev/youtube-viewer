@@ -22,7 +22,7 @@ import SearchChannelInput from '../channel/SearchChannelInput';
 import { Channel, ChannelSelection } from '../../models/Channel';
 import { getChannelActivities, getVideoInfo } from '../../helpers/youtube';
 import { Video } from '../../models/Video';
-import { getDateBefore, memorySizeOf, isInToday, diffHours } from '../../helpers/utils';
+import { getDateBefore, isInToday, diffHours } from '../../helpers/utils';
 import MultiVideoGrid from '../video/MultiVideoGrid';
 import VideoGrid from '../video/VideoGrid';
 import { saveToStorage } from '../../helpers/storage';
@@ -359,18 +359,6 @@ export default function Popup(props: PopupProps) {
     openSnackbar('Channels imported!');
   };
 
-  const clearCache = () => {
-    setCache({});
-    saveToStorage({ cache: {} });
-    openSnackbar('Cache cleared!');
-  };
-
-  const getCacheSize = () => {
-    const size = memorySizeOf(cache);
-    //console.log(size);
-    return size;
-  };
-
   const openSettings = (event: any) => {
     event.stopPropagation();
     setOpenSettingsDialog(true);
@@ -462,7 +450,6 @@ export default function Popup(props: PopupProps) {
         <ChannelList
           channels={channels}
           selectedIndex={selectedChannelIndex}
-          cacheSize={getCacheSize()}
           todaysVideosCount={todaysVideosCount}
           recentVideosCount={recentVideosCount}
           watchLaterVideosCount={watchLaterVideosCount}
@@ -475,7 +462,6 @@ export default function Popup(props: PopupProps) {
           onDelete={deleteChannel}
           onSave={setChannels}
           onSelectedIndexChange={setSelectedChannelIndex}
-          onClearCache={clearCache}
           onClearRecentVideos={clearRecentVideos}
           onAddVideosToWatchLater={addAllVideosToWatchLater}
           onClearWatchLaterVideos={clearWatchLaterVideos}
