@@ -3,8 +3,14 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
+import { TransitionProps } from '@material-ui/core/transitions';
 
-interface CustomSnackbarProps {
+function SlideTransition(props: TransitionProps) {
+  return <Slide {...props} direction="up" />;
+}
+
+interface BottomSnackbarProps {
   open: boolean;
   message: string;
   onClose: Function;
@@ -13,8 +19,15 @@ interface CustomSnackbarProps {
   showRefreshButton?: boolean
 }
 
-export function CustomSnackbar(props: CustomSnackbarProps) {
+export function BottomSnackbar(props: BottomSnackbarProps) {
   const { open, message, onClose, onRefresh, autoHideDuration = 6000, showRefreshButton = true } = props;
+
+  const handleClose = (event: React.SyntheticEvent | MouseEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    onClose();
+  };
 
   return (
     <Snackbar
@@ -24,14 +37,15 @@ export function CustomSnackbar(props: CustomSnackbarProps) {
       }}
       open={open}
       autoHideDuration={autoHideDuration}
-      onClose={() => onClose()}
+      TransitionComponent={SlideTransition}
+      onClose={handleClose}
       message={message}
       action={
         <React.Fragment>
           {showRefreshButton && <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
             Refresh
           </Button>}
-          <IconButton size="small" aria-label="close" color="inherit" onClick={() => onClose()}>
+          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
             <CloseIcon fontSize="small" />
           </IconButton>
         </React.Fragment>

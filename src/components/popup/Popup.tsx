@@ -29,7 +29,7 @@ import { saveToStorage } from '../../helpers/storage';
 import { ChannelList } from '../channel/ChannelList';
 import { MessageSnackbar } from '../shared/MessageSnackbar';
 import { SettingsDialog } from '../settings/SettingsDialog';
-import { CustomSnackbar } from '../shared/CustomSnackbar';
+import { BottomSnackbar } from '../shared/BottomSnackbar';
 import { isWebExtension } from '../../helpers/browser';
 import { debug, warn } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
@@ -534,7 +534,7 @@ export default function Popup(props: PopupProps) {
         open={openSettingsDialog}
         onClose={closeSettings}
       />
-      <CustomSnackbar
+      <BottomSnackbar
         open={snackbar.isOpen}
         message={snackbar.message}
         autoHideDuration={snackbar.autoHideDuration}
