@@ -18,6 +18,7 @@ import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { selectedChannelIndexAtom } from '../../atoms/channels';
 import { openSnackbarAtom } from '../../atoms/snackbar';
+import { SnackbarOptions } from '../../models/Snackbar';
 
 interface VideoRendererProps {
   video: Video;
@@ -30,7 +31,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
   const [cache, setCache] = useAtom(cacheAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
 
   const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();
@@ -57,14 +58,13 @@ export default function VideoRenderer(props: VideoRendererProps) {
         setCache({...cache});
         openSnackbar({
           message: 'Video added to watch later list!',
-          autoHideDuration: 1000,
-          showRefreshButton: false
+          icon: 'success',
+          autoHideDuration: 3000
         });
       } else {
         openSnackbar({
           message: 'Video is already on watch later list!',
-          autoHideDuration: 1000,
-          showRefreshButton: false
+          autoHideDuration: 3000
         });
       }
     }

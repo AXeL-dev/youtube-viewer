@@ -1,25 +1,20 @@
 import { atom } from 'jotai';
 import { Getter } from 'jotai/core/types';
+import { SnackbarOptions, Snackbar } from '../models/Snackbar';
 
-export interface SnackbarOptions {
-  isOpen: boolean,
-  message: string,
-  key?: number,
-  autoHideDuration?: number,
-  showRefreshButton?: boolean
-}
-
-export const defaultSnackbarOptions: Omit<SnackbarOptions, 'isOpen' | 'message' | 'key'> = {
+export const defaultSnackbarOptions: Omit<SnackbarOptions, 'message'> = {
+  icon: 'info',
   autoHideDuration: 5000,
-  showRefreshButton: true
+  showRefreshButton: false
 };
 
 export const snackbarAtom = atom({
   isOpen: false,
   message: '',
+  icon: defaultSnackbarOptions.icon,
   autoHideDuration: defaultSnackbarOptions.autoHideDuration,
   showRefreshButton: defaultSnackbarOptions.showRefreshButton
-} as SnackbarOptions);
+} as Snackbar);
 
 const snackbarClosedState = (get: Getter) => ({
   ...get(snackbarAtom), // previous state
@@ -29,7 +24,7 @@ const snackbarClosedState = (get: Getter) => ({
 
 export const openSnackbarAtom = atom( // write-only
   null,
-  (get, set, args: SnackbarOptions|any) => {
+  (get, set, args: SnackbarOptions) => {
     // close old snackbar
     if (get(snackbarAtom).isOpen) {
       set(snackbarAtom, snackbarClosedState(get));
@@ -37,8 +32,9 @@ export const openSnackbarAtom = atom( // write-only
     // open a new one
     set(snackbarAtom, {
       isOpen: true,
-      message: args.message || args,
+      message: args.message || args as any,
       key: new Date().getTime(),
+      icon: args.icon || defaultSnackbarOptions.icon,
       autoHideDuration: args.autoHideDuration || defaultSnackbarOptions.autoHideDuration,
       showRefreshButton: args.showRefreshButton !== undefined ? args.showRefreshButton : defaultSnackbarOptions.showRefreshButton // don't use OR operator with boolean values, since false || true === true (not false)
     });

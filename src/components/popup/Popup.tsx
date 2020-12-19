@@ -27,9 +27,9 @@ import MultiVideoGrid from '../video/MultiVideoGrid';
 import VideoGrid from '../video/VideoGrid';
 import { saveToStorage } from '../../helpers/storage';
 import { ChannelList } from '../channel/ChannelList';
-import { MessageSnackbar } from '../shared/MessageSnackbar';
+import { MessageSnackbar } from '../snackbar/MessageSnackbar';
 import { SettingsDialog } from '../settings/SettingsDialog';
-import { BottomSnackbar } from '../shared/BottomSnackbar';
+import { BottomSnackbar } from '../snackbar/BottomSnackbar';
 import { isWebExtension } from '../../helpers/browser';
 import { debug, warn } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
@@ -44,6 +44,7 @@ import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
+import { SnackbarOptions } from '../../models/Snackbar';
 
 interface PopupProps {
   isReady: boolean;
@@ -60,7 +61,7 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
+  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = useAtom(cacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
@@ -356,7 +357,11 @@ export default function Popup(props: PopupProps) {
     // Update channels
     setChannels(channelsList);
     fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);
-    openSnackbar('Channels imported!');
+    openSnackbar({
+      message: 'Channels imported!',
+      icon: 'success',
+      showRefreshButton: true
+    });
   };
 
   const openSettings = (event: any) => {
@@ -379,11 +384,7 @@ export default function Popup(props: PopupProps) {
     });
     if (cacheUpdated) {
       setCache({...cache});
-      openSnackbar({
-        message: 'All videos added to watch later list!',
-        autoHideDuration: 3000,
-        showRefreshButton: false
-      });
+      openSnackbar('All videos added to watch later list!' as any);
     }
   };
 
@@ -538,6 +539,7 @@ export default function Popup(props: PopupProps) {
         open={snackbar.isOpen}
         snackbarKey={snackbar.key}
         message={snackbar.message}
+        icon={snackbar.icon}
         autoHideDuration={snackbar.autoHideDuration}
         showRefreshButton={snackbar.showRefreshButton}
         onClose={closeSnackbar}

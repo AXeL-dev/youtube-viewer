@@ -25,6 +25,7 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { settingsAtom } from '../../atoms/settings';
 import { openSnackbarAtom } from '../../atoms/snackbar';
+import { SnackbarOptions } from '../../models/Snackbar';
 
 const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,7 +40,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
   const { open, onClose } = props;
   const classes = useStyles();
   const [settings, setSettings] = useAtom(settingsAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
 
   const getSettingsValue = (id: string, type: SettingsType) => {
     const element = document.getElementById(id) as any;
@@ -76,7 +77,11 @@ export function SettingsDialog(props: SettingsDialogProps) {
       autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
     onClose();
-    openSnackbar('Settings saved!');
+    openSnackbar({
+      message: 'Settings saved!',
+      icon: 'success',
+      showRefreshButton: true
+    });
   };
 
   const validateSettings = (event: any) => {

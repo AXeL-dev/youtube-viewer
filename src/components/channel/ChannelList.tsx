@@ -43,6 +43,7 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { cacheAtom } from '../../atoms/cache';
 import { openSnackbarAtom } from '../../atoms/snackbar';
+import { SnackbarOptions } from '../../models/Snackbar';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',
@@ -99,7 +100,7 @@ export function ChannelList(props: ChannelListProps) {
           onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
   const [cache, setCache] = useAtom(cacheAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
@@ -212,7 +213,11 @@ export function ChannelList(props: ChannelListProps) {
 
   const confirmClearCache = () => {
     setCache({});
-    openSnackbar('Cache cleared!');
+    openSnackbar({
+      message: 'Cache cleared!',
+      icon: 'success',
+      showRefreshButton: true
+    });
     closeClearCacheDialog();
   };
 
