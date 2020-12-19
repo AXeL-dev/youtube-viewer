@@ -397,7 +397,10 @@ export default function Popup(props: PopupProps) {
     });
     if (cacheUpdated) {
       setCache({...cache});
-      openSnackbar('All videos added to watch later list!' as any);
+      openSnackbar({
+        message: 'All videos added to watch later list!',
+        icon: 'success'
+      });
     }
   };
 
