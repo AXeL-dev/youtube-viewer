@@ -25,7 +25,7 @@ export const openSnackbarAtom = atom( // write-only
     isOpen: true,
     message: args.message || args,
     autoHideDuration: args.autoHideDuration || defaultSnackbarOptions.autoHideDuration,
-    showRefreshButton: args.showRefreshButton !== undefined ? args.showRefreshButton : defaultSnackbarOptions.showRefreshButton
+    showRefreshButton: args.showRefreshButton !== undefined ? args.showRefreshButton : defaultSnackbarOptions.showRefreshButton // don't use OR operator with boolean values, since false || true === true (not false)
   })
 );
 
