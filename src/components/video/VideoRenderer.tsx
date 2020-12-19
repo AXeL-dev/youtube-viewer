@@ -76,7 +76,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
     const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
-      setVideos(videos.filter((v: Video) => v.id !== video.id)); // FixMe: warning => Can't perform a React state update on an unmounted component.
+      setVideos(videos.filter((v: Video) => v.id !== video.id));
       // update cache
       cache[video.channelId][videoIndex].isToWatchLater = false;
       setCache({...cache});

@@ -25,7 +25,9 @@ export default function VideoGrid(props: VideoGridProps) {
       setTimeout(() => {
         // delay of 200 ms used here to wait for the click event
         // if it fires immediately after the mousedown event then preventLongPress value will be false, otherwise it's probably a long press click
-        setPreventLongPress(true);
+        if (preventLongPress === false) { // This condition is used to fix warning: Can't perform a React state update on an unmounted component.
+          setPreventLongPress(true);
+        }
       }, 200);
     } else {
       if (!preventLongPress) {
