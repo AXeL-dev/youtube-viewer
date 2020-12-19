@@ -17,7 +17,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 ## Features
 
 - Track multi channels all in one place
-- Get notifications about new posted videos
+- Get notifications about new posted videos (no need to have a google account)
 - Auto play videos on click
 - Export/import channels list
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
@@ -48,7 +48,7 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 - [Material-UI](https://material-ui.com/): UI toolkit
 - [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
 - [react-pull-to-refresh](https://github.com/bryaneaton13/react-pull-to-refresh): Pull to refresh component
-- [jotai](https://github.com/pmndrs/jotai): State management
+- [jotai](https://github.com/pmndrs/jotai): State management library
 - [Gulp.js](https://gulpjs.com/): Workflow automation toolkit
 
 ### Scripts
