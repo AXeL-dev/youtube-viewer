@@ -77,7 +77,7 @@ export default function Popup(props: PopupProps) {
       } else if (selectedChannelIndex !== settings.defaultChannelSelection) {
         setSelectedChannelIndex(settings.defaultChannelSelection);
       }
-      countVideos();
+      updateVideosCount();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady]);
@@ -86,6 +86,7 @@ export default function Popup(props: PopupProps) {
     warn('channels changed', { isReady: isReady });
     if (isReady) {
       saveToStorage({ channels: channels });
+      updateVideosCount();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channels]);
@@ -102,21 +103,14 @@ export default function Popup(props: PopupProps) {
     warn('cache changed', { isReady: isReady });
     if (isReady) {
       saveToStorage({ cache: cache });
+      updateVideosCount();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache]);
 
-  React.useEffect(() => {
-    warn('cache or channels changed', { isReady: isReady });
-    if (isReady) {
-      countVideos();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cache, channels]);
-
-  const countVideos = () => {
+  const updateVideosCount = () => {
     debug('----------------------');
-    debug('counting todays & recent videos');
+    debug('counting videos');
     let totalRecentVideosCount: number = 0,
         totalTodaysVideosCount: number = 0,
         totalWatchLaterVideosCount: number = 0;
