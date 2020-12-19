@@ -536,6 +536,7 @@ export default function Popup(props: PopupProps) {
       />
       <BottomSnackbar
         open={snackbar.isOpen}
+        key={snackbar.key}
         message={snackbar.message}
         autoHideDuration={snackbar.autoHideDuration}
         showRefreshButton={snackbar.showRefreshButton}
