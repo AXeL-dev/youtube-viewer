@@ -17,17 +17,16 @@ interface VideoGridProps {
 export default function VideoGrid(props: VideoGridProps) {
   const { videos, loading = false, maxPerChannel = 9, maxSkeletons = 9 } = props;
   const [preventLongPress, setPreventLongPress] = React.useState(false);
+  let timeout: any = null;
 
   const handleMouseEvent = (event: any) => {
     debug(event.type, { preventLongPress: preventLongPress });
     if (event.type === 'mousedown') {
       setPreventLongPress(false); // always reset preventLongPress state on mousedown
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         // delay of 200 ms used here to wait for the click event
         // if it fires immediately after the mousedown event then preventLongPress value will be false, otherwise it's probably a long press click
-        if (preventLongPress === false) { // This condition is used to fix warning: Can't perform a React state update on an unmounted component.
-          setPreventLongPress(true);
-        }
+        setPreventLongPress(true);
       }, 200);
     } else {
       if (!preventLongPress) {
@@ -39,6 +38,14 @@ export default function VideoGrid(props: VideoGridProps) {
     event.preventDefault();
     return false;
   };
+
+  React.useEffect(() => {
+    return () => { // equivalent to componentWillUnmount
+      if (timeout) {
+        clearTimeout(timeout); // Fix warning: Can't perform a React state update on an unmounted component.
+      }
+    };
+  });
 
   return (
     <Grid container style={styles.grid} onMouseDown={(event: any) => handleMouseEvent(event)} onClickCapture={(event: any) => handleMouseEvent(event)}>
