@@ -1,6 +1,5 @@
-/**
- * Stolen from https://stackoverflow.com/a/44737041
- */
+
+// Stolen from https://stackoverflow.com/a/44737041
 export function download(blob: Blob, filename: string) {
   if (window.navigator.msSaveOrOpenBlob) { // IE10+
     window.navigator.msSaveOrOpenBlob(blob, filename);
