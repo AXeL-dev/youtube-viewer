@@ -38,6 +38,11 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { useStyles } from './ChannelList.styles';
+import { memorySizeOf } from '../../helpers/utils';
+import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { cacheAtom } from '../../atoms/cache';
+import { openSnackbarAtom } from '../../atoms/snackbar';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',
@@ -67,7 +72,6 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 interface ChannelListProps {
   channels: Channel[];
   selectedIndex: number;
-  cacheSize: string;
   todaysVideosCount: number;
   recentVideosCount: number;
   watchLaterVideosCount: number;
@@ -80,7 +84,6 @@ interface ChannelListProps {
   onDelete: Function;
   onSave: Function;
   onSelectedIndexChange: Function;
-  onClearCache: Function;
   onClearRecentVideos: Function;
   onAddVideosToWatchLater: Function;
   onClearWatchLaterVideos: Function;
@@ -88,12 +91,14 @@ interface ChannelListProps {
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = ChannelSelection.All, cacheSize,
+  const { channels, selectedIndex = ChannelSelection.All,
           todaysVideosCount, recentVideosCount, watchLaterVideosCount,
           onShowAll, onShowTodaysVideos, onShowRecentVideos, onShowWatchLaterVideos,
-          onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearCache,
-          onClearRecentVideos, onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
+          onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearRecentVideos,
+          onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
+  const [cache, setCache] = useAtom(cacheAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
@@ -205,8 +210,15 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const confirmClearCache = () => {
-    onClearCache();
+    setCache({});
+    openSnackbar('Cache cleared!');
     closeClearCacheDialog();
+  };
+
+  const getCacheSize = () => {
+    const size = memorySizeOf(cache);
+    //console.log(size);
+    return size;
   };
 
   const closeClearCacheDialog = () => {
@@ -334,7 +346,7 @@ export function ChannelList(props: ChannelListProps) {
                 >
                   <MenuItem onClick={() => exportChannels()}><GetAppIcon className={classes.menuIcon} />Export</MenuItem>
                   <MenuItem onClick={() => importChannels()}><ImportExportIcon className={classes.menuIcon} />Import</MenuItem>
-                  <Tooltip title={"Cache size: " + cacheSize} aria-label="clear-cache">
+                  <Tooltip title={"Cache size: " + getCacheSize()} aria-label="clear-cache">
                     <MenuItem onClick={() => clearCache()}><DeleteSweepIcon className={classes.menuIcon} />Clear cache</MenuItem>
                   </Tooltip>
                 </Menu>

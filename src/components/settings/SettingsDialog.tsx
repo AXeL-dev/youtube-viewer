@@ -17,25 +17,67 @@ import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import Link from '@material-ui/core/Link';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { Settings } from '../../models/Settings';
+import { SettingsType } from '../../models/Settings';
 import { ChannelSelection } from '../../models/Channel';
 import { isWebExtension } from '../../helpers/browser';
 import { useStyles } from './SettingsDialog.styles';
+import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { settingsAtom } from '../../atoms/settings';
+import { openSnackbarAtom } from '../../atoms/snackbar';
 
 const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 interface SettingsDialogProps {
-  settings: Settings;
   open: boolean;
   onClose: Function;
-  onSave: Function;
 }
 
 export function SettingsDialog(props: SettingsDialogProps) {
-  const { settings, open, onClose, onSave } = props;
+  const { open, onClose } = props;
   const classes = useStyles();
+  const [settings, setSettings] = useAtom(settingsAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+
+  const getSettingsValue = (id: string, type: SettingsType) => {
+    const element = document.getElementById(id) as any;
+    if (element) {
+      switch(type) {
+        case SettingsType.Number:
+          return +element.value;
+        case SettingsType.Boolean:
+          return element.checked;
+        case SettingsType.String:
+        default:
+          return element.value;
+      }
+    } else {
+      return (settings as any)[id];
+    }
+  };
+
+  const saveSettings = () => {
+    // Update settings
+    setSettings({
+      defaultChannelSelection: getSettingsValue('defaultChannelSelection', SettingsType.Number),
+      videosPerChannel: getSettingsValue('videosPerChannel', SettingsType.Number),
+      videosAnteriority: getSettingsValue('videosAnteriority', SettingsType.Number),
+      sortVideosBy: getSettingsValue('sortVideosBy', SettingsType.String),
+      apiKey: getSettingsValue('apiKey', SettingsType.String),
+      autoVideosCheckRate: getSettingsValue('autoVideosCheckRate', SettingsType.Number),
+      enableRecentVideosNotifications: getSettingsValue('enableRecentVideosNotifications', SettingsType.Boolean),
+      autoPlayVideos: getSettingsValue('autoPlayVideos', SettingsType.Boolean),
+      openVideosInInactiveTabs: getSettingsValue('openVideosInInactiveTabs', SettingsType.Boolean),
+      openChannelsOnNameClick: getSettingsValue('openChannelsOnNameClick', SettingsType.Boolean),
+      hideEmptyChannels: getSettingsValue('hideEmptyChannels', SettingsType.Boolean),
+      autoClearRecentVideos: getSettingsValue('autoClearRecentVideos', SettingsType.Boolean),
+      autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
+    });
+    onClose();
+    openSnackbar('Settings saved!');
+  };
 
   const validateSettings = (event: any) => {
     let input = event.target;
@@ -59,7 +101,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
           <Typography variant="h6" className={classes.settingsTitle}>
             Settings
           </Typography>
-          <Button autoFocus color="inherit" onClick={() => onSave()}>
+          <Button autoFocus color="inherit" onClick={() => saveSettings()}>
             save
           </Button>
         </Toolbar>

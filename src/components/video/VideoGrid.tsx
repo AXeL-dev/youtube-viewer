@@ -3,29 +3,27 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Video } from '../../models/Video';
-import Media from './Media';
+import VideoRenderer from './VideoRenderer';
 import { debug } from '../../helpers/debug';
 import { styles } from './VideoGrid.styles';
 
 interface VideoGridProps {
   loading?: boolean;
-  selectedChannelIndex: number;
   videos: Video[];
   maxPerChannel?: number;
   maxSkeletons?: number;
-  onVideoClick: Function;
-  onVideoWatchLaterClick: Function;
 }
 
 export default function VideoGrid(props: VideoGridProps) {
-  const { selectedChannelIndex, videos, loading = false, maxPerChannel = 9, maxSkeletons = 9, onVideoClick, onVideoWatchLaterClick } = props;
+  const { videos, loading = false, maxPerChannel = 9, maxSkeletons = 9 } = props;
   const [preventLongPress, setPreventLongPress] = React.useState(false);
+  let timeout: any = null;
 
   const handleMouseEvent = (event: any) => {
     debug(event.type, { preventLongPress: preventLongPress });
     if (event.type === 'mousedown') {
       setPreventLongPress(false); // always reset preventLongPress state on mousedown
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         // delay of 200 ms used here to wait for the click event
         // if it fires immediately after the mousedown event then preventLongPress value will be false, otherwise it's probably a long press click
         setPreventLongPress(true);
@@ -41,17 +39,20 @@ export default function VideoGrid(props: VideoGridProps) {
     return false;
   };
 
+  React.useEffect(() => {
+    return () => { // equivalent to componentWillUnmount
+      if (timeout) {
+        clearTimeout(timeout); // Fix warning: Can't perform a React state update on an unmounted component.
+      }
+    };
+  });
+
   return (
     <Grid container style={styles.grid} onMouseDown={(event: any) => handleMouseEvent(event)} onClickCapture={(event: any) => handleMouseEvent(event)}>
-      {(loading ? Array.from(new Array(Math.min(maxPerChannel, maxSkeletons))) : videos.slice(0, maxPerChannel)).map((item, index) => (
+      {(loading ? Array.from(new Array(Math.min(maxPerChannel, maxSkeletons))) : videos.slice(0, maxPerChannel)).map((video, index) => (
         <Box key={index} width={210} marginRight={0.5} marginBottom={3} draggable="false">
-          {item ? (
-            <Media
-              item={item}
-              selectedChannelIndex={selectedChannelIndex}
-              onClick={onVideoClick}
-              onWatchLaterClick={onVideoWatchLaterClick}
-            ></Media>
+          {video ? (
+            <VideoRenderer video={video} ></VideoRenderer>
           ) : (
             <React.Fragment>
               <Skeleton variant="rect" width={210} height={118} />

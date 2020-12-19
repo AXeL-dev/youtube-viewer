@@ -20,13 +20,10 @@ import { useStyles } from './MultiVideoGrid.styles';
 interface MultiVideoGridProps {
   loading?: boolean;
   channels: Channel[];
-  selectedChannelIndex: number;
   videos: Video[];
   settings: Settings;
   maxPerChannel?: number;
   onSelect: Function;
-  onVideoClick: Function;
-  onVideoWatchLaterClick: Function;
   onSave: Function;
   onRefresh: Function;
 }
@@ -34,7 +31,7 @@ interface MultiVideoGridProps {
 export default function MultiVideoGrid(props: MultiVideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, selectedChannelIndex, videos, settings, loading = false, maxPerChannel = 9, onSelect, onVideoClick, onVideoWatchLaterClick, onSave, onRefresh } = props;
+  const { channels, videos, settings, loading = false, maxPerChannel = 9, onSelect, onSave, onRefresh } = props;
   const [expandedChannelsIndexes, setExpandedChannelsIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
@@ -91,13 +88,10 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
               </IconButton>
             </Breadcrumbs>
             <VideoGrid
-              selectedChannelIndex={selectedChannelIndex}
               videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, 3)}
               loading={loading}
               maxPerChannel={maxPerChannel}
               maxSkeletons={3}
-              onVideoClick={onVideoClick}
-              onVideoWatchLaterClick={onVideoWatchLaterClick}
             />
             {channelVideos.length > 3 && expandedChannelsIndexes.indexOf(index) === -1 &&
               <Tooltip title="Show more" aria-label="show-more">

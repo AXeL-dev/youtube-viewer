@@ -1,55 +1,38 @@
 import React from 'react';
 import Popup from './popup/Popup';
 import { getFromStorage, saveToStorage } from '../helpers/storage';
-import { Channel, ChannelSelection } from '../models/Channel';
-import { Settings } from '../models/Settings';
 import { isWebExtension, setBadgeText } from '../helpers/browser';
 import { debug } from '../helpers/debug';
 import { Video } from '../models/Video';
+import { useConstructor } from '../hooks/useConstructor';
+import { useUpdateAtom } from 'jotai/utils';
+import { channelsAtom } from '../atoms/channels';
+import { settingsAtom, defaultSettings } from '../atoms/settings';
+import { cacheAtom } from '../atoms/cache';
 
-interface MainProps { }
-
-interface MainState {
-  channels: Channel[];
-  settings: Settings;
-  cache: any;
-  isReady: boolean;
-}
-
-class Main extends React.Component<MainProps, MainState> {
-  constructor(props: MainProps) {
-    super(props);
-    this.state = {
-      channels: [],
-      settings: {
-        defaultChannelSelection: ChannelSelection.All,
-        videosPerChannel: 9,
-        videosAnteriority: 30, // days
-        sortVideosBy: 'date',
-        autoVideosCheckRate: 30, // minutes
-        enableRecentVideosNotifications: true,
-        autoPlayVideos: false,
-        openVideosInInactiveTabs: false,
-        openChannelsOnNameClick: false,
-        hideEmptyChannels: true,
-        autoClearRecentVideos: true,
-        autoClearCache: false
-      },
-      cache: {},
-      isReady: false
-    };
-    this.updateState();
+export default function Main() {
+  useConstructor(() => {
+    fetchData();
     if (isWebExtension()) {
       setBadgeText(''); // reset webextension badge
     }
-  }
+  });
 
-  async updateState() {
+  const setChannels = useUpdateAtom(channelsAtom);
+  const setSettings = useUpdateAtom(settingsAtom);
+  const setCache = useUpdateAtom(cacheAtom);
+  const [isReady, setIsReady] = React.useState(false);
+
+  async function fetchData() {
     // get data from storage
     let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
-    debug('Storage data:', {channels: channels, settings: settings, cache: cache});
+    debug('Storage data:', {
+      channels: channels,
+      settings: settings,
+      cache: cache
+    });
     // set/merge settings
-    settings = settings ? {...this.state.settings, ...settings} : this.state.settings;
+    settings = settings ? {defaultSettings, ...settings} : defaultSettings;
     // clear recent videos
     if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
@@ -68,19 +51,13 @@ class Main extends React.Component<MainProps, MainState> {
       }
     }
     // update state
-    this.setState({
-      channels: channels?.length ? channels : [],
-      settings: settings,
-      cache: !settings?.autoClearCache && cache ? cache : {},
-      isReady: true
-    });
+    setChannels(channels || []);
+    setSettings(settings);
+    setCache(!settings?.autoClearCache && cache ? cache : {});
+    setIsReady(true);
   }
 
-  render() {
-    return (
-      <Popup channels={this.state.channels} settings={this.state.settings} cache={this.state.cache} isReady={this.state.isReady} />
-    );
-  }
+  return (
+    <Popup isReady={isReady} />
+  );
 }
-
-export default Main;
