@@ -315,32 +315,26 @@ export default function Popup(props: PopupProps) {
     }
   };
 
-  const clearRecentVideos = () => {
+  const bulkUpdateVideos = (callback: (video: Video) => void, selection?: ChannelSelection) => {
     Object.keys(cache).forEach((channelId: string) => {
       cache[channelId] = cache[channelId].map((video: Video) => {
-        video.isRecent = false;
+        callback(video);
         return video;
       });
     });
     setCache({...cache});
     saveToStorage({ cache: cache });
-    if (selectedChannelIndex === ChannelSelection.RecentVideos) {
-      refreshChannels(ChannelSelection.RecentVideos);
+    if (selection && selectedChannelIndex === selection) {
+      refreshChannels(selection);
     }
   };
 
-  const clearWatchLaterVideos = () => { // ToDo: merge boilerplate code (see above function)
-    Object.keys(cache).forEach((channelId: string) => {
-      cache[channelId] = cache[channelId].map((video: Video) => {
-        video.isToWatchLater = false;
-        return video;
-      });
-    });
-    setCache({...cache});
-    saveToStorage({ cache: cache });
-    if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
-      refreshChannels(ChannelSelection.WatchLaterVideos);
-    }
+  const clearRecentVideos = () => {
+    bulkUpdateVideos((video: Video) => video.isRecent = false, ChannelSelection.RecentVideos);
+  };
+
+  const clearWatchLaterVideos = () => {
+    bulkUpdateVideos((video: Video) => video.isToWatchLater = false, ChannelSelection.WatchLaterVideos);
   };
 
   const refreshChannels = (selection?: ChannelSelection, event?: any) => {
