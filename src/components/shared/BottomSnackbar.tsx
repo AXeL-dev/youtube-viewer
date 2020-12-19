@@ -12,7 +12,7 @@ function SlideTransition(props: TransitionProps) {
 
 interface BottomSnackbarProps {
   open: boolean;
-  key?: number; // used when displaying multiple consecutive snackbars
+  snackbarKey?: number; // used when displaying multiple consecutive snackbars
   message: string;
   onClose: Function;
   onRefresh: Function;
@@ -21,7 +21,7 @@ interface BottomSnackbarProps {
 }
 
 export function BottomSnackbar(props: BottomSnackbarProps) {
-  const { open, key, message, onClose, onRefresh, autoHideDuration = 6000, showRefreshButton = true } = props;
+  const { open, snackbarKey, message, onClose, onRefresh, autoHideDuration = 6000, showRefreshButton = true } = props;
 
   const handleClose = (event: React.SyntheticEvent | MouseEvent, reason?: string) => {
     if (reason === 'clickaway') {
@@ -36,7 +36,7 @@ export function BottomSnackbar(props: BottomSnackbarProps) {
         vertical: 'bottom',
         horizontal: 'left',
       }}
-      key={key}
+      key={snackbarKey}
       open={open}
       autoHideDuration={autoHideDuration}
       TransitionComponent={SlideTransition}
