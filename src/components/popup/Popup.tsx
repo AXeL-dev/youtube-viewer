@@ -447,6 +447,7 @@ export default function Popup(props: PopupProps) {
         </div>
         <Divider />
         <ChannelList
+          className={isLoading ? classes.disabled : ''}
           channels={channels}
           selectedIndex={selectedChannelIndex}
           todaysVideosCount={todaysVideosCount}

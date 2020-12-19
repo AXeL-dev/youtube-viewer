@@ -33,6 +33,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     hide: {
       display: 'none',
     },
+    disabled: {
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
     grow: {
       flexGrow: 1,
     },

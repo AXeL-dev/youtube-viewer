@@ -70,6 +70,7 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
 };
 
 interface ChannelListProps {
+  className?: string;
   channels: Channel[];
   selectedIndex: number;
   todaysVideosCount: number;
@@ -91,7 +92,7 @@ interface ChannelListProps {
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { channels, selectedIndex = ChannelSelection.All,
+  const { className, channels, selectedIndex = ChannelSelection.All,
           todaysVideosCount, recentVideosCount, watchLaterVideosCount,
           onShowAll, onShowTodaysVideos, onShowRecentVideos, onShowWatchLaterVideos,
           onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearRecentVideos,
@@ -326,7 +327,7 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   return (
-    <React.Fragment>
+    <div className={className || ''}>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
         {(provided: any, snapshot: any) => (
@@ -537,6 +538,6 @@ export function ChannelList(props: ChannelListProps) {
         onClose={closeMoveChannelToPositionDialog}
         onConfirm={moveChannelToPosition}
       />
-    </React.Fragment>
+    </div>
   )
 }
