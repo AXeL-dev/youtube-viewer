@@ -6,7 +6,11 @@ export interface Channel {
   url: string,
   description: string,
   isHidden: boolean,
-  notificationsDisabled: boolean
+  notifications: ChannelNotifications
+}
+
+export interface ChannelNotifications {
+  isDisabled: boolean
 }
 
 export enum ChannelSelection {

@@ -108,7 +108,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
       let promises: Promise<any>[] = [];
       let { checkedChannels } = this.state;
   
-      channels.filter((channel: Channel) => !channel.isHidden && !channel.notificationsDisabled).forEach((channel) => {
+      channels.filter((channel: Channel) => !channel.isHidden && !channel.notifications?.isDisabled).forEach((channel) => {
   
         promises.push(
           getChannelActivities(channel.id, getDateBefore(defaults.videosAnteriority)).then((results) => {

@@ -190,12 +190,18 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const disableChannelNotifications = (channel: Channel, index: number) => {
-    channel.notificationsDisabled = true;
+    channel.notifications = {
+      ...channel.notifications,
+      isDisabled: true
+    };
     setChannel(channel, index);
   };
 
   const enableChannelNotifications = (channel: Channel, index: number) => {
-    channel.notificationsDisabled = false;
+    channel.notifications = {
+      ...channel.notifications,
+      isDisabled: false
+    };
     setChannel(channel, index);
   };
 
@@ -473,7 +479,7 @@ export function ChannelList(props: ChannelListProps) {
                           <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         }
-                        {isWebExtension() && (channel.notificationsDisabled ? 
+                        {isWebExtension() && (channel.notifications?.isDisabled ? 
                           <MenuItem onClick={() => enableChannelNotifications(channel, index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
                           <MenuItem onClick={() => disableChannelNotifications(channel, index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
                         )}
