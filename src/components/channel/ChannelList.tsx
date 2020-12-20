@@ -100,7 +100,7 @@ export function ChannelList(props: ChannelListProps) {
           onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
   const [cache, setCache] = useAtom(cacheAtom);
-  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);

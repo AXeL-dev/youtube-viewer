@@ -40,7 +40,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
   const { open, onClose } = props;
   const classes = useStyles();
   const [settings, setSettings] = useAtom(settingsAtom);
-  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
 
   const getSettingsValue = (id: string, type: SettingsType) => {
     const element = document.getElementById(id) as any;

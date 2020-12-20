@@ -31,7 +31,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
   const [cache, setCache] = useAtom(cacheAtom);
-  const openSnackbar = useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom);
+  const openSnackbar = useUpdateAtom(openSnackbarAtom);
 
   const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();

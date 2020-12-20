@@ -61,7 +61,7 @@ export default function Popup(props: PopupProps) {
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom<null, SnackbarOptions>(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
+  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
   const [cache, setCache] = useAtom(cacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
