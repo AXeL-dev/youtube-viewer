@@ -18,7 +18,6 @@ import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { selectedChannelIndexAtom } from '../../atoms/channels';
 import { openSnackbarAtom } from '../../atoms/snackbar';
-import { SnackbarOptions } from '../../models/Snackbar';
 
 interface VideoRendererProps {
   video: Video;

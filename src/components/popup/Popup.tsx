@@ -44,7 +44,6 @@ import { videosAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
-import { SnackbarOptions } from '../../models/Snackbar';
 
 interface PopupProps {
   isReady: boolean;

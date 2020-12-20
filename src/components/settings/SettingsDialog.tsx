@@ -25,7 +25,6 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { settingsAtom } from '../../atoms/settings';
 import { openSnackbarAtom } from '../../atoms/snackbar';
-import { SnackbarOptions } from '../../models/Snackbar';
 
 const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

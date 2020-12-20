@@ -43,7 +43,6 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { cacheAtom } from '../../atoms/cache';
 import { openSnackbarAtom } from '../../atoms/snackbar';
-import { SnackbarOptions } from '../../models/Snackbar';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',
