@@ -26,7 +26,7 @@ export default function Main() {
   async function fetchData() {
     // get data from storage
     let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
-    debug('Storage data:', {
+    debug.log('Storage data:', {
       channels: channels,
       settings: settings,
       cache: cache

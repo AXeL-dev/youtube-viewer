@@ -2,10 +2,14 @@
 
 export const isDevEnv: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
-export function debug(message: any, ...params: any) {
-  isDevEnv && console.log(message, ...params);
-}
+export class debug {
 
-export function warn(message: any, ...params: any) {
-  isDevEnv && console.warn(message, ...params);
+  static log(message: any, ...params: any) {
+    isDevEnv && console.log(message, ...params);
+  }
+  
+  static warn(message: any, ...params: any) {
+    isDevEnv && console.warn(message, ...params);
+  }
+
 }

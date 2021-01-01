@@ -31,7 +31,7 @@ import { MessageSnackbar } from '../snackbar/MessageSnackbar';
 import { SettingsDialog } from '../settings/SettingsDialog';
 import { BottomSnackbar } from '../snackbar/BottomSnackbar';
 import { isWebExtension } from '../../helpers/browser';
-import { debug, warn } from '../../helpers/debug';
+import { debug } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
@@ -70,7 +70,7 @@ export default function Popup(props: PopupProps) {
   React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
 
   React.useEffect(() => {
-    warn('isReady changed', isReady);
+    debug.warn('isReady changed', isReady);
     if (isReady) {
       if (channels.length && !videos.length) {
         showChannelSelection(settings.defaultChannelSelection, true);
@@ -83,7 +83,7 @@ export default function Popup(props: PopupProps) {
   }, [isReady]);
 
   React.useEffect(() => {
-    warn('channels changed', { isReady: isReady });
+    debug.warn('channels changed', { isReady: isReady });
     if (isReady) {
       saveToStorage({ channels: channels });
       updateVideosCount();
@@ -92,7 +92,7 @@ export default function Popup(props: PopupProps) {
   }, [channels]);
 
   React.useEffect(() => {
-    warn('settings changed', { isReady: isReady });
+    debug.warn('settings changed', { isReady: isReady });
     if (isReady) {
       saveToStorage({ settings: settings });
     }
@@ -100,7 +100,7 @@ export default function Popup(props: PopupProps) {
   }, [settings]);
 
   React.useEffect(() => {
-    warn('cache changed', { isReady: isReady });
+    debug.warn('cache changed', { isReady: isReady });
     if (isReady) {
       saveToStorage({ cache: cache });
       updateVideosCount();
@@ -109,8 +109,8 @@ export default function Popup(props: PopupProps) {
   }, [cache]);
 
   const updateVideosCount = () => {
-    debug('----------------------');
-    debug('counting videos');
+    debug.log('----------------------');
+    debug.log('counting videos');
     let totalRecentVideosCount: number = 0,
         totalTodaysVideosCount: number = 0,
         totalWatchLaterVideosCount: number = 0;
@@ -122,7 +122,7 @@ export default function Popup(props: PopupProps) {
       const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
       const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
       const watchLaterVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isToWatchLater)).length;
-      debug(channel.title, {
+      debug.log(channel.title, {
         recent: recentVideosCountPerChannel,
         todays: todaysVideosCountPerChannel,
         watchLater: watchLaterVideosCountPerChannel,
@@ -131,7 +131,7 @@ export default function Popup(props: PopupProps) {
       totalTodaysVideosCount += todaysVideosCountPerChannel;
       totalWatchLaterVideosCount += watchLaterVideosCountPerChannel;
     });
-    debug('total count', {
+    debug.log('total count', {
       recent: totalRecentVideosCount,
       todays: totalTodaysVideosCount,
       watchLater: totalWatchLaterVideosCount,
@@ -157,13 +157,13 @@ export default function Popup(props: PopupProps) {
   const getChannelVideos = (channel: Channel, ignoreCache: boolean = false): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       if (!ignoreCache && cache[channel.id]?.length) {
-        debug('----------------------');
-        debug('load videos from cache', channel.title, cache[channel.id]);
+        debug.log('----------------------');
+        debug.log('load videos from cache', channel.title, cache[channel.id]);
         resolve(cache[channel.id].slice(0, settings.videosPerChannel));
       } else {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
-          debug('----------------------');
-          debug('activities of', channel.title, results);
+          debug.log('----------------------');
+          debug.log('activities of', channel.title, results);
           if (results?.items) {
             // get recent videos ids
             const videosIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
@@ -173,12 +173,12 @@ export default function Popup(props: PopupProps) {
                                                        .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
             // get recent videos informations
             if (!recentVideosIds.length) {
-              debug('no recent videos for this channel');
+              debug.log('no recent videos for this channel');
               resolve(cache[channel.id]?.slice(0, settings.videosPerChannel) || []);
             } else {
-              debug('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
+              debug.log('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
               getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
-                debug('recent videos data', videosData);
+                debug.log('recent videos data', videosData);
                 // mark new videos as recent
                 const now = new Date();
                 videosData = videosData.map((video: Video) => {
@@ -219,7 +219,7 @@ export default function Popup(props: PopupProps) {
 
   const addChannel = (channel: Channel) => {
     // Add channel
-    debug('added channel:', channel);
+    debug.log('added channel:', channel);
     const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
     if (!found) {
       setChannels([...channels, channel]);
@@ -237,7 +237,7 @@ export default function Popup(props: PopupProps) {
 
   const selectChannel = (channel: Channel, index: number, ignoreCache: boolean = false) => {
     // Select channel
-    debug('selected channel:', channel);
+    debug.log('selected channel:', channel);
     setSelectedChannelIndex(index);
     // Get its videos
     setIsLoading(true);
@@ -274,8 +274,8 @@ export default function Popup(props: PopupProps) {
     channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
 
       const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
-        debug('----------------------');
-        debug(channel.title, newVideos);
+        debug.log('----------------------');
+        debug.log(channel.title, newVideos);
         if (filterFunction) {
           newVideos = newVideos.filter((video: Video) => filterFunction(video));
         }
@@ -365,7 +365,7 @@ export default function Popup(props: PopupProps) {
   };
 
   const importChannels = (channelsList: Channel[]) => {
-    debug('importing channels', channelsList);
+    debug.log('importing channels', channelsList);
     // Update channels
     setChannels(channelsList);
     fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);

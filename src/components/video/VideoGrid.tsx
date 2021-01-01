@@ -20,7 +20,7 @@ export default function VideoGrid(props: VideoGridProps) {
   let timeout: any = null;
 
   const handleMouseEvent = (event: any) => {
-    debug(event.type, { preventLongPress: preventLongPress });
+    debug.log(event.type, { preventLongPress: preventLongPress });
     if (event.type === 'mousedown') {
       setPreventLongPress(false); // always reset preventLongPress state on mousedown
       timeout = setTimeout(() => {
