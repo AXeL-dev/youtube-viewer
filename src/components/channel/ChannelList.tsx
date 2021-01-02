@@ -190,17 +190,17 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const disableChannelNotifications = (channel: Channel, index: number) => {
-    channel.notifications = {
-      ...channel.notifications,
-      isDisabled: true
-    };
-    setChannel(channel, index);
+    toggleChannelNotifications(channel, index, false);
   };
 
   const enableChannelNotifications = (channel: Channel, index: number) => {
+    toggleChannelNotifications(channel, index, true);
+  };
+
+  const toggleChannelNotifications = (channel: Channel, index: number, value: boolean) => {
     channel.notifications = {
       ...channel.notifications,
-      isDisabled: false
+      isDisabled: value
     };
     setChannel(channel, index);
   };
