@@ -13,6 +13,7 @@ export const defaultSettings: Settings = {
   openVideosInInactiveTabs: false,
   openChannelsOnNameClick: false,
   hideEmptyChannels: true,
+  autoCloseDrawer: false,
   autoClearRecentVideos: true,
   autoClearCache: false
 };

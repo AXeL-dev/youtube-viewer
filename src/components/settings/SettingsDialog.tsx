@@ -72,6 +72,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       openVideosInInactiveTabs: getSettingsValue('openVideosInInactiveTabs', SettingsType.Boolean),
       openChannelsOnNameClick: getSettingsValue('openChannelsOnNameClick', SettingsType.Boolean),
       hideEmptyChannels: getSettingsValue('hideEmptyChannels', SettingsType.Boolean),
+      autoCloseDrawer: getSettingsValue('autoCloseDrawer', SettingsType.Boolean),
       autoClearRecentVideos: getSettingsValue('autoClearRecentVideos', SettingsType.Boolean),
       autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
@@ -278,6 +279,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <Switch
               id="hideEmptyChannels"
               defaultChecked={settings?.hideEmptyChannels}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Auto close drawer" secondary="Auto close channels list drawer when clicking outside" className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Switch
+              id="autoCloseDrawer"
+              defaultChecked={settings?.autoCloseDrawer}
               color="secondary"
             />
           </ListItemSecondaryAction>
