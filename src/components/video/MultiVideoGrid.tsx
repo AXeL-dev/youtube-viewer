@@ -35,11 +35,12 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
   const [expandedChannelsIndexes, setExpandedChannelsIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (channel: Channel) => {
-    const updatedChannels = channels.map((c: Channel) => 
-      c.id === channel.id ? { ...c, isHidden: true } : c
-    );
-    onSave([...updatedChannels]);
-    onRefresh();
+    const index: number = channels.findIndex((c: Channel) => c.id === channel.id);
+    if (index > -1) {
+      channels[index].isHidden = true;
+      onSave([...channels]);
+      onRefresh();
+    }
   };
 
   const onChannelNameClick = (event: any, channel: Channel, index: number) => {
