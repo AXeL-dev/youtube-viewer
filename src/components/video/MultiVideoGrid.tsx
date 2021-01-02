@@ -15,6 +15,9 @@ import { Channel } from '../../models/Channel';
 import { Settings } from '../../models/Settings';
 import VideoGrid from './VideoGrid';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
+import { isWebExtension } from '../../helpers/browser';
 import { useStyles } from './MultiVideoGrid.styles';
 
 interface MultiVideoGridProps {
@@ -34,13 +37,26 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
   const { channels, videos, settings, loading = false, maxPerChannel = 9, onSelect, onSave, onRefresh } = props;
   const [expandedChannelsIndexes, setExpandedChannelsIndexes] = React.useState<number[]>([]);
 
-  const hideChannel = (channel: Channel) => {
-    const index: number = channels.findIndex((c: Channel) => c.id === channel.id);
-    if (index > -1) {
-      channels[index].isHidden = true;
-      onSave([...channels]);
-      onRefresh();
-    }
+  const hideChannel = (index: number) => {
+    channels[index].isHidden = true;
+    onSave([...channels]);
+    onRefresh();
+  };
+
+  const disableChannelNotifications = (index: number) => {
+    toggleChannelNotifications(index, false);
+  };
+
+  const enableChannelNotifications = (index: number) => {
+    toggleChannelNotifications(index, true);
+  };
+
+  const toggleChannelNotifications = (index: number, activate: boolean) => {
+    channels[index].notifications = {
+      ...channels[index].notifications,
+      isDisabled: !activate
+    };
+    onSave([...channels]);
   };
 
   const onChannelNameClick = (event: any, channel: Channel, index: number) => {
@@ -79,11 +95,24 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
                   </Tooltip>
                 </Link>
               }
-              <IconButton size="small" className={classes.link} onClick={() => hideChannel(channel)}>
+              <IconButton size="small" className={classes.link} onClick={() => hideChannel(index)}>
                 <Tooltip title="Hide channel" aria-label="hide-channel">
                   <VisibilityOffIcon />
                 </Tooltip>
               </IconButton>
+              {isWebExtension() && (channel.notifications?.isDisabled ? (
+                <IconButton size="small" className={classes.link} onClick={() => enableChannelNotifications(index)}>
+                  <Tooltip title="Enable notifications" aria-label="enable-channel-notifiactions">
+                    <NotificationsActiveIcon />
+                  </Tooltip>
+                </IconButton>
+              ) : (
+                <IconButton size="small" className={classes.link} onClick={() => disableChannelNotifications(index)}>
+                  <Tooltip title="Disable notifications" aria-label="disable-channel-notifiactions">
+                    <NotificationsOffIcon />
+                  </Tooltip>
+                </IconButton>
+              ))}
             </Breadcrumbs>
             <VideoGrid
               videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, 3)}
