@@ -101,8 +101,7 @@ export function ChannelList(props: ChannelListProps) {
   const [cache, setCache] = useAtom(cacheAtom);
   const openSnackbar = useUpdateAtom(openSnackbarAtom);
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
-  const [channelToDelete, setChannelToDelete] = React.useState<Channel>();
-  const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(0);
+  const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(-1);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
@@ -136,9 +135,8 @@ export function ChannelList(props: ChannelListProps) {
     }
   };
 
-  const deleteChannel = (channel: Channel, index: number) => {
+  const deleteChannel = (index: number) => {
     closeMenu();
-    setChannelToDelete(channel);
     setChannelToDeleteIndex(index);
     setOpenDeleteChannelDialog(true);
   };
@@ -170,39 +168,38 @@ export function ChannelList(props: ChannelListProps) {
     onSelect(channel, index, true);
   };
 
-  const setChannel = (channel: Channel, index: number) => {
+  const updateChannels = (channels: Channel[]) => {
     closeMenu();
-    channels[index] = channel;
     onSave([...channels]);
     if (selectedIndex < 0 && selectedIndex !== ChannelSelection.None) {
       onRefresh(selectedIndex);
     }
   };
 
-  const hideChannel = (channel: Channel, index: number) => {
-    channel.isHidden = true;
-    setChannel(channel, index);
+  const hideChannel = (index: number) => {
+    channels[index].isHidden = true;
+    updateChannels(channels);
   };
 
-  const unhideChannel = (channel: Channel, index: number) => {
-    channel.isHidden = false;
-    setChannel(channel, index);
+  const unhideChannel = (index: number) => {
+    channels[index].isHidden = false;
+    updateChannels(channels);
   };
 
-  const disableChannelNotifications = (channel: Channel, index: number) => {
-    toggleChannelNotifications(channel, index, false);
+  const disableChannelNotifications = (index: number) => {
+    toggleChannelNotifications(index, false);
   };
 
-  const enableChannelNotifications = (channel: Channel, index: number) => {
-    toggleChannelNotifications(channel, index, true);
+  const enableChannelNotifications = (index: number) => {
+    toggleChannelNotifications(index, true);
   };
 
-  const toggleChannelNotifications = (channel: Channel, index: number, value: boolean) => {
-    channel.notifications = {
-      ...channel.notifications,
-      isDisabled: value
+  const toggleChannelNotifications = (index: number, activate: boolean) => {
+    channels[index].notifications = {
+      ...channels[index].notifications,
+      isDisabled: !activate
     };
-    setChannel(channel, index);
+    updateChannels(channels);
   };
 
   const openMenu = (event: any, index: number|string) => {
@@ -476,14 +473,14 @@ export function ChannelList(props: ChannelListProps) {
                         {isWebExtension() && isFirefox() && index < channels.length - 1 && <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>}
                         {isWebExtension() && isFirefox() && <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}><ControlCameraIcon className={classes.menuIcon} />Move to position</MenuItem>}
                         {channel.isHidden ? 
-                          <MenuItem onClick={() => unhideChannel(channel, index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
-                          <MenuItem onClick={() => hideChannel(channel, index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
+                          <MenuItem onClick={() => unhideChannel(index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
+                          <MenuItem onClick={() => hideChannel(index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         }
                         {isWebExtension() && (channel.notifications?.isDisabled ? 
-                          <MenuItem onClick={() => enableChannelNotifications(channel, index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
-                          <MenuItem onClick={() => disableChannelNotifications(channel, index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
+                          <MenuItem onClick={() => enableChannelNotifications(index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
+                          <MenuItem onClick={() => disableChannelNotifications(index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
                         )}
-                        <MenuItem onClick={() => deleteChannel(channel, index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
+                        <MenuItem onClick={() => deleteChannel(index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>
                   </ListItem>
@@ -523,7 +520,7 @@ export function ChannelList(props: ChannelListProps) {
       <ConfirmationDialog
         open={openDeleteChannelDialog}
         title="Delete Channel"
-        description={"Would you like to delete <strong>" + channelToDelete?.title + "</strong> channel?"}
+        description={"Would you like to delete <strong>" + channels[channelToDeleteIndex]?.title + "</strong> channel?"}
         confirmButtonText="Delete"
         onClose={closeDeleteChannelDialog}
         onConfirm={confirmDeleteChannel}
