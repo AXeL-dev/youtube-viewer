@@ -25,6 +25,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build && gulp postbuild:web-ext --dest-dir=dist/web-ext",
+    "build:firefox": "npm run build && cd dist/web-ext && mv -f manifest.firefox.json manifest.json",
+    "build:chrome": "npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
     "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
     "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
     "release": "npm run build && npm run package",

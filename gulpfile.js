@@ -50,6 +50,12 @@ gulp.task('update-manifest-version', function() {
     .pipe(gulp.dest('public'));
 });
 
+gulp.task('update-firefox-manifest-version', function() {
+  return file('manifest.firefox.json', getFileContent('public/manifest.firefox.json'), { src: true })
+    .pipe(replace(/^(\s*"version": ").+(",$\s*)/gm, `$1${argv.newVersion}$2`))
+    .pipe(gulp.dest('public'));
+});
+
 gulp.task('run-npm-version',
   shell.task(`npm version ${argv.newVersion} --no-git-tag-version --allow-same-version${argv.commit ? ` && git add -A && git commit -a -m "Release v${argv.newVersion}"` : ''}`)
 );
@@ -69,6 +75,7 @@ gulp.task('delete-nojekyll', function() {
 // Main tasks
 gulp.task('bump:version', runIf(argv.newVersion !== undefined,
   'update-manifest-version',
+  'update-firefox-manifest-version',
   'run-npm-version'
 ));
 
