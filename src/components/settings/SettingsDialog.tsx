@@ -140,7 +140,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               size="small"
               variant="outlined"
               color="secondary"
-              inputProps={{ min: 3, max: 50, step: 3 }}
+              inputProps={{ min: 3, max: 50, step: 1 }}
               className={classes.container}
               defaultValue={settings?.videosPerChannel}
               onChange={(event) => validateSettings(event)}
@@ -219,7 +219,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
                   size="small"
                   variant="outlined"
                   color="secondary"
-                  inputProps={{ min: 5, max: 720, step: 5 }}
+                  inputProps={{ min: 5, max: 720, step: 1 }}
                   className={classes.container}
                   defaultValue={settings?.autoVideosCheckRate}
                   onChange={(event) => validateSettings(event)}
