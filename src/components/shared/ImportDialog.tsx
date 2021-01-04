@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { RawHTML } from './RawHTML';
 
-interface ImportDialogDialogProps {
+interface ImportDialogProps {
   open: boolean;
   title: string;
   description: string;
@@ -21,7 +21,7 @@ interface ImportDialogDialogProps {
   onValidate: Function;
 }
 
-export function ImportDialog(props: ImportDialogDialogProps) {
+export function ImportDialog(props: ImportDialogProps) {
   const { open, title, description, textFieldId, textFieldLabel, confirmButtonText = 'Import', cancelButtonText = 'Cancel', onClose, onConfirm, onValidate } = props;
   const [textFieldError, setTextFieldError] = React.useState(false);
 

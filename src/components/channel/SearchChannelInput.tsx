@@ -13,12 +13,12 @@ import { getRegex, debounce } from '../../helpers/utils';
 import { RawHTML } from '../shared/RawHTML';
 import { useStyles } from './SearchChannelInput.styles';
 
-interface SearchProps {
+interface SearchChannelInputProps {
   onSelect: Function;
   onError: Function;
 }
 
-export default function SearchChannelInput(props: SearchProps) {
+export default function SearchChannelInput(props: SearchChannelInputProps) {
   const { onSelect, onError } = props;
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState('');
