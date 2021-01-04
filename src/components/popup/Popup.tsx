@@ -154,12 +154,23 @@ export default function Popup(props: PopupProps) {
     setLastError(error);
   };
 
-  const getChannelVideos = (channel: Channel, ignoreCache: boolean = false): Promise<Video[]> => {
+  /**
+   * Get a specific channel videos
+   * 
+   * @param channel channel object
+   * @param ignoreCache boolean value that defines if the cache should be ignored
+   * @param pipeFunction pipe function can be used to filter videos before they get sliced, by default it does nothing more than returning the original videos array
+   */
+  const getChannelVideos = (
+    channel: Channel,
+    ignoreCache: boolean = false,
+    pipeFunction: ((channelVideos: Video[]) => Video[]) = (channelVideos: Video[]) => channelVideos
+  ): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       if (!ignoreCache && cache[channel.id]?.length) {
         debug.log('----------------------');
         debug.log('load videos from cache', channel.title, cache[channel.id]);
-        resolve(cache[channel.id].slice(0, settings.videosPerChannel));
+        resolve(pipeFunction(cache[channel.id]).slice(0, settings.videosPerChannel));
       } else {
         getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
           debug.log('----------------------');
@@ -174,7 +185,7 @@ export default function Popup(props: PopupProps) {
             // get recent videos informations
             if (!recentVideosIds.length) {
               debug.log('no recent videos for this channel');
-              resolve(cache[channel.id]?.slice(0, settings.videosPerChannel) || []);
+              resolve(pipeFunction(cache[channel.id])?.slice(0, settings.videosPerChannel) || []);
             } else {
               debug.log('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
               getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
@@ -197,10 +208,10 @@ export default function Popup(props: PopupProps) {
                   } else {
                     return b.publishedAt - a.publishedAt;
                   }
-                }).slice(0, settings.videosPerChannel);
+                });
                 // save to cache
                 setCache({...cache});
-                resolve(sortedVideos || []);
+                resolve(pipeFunction(sortedVideos)?.slice(0, settings.videosPerChannel) || []);
               }).catch((error: Error) => {
                 displayError(error);
                 resolve([]);
@@ -258,7 +269,7 @@ export default function Popup(props: PopupProps) {
 
   const fetchChannelsVideos = (
     selection: ChannelSelection,
-    filterFunction: ((video: Video) => void)|null = null,
+    filterFunction: ((video: Video) => boolean|undefined)|null = null,
     ignoreCache: boolean = false,
     customChannels?: Channel[]
   ) => {
@@ -273,13 +284,16 @@ export default function Popup(props: PopupProps) {
 
     channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
 
-      const promise = getChannelVideos(channel, ignoreCache).then((newVideos: Video[]) => {
-        debug.log('----------------------');
-        debug.log(channel.title, newVideos);
+      const promise = getChannelVideos(channel, ignoreCache, (channelVideos: Video[]) => {
         if (filterFunction) {
-          newVideos = newVideos.filter((video: Video) => filterFunction(video));
+          return channelVideos?.filter((video: Video) => filterFunction(video));
+        } else {
+          return channelVideos;
         }
-        results.push(...newVideos);
+      }).then((channelVideos: Video[]) => {
+        debug.log('----------------------');
+        debug.log(channel.title, channelVideos);
+        results.push(...channelVideos);
       });
       promises.push(promise);
 
