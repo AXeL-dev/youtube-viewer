@@ -28,7 +28,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     position: 'absolute',
-    height: '99%',
+    height: '100%',
     width: '100%',
     left: 0,
     top: 0,
