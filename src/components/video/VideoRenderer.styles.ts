@@ -54,10 +54,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(0.5),
   },
   optionsIcon: {
-    fontSize: '1.6em',
+    fontSize: '1.5em',
     //verticalAlign: 'middle',
     '&.bigger': {
-      fontSize: '2.2em',
+      fontSize: '2.1em',
     }
   },
   visibilityIconBox: {

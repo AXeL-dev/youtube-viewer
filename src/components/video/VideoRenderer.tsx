@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { ChannelSelection } from '../../models/Channel';
 import { useStyles } from './VideoRenderer.styles';
 import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
@@ -67,9 +68,13 @@ export default function VideoRenderer(props: VideoRendererProps) {
     return index;
   };
 
-  const addVideoToWatchLater = (event: Event, video: Video) => {
+  const preventClick = (event: Event) => {
     event.stopPropagation();
     event.preventDefault();
+  };
+
+  const addVideoToWatchLater = (event: Event, video: Video) => {
+    preventClick(event);
     const videoIndex: number = getVideoIndex();
     if (videoIndex > -1) {
       if (!cache[video.channelId][videoIndex].isToWatchLater) {
@@ -89,7 +94,10 @@ export default function VideoRenderer(props: VideoRendererProps) {
     }
   };
 
-  const removeVideoFromWatchLater = (video: Video) => {
+  const removeVideoFromWatchLater = (video: Video, event?: Event) => {
+    if (event) {
+      preventClick(event);
+    }
     const videoIndex: number = getVideoIndex();
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
@@ -100,35 +108,38 @@ export default function VideoRenderer(props: VideoRendererProps) {
     }
   };
 
-  const preventClick = (event: Event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
   return (
     <Link href={video.url} className={classes.anchor} target="_blank" rel="noopener" onClick={(event: any) => openVideo(event, video)}>
       <Box className={classes.imageContainer}>
         <img className={classes.image} alt="" src={video.thumbnail} />
         <Box className={`${classes.overlay} overlay`}></Box>
         <Box className={`${classes.options} options`}>
-          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos && 
-          <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => addVideoToWatchLater(event, video)}>
-            <Tooltip title="Watch later" aria-label="watch-later">
-              <WatchLaterIcon className={classes.optionsIcon} />
-            </Tooltip>
-          </IconButton>}
+          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos ? (
+            <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => addVideoToWatchLater(event, video)}>
+              <Tooltip title="Watch later" aria-label="watch-later">
+                <WatchLaterIcon className={classes.optionsIcon} />
+              </Tooltip>
+            </IconButton>
+          ) : video.isToWatchLater && (
+            <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => removeVideoFromWatchLater(video, event)}>
+              <Tooltip title="Remove" aria-label="remove">
+                <DeleteIcon className={classes.optionsIcon} />
+              </Tooltip>
+            </IconButton>
+          )}
           <IconButton size="small" className={classes.optionsButton}>
             <Tooltip title="Watch now" aria-label="watch-now">
               <PlayArrowIcon className={`${classes.optionsIcon} bigger`} />
             </Tooltip>
           </IconButton>
         </Box>
-        {video.isWatched && 
-        <Box className={classes.visibilityIconBox} onClick={(event: any) => preventClick(event)}>
-          <Tooltip title="Already watched" aria-label="already-watched">
-            <VisibilityIcon className={classes.visibilityIcon} />
-          </Tooltip>
-        </Box>}
+        {video.isWatched && (
+          <Box className={classes.visibilityIconBox} onClick={(event: any) => preventClick(event)}>
+            <Tooltip title="Already watched" aria-label="already-watched">
+              <VisibilityIcon className={classes.visibilityIcon} />
+            </Tooltip>
+          </Box>
+        )}
         <Typography variant="caption" className={classes.duration}>
           {video.duration}
         </Typography>
