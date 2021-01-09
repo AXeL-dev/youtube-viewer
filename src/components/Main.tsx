@@ -32,7 +32,7 @@ export default function Main() {
       cache: cache
     });
     // set/merge settings
-    settings = settings ? {defaultSettings, ...settings} : defaultSettings;
+    settings = settings ? {...defaultSettings, ...settings} : defaultSettings;
     // clear recent videos
     if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
