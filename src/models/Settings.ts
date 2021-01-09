@@ -14,6 +14,7 @@ export interface Settings {
   hideEmptyChannels: boolean,
   autoCloseDrawer: boolean,
   autoClearRecentVideos: boolean,
+  autoRemoveWatchLaterVideos: boolean,
   autoClearCache: boolean,
 }
 

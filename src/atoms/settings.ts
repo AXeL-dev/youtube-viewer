@@ -15,6 +15,7 @@ export const defaultSettings: Settings = {
   hideEmptyChannels: true,
   autoCloseDrawer: false,
   autoClearRecentVideos: true,
+  autoRemoveWatchLaterVideos: true,
   autoClearCache: false
 };
 

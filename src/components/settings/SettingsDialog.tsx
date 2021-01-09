@@ -74,6 +74,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
       hideEmptyChannels: getSettingsValue('hideEmptyChannels', SettingsType.Boolean),
       autoCloseDrawer: getSettingsValue('autoCloseDrawer', SettingsType.Boolean),
       autoClearRecentVideos: getSettingsValue('autoClearRecentVideos', SettingsType.Boolean),
+      autoRemoveWatchLaterVideos: getSettingsValue('autoRemoveWatchLaterVideos', SettingsType.Boolean),
       autoClearCache: getSettingsValue('autoClearCache', SettingsType.Boolean),
     });
     onClose();
@@ -301,6 +302,17 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <Switch
               id="autoClearRecentVideos"
               defaultChecked={settings?.autoClearRecentVideos}
+              color="secondary"
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <ListItem>
+          <ListItemText primary="Auto remove watch later videos" secondary='Auto-remove watch later videos when clicking on "Watch now"' className={classes.optionLabel} />
+          <ListItemSecondaryAction>
+            <Switch
+              id="autoRemoveWatchLaterVideos"
+              defaultChecked={settings?.autoRemoveWatchLaterVideos}
               color="secondary"
             />
           </ListItemSecondaryAction>

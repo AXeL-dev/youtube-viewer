@@ -54,7 +54,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
       }
     }
     // Remove from watch later list
-    if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+    if (settings.autoRemoveWatchLaterVideos) {
       removeVideoFromWatchLater(video);
     }
   };
@@ -101,7 +101,9 @@ export default function VideoRenderer(props: VideoRendererProps) {
     const videoIndex: number = getVideoIndex();
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
-      setVideos(videos.filter((v: Video) => v.id !== video.id));
+      if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+        setVideos(videos.filter((v: Video) => v.id !== video.id));
+      }
       // update cache
       cache[video.channelId][videoIndex].isToWatchLater = false;
       setCache({...cache});
@@ -114,7 +116,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
         <img className={classes.image} alt="" src={video.thumbnail} />
         <Box className={`${classes.overlay} overlay`}></Box>
         <Box className={`${classes.options} options`}>
-          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos ? (
+          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos ? !video.isToWatchLater && (
             <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => addVideoToWatchLater(event, video)}>
               <Tooltip title="Watch later" aria-label="watch-later">
                 <WatchLaterIcon className={classes.optionsIcon} />
