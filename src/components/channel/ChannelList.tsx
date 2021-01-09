@@ -13,6 +13,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import DeleteIcon from '@material-ui/icons/Delete';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import IconButton from '@material-ui/core/IconButton';
@@ -433,7 +434,7 @@ export function ChannelList(props: ChannelListProps) {
                 {watchLaterVideosCount > 0 && <ListItemSecondaryAction>
                   <Tooltip title="Clear" aria-label="clear">
                     <IconButton edge="end" aria-label="clear" size="small" onClick={() => clearWatchLaterVideos()}>
-                      <DeleteIcon fontSize="small" />
+                      <DeleteOutlineIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 </ListItemSecondaryAction>}
@@ -520,7 +521,7 @@ export function ChannelList(props: ChannelListProps) {
       <ConfirmationDialog
         open={openDeleteChannelDialog}
         title="Delete Channel"
-        description={"Would you like to delete <strong>" + channels[channelToDeleteIndex]?.title + "</strong> channel?"}
+        description={`Would you like to delete <strong>${channels[channelToDeleteIndex]?.title}</strong> channel?`}
         confirmButtonText="Delete"
         onClose={closeDeleteChannelDialog}
         onConfirm={confirmDeleteChannel}
