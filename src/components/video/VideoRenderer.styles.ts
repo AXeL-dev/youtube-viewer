@@ -60,6 +60,23 @@ export const useStyles = makeStyles((theme: Theme) => ({
       fontSize: '2.2em',
     }
   },
+  visibilityIconBox: {
+    display: 'flex',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    margin: '4px',
+    color: '#eee',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: '3px 5px',
+    borderRadius: '2px',
+    '&:hover': {
+      color: '#fff'
+    }
+  },
+  visibilityIcon: {
+    fontSize: '1.22em',
+  },
   duration: {
     position: 'absolute',
     bottom: 0,

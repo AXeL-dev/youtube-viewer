@@ -8,6 +8,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import { ChannelSelection } from '../../models/Channel';
 import { useStyles } from './VideoRenderer.styles';
 import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
@@ -26,6 +27,7 @@ interface VideoRendererProps {
 export default function VideoRenderer(props: VideoRendererProps) {
   const { video } = props;
   const classes = useStyles();
+  const [videoIndex, setVideoIndex] = React.useState(-1);
   const [selectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
@@ -42,15 +44,33 @@ export default function VideoRenderer(props: VideoRendererProps) {
         }
       });
     }
+    // Mark as watched
+    const videoIndex: number = getVideoIndex();
+    if (videoIndex > -1) {
+      if (!cache[video.channelId][videoIndex].isWatched) {
+        cache[video.channelId][videoIndex].isWatched = true;
+        setCache({...cache});
+      }
+    }
+    // Remove from watch later list
     if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
       removeVideoFromWatchLater(video);
     }
   };
 
+  const getVideoIndex = (forceUpdate: boolean = false) => {
+    if (!forceUpdate && videoIndex !== -1) {
+      return videoIndex;
+    }
+    const index: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+    setVideoIndex(index);
+    return index;
+  };
+
   const addVideoToWatchLater = (event: Event, video: Video) => {
     event.stopPropagation();
     event.preventDefault();
-    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+    const videoIndex: number = getVideoIndex();
     if (videoIndex > -1) {
       if (!cache[video.channelId][videoIndex].isToWatchLater) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
@@ -70,7 +90,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
   };
 
   const removeVideoFromWatchLater = (video: Video) => {
-    const videoIndex: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
+    const videoIndex: number = getVideoIndex();
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
       setVideos(videos.filter((v: Video) => v.id !== video.id));
@@ -78,6 +98,11 @@ export default function VideoRenderer(props: VideoRendererProps) {
       cache[video.channelId][videoIndex].isToWatchLater = false;
       setCache({...cache});
     }
+  };
+
+  const preventClick = (event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
   };
 
   return (
@@ -98,6 +123,12 @@ export default function VideoRenderer(props: VideoRendererProps) {
             </Tooltip>
           </IconButton>
         </Box>
+        {video.isWatched && 
+        <Box className={classes.visibilityIconBox} onClick={(event: any) => preventClick(event)}>
+          <Tooltip title="Already watched" aria-label="already-watched">
+            <VisibilityIcon className={classes.visibilityIcon} />
+          </Tooltip>
+        </Box>}
         <Typography variant="caption" className={classes.duration}>
           {video.duration}
         </Typography>
