@@ -40,10 +40,11 @@ import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { channelsAtom, selectedChannelIndexAtom } from '../../atoms/channels';
-import { videosAtom } from '../../atoms/videos';
+import { videosAtom, videosSortOrderAtom } from '../../atoms/videos';
 import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
+import { SortOrder } from '../../models/SortOrder';
 
 interface PopupProps {
   isReady: boolean;
@@ -54,6 +55,7 @@ export default function Popup(props: PopupProps) {
   const theme = useTheme();
   const [channels, setChannels] = useAtom(channelsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
+  const videosSortOrder = useAtomValue(videosSortOrderAtom);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -246,13 +248,19 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const selectChannel = (channel: Channel, index: number, ignoreCache: boolean = false) => {
+  const selectChannel = (channel: Channel, index: number, ignoreCache: boolean = false, sortOrder?: SortOrder) => {
     // Select channel
     debug.log('selected channel:', channel);
     setSelectedChannelIndex(index);
+    if (sortOrder === undefined || sortOrder === null) {
+      sortOrder = videosSortOrder[index]; // == undefined if videosSortOrder[index] is not yet set
+    }
     // Get its videos
     setIsLoading(true);
     return getChannelVideos(channel, ignoreCache).then((results: Video[]) => {
+      if (sortOrder) {
+        results = results.sort(getSortFunction(sortOrder));
+      }
       setVideos(results || []);
       setIsLoading(false);
       window.scrollTo(0, 0); // scroll to top
@@ -270,6 +278,7 @@ export default function Popup(props: PopupProps) {
   const fetchChannelsVideos = (
     selection: ChannelSelection,
     filterFunction: ((video: Video) => boolean|undefined)|null = null,
+    sortFunction: ((a: Video, b: Video) => number)|null = null,
     ignoreCache: boolean = false,
     customChannels?: Channel[]
   ) => {
@@ -286,13 +295,16 @@ export default function Popup(props: PopupProps) {
 
       const promise = getChannelVideos(channel, ignoreCache, (channelVideos: Video[]) => {
         if (filterFunction) {
-          return channelVideos?.filter((video: Video) => filterFunction(video));
+          return channelVideos?.filter(filterFunction);
         } else {
           return channelVideos;
         }
       }).then((channelVideos: Video[]) => {
         debug.log('----------------------');
         debug.log(channel.title, channelVideos);
+        if (sortFunction) {
+          channelVideos = channelVideos.sort(sortFunction);
+        }
         results.push(...channelVideos);
       });
       promises.push(promise);
@@ -305,33 +317,49 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const showAllChannels = (ignoreCache: boolean = false) => {
-    return fetchChannelsVideos(ChannelSelection.All, null, ignoreCache);
+  const getSortFunction = (sortOrder: SortOrder) => {
+    return (a: Video, b: Video) => sortOrder === SortOrder.ASC ? a.publishedAt - b.publishedAt : b.publishedAt - a.publishedAt;
   };
 
-  const showTodaysVideos = (ignoreCache: boolean = false) => {
-    return fetchChannelsVideos(ChannelSelection.TodaysVideos, (video: Video) => isInToday(video.publishedAt), ignoreCache);
+  const showAllChannels = (
+    ignoreCache: boolean = false,
+    sortOrder: SortOrder = videosSortOrder[ChannelSelection.All]
+  ) => {
+    return fetchChannelsVideos(ChannelSelection.All, null, getSortFunction(sortOrder), ignoreCache);
   };
 
-  const showRecentVideos = (ignoreCache: boolean = false) => {
-    return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, ignoreCache);
+  const showTodaysVideos = (
+    ignoreCache: boolean = false,
+    sortOrder: SortOrder = videosSortOrder[ChannelSelection.TodaysVideos]
+  ) => {
+    return fetchChannelsVideos(ChannelSelection.TodaysVideos, (video: Video) => isInToday(video.publishedAt), getSortFunction(sortOrder), ignoreCache);
   };
 
-  const showWatchLaterVideos = (ignoreCache: boolean = false) => {
-    return fetchChannelsVideos(ChannelSelection.WatchLaterVideos, (video: Video) => video.isToWatchLater, ignoreCache);
+  const showRecentVideos = (
+    ignoreCache: boolean = false,
+    sortOrder: SortOrder = videosSortOrder[ChannelSelection.RecentVideos]
+  ) => {
+    return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, getSortFunction(sortOrder), ignoreCache);
   };
 
-  const showChannelSelection = (selection: ChannelSelection, ignoreCache: boolean = false) => {
+  const showWatchLaterVideos = (
+    ignoreCache: boolean = false,
+    sortOrder: SortOrder = videosSortOrder[ChannelSelection.WatchLaterVideos]
+  ) => {
+    return fetchChannelsVideos(ChannelSelection.WatchLaterVideos, (video: Video) => video.isToWatchLater, getSortFunction(sortOrder), ignoreCache);
+  };
+
+  const showChannelSelection = (selection: ChannelSelection, ignoreCache: boolean = false, sortOrder?: SortOrder) => {
     switch(selection) {
       case ChannelSelection.TodaysVideos:
-        return showTodaysVideos(ignoreCache);
+        return showTodaysVideos(ignoreCache, sortOrder);
       case ChannelSelection.RecentVideos:
-        return showRecentVideos(ignoreCache);
+        return showRecentVideos(ignoreCache, sortOrder);
       case ChannelSelection.WatchLaterVideos:
-        return showWatchLaterVideos(ignoreCache);
+        return showWatchLaterVideos(ignoreCache, sortOrder);
       case ChannelSelection.All:
       default:
-        return showAllChannels(ignoreCache);
+        return showAllChannels(ignoreCache, sortOrder);
     }
   };
 
@@ -364,7 +392,7 @@ export default function Popup(props: PopupProps) {
     });
   };
 
-  const refreshChannels = (selection?: ChannelSelection, event?: any) => {
+  const refreshChannels = (selection?: ChannelSelection, event?: any, sortOrder?: SortOrder) => {
     if (event) {
       event.stopPropagation();
     }
@@ -372,9 +400,9 @@ export default function Popup(props: PopupProps) {
       selection = selectedChannelIndex;
     }
     if (selection >= 0) {
-      return selectChannel(channels[selection], selection, true);
+      return selectChannel(channels[selection], selection, true, sortOrder);
     } else {
-      return showChannelSelection(selection, true);
+      return showChannelSelection(selection, true, sortOrder);
     }
   };
 
@@ -382,7 +410,7 @@ export default function Popup(props: PopupProps) {
     debug.log('importing channels', channelsList);
     // Update channels
     setChannels(channelsList);
-    fetchChannelsVideos(ChannelSelection.All, null, true, channelsList);
+    fetchChannelsVideos(ChannelSelection.All, null, null, true, channelsList);
     openSnackbar({
       message: 'Channels imported!',
       icon: 'success',

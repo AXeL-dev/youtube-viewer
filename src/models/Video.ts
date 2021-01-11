@@ -1,3 +1,4 @@
+import { SortOrder } from "./SortOrder";
 
 export interface Video {
   id: string,
@@ -15,4 +16,8 @@ export interface Video {
   isRecent?: boolean,
   isToWatchLater?: boolean,
   isWatched?: boolean
+}
+
+export interface VideosSortOrder {
+  [key: number]: SortOrder // key == Channel index || ChannelSelection
 }

@@ -14,7 +14,8 @@ import DeleteSweepIcon from '@material-ui/icons/DeleteSweep';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import IconButton from '@material-ui/core/IconButton';
 import Avatar from '@material-ui/core/Avatar';
@@ -41,9 +42,11 @@ import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
 import { useStyles } from './ChannelList.styles';
 import { memorySizeOf } from '../../helpers/utils';
 import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
+import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { cacheAtom } from '../../atoms/cache';
 import { openSnackbarAtom } from '../../atoms/snackbar';
+import { videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from '../../atoms/videos';
+import { SortOrder } from '../../models/SortOrder';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',
@@ -101,6 +104,7 @@ export function ChannelList(props: ChannelListProps) {
   const classes = useStyles();
   const [cache, setCache] = useAtom(cacheAtom);
   const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const [videosSortOrder, setVideosSortOrder] = [useAtomValue(videosSortOrderAtom), useUpdateAtom(setVideosSortOrderAtom)];
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(-1);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -334,6 +338,30 @@ export function ChannelList(props: ChannelListProps) {
     setOpenClearWatchLaterVideosDialog(false);
   };
 
+  const renderSortOrderMenuItems = (index: number|ChannelSelection) => {
+    const sortOrder = videosSortOrder[index] || defaultVideosSortOrder;
+    return (
+      <div> {/* using React.Fragment instead of a div returns the following error "the Menu component doesn't accept a Fragment as a child." */}
+        <MenuItem disabled={sortOrder === SortOrder.ASC} onClick={(event) => {
+            closeMenu();
+            setVideosSortOrder({ [index]: SortOrder.ASC });
+            onRefresh(index, event, SortOrder.ASC);
+          }}
+        >
+          <ArrowUpwardIcon className={classes.menuIcon} /> Sort by Asc
+        </MenuItem>
+        <MenuItem disabled={sortOrder === SortOrder.DESC} onClick={(event) => {
+            closeMenu();
+            setVideosSortOrder({ [index]: SortOrder.DESC });
+            onRefresh(index, event, SortOrder.DESC);
+          }}
+        >
+          <ArrowDownwardIcon className={classes.menuIcon} /> Sort by Desc
+        </MenuItem>
+      </div>
+    );
+  };
+
   return (
     <div className={className || ''}>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -372,11 +400,19 @@ export function ChannelList(props: ChannelListProps) {
                 </ListItemIcon>
                 <ListItemText primary="All" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
-                  <Tooltip title="Refresh" aria-label="refresh">
-                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshAll(event)}>
-                      <RefreshIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.All)}>
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                  <Menu
+                    id="menu-all-channels"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={openedMenuIndex === ChannelSelection.All}
+                    onClose={closeMenu}
+                  >
+                    {renderSortOrderMenuItems(ChannelSelection.All)}
+                    <MenuItem onClick={(event) => refreshAll(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
+                  </Menu>
                 </ListItemSecondaryAction>}
               </ListItem>
               <ListItem button key="today" selected={selectedIndex === ChannelSelection.TodaysVideos} onClick={() => onShowTodaysVideos()}>
@@ -389,11 +425,19 @@ export function ChannelList(props: ChannelListProps) {
                 </ListItemIcon>
                 <ListItemText primary="Today's videos" />
                 {channels?.length > 0 && <ListItemSecondaryAction>
-                  <Tooltip title="Refresh" aria-label="refresh">
-                    <IconButton edge="end" aria-label="refresh" size="small" onClick={(event) => refreshTodaysVideos(event)}>
-                      <RefreshIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.TodaysVideos)}>
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                  <Menu
+                    id="menu-todays-videos"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={openedMenuIndex === ChannelSelection.TodaysVideos}
+                    onClose={closeMenu}
+                  >
+                    {renderSortOrderMenuItems(ChannelSelection.TodaysVideos)}
+                    <MenuItem onClick={(event) => refreshTodaysVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
+                  </Menu>
                 </ListItemSecondaryAction>}
               </ListItem>
               <ListItem button key="recent" selected={selectedIndex === ChannelSelection.RecentVideos} onClick={() => onShowRecentVideos()}>
@@ -416,9 +460,10 @@ export function ChannelList(props: ChannelListProps) {
                     open={openedMenuIndex === ChannelSelection.RecentVideos}
                     onClose={closeMenu}
                   >
+                    {renderSortOrderMenuItems(ChannelSelection.RecentVideos)}
                     <MenuItem onClick={(event) => refreshRecentVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
                     {recentVideosCount > 0 && selectedIndex === ChannelSelection.RecentVideos && <MenuItem onClick={() => addRecentVideosToWatchLater()}><AccessTimeIcon className={classes.menuIcon} /> Add all to watch later list</MenuItem>}
-                    {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteIcon className={classes.menuIcon} /> Clear</MenuItem>}
+                    {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteOutlineIcon className={classes.menuIcon} /> Clear</MenuItem>}
                   </Menu>
                 </ListItemSecondaryAction>}
               </ListItem>
@@ -431,13 +476,21 @@ export function ChannelList(props: ChannelListProps) {
                   </Badge>
                 </ListItemIcon>
                 <ListItemText primary="Watch later" />
-                {watchLaterVideosCount > 0 && <ListItemSecondaryAction>
-                  <Tooltip title="Clear" aria-label="clear">
-                    <IconButton edge="end" aria-label="clear" size="small" onClick={() => clearWatchLaterVideos()}>
-                      <DeleteOutlineIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </ListItemSecondaryAction>}
+                <ListItemSecondaryAction>
+                  <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.WatchLaterVideos)}>
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                  <Menu
+                    id="menu-watch-later-videos"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={openedMenuIndex === ChannelSelection.WatchLaterVideos}
+                    onClose={closeMenu}
+                  >
+                    {renderSortOrderMenuItems(ChannelSelection.WatchLaterVideos)}
+                    {watchLaterVideosCount > 0 && <MenuItem onClick={() => clearWatchLaterVideos()}><DeleteOutlineIcon className={classes.menuIcon} /> Clear</MenuItem>}
+                  </Menu>
+                </ListItemSecondaryAction>
               </ListItem>
               {channels.map((channel: Channel, index: number) => (
                 <Draggable key={channel.id} draggableId={channel.id} index={index}>
@@ -468,6 +521,7 @@ export function ChannelList(props: ChannelListProps) {
                         open={openedMenuIndex === index}
                         onClose={closeMenu}
                       >
+                        {renderSortOrderMenuItems(index)}
                         <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
                         <MenuItem onClick={() => refreshChannel(channel, index)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
                         {isWebExtension() && isFirefox() && index > 0 && <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>}
@@ -481,7 +535,7 @@ export function ChannelList(props: ChannelListProps) {
                           <MenuItem onClick={() => enableChannelNotifications(index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
                           <MenuItem onClick={() => disableChannelNotifications(index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
                         )}
-                        <MenuItem onClick={() => deleteChannel(index)}><DeleteIcon className={classes.menuIcon} /> Delete</MenuItem>
+                        <MenuItem onClick={() => deleteChannel(index)}><DeleteOutlineIcon className={classes.menuIcon} /> Delete</MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>
                   </ListItem>
