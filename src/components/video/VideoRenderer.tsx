@@ -28,7 +28,6 @@ interface VideoRendererProps {
 export default function VideoRenderer(props: VideoRendererProps) {
   const { video } = props;
   const classes = useStyles();
-  const [videoIndex, setVideoIndex] = React.useState(-1);
   const [selectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
@@ -45,27 +44,23 @@ export default function VideoRenderer(props: VideoRendererProps) {
         }
       });
     }
-    // Mark as watched
-    const videoIndex: number = getVideoIndex();
-    if (videoIndex > -1) {
-      if (!cache[video.channelId][videoIndex].isWatched) {
-        cache[video.channelId][videoIndex].isWatched = true;
-        setCache({...cache});
-      }
-    }
-    // Remove from watch later list
+    const videoIndex = markAsWatched(video);
     if (settings.autoRemoveWatchLaterVideos) {
-      removeVideoFromWatchLater(video);
+      removeVideoFromWatchLater(video, null, videoIndex);
     }
   };
 
-  const getVideoIndex = (forceUpdate: boolean = false) => {
-    if (!forceUpdate && videoIndex !== -1) {
-      return videoIndex;
+  const markAsWatched = (video: Video): number => {
+    const videoIndex: number = getVideoIndex(video);
+    if (videoIndex > -1 && !cache[video.channelId][videoIndex].isWatched) {
+      cache[video.channelId][videoIndex].isWatched = true;
+      setCache({...cache});
     }
-    const index: number = cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
-    setVideoIndex(index);
-    return index;
+    return videoIndex;
+  };
+
+  const getVideoIndex = (video: Video) => {
+    return cache[video?.channelId].findIndex((v: Video) => v.id === video?.id);
   };
 
   const preventClick = (event: Event) => {
@@ -75,7 +70,7 @@ export default function VideoRenderer(props: VideoRendererProps) {
 
   const addVideoToWatchLater = (event: Event, video: Video) => {
     preventClick(event);
-    const videoIndex: number = getVideoIndex();
+    const videoIndex: number = getVideoIndex(video);
     if (videoIndex > -1) {
       if (!cache[video.channelId][videoIndex].isToWatchLater) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
@@ -94,11 +89,11 @@ export default function VideoRenderer(props: VideoRendererProps) {
     }
   };
 
-  const removeVideoFromWatchLater = (video: Video, event?: Event) => {
+  const removeVideoFromWatchLater = (video: Video, event?: Event|null, index: number = -1) => {
     if (event) {
       preventClick(event);
     }
-    const videoIndex: number = getVideoIndex();
+    const videoIndex: number = index >= 0 ? index : getVideoIndex(video);
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
       if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
