@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
+      //marginLeft: theme.spacing(3),
       width: 'auto',
     },
   },
@@ -39,9 +39,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: 200,
+      width: 240,
       '&:focus': {
-        width: 260,
+        width: 300,
       },
     },
   },

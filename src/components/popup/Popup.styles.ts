@@ -28,7 +28,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       }),
     },
     menuButton: {
-      marginRight: theme.spacing(2),
+      marginRight: theme.spacing(1.5),
     },
     hide: {
       display: 'none',
@@ -40,11 +40,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     grow: {
       flexGrow: 1,
     },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
+    logo: {
+      display: 'flex',
+      marginRight: theme.spacing(3.5),
+      cursor: 'default',
+      '& > img': {
+        width: 32,
+        height: 32,
+        filter: 'contrast(150%) brightness(100%)',
+      }
     },
     drawer: {
       width: drawerWidth,

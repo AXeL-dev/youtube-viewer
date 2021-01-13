@@ -479,9 +479,9 @@ export default function Popup(props: PopupProps) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap>
-            Youtube viewer
-          </Typography>
+          <span title="Youtube viewer" className={classes.logo}>
+            <img alt="logo" src="icons/128.png" />
+          </span>
           <SearchChannelInput onSelect={addChannel} onError={displayError} />
           <div className={classes.grow} />
           <IconButton edge="end" aria-label="settings" color="inherit" onClick={(event) => openSettings(event)}>
