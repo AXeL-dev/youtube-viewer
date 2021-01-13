@@ -566,6 +566,7 @@ export default function Popup(props: PopupProps) {
                 settings={settings}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
+                maxVisible={isWebExtension() ? 3 : 6}
                 onSelect={selectChannel}
                 onSave={setChannels}
                 onRefresh={refreshChannels}

@@ -26,6 +26,7 @@ interface MultiVideoGridProps {
   videos: Video[];
   settings: Settings;
   maxPerChannel?: number;
+  maxVisible?: number;
   onSelect: Function;
   onSave: Function;
   onRefresh: Function;
@@ -34,7 +35,7 @@ interface MultiVideoGridProps {
 export default function MultiVideoGrid(props: MultiVideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const { channels, videos, settings, loading = false, maxPerChannel = 9, onSelect, onSave, onRefresh } = props;
+  const { channels, videos, settings, loading = false, maxPerChannel = 9, maxVisible = 3, onSelect, onSave, onRefresh } = props;
   const [expandedChannelsIndexes, setExpandedChannelsIndexes] = React.useState<number[]>([]);
 
   const hideChannel = (index: number) => {
@@ -115,12 +116,12 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
               ))}
             </Breadcrumbs>
             <VideoGrid
-              videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, 3)}
+              videos={expandedChannelsIndexes.indexOf(index) > -1 ? channelVideos : channelVideos.slice(0, maxVisible)}
               loading={loading}
               maxPerChannel={maxPerChannel}
-              maxSkeletons={3}
+              maxSkeletons={maxVisible}
             />
-            {channelVideos.length > 3 && expandedChannelsIndexes.indexOf(index) === -1 &&
+            {channelVideos.length > maxVisible && expandedChannelsIndexes.indexOf(index) === -1 &&
               <Tooltip title="Show more" aria-label="show-more">
                 <IconButton edge="end" aria-label="show-more" size="small" style={{ marginBottom: theme.spacing(2.5) }} onClick={() => setExpandedChannelsIndexes([...expandedChannelsIndexes, index])}>
                   <MoreHorizIcon fontSize="small" />
