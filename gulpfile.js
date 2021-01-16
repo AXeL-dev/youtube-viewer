@@ -64,6 +64,10 @@ gulp.task('remove-browser-polyfill',
   shell.task(`sed -i 's/<script type="application\\/javascript" src="js\\/browser-polyfill.min.js"><\\/script>//' ${buildDir}/index.html && rm ${buildDir}/js/browser-polyfill.min.js`)
 );
 
+gulp.task('remove-logo-preload',
+  shell.task(`sed -i 's/<link rel="preload" href="\\/icons\\/128.png" as="image"\\/>//' ${buildDir}/index.html`)
+);
+
 gulp.task('move-build-dir',
   shell.task(`rm -rf ${destDir} && mkdir -p ${destDir} && cp -r ${buildDir}/. ${destDir} && rm -rf ${buildDir}`)
 );
@@ -81,6 +85,7 @@ gulp.task('bump:version', runIf(argv.newVersion !== undefined,
 
 gulp.task('postbuild:web-ext', gulp.series(
   'delete-nojekyll',
+  'remove-logo-preload',
   'move-build-dir'
 ));
 

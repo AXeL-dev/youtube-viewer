@@ -11,17 +11,17 @@ import { settingsAtom, defaultSettings } from '../atoms/settings';
 import { cacheAtom } from '../atoms/cache';
 
 export default function Main() {
+  const setChannels = useUpdateAtom(channelsAtom);
+  const setSettings = useUpdateAtom(settingsAtom);
+  const setCache = useUpdateAtom(cacheAtom);
+  const [isReady, setIsReady] = React.useState(false);
+
   useConstructor(() => {
     fetchData();
     if (isWebExtension()) {
       setBadgeText(''); // reset webextension badge
     }
   });
-
-  const setChannels = useUpdateAtom(channelsAtom);
-  const setSettings = useUpdateAtom(settingsAtom);
-  const setCache = useUpdateAtom(cacheAtom);
-  const [isReady, setIsReady] = React.useState(false);
 
   async function fetchData() {
     // get data from storage
