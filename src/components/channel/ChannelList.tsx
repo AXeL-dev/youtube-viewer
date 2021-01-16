@@ -44,6 +44,7 @@ import { memorySizeOf } from '../../helpers/utils';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { cacheAtom } from '../../atoms/cache';
+import { settingsAtom } from '../../atoms/settings';
 import { openSnackbarAtom } from '../../atoms/snackbar';
 import { videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from '../../atoms/videos';
 import { SortOrder } from '../../models/SortOrder';
@@ -103,6 +104,7 @@ export function ChannelList(props: ChannelListProps) {
           onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
   const [cache, setCache] = useAtom(cacheAtom);
+  const [settings] = useAtom(settingsAtom);
   const openSnackbar = useUpdateAtom(openSnackbarAtom);
   const [videosSortOrder, setVideosSortOrder] = [useAtomValue(videosSortOrderAtom), useUpdateAtom(setVideosSortOrderAtom)];
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
@@ -531,7 +533,7 @@ export function ChannelList(props: ChannelListProps) {
                           <MenuItem onClick={() => unhideChannel(index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem> : 
                           <MenuItem onClick={() => hideChannel(index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         }
-                        {isWebExtension() && (channel.notifications?.isDisabled ? 
+                        {isWebExtension() && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? 
                           <MenuItem onClick={() => enableChannelNotifications(index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem> : 
                           <MenuItem onClick={() => disableChannelNotifications(index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
                         )}
