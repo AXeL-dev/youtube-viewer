@@ -208,7 +208,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        {isWebExtension() &&
+        {isWebExtension() && (
           <React.Fragment>
             <Divider />
             <ListItem>
@@ -261,7 +261,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
               </ListItemSecondaryAction>
             </ListItem>
           </React.Fragment>
-        }
+        )}
         <Divider />
         <ListItem>
           <ListItemText primary="Open channels on name click" secondary='Will open channels directly by clicking on their name, replaces the icon button "open channel"' className={classes.optionLabel} />

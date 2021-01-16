@@ -89,13 +89,13 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
                   {channel.title}
                 </Typography>
               </Link>
-              {!settings?.openChannelsOnNameClick && 
+              {!settings?.openChannelsOnNameClick && (
                 <Link color="inherit" className={`${classes.link} ${classes.youtube}`} href={channel.url} target="_blank" rel="noopener">
                   <Tooltip title="Open channel" aria-label="open-channel">
                     <YouTubeIcon />
                   </Tooltip>
                 </Link>
-              }
+              )}
               <IconButton size="small" className={classes.link} onClick={() => hideChannel(index)}>
                 <Tooltip title="Hide channel" aria-label="hide-channel">
                   <VisibilityOffIcon />
@@ -121,13 +121,13 @@ export default function MultiVideoGrid(props: MultiVideoGridProps) {
               maxPerChannel={maxPerChannel}
               maxSkeletons={maxVisible}
             />
-            {channelVideos.length > maxVisible && expandedChannelsIndexes.indexOf(index) === -1 &&
+            {channelVideos.length > maxVisible && expandedChannelsIndexes.indexOf(index) === -1 && (
               <Tooltip title="Show more" aria-label="show-more">
                 <IconButton edge="end" aria-label="show-more" size="small" style={{ marginBottom: theme.spacing(2.5) }} onClick={() => setExpandedChannelsIndexes([...expandedChannelsIndexes, index])}>
                   <MoreHorizIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
-            }
+            )}
             <Divider className={`divider ${classes.divider}`} />
           </Box>
       )}

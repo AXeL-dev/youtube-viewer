@@ -54,9 +54,11 @@ export function BottomSnackbar(props: BottomSnackbarProps) {
         onClose={handleClose}
         action={
           <React.Fragment>
-            {showRefreshButton && <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
-              Refresh
-            </Button>}
+            {showRefreshButton && (
+              <Button color="secondary" size="small" onClick={(event) => onRefresh(null, event)}>
+                Refresh
+              </Button>
+            )}
             <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
               <CloseIcon fontSize="small" />
             </IconButton>
