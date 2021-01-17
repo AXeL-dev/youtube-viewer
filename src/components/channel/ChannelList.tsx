@@ -29,6 +29,7 @@ import { Channel, ChannelSelection } from '../../models/Channel';
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { ImportDialog } from '../shared/ImportDialog';
 import { MoveToPositionDialog } from '../shared/MoveToPositionDialog';
+import { PleaseEnableNotificationsDialog } from '../shared/PleaseEnableNotificationsDialog';
 import { download } from '../../helpers/download';
 import { isWebExtension, createTab, isFirefox } from '../../helpers/browser';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -115,6 +116,7 @@ export function ChannelList(props: ChannelListProps) {
   const [openClearRecentVideosDialog, setOpenClearRecentVideosDialog] = React.useState(false);
   const [openClearWatchLaterVideosDialog, setOpenClearWatchLaterVideosDialog] = React.useState(false);
   const [openImportChannelsDialog, setOpenImportChannelsDialog] = React.useState(false);
+  const [enableNotificationsDialog, setEnableNotificationsDialog] = React.useState(false);
   const [moveToPositionChannelIndex, setMoveToPositionChannelIndex] = React.useState<number>(-1);
 
   const onDragEnd = (result: any) => {
@@ -198,7 +200,11 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const enableChannelNotifications = (index: number) => {
-    toggleChannelNotifications(index, true);
+    if(settings?.enableRecentVideosNotifications){
+      toggleChannelNotifications(index, true);
+    }else{
+
+    }
   };
 
   const toggleChannelNotifications = (index: number, activate: boolean) => {
@@ -206,6 +212,7 @@ export function ChannelList(props: ChannelListProps) {
       ...channels[index].notifications,
       isDisabled: !activate
     };
+
     updateChannels(channels);
   };
 
@@ -268,6 +275,10 @@ export function ChannelList(props: ChannelListProps) {
 
   const closeMoveChannelToPositionDialog = () => {
     setMoveToPositionChannelIndex(-1);
+  };
+
+  const closeEnableNotificationsDialog = () => {
+    setEnableNotificationsDialog(false);
   };
 
   const moveChannelToPosition = (position: number) => {
@@ -619,6 +630,15 @@ export function ChannelList(props: ChannelListProps) {
         positionFieldLabel="Position"
         onClose={closeMoveChannelToPositionDialog}
         onConfirm={moveChannelToPosition}
+      />
+      <PleaseEnableNotificationsDialog
+        open={moveToPositionChannelIndex > -1}
+        title="Please enable notifications on settings!"
+        positionFieldId="channel-position"
+        positionFieldLabel="Position"
+        confirmButtonText="Go to settings?"
+        onClose={closeEnableNotificationsDialog}
+        onConfirm={closeEnableNotificationsDialog}
       />
     </div>
   )
