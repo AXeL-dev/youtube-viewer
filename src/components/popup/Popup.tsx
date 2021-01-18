@@ -81,8 +81,11 @@ export default function Popup(props: PopupProps) {
     setHeight(height);
     // Set maxVisibleVideos
     const containerPadding = 48,
-          popupWidth = isWebExtension() ? popupSize.width : window.innerWidth,
-          maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
+          popupWidth = isWebExtension() ? popupSize.width : window.innerWidth;
+    let maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
+    if (maxVisibleVideos > settings.videosPerChannel) {
+      maxVisibleVideos = settings.videosPerChannel;
+    }
     debug.log('max visible videos:', maxVisibleVideos);
     setMaxVisibleVideos(maxVisibleVideos);
   });
