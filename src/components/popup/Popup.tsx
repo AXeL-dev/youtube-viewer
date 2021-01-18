@@ -74,11 +74,11 @@ export default function Popup(props: PopupProps) {
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
   useConstructor(() => {
-    // set height
+    // Set height
     const height = isWebExtension() ? '100%' : '100vh';
     debug.log('height:', height);
     setHeight(height);
-    // set maxVisibleVideos
+    // Set maxVisibleVideos
     const containerPadding = 48,
           maxVisibleVideos = Math.floor((window.innerWidth - containerPadding) / videoImageSize.width);
     debug.log('max visible videos:', maxVisibleVideos);
@@ -196,13 +196,13 @@ export default function Popup(props: PopupProps) {
           debug.log('----------------------');
           debug.log('activities of', channel.title, results);
           if (results?.items) {
-            // get recent videos ids
+            // Get recent videos ids
             const videosIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
             const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
             const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
                                                        .slice(0, settings.videosPerChannel)
                                                        .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
-            // get recent videos informations
+            // Get recent videos informations
             if (!recentVideosIds.length) {
               debug.log('no recent videos for this channel');
               resolve(pipeFunction(cache[channel.id])?.slice(0, settings.videosPerChannel) || []);
@@ -210,7 +210,7 @@ export default function Popup(props: PopupProps) {
               debug.log('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
               getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
                 debug.log('recent videos data', videosData);
-                // mark new videos as recent
+                // Mark new videos as recent
                 const now = new Date();
                 videosData = videosData.map((video: Video) => {
                   const videoDate = new Date(video.publishedAt); // convert timestamp to Date object
@@ -219,9 +219,9 @@ export default function Popup(props: PopupProps) {
                   }
                   return video;
                 });
-                // merge cached & new videos
+                // Merge cached & new videos
                 cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
-                // sort videos
+                // Sort videos
                 const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
                   if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
                     return b.views.count - a.views.count;
@@ -229,7 +229,7 @@ export default function Popup(props: PopupProps) {
                     return b.publishedAt - a.publishedAt;
                   }
                 });
-                // save to cache
+                // Save to cache
                 setCache({...cache});
                 resolve(pipeFunction(sortedVideos)?.slice(0, settings.videosPerChannel) || []);
               }).catch((error: Error) => {
