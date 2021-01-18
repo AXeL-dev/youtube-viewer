@@ -1,5 +1,10 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
+export const videoImageSize = {
+  width: 210,
+  height: 118
+};
+
 export const useStyles = makeStyles((theme: Theme) => ({
   anchor: {
     textDecoration: 'none',
@@ -21,8 +26,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     }
   },
   image: {
-    width: 210,
-    height: 118,
+    width: videoImageSize.width,
+    height: videoImageSize.height,
     display: 'inherit'
   },
   overlay: {

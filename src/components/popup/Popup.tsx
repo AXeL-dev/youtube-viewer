@@ -45,6 +45,8 @@ import { settingsAtom } from '../../atoms/settings';
 import { cacheAtom } from '../../atoms/cache';
 import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
 import { SortOrder } from '../../models/SortOrder';
+import { useConstructor } from '../../hooks/useConstructor';
+import { videoImageSize } from '../video/VideoRenderer.styles';
 
 interface PopupProps {
   isReady: boolean;
@@ -56,6 +58,8 @@ export default function Popup(props: PopupProps) {
   const [channels, setChannels] = useAtom(channelsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
   const videosSortOrder = useAtomValue(videosSortOrderAtom);
+  const [maxVisibleVideos, setMaxVisibleVideos] = React.useState(3);
+  const [height, setHeight] = React.useState('100%');
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -69,7 +73,21 @@ export default function Popup(props: PopupProps) {
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
-  React.useEffect(() => setIsReady(props.isReady), [props.isReady]);
+  useConstructor(() => {
+    // set height
+    const height = isWebExtension() ? '100%' : '100vh';
+    debug.log('height:', height);
+    setHeight(height);
+    // set maxVisibleVideos
+    const containerPadding = 48,
+          maxVisibleVideos = Math.floor((window.innerWidth - containerPadding) / videoImageSize.width);
+    debug.log('max visible videos:', maxVisibleVideos);
+    setMaxVisibleVideos(maxVisibleVideos);
+  });
+
+  React.useEffect(() => 
+    setIsReady(props.isReady)
+  , [props.isReady]);
 
   React.useEffect(() => {
     debug.warn('isReady changed', isReady);
@@ -549,7 +567,7 @@ export default function Popup(props: PopupProps) {
             icon={<ArrowDownwardIcon className="arrowicon" />}
             distanceToRefresh={50}
             resistance={5}
-            style={{ position: 'relative', height: isWebExtension() ? 'calc(100% - 64px)' : 'calc(100vh - 64px)', overflow: 'auto' }}
+            style={{ position: 'relative', height: `calc(${height} - 64px)`, overflow: 'auto' }}
           >
             {videos?.length === 0 && !isLoading ? (
               <Fade in={true} timeout={1000}>
@@ -566,7 +584,7 @@ export default function Popup(props: PopupProps) {
                 settings={settings}
                 loading={isLoading}
                 maxPerChannel={settings.videosPerChannel}
-                maxVisible={isWebExtension() ? 3 : 6}
+                maxVisible={maxVisibleVideos}
                 onSelect={selectChannel}
                 onSave={setChannels}
                 onRefresh={refreshChannels}
