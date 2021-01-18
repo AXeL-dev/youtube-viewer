@@ -47,6 +47,7 @@ import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/s
 import { SortOrder } from '../../models/SortOrder';
 import { useConstructor } from '../../hooks/useConstructor';
 import { videoImageSize } from '../video/VideoRenderer.styles';
+import { popupSize } from './Popup.styles';
 
 interface PopupProps {
   isReady: boolean;
@@ -80,7 +81,8 @@ export default function Popup(props: PopupProps) {
     setHeight(height);
     // Set maxVisibleVideos
     const containerPadding = 48,
-          maxVisibleVideos = Math.floor((window.innerWidth - containerPadding) / videoImageSize.width);
+          popupWidth = isWebExtension() ? popupSize.width : window.innerWidth,
+          maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
     debug.log('max visible videos:', maxVisibleVideos);
     setMaxVisibleVideos(maxVisibleVideos);
   });

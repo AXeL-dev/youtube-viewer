@@ -1,16 +1,21 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { isWebExtension, isFirefox } from '../../helpers/browser';
 
+export const popupSize = {
+  width: 700,
+  height: 500
+};
+
 const drawerWidth = 240;
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      minWidth: '700px',
-      minHeight: isWebExtension() ? '500px' : '100vh',
-      maxHeight: isWebExtension() ? '500px' : 'none',
-      maxWidth: isWebExtension() && isFirefox() ? '700px' : 'none',
+      minWidth: `${popupSize.width}px`,
+      minHeight: isWebExtension() ? `${popupSize.height}px` : '100vh',
+      maxHeight: isWebExtension() ? `${popupSize.height}px` : 'none',
+      maxWidth: isWebExtension() && isFirefox() ? `${popupSize.width}px` : 'none',
     },
     appBar: {
       backgroundColor: '#f44336',
