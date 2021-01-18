@@ -6,6 +6,7 @@ import { Video } from '../../models/Video';
 import VideoRenderer from './VideoRenderer';
 import { debug } from '../../helpers/debug';
 import { styles } from './VideoGrid.styles';
+import { videoImageSize } from './VideoRenderer.styles';
 
 interface VideoGridProps {
   loading?: boolean;
@@ -50,12 +51,12 @@ export default function VideoGrid(props: VideoGridProps) {
   return (
     <Grid container style={styles.grid} onMouseDown={(event: any) => handleMouseEvent(event)} onClickCapture={(event: any) => handleMouseEvent(event)}>
       {(loading ? Array.from(new Array(Math.min(maxPerChannel, maxSkeletons))) : videos.slice(0, maxPerChannel)).map((video, index) => (
-        <Box key={index} width={210} marginRight={0.5} marginBottom={3} draggable="false">
+        <Box key={index} width={videoImageSize.width} marginRight={0.5} marginBottom={3} draggable="false">
           {video ? (
             <VideoRenderer video={video} ></VideoRenderer>
           ) : (
             <React.Fragment>
-              <Skeleton variant="rect" width={210} height={118} />
+              <Skeleton variant="rect" width={videoImageSize.width} height={videoImageSize.height} />
               <Box pt={0.5}>
                 <Skeleton />
                 <Skeleton width="60%" />
