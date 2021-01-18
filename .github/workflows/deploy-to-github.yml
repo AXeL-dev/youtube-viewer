@@ -3,6 +3,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+      - 'deploy-to-github'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
