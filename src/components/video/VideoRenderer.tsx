@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import { Video } from '../../models/Video';
+import { Video, ChannelSelection } from '../../models';
 import { TimeAgo } from '../../helpers/utils';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,22 +10,17 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import WatchLaterIcon from '@material-ui/icons/WatchLater';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ChannelSelection } from '../../models/Channel';
 import { useStyles } from './VideoRenderer.styles';
 import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { videosAtom } from '../../atoms/videos';
-import { settingsAtom } from '../../atoms/settings';
-import { cacheAtom } from '../../atoms/cache';
-import { selectedChannelIndexAtom } from '../../atoms/channels';
-import { openSnackbarAtom } from '../../atoms/snackbar';
+import { videosAtom, settingsAtom, cacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from '../../atoms';
 
 interface VideoRendererProps {
   video: Video;
 }
 
-export default function VideoRenderer(props: VideoRendererProps) {
+export function VideoRenderer(props: VideoRendererProps) {
   const { video } = props;
   const classes = useStyles();
   const [selectedChannelIndex] = useAtom(selectedChannelIndexAtom);

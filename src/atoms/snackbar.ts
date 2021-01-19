@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { Getter } from 'jotai/core/types';
-import { SnackbarOptions, Snackbar } from '../models/Snackbar';
+import { SnackbarOptions, Snackbar } from '../models';
 
 export const defaultSnackbarOptions: Omit<SnackbarOptions, 'message'> = {
   icon: 'info',

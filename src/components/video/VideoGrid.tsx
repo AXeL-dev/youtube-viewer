@@ -2,8 +2,8 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Video } from '../../models/Video';
-import VideoRenderer from './VideoRenderer';
+import { Video } from '../../models';
+import { VideoRenderer } from '.';
 import { debug } from '../../helpers/debug';
 import { styles } from './VideoGrid.styles';
 import { videoImageSize } from './VideoRenderer.styles';
@@ -15,7 +15,7 @@ interface VideoGridProps {
   maxSkeletons?: number;
 }
 
-export default function VideoGrid(props: VideoGridProps) {
+export function VideoGrid(props: VideoGridProps) {
   const { videos, loading = false, maxPerChannel = 9, maxSkeletons = 9 } = props;
   const [preventLongPress, setPreventLongPress] = React.useState(false);
   let timeout: any = null;

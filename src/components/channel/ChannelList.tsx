@@ -25,10 +25,8 @@ import RootRef from '@material-ui/core/RootRef';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Channel, ChannelSelection } from '../../models/Channel';
-import { ConfirmationDialog } from '../shared/ConfirmationDialog';
-import { ImportDialog } from '../shared/ImportDialog';
-import { MoveToPositionDialog } from '../shared/MoveToPositionDialog';
+import { Channel, ChannelSelection, SortOrder } from '../../models';
+import { ConfirmationDialog, ImportDialog, MoveToPositionDialog } from '../shared';
 import { download } from '../../helpers/download';
 import { isWebExtension, createTab, isFirefox } from '../../helpers/browser';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -43,11 +41,7 @@ import { useStyles } from './ChannelList.styles';
 import { memorySizeOf } from '../../helpers/utils';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
-import { cacheAtom } from '../../atoms/cache';
-import { settingsAtom } from '../../atoms/settings';
-import { openSnackbarAtom } from '../../atoms/snackbar';
-import { videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from '../../atoms/videos';
-import { SortOrder } from '../../models/SortOrder';
+import { cacheAtom, settingsAtom, openSnackbarAtom, videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from '../../atoms';
 
 const getListStyle = (isDraggingOver: boolean) => ({
   //background: isDraggingOver ? 'lightblue' : 'lightgrey',

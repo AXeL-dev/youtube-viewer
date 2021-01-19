@@ -1,12 +1,9 @@
 import React from 'react';
-import { Channel } from '../models/Channel';
-import { Settings } from '../models/Settings';
-import { Video } from '../models/Video';
+import { Channel, Settings, Video, Notification } from '../models';
 import { getFromStorage } from '../helpers/storage';
 import { getDateBefore } from '../helpers/utils';
 import { getChannelActivities } from '../helpers/youtube';
 import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab } from '../helpers/browser';
-import { Notification } from '../models/Notification';
 
 declare var browser: any;
 
@@ -28,7 +25,7 @@ interface BackgroundState {
   };
 }
 
-class Background extends React.Component<BackgroundProps, BackgroundState> {
+export class Background extends React.Component<BackgroundProps, BackgroundState> {
   constructor(props: BackgroundProps) {
     super(props);
     this.state = {
@@ -166,5 +163,3 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
     );
   }
 }
-
-export default Background;

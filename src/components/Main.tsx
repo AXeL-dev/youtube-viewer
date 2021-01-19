@@ -1,16 +1,14 @@
 import React from 'react';
-import Popup from './popup/Popup';
+import { Popup } from '.';
 import { getFromStorage, saveToStorage } from '../helpers/storage';
 import { isWebExtension, setBadgeText } from '../helpers/browser';
 import { debug } from '../helpers/debug';
-import { Video } from '../models/Video';
-import { useConstructor } from '../hooks/useConstructor';
+import { Video } from '../models';
+import { useConstructor } from '../hooks';
 import { useUpdateAtom } from 'jotai/utils';
-import { channelsAtom } from '../atoms/channels';
-import { settingsAtom, defaultSettings } from '../atoms/settings';
-import { cacheAtom } from '../atoms/cache';
+import { channelsAtom, settingsAtom, defaultSettings, cacheAtom } from '../atoms';
 
-export default function Main() {
+export function Main() {
   const setChannels = useUpdateAtom(channelsAtom);
   const setSettings = useUpdateAtom(settingsAtom);
   const setCache = useUpdateAtom(cacheAtom);

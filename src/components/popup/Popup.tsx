@@ -18,18 +18,12 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
 import Fade from '@material-ui/core/Fade';
-import SearchChannelInput from '../channel/SearchChannelInput';
-import { Channel, ChannelSelection } from '../../models/Channel';
+import { SearchChannelInput, MultiVideoGrid, VideoGrid } from '..';
+import { Channel, ChannelSelection, Video, SortOrder } from '../../models';
 import { getChannelActivities, getVideoInfo } from '../../helpers/youtube';
-import { Video } from '../../models/Video';
 import { getDateBefore, isInToday, diffHours } from '../../helpers/utils';
-import MultiVideoGrid from '../video/MultiVideoGrid';
-import VideoGrid from '../video/VideoGrid';
 import { saveToStorage } from '../../helpers/storage';
-import { ChannelList } from '../channel/ChannelList';
-import { MessageSnackbar } from '../snackbar/MessageSnackbar';
-import { SettingsDialog } from '../settings/SettingsDialog';
-import { BottomSnackbar } from '../snackbar/BottomSnackbar';
+import { ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar } from '..';
 import { isWebExtension } from '../../helpers/browser';
 import { debug } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
@@ -39,13 +33,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
-import { channelsAtom, selectedChannelIndexAtom } from '../../atoms/channels';
-import { videosAtom, videosSortOrderAtom } from '../../atoms/videos';
-import { settingsAtom } from '../../atoms/settings';
-import { cacheAtom } from '../../atoms/cache';
-import { snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms/snackbar';
-import { SortOrder } from '../../models/SortOrder';
-import { useConstructor } from '../../hooks/useConstructor';
+import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms';
+import { useConstructor } from '../../hooks';
 import { videoImageSize } from '../video/VideoRenderer.styles';
 import { popupSize } from './Popup.styles';
 
@@ -53,7 +42,7 @@ interface PopupProps {
   isReady: boolean;
 }
 
-export default function Popup(props: PopupProps) {
+export function Popup(props: PopupProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [channels, setChannels] = useAtom(channelsAtom);

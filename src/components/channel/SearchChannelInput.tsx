@@ -8,9 +8,9 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
-import { Channel } from '../../models/Channel';
+import { Channel } from '../../models';
 import { getRegex, debounce } from '../../helpers/utils';
-import { RawHTML } from '../shared/RawHTML';
+import { RawHTML } from '../shared';
 import { useStyles } from './SearchChannelInput.styles';
 
 interface SearchChannelInputProps {
@@ -18,7 +18,7 @@ interface SearchChannelInputProps {
   onError: Function;
 }
 
-export default function SearchChannelInput(props: SearchChannelInputProps) {
+export function SearchChannelInput(props: SearchChannelInputProps) {
   const { onSelect, onError } = props;
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState('');

@@ -6,7 +6,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Alert from '@material-ui/lab/Alert';
-import { SnackbarIcon } from '../../models/Snackbar';
+import { SnackbarIcon } from '../../models';
 import { useStyles } from './BottomSnackbar.styles';
 
 function SlideTransition(props: TransitionProps) {

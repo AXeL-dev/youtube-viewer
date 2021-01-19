@@ -17,14 +17,12 @@ import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import Link from '@material-ui/core/Link';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { SettingsType } from '../../models/Settings';
-import { ChannelSelection } from '../../models/Channel';
+import { SettingsType, ChannelSelection } from '../../models';
 import { isWebExtension } from '../../helpers/browser';
 import { useStyles } from './SettingsDialog.styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { settingsAtom } from '../../atoms/settings';
-import { openSnackbarAtom } from '../../atoms/snackbar';
+import { settingsAtom, openSnackbarAtom } from '../../atoms';
 
 const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

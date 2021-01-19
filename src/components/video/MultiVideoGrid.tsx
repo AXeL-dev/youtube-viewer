@@ -10,10 +10,8 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import { Video } from '../../models/Video';
-import { Channel } from '../../models/Channel';
-import { Settings } from '../../models/Settings';
-import VideoGrid from './VideoGrid';
+import { Video, Channel, Settings } from '../../models';
+import { VideoGrid } from '.';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
@@ -32,7 +30,7 @@ interface MultiVideoGridProps {
   onRefresh: Function;
 }
 
-export default function MultiVideoGrid(props: MultiVideoGridProps) {
+export function MultiVideoGrid(props: MultiVideoGridProps) {
   const classes = useStyles();
   const theme = useTheme();
   const { channels, videos, settings, loading = false, maxPerChannel = 9, maxVisible = 3, onSelect, onSave, onRefresh } = props;
