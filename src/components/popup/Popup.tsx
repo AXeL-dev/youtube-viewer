@@ -1,23 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import SearchIcon from '@material-ui/icons/Search';
-import SettingsIcon from '@material-ui/icons/Settings';
-import FavoriteRoundedIcon from '@material-ui/icons/FavoriteRounded';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
-import Fade from '@material-ui/core/Fade';
+import { Drawer, CssBaseline, AppBar, Toolbar, Typography, Divider, IconButton, Box, Link, Fade } from '@material-ui/core';
+import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SearchIcon, SettingsIcon, FavoriteRoundedIcon, GitHubIcon, ArrowDownwardIcon, VideocamOffIcon } from './Popup.icons';
 import { SearchChannelInput, MultiVideoGrid, VideoGrid } from '..';
 import { Channel, ChannelSelection, Video, SortOrder } from '../../models';
 import { getChannelActivities, getVideoInfo } from '../../helpers/youtube';
@@ -27,16 +12,14 @@ import { ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar } from '..
 import { isWebExtension } from '../../helpers/browser';
 import { debug } from '../../helpers/debug';
 import { useStyles } from './Popup.styles';
-// @ts-ignore
-import ReactPullToRefresh from 'react-pull-to-refresh';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms';
 import { useConstructor } from '../../hooks';
 import { videoImageSize } from '../video/VideoRenderer.styles';
 import { popupSize } from './Popup.styles';
+// @ts-ignore
+import ReactPullToRefresh from 'react-pull-to-refresh';
 
 interface PopupProps {
   isReady: boolean;

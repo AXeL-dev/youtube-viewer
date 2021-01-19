@@ -1,11 +1,8 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import { Snackbar, Button, IconButton, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
-import Alert from '@material-ui/lab/Alert';
+import { Alert } from '@material-ui/lab';
 import { SnackbarIcon } from '../../models';
 import { useStyles } from './BottomSnackbar.styles';
 

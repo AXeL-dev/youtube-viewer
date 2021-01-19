@@ -1,15 +1,8 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
+import { Box, Link, Typography, Tooltip, IconButton } from '@material-ui/core';
+import { PlayArrowIcon, WatchLaterIcon, VisibilityIcon, DeleteIcon } from './VideoRenderer.icons';
 import { Video, ChannelSelection } from '../../models';
 import { TimeAgo } from '../../helpers/utils';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import WatchLaterIcon from '@material-ui/icons/WatchLater';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { useStyles } from './VideoRenderer.styles';
 import { isWebExtension, createTab, executeScript } from '../../helpers/browser';
 import { useAtom } from 'jotai';

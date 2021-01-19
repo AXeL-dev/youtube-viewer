@@ -1,13 +1,8 @@
 import React from 'react';
-import useAutocomplete from '@material-ui/lab/useAutocomplete';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import { useAutocomplete } from '@material-ui/lab';
+import { Grid, Typography, Avatar, InputBase, IconButton } from '@material-ui/core';
+import { SearchIcon, CloseIcon } from './SearchChannelInput.icons';
 import { searchChannel } from '../../helpers/youtube';
-import Avatar from '@material-ui/core/Avatar';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import CloseIcon from '@material-ui/icons/Close';
-import IconButton from '@material-ui/core/IconButton';
 import { Channel } from '../../models';
 import { getRegex, debounce } from '../../helpers/utils';
 import { RawHTML } from '../shared';

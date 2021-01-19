@@ -1,20 +1,9 @@
 import React from 'react';
-import Box from '@material-ui/core/Box';
+import { Box, Typography, Breadcrumbs, Link, Avatar, Divider, Tooltip, IconButton } from '@material-ui/core';
+import { YouTubeIcon, MoreHorizIcon, VisibilityOffIcon, NotificationsActiveIcon, NotificationsOffIcon } from './MultiVideoGrid.icons';
 import { useTheme } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import YouTubeIcon from '@material-ui/icons/YouTube';
-import Link from '@material-ui/core/Link';
-import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Tooltip from '@material-ui/core/Tooltip';
 import { Video, Channel, Settings } from '../../models';
 import { VideoGrid } from '.';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
-import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import { isWebExtension } from '../../helpers/browser';
 import { useStyles } from './MultiVideoGrid.styles';
 

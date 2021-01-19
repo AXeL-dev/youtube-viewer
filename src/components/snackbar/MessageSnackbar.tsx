@@ -1,6 +1,5 @@
 import React from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
+import { Snackbar, Button } from '@material-ui/core';
 import { RawHTML } from '../shared';
 
 interface MessageSnackbarProps {
