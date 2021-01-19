@@ -16,7 +16,7 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from '../../atoms';
 import { useConstructor } from '../../hooks';
-import { videoImageSize } from '../video/VideoRenderer.styles';
+import { videoImageSize } from '..';
 import { popupSize } from './Popup.styles';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';

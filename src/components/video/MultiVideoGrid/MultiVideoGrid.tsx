@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, Typography, Breadcrumbs, Link, Avatar, Divider, Tooltip, IconButton } from '@material-ui/core';
 import { YouTubeIcon, MoreHorizIcon, VisibilityOffIcon, NotificationsActiveIcon, NotificationsOffIcon } from './MultiVideoGrid.icons';
 import { useTheme } from '@material-ui/core/styles';
-import { Video, Channel, Settings } from '../../models';
-import { VideoGrid } from '.';
-import { isWebExtension } from '../../helpers/browser';
+import { Video, Channel, Settings } from '../../../models';
+import { VideoGrid } from '..';
+import { isWebExtension } from '../../../helpers/browser';
 import { useStyles } from './MultiVideoGrid.styles';
 
 interface MultiVideoGridProps {
