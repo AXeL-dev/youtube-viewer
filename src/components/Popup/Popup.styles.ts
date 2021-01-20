@@ -85,13 +85,5 @@ export const useStyles = makeStyles((theme: Theme) =>
       }),
       marginLeft: 0,
     },
-    heartIcon: {
-      color: '#e25555',
-      fontSize: 16,
-      verticalAlign: 'middle',
-    },
-    madeWithLove: {
-      padding: theme.spacing(1, 0),
-    },
   }),
 );

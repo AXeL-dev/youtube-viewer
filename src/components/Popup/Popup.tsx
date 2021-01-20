@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
-import { Drawer, CssBaseline, AppBar, Toolbar, Typography, Divider, IconButton, Link } from '@material-ui/core';
-import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SettingsIcon, FavoriteRoundedIcon, GitHubIcon } from './Popup.icons';
-import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer } from 'components';
+import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@material-ui/core';
+import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from './Popup.icons';
+import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
 import { Channel, ChannelSelection, Video, SortOrder } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
@@ -483,14 +483,10 @@ export function Popup(props: PopupProps) {
         />
         <div className={classes.grow} />
         <Divider />
-        <Typography variant="caption" align="center" className={classes.madeWithLove}>
-          Made with <FavoriteRoundedIcon className={classes.heartIcon} /> by AXeL
-          <Link href="https://github.com/AXeL-dev/youtube-viewer" target="_blank" rel="noopener">
-            <IconButton edge="end" size="small" aria-label="github link">
-              <GitHubIcon fontSize="inherit" />
-            </IconButton>
-          </Link>
-        </Typography>
+        <Credit
+          author="AXeL"
+          repositoryUrl="https://github.com/AXeL-dev/youtube-viewer"
+        />
       </Drawer>
       <main
         className={clsx(classes.content, {
