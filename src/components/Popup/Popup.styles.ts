@@ -85,19 +85,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       }),
       marginLeft: 0,
     },
-    container: {
-      display: 'flex',
-      width: '100%',
-      height: '80%',
-      justifyContent: 'center',
-      '&.expanded': {
-        height: '100%',
-      },
-    },
-    centered: {
-      alignSelf: 'center',
-      textAlign: 'center',
-    },
     heartIcon: {
       color: '#e25555',
       fontSize: 16,

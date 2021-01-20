@@ -1,23 +1,18 @@
 import React from 'react';
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
-import { Drawer, CssBaseline, AppBar, Toolbar, Typography, Divider, IconButton, Box, Link, Fade } from '@material-ui/core';
-import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SearchIcon, SettingsIcon, FavoriteRoundedIcon, GitHubIcon, ArrowDownwardIcon, VideocamOffIcon } from './Popup.icons';
-import { SearchChannelInput, MultiVideoGrid, VideoGrid, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, videoImageSize } from 'components';
+import { Drawer, CssBaseline, AppBar, Toolbar, Typography, Divider, IconButton, Link } from '@material-ui/core';
+import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SettingsIcon, FavoriteRoundedIcon, GitHubIcon } from './Popup.icons';
+import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer } from 'components';
+import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
 import { Channel, ChannelSelection, Video, SortOrder } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
 import { saveToStorage } from 'helpers/storage';
-import { isWebExtension } from 'helpers/browser';
 import { debug } from 'helpers/debug';
 import { useStyles } from './Popup.styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
-import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
-import { useConstructor } from 'hooks';
-import { popupSize } from './Popup.styles';
-// @ts-ignore
-import ReactPullToRefresh from 'react-pull-to-refresh';
 
 interface PopupProps {
   isReady: boolean;
@@ -29,8 +24,6 @@ export function Popup(props: PopupProps) {
   const [channels, setChannels] = useAtom(channelsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
   const videosSortOrder = useAtomValue(videosSortOrderAtom);
-  const [maxVisibleVideos, setMaxVisibleVideos] = React.useState(3);
-  const [height, setHeight] = React.useState('100%');
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(props.isReady);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -43,22 +36,6 @@ export function Popup(props: PopupProps) {
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
-
-  useConstructor(() => {
-    // Set height
-    const height = isWebExtension() ? '100%' : '100vh';
-    debug.log('height:', height);
-    setHeight(height);
-    // Set maxVisibleVideos
-    const containerPadding = 48,
-          popupWidth = isWebExtension() ? popupSize.width : window.innerWidth;
-    let maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
-    if (maxVisibleVideos > settings.videosPerChannel) {
-      maxVisibleVideos = settings.videosPerChannel;
-    }
-    debug.log('max visible videos:', maxVisibleVideos);
-    setMaxVisibleVideos(maxVisibleVideos);
-  });
 
   React.useEffect(() => 
     setIsReady(props.isReady)
@@ -438,20 +415,6 @@ export function Popup(props: PopupProps) {
     }
   };
 
-  const handlePullToRefresh = (resolve: Function, reject: Function) => {
-    let promise: Promise<any>;
-    if (selectedChannelIndex >= 0) {
-      promise = selectChannel(channels[selectedChannelIndex], selectedChannelIndex, true);
-    } else {
-      promise = refreshChannels(selectedChannelIndex);
-    }
-    promise.then(() => {
-      resolve();
-    }).catch(() => {
-      reject();
-    });
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -536,51 +499,13 @@ export function Popup(props: PopupProps) {
         onClick={() => settings.autoCloseDrawer && handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {isReady && selectedChannelIndex !== ChannelSelection.None && (channels?.length ? (
-          <ReactPullToRefresh
-            onRefresh={handlePullToRefresh}
-            icon={<ArrowDownwardIcon className="arrowicon" />}
-            distanceToRefresh={50}
-            resistance={5}
-            style={{ position: 'relative', height: `calc(${height} - 64px)`, overflow: 'auto' }}
-          >
-            {videos?.length === 0 && !isLoading ? (
-              <Fade in={true} timeout={1000}>
-                <Box className={`${classes.container} expanded`}>
-                  <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                    <VideocamOffIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> No videos available
-                  </Typography>
-                </Box>
-              </Fade>
-            ) : selectedChannelIndex < 0 ? (
-              <MultiVideoGrid
-                channels={channels}
-                videos={videos}
-                settings={settings}
-                loading={isLoading}
-                maxPerChannel={settings.videosPerChannel}
-                maxVisible={maxVisibleVideos}
-                onSelect={selectChannel}
-                onSave={setChannels}
-                onRefresh={refreshChannels}
-              />
-            ) : (
-              <VideoGrid
-                videos={videos}
-                loading={isLoading}
-                maxPerChannel={settings.videosPerChannel}
-              />
-            )}
-          </ReactPullToRefresh>
-        ) : (
-          <Fade in={true} timeout={3000}>
-            <Box className={classes.container}>
-              <Typography component="div" variant="h5" color="textSecondary" className={classes.centered} style={{ cursor: 'default' }}>
-                <SearchIcon style={{ fontSize: 38, verticalAlign: 'middle' }} /> Start by typing a channel name in the search box
-              </Typography>
-            </Box>
-          </Fade>
-        ))}
+        {isReady && selectedChannelIndex !== ChannelSelection.None && (
+          <ChannelRenderer
+            isLoading={isLoading}
+            onSelect={selectChannel}
+            onRefresh={refreshChannels}
+          />
+        )}
       </main>
       <SettingsDialog
         open={openSettingsDialog}

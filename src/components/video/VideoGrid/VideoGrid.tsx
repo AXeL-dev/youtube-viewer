@@ -2,7 +2,8 @@ import React from 'react';
 import { Grid, Box } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { Video } from 'models';
-import { VideoRenderer, videoImageSize } from 'components';
+import { VideoRenderer } from 'components';
+import { videoImageSize } from 'components/video/VideoRenderer/VideoRenderer.styles';
 import { debug } from 'helpers/debug';
 import { styles } from './VideoGrid.styles';
 
