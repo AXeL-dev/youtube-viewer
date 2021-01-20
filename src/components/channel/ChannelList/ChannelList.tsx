@@ -6,27 +6,11 @@ import { Channel, ChannelSelection, SortOrder } from 'models';
 import { ConfirmationDialog, ImportDialog, MoveToPositionDialog } from 'components';
 import { download } from 'helpers/download';
 import { isWebExtension, createTab, isFirefox } from 'helpers/browser';
-import { useStyles } from './ChannelList.styles';
+import { useStyles, getListStyle, getListItemStyle } from './ChannelList.styles';
 import { memorySizeOf } from 'helpers/utils';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { cacheAtom, settingsAtom, openSnackbarAtom, videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from 'atoms';
-
-const getListStyle = (isDraggingOver: boolean) => ({
-  //background: isDraggingOver ? 'lightblue' : 'lightgrey',
-});
-
-const getListItemStyle = (isDragging: boolean, isHidden: boolean, draggableStyle: any) => ({
-  // styles we need to apply on draggables
-  ...draggableStyle,
-  ...(isDragging && {
-    background: "rgb(235,235,235)"
-  }),
-  ...(isHidden && {
-    opacity: 0.5,
-    textDecoration: "line-through"
-  })
-});
 
 // a little function to help us with reordering the dnd result
 const reorder = (list: any, startIndex: number, endIndex: number) => {
