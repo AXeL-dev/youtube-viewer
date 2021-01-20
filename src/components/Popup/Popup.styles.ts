@@ -1,5 +1,5 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { isWebExtension, isFirefox } from '../../helpers/browser';
+import { isWebExtension, isFirefox } from 'helpers/browser';
 
 export const popupSize = {
   width: 700,

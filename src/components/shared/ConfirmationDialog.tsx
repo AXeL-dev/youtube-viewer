@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import { RawHTML } from '.';
+import { RawHTML } from 'components';
 
 interface ConfirmationDialogProps {
   open: boolean;

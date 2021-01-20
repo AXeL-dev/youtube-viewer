@@ -3,7 +3,7 @@ import { Snackbar, Button, IconButton, Slide } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TransitionProps } from '@material-ui/core/transitions';
 import { Alert } from '@material-ui/lab';
-import { SnackbarIcon } from '../../../models';
+import { SnackbarIcon } from 'models';
 import { useStyles } from './BottomSnackbar.styles';
 
 function SlideTransition(props: TransitionProps) {

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Channel, Settings, Video, Notification } from '../models';
-import { getFromStorage } from '../helpers/storage';
-import { getDateBefore } from '../helpers/utils';
-import { getChannelActivities } from '../helpers/youtube';
-import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab } from '../helpers/browser';
+import { Channel, Settings, Video, Notification } from 'models';
+import { getFromStorage } from 'helpers/storage';
+import { getDateBefore } from 'helpers/utils';
+import { getChannelActivities } from 'helpers/youtube';
+import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab } from 'helpers/browser';
 
 declare var browser: any;
 

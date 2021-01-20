@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Video } from '../models';
+import { Video } from 'models';
 
 export interface Cache {
   [key: string]: Video[] // key == channel id

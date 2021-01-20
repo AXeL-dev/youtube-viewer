@@ -1,12 +1,12 @@
 import React from 'react';
-import { Popup } from '.';
-import { getFromStorage, saveToStorage } from '../helpers/storage';
-import { isWebExtension, setBadgeText } from '../helpers/browser';
-import { debug } from '../helpers/debug';
-import { Video } from '../models';
-import { useConstructor } from '../hooks';
+import { Popup } from 'components';
+import { getFromStorage, saveToStorage } from 'helpers/storage';
+import { isWebExtension, setBadgeText } from 'helpers/browser';
+import { debug } from 'helpers/debug';
+import { Video } from 'models';
+import { useConstructor } from 'hooks';
 import { useUpdateAtom } from 'jotai/utils';
-import { channelsAtom, settingsAtom, defaultSettings, cacheAtom } from '../atoms';
+import { channelsAtom, settingsAtom, defaultSettings, cacheAtom } from 'atoms';
 
 export function Main() {
   const setChannels = useUpdateAtom(channelsAtom);

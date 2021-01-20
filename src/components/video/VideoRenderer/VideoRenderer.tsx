@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box, Link, Typography, Tooltip, IconButton } from '@material-ui/core';
 import { PlayArrowIcon, WatchLaterIcon, VisibilityIcon, DeleteIcon } from './VideoRenderer.icons';
-import { Video, ChannelSelection } from '../../../models';
-import { TimeAgo } from '../../../helpers/utils';
+import { Video, ChannelSelection } from 'models';
+import { TimeAgo } from 'helpers/utils';
 import { useStyles } from './VideoRenderer.styles';
-import { isWebExtension, createTab, executeScript } from '../../../helpers/browser';
+import { isWebExtension, createTab, executeScript } from 'helpers/browser';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { videosAtom, settingsAtom, cacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from '../../../atoms';
+import { videosAtom, settingsAtom, cacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from 'atoms';
 
 interface VideoRendererProps {
   video: Video;

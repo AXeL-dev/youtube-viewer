@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { ChannelSelection, Settings } from '../models';
+import { ChannelSelection, Settings } from 'models';
 
 export const defaultSettings: Settings = {
   defaultChannelSelection: ChannelSelection.All,

@@ -2,10 +2,10 @@ import React from 'react';
 import { useAutocomplete } from '@material-ui/lab';
 import { Grid, Typography, Avatar, InputBase, IconButton } from '@material-ui/core';
 import { SearchIcon, CloseIcon } from './SearchChannelInput.icons';
-import { searchChannel } from '../../../helpers/youtube';
-import { Channel } from '../../../models';
-import { getRegex, debounce } from '../../../helpers/utils';
-import { RawHTML } from '../../shared';
+import { searchChannel } from 'helpers/youtube';
+import { Channel } from 'models';
+import { getRegex, debounce } from 'helpers/utils';
+import { RawHTML } from 'components';
 import { useStyles } from './SearchChannelInput.styles';
 
 interface SearchChannelInputProps {

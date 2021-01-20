@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
-import { isNumber } from '../../helpers/parser';
+import { isNumber } from 'helpers/parser';
 
 interface MoveToPositionDialogProps {
   open: boolean;

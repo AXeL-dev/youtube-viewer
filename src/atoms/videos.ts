@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { Video, VideosSortOrder, ChannelSelection, SortOrder } from '../models';
+import { Video, VideosSortOrder, ChannelSelection, SortOrder } from 'models';
 
 export const videosAtom = atom([] as Video[]);
 

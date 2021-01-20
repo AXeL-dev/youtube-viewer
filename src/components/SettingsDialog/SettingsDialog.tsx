@@ -2,12 +2,12 @@ import React from 'react';
 import { Dialog, TextField, Button, AppBar, Toolbar, List, ListItem, ListItemText, ListItemSecondaryAction, Typography, IconButton, Divider, Slide, Switch, Select, Link } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { SettingsType, ChannelSelection } from '../../models';
-import { isWebExtension } from '../../helpers/browser';
+import { SettingsType, ChannelSelection } from 'models';
+import { isWebExtension } from 'helpers/browser';
 import { useStyles } from './SettingsDialog.styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { settingsAtom, openSnackbarAtom } from '../../atoms';
+import { settingsAtom, openSnackbarAtom } from 'atoms';
 
 const settingsDialogTransition = React.forwardRef<unknown, TransitionProps>(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
