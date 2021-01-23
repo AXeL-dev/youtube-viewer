@@ -29,6 +29,7 @@
     "build:chrome": "npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
     "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
     "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
+    "package:source": "zip -r -FS youtube_viewer-source.zip * -x dist\\* node_modules\\* old\\* screenshots\\* *.zip",
     "release": "npm run build && npm run package",
     "release:dev": "npm run build && npm run package:dev",
     "build:github": "PUBLIC_URL=/youtube-viewer/ react-scripts build && gulp postbuild:github --dest-dir=dist/github",
