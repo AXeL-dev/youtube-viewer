@@ -16,7 +16,7 @@ export function Main() {
 
   useConstructor(() => {
     fetchData();
-    if (isWebExtension()) {
+    if (isWebExtension) {
       setBadgeText(''); // reset webextension badge
     }
   });

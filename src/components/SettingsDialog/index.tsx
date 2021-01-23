@@ -173,7 +173,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             <React.Fragment>
               <Typography variant="body2" component="span">Replaces the default youtube API key used to fetch channels & videos data</Typography>
               <br/>
-              <Typography variant="body2" component="span">(will apply the next time you {isWebExtension() ? 'open the extension popup' : 'reload the app'})</Typography>
+              <Typography variant="body2" component="span">(will apply the next time you {isWebExtension ? 'open the extension popup' : 'reload the app'})</Typography>
             </React.Fragment>
           } className={classes.optionLabel} />
           <ListItemSecondaryAction>
@@ -191,7 +191,7 @@ export function SettingsDialog(props: SettingsDialogProps) {
             />
           </ListItemSecondaryAction>
         </ListItem>
-        {isWebExtension() && (
+        {isWebExtension && (
           <React.Fragment>
             <Divider />
             <ListItem>

@@ -32,7 +32,7 @@ export class Background extends React.Component<BackgroundProps, BackgroundState
       totalRecentVideosCount: 0,
       checkedChannels: {}
     };
-    if (isWebExtension()) {
+    if (isWebExtension) {
       this.init();
       console.log('background init executed.');
     }

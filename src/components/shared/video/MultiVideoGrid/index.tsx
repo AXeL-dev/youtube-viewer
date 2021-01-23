@@ -88,7 +88,7 @@ export function MultiVideoGrid(props: MultiVideoGridProps) {
                   <VisibilityOffIcon />
                 </Tooltip>
               </IconButton>
-              {isWebExtension() && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? (
+              {isWebExtension && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? (
                 <IconButton size="small" className={classes.link} onClick={() => enableChannelNotifications(index)}>
                   <Tooltip title="Enable notifications" aria-label="enable-channel-notifiactions">
                     <NotificationsActiveIcon />

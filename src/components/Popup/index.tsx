@@ -2,12 +2,13 @@ import React from 'react';
 import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@material-ui/core';
-import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from './icons';
+import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, OpenInNewIcon, SettingsIcon } from './icons';
 import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
 import { Channel, ChannelSelection, Video, SortOrder } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
+import { isWebExtension, isPopup, createTab, getUrl } from 'helpers/browser';
 import { saveToStorage } from 'helpers/storage';
 import { debug } from 'helpers/debug';
 import { useStyles } from './styles';
@@ -388,6 +389,13 @@ export function Popup(props: PopupProps) {
     });
   };
 
+  const maximize = (event: any) => {
+    event.stopPropagation();
+    const url = getUrl('index.html');
+    createTab(url);
+    window.close(); // Closes popup on firefox
+  };
+
   const openSettings = (event: any) => {
     event.stopPropagation();
     setOpenSettingsDialog(true);
@@ -440,7 +448,12 @@ export function Popup(props: PopupProps) {
           </span>
           <SearchChannelInput onSelect={addChannel} onError={displayError} />
           <div className={classes.grow} />
-          <IconButton edge="end" aria-label="settings" color="inherit" onClick={(event) => openSettings(event)}>
+          {isWebExtension && isPopup() && (
+            <IconButton edge="end" className={classes.iconButton} aria-label="maximize" title="Maximize" color="inherit" onClick={(event) => maximize(event)}>
+              <OpenInNewIcon />
+            </IconButton>
+          )}
+          <IconButton edge="end" aria-label="settings" title="Settings" color="inherit" onClick={(event) => openSettings(event)}>
             <SettingsIcon />
           </IconButton>
         </Toolbar>

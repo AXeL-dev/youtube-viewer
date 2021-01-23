@@ -4,7 +4,7 @@ import { MultiVideoGrid, VideoGrid } from 'components';
 import { ArrowDownwardIcon, VideocamOffIcon, SearchIcon } from './icons';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, settingsAtom } from 'atoms';
 import { useConstructor } from 'hooks';
-import { isWebExtension } from 'helpers/browser';
+import { isWebExtension, isPopup } from 'helpers/browser';
 import { debug } from 'helpers/debug';
 import { popupSize } from 'components/Popup/styles';
 import { videoImageSize } from 'components/shared/video/VideoRenderer/styles';
@@ -12,6 +12,8 @@ import { useAtom } from 'jotai';
 import { useStyles } from './styles';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
+
+const takeFullWidth = !isWebExtension || !isPopup();
 
 interface ChannelRendererProps {
   isLoading: boolean;
@@ -31,12 +33,12 @@ export function ChannelRenderer(props: ChannelRendererProps) {
 
   useConstructor(() => {
     // Set height
-    const height = isWebExtension() ? '100%' : '100vh';
+    const height = takeFullWidth ? '100vh' : '100%';
     debug.log('height:', height);
     setHeight(height);
     // Set maxVisibleVideos
     const containerPadding = 48,
-          popupWidth = isWebExtension() ? popupSize.width : window.innerWidth;
+          popupWidth = takeFullWidth ? window.innerWidth : popupSize.width;
     let maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
     if (maxVisibleVideos > settings.videosPerChannel) {
       maxVisibleVideos = settings.videosPerChannel;

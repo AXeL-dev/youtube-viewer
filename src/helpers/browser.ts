@@ -2,7 +2,7 @@
 
 declare var browser: any;
 
-export function isWebExtension(): boolean {
+function isBrowserAPIAvailable(): boolean {
   try {
     return !!browser;
   } catch(error) {
@@ -10,11 +10,21 @@ export function isWebExtension(): boolean {
   }
 }
 
+export const isWebExtension: boolean = isBrowserAPIAvailable();
+
+export function isPopup(): boolean { // have to be a function not a const, 'cause we need to check the window size multiple times not only once
+  return window.innerWidth < 1000;
+}
+
 export function createTab(url: string, isActive: boolean = true): Promise<any> {
   return browser.tabs.create({
     url: url,
     active: isActive
   });
+}
+
+export function getUrl(path: string): string {
+  return browser.extension.getURL(path);
 }
 
 export function executeScript(tabId: number, code: string): void {

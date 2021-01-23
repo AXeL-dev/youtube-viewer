@@ -24,7 +24,7 @@ export function VideoRenderer(props: VideoRendererProps) {
 
   const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();
-    if (isWebExtension() && video?.url) {
+    if (isWebExtension && video?.url) {
       event.preventDefault();
       createTab(video.url, !settings.openVideosInInactiveTabs).then((tab: any) => {
         if (settings.autoPlayVideos) {

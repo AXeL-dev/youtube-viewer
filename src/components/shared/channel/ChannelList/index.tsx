@@ -110,7 +110,7 @@ export function ChannelList(props: ChannelListProps) {
 
   const openChannel = (channel: Channel) => {
     closeMenu();
-    if (isWebExtension()) {
+    if (isWebExtension) {
       createTab(channel.url);
     } else {
       window.open(channel.url, '_blank');
@@ -311,7 +311,7 @@ export function ChannelList(props: ChannelListProps) {
     );
   };
 
-  const isFirefoxExtension = isWebExtension() && isFirefox();
+  const isFirefoxExtension = isWebExtension && isFirefox();
 
   return (
     <div className={className || ''}>
@@ -497,7 +497,7 @@ export function ChannelList(props: ChannelListProps) {
                         ) : (
                           <MenuItem onClick={() => hideChannel(index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
                         )}
-                        {isWebExtension() && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? (
+                        {isWebExtension && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? (
                           <MenuItem onClick={() => enableChannelNotifications(index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem>
                         ) : (
                           <MenuItem onClick={() => disableChannelNotifications(index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>

@@ -1,4 +1,7 @@
 import { makeStyles, Theme, fade } from '@material-ui/core/styles';
+import { isPopup } from 'helpers/browser';
+
+const larger = !isPopup();
 
 export const useStyles = makeStyles((theme: Theme) => ({
   search: {
@@ -39,9 +42,9 @@ export const useStyles = makeStyles((theme: Theme) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: 240,
+      width: larger ? 240 : 200,
       '&:focus': {
-        width: 300,
+        width: larger ? 300 : 260,
       },
     },
   },
