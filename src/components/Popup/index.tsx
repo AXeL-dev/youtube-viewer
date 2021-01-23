@@ -291,7 +291,11 @@ export function Popup(props: PopupProps) {
 
   const getSortFunction = (sortOrder: SortOrder) => {
     const sortKey = settings.sortVideosBy === SortCriteria.Views ? 'views.count' : 'publishedAt';
-    return (a: Video, b: Video) => sortOrder === SortOrder.ASC ? resolve(a, sortKey) - resolve(b, sortKey) : resolve(b, sortKey) - resolve(a, sortKey);
+    return (a: Video, b: Video) => {
+      const current = resolve(a, sortKey);
+      const next = resolve(b, sortKey);
+      return sortOrder === SortOrder.ASC ? current - next : next - current;
+    };
   };
 
   const showAllChannels = (
