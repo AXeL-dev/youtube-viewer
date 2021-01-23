@@ -5,11 +5,12 @@ import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@mate
 import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, OpenInNewIcon, SettingsIcon } from './icons';
 import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
-import { Channel, ChannelSelection, Video, SortOrder } from 'models';
+import { Channel, ChannelSelection, Video, SortOrder, SortCriteria } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
 import { isWebExtension, isPopup, createTab, getUrl } from 'helpers/browser';
 import { saveToStorage } from 'helpers/storage';
+import { resolve } from 'helpers/object';
 import { debug } from 'helpers/debug';
 import { useStyles } from './styles';
 import { useAtom } from 'jotai';
@@ -176,7 +177,7 @@ export function Popup(props: PopupProps) {
                 cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
                 // Sort videos
                 const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
-                  if (settings.sortVideosBy === 'views' && a.views?.count && b.views?.count) {
+                  if (settings.sortVideosBy === SortCriteria.Views && a.views?.count && b.views?.count) {
                     return b.views.count - a.views.count;
                   } else {
                     return b.publishedAt - a.publishedAt;
@@ -289,7 +290,8 @@ export function Popup(props: PopupProps) {
   };
 
   const getSortFunction = (sortOrder: SortOrder) => {
-    return (a: Video, b: Video) => sortOrder === SortOrder.ASC ? a.publishedAt - b.publishedAt : b.publishedAt - a.publishedAt;
+    const sortKey = settings.sortVideosBy === SortCriteria.Views ? 'views.count' : 'publishedAt';
+    return (a: Video, b: Video) => sortOrder === SortOrder.ASC ? resolve(a, sortKey) - resolve(b, sortKey) : resolve(b, sortKey) - resolve(a, sortKey);
   };
 
   const showAllChannels = (

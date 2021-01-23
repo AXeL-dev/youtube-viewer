@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog, TextField, Button, AppBar, Toolbar, List, ListItem, ListItemText, ListItemSecondaryAction, Typography, IconButton, Divider, Slide, Switch, Select, Link } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { TransitionProps } from '@material-ui/core/transitions';
-import { SettingsType, ChannelSelection } from 'models';
+import { SettingsType, ChannelSelection, SortCriteria } from 'models';
 import { isWebExtension } from 'helpers/browser';
 import { useStyles } from './styles';
 import { useAtom } from 'jotai';
@@ -160,8 +160,9 @@ export function SettingsDialog(props: SettingsDialogProps) {
               className={classes.container}
               defaultValue={settings?.sortVideosBy}
             >
-              <option value="date">Date</option>
-              <option value="views">Views</option>
+              {Object.keys(SortCriteria).map((key: string) => (
+                <option value={(SortCriteria as any)[key]}>{key}</option>
+              ))}
             </Select>
           </ListItemSecondaryAction>
         </ListItem>

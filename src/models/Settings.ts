@@ -1,10 +1,11 @@
 import { ChannelSelection } from "./Channel";
+import { SortCriteria } from "./Sort";
 
 export interface Settings {
   defaultChannelSelection: ChannelSelection,
   videosPerChannel: number,
   videosAnteriority: number,
-  sortVideosBy: string,
+  sortVideosBy: SortCriteria,
   apiKey?: string,
   autoVideosCheckRate: number,
   enableRecentVideosNotifications: boolean,

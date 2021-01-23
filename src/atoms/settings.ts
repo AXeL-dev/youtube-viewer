@@ -1,11 +1,11 @@
 import { atom } from 'jotai';
-import { ChannelSelection, Settings } from 'models';
+import { ChannelSelection, Settings, SortCriteria } from 'models';
 
 export const defaultSettings: Settings = {
   defaultChannelSelection: ChannelSelection.All,
   videosPerChannel: 9,
   videosAnteriority: 30, // days
-  sortVideosBy: 'date',
+  sortVideosBy: SortCriteria.Date,
   autoVideosCheckRate: 30, // minutes
   enableRecentVideosNotifications: true,
   autoPlayVideos: false,

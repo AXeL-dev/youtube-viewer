@@ -15,9 +15,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       minWidth: `${popupSize.width}px`,
+      maxWidth: takeFullWidth || !isFirefox() ? 'none' : `${popupSize.width}px`,
       minHeight: takeFullWidth ? '100vh' : `${popupSize.height}px`,
       maxHeight: takeFullWidth ? 'none' : `${popupSize.height}px`,
-      maxWidth: takeFullWidth || !isFirefox() ? 'none' : `${popupSize.width}px`,
     },
     appBar: {
       backgroundColor: '#f44336',
