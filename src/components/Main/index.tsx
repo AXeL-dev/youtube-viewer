@@ -1,5 +1,5 @@
 import React from 'react';
-import { Popup } from 'components';
+import { Layout } from 'components';
 import { getFromStorage, saveToStorage } from 'helpers/storage';
 import { isWebExtension, setBadgeText } from 'helpers/browser';
 import { debug } from 'helpers/debug';
@@ -56,6 +56,6 @@ export function Main() {
   }
 
   return (
-    <Popup isReady={isReady} />
+    <Layout isReady={isReady} />
   );
 }

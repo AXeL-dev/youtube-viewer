@@ -16,11 +16,11 @@ import { useStyles } from './styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-interface PopupProps {
+interface LayoutProps {
   isReady: boolean;
 }
 
-export function Popup(props: PopupProps) {
+export function Layout(props: LayoutProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [channels, setChannels] = useAtom(channelsAtom);

@@ -6,7 +6,7 @@ import { channelsAtom, selectedChannelIndexAtom, videosAtom, settingsAtom } from
 import { useConstructor } from 'hooks';
 import { isWebExtension, isPopup } from 'helpers/browser';
 import { debug } from 'helpers/debug';
-import { popupSize } from 'components/Popup/styles';
+import { popupSize } from 'components/Layout/styles';
 import { videoImageSize } from 'components/shared/video/VideoRenderer/styles';
 import { useAtom } from 'jotai';
 import { useStyles } from './styles';
