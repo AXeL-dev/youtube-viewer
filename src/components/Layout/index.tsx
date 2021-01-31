@@ -15,6 +15,7 @@ import { debug } from 'helpers/debug';
 import { useStyles } from './styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
+import { useConstructor } from 'hooks';
 
 interface LayoutProps { }
 
@@ -37,13 +38,43 @@ export function Layout(props: LayoutProps) {
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
-  React.useEffect(() => {
-    init();
-    if (isWebExtension) {
-      setBadgeText(''); // reset webextension badge
+  useConstructor(async () => {
+    // Get data from storage
+    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
+    debug.log('Storage data:', {
+      channels: channels,
+      settings: settings,
+      cache: cache
+    });
+    // Set/merge settings
+    settings = settings ? {...defaultSettings, ...settings} : defaultSettings;
+    // Clear recent videos
+    if (settings?.autoClearRecentVideos && cache) {
+      let cacheHasChanged: boolean = false;
+      Object.keys(cache).forEach((channelId: string) => {
+        cache[channelId] = cache[channelId].map((video: Video) => {
+          if (video.isRecent) {
+            video.isRecent = false;
+            cacheHasChanged = true;
+          }
+          return video;
+        });
+      });
+      // Update cache
+      if (cacheHasChanged) {
+        saveToStorage({ cache: cache });
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Update state
+    setChannels(channels || []);
+    setSettings(settings);
+    setCache(!settings?.autoClearCache && cache ? cache : {});
+    setIsReady(true);
+    // Reset webextension badge
+    if (isWebExtension) {
+      setBadgeText('');
+    }
+  });
 
   React.useEffect(() => {
     debug.warn('isReady changed', isReady);
@@ -83,40 +114,6 @@ export function Layout(props: LayoutProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache]);
-
-  const init = async () => {
-    // get data from storage
-    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
-    debug.log('Storage data:', {
-      channels: channels,
-      settings: settings,
-      cache: cache
-    });
-    // set/merge settings
-    settings = settings ? {...defaultSettings, ...settings} : defaultSettings;
-    // clear recent videos
-    if (settings?.autoClearRecentVideos && cache) {
-      let cacheHasChanged: boolean = false;
-      Object.keys(cache).forEach((channelId: string) => {
-        cache[channelId] = cache[channelId].map((video: Video) => {
-          if (video.isRecent) {
-            video.isRecent = false;
-            cacheHasChanged = true;
-          }
-          return video;
-        });
-      });
-      // update cache
-      if (cacheHasChanged) {
-        saveToStorage({ cache: cache });
-      }
-    }
-    // update state
-    setChannels(channels || []);
-    setSettings(settings);
-    setCache(!settings?.autoClearCache && cache ? cache : {});
-    setIsReady(true);
-  };
 
   const updateVideosCount = () => {
     debug.log('----------------------');
