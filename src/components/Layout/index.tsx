@@ -4,21 +4,19 @@ import { useTheme } from '@material-ui/core/styles';
 import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@material-ui/core';
 import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, OpenInNewIcon, SettingsIcon } from './icons';
 import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
-import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
+import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, defaultSettings, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
 import { Channel, ChannelSelection, Video, SortOrder, SortCriteria } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
-import { isWebExtension, isPopup, createTab, getUrl } from 'helpers/browser';
-import { saveToStorage } from 'helpers/storage';
+import { isWebExtension, isPopup, createTab, getUrl, setBadgeText } from 'helpers/browser';
+import { saveToStorage, getFromStorage } from 'helpers/storage';
 import { resolve } from 'helpers/object';
 import { debug } from 'helpers/debug';
 import { useStyles } from './styles';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-interface LayoutProps {
-  isReady: boolean;
-}
+interface LayoutProps { }
 
 export function Layout(props: LayoutProps) {
   const classes = useStyles();
@@ -27,10 +25,10 @@ export function Layout(props: LayoutProps) {
   const [videos, setVideos] = useAtom(videosAtom);
   const videosSortOrder = useAtomValue(videosSortOrderAtom);
   const [openDrawer, setOpenDrawer] = React.useState(false);
-  const [isReady, setIsReady] = React.useState(props.isReady);
+  const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
-  const [settings] = useAtom(settingsAtom);
+  const [settings, setSettings] = useAtom(settingsAtom);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
@@ -39,9 +37,13 @@ export function Layout(props: LayoutProps) {
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
 
-  React.useEffect(() => 
-    setIsReady(props.isReady)
-  , [props.isReady]);
+  React.useEffect(() => {
+    init();
+    if (isWebExtension) {
+      setBadgeText(''); // reset webextension badge
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     debug.warn('isReady changed', isReady);
@@ -81,6 +83,40 @@ export function Layout(props: LayoutProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cache]);
+
+  const init = async () => {
+    // get data from storage
+    let [channels, settings, cache] = await getFromStorage('channels', 'settings', 'cache');
+    debug.log('Storage data:', {
+      channels: channels,
+      settings: settings,
+      cache: cache
+    });
+    // set/merge settings
+    settings = settings ? {...defaultSettings, ...settings} : defaultSettings;
+    // clear recent videos
+    if (settings?.autoClearRecentVideos && cache) {
+      let cacheHasChanged: boolean = false;
+      Object.keys(cache).forEach((channelId: string) => {
+        cache[channelId] = cache[channelId].map((video: Video) => {
+          if (video.isRecent) {
+            video.isRecent = false;
+            cacheHasChanged = true;
+          }
+          return video;
+        });
+      });
+      // update cache
+      if (cacheHasChanged) {
+        saveToStorage({ cache: cache });
+      }
+    }
+    // update state
+    setChannels(channels || []);
+    setSettings(settings);
+    setCache(!settings?.autoClearCache && cache ? cache : {});
+    setIsReady(true);
+  };
 
   const updateVideosCount = () => {
     debug.log('----------------------');
@@ -514,9 +550,9 @@ export function Layout(props: LayoutProps) {
         onClick={() => settings.autoCloseDrawer && handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {isReady && selectedChannelIndex !== ChannelSelection.None && (
+        {selectedChannelIndex !== ChannelSelection.None && (
           <ChannelRenderer
-            isLoading={isLoading}
+            isLoading={isLoading || !isReady}
             onSelect={selectChannel}
             onRefresh={refreshChannels}
           />
