@@ -160,8 +160,8 @@ export function SettingsDialog(props: SettingsDialogProps) {
               className={classes.container}
               defaultValue={settings?.sortVideosBy}
             >
-              {Object.keys(SortCriteria).map((key: string) => (
-                <option value={(SortCriteria as any)[key]}>{key}</option>
+              {Object.keys(SortCriteria).map((key: string, index: number) => (
+                <option key={index} value={(SortCriteria as any)[key]}>{key}</option>
               ))}
             </Select>
           </ListItemSecondaryAction>
