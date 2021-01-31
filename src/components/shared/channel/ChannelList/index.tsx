@@ -10,7 +10,7 @@ import { useStyles, getListStyle, getListItemStyle } from './styles';
 import { memorySizeOf } from 'helpers/utils';
 import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
-import { cacheAtom, settingsAtom, openSnackbarAtom, videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from 'atoms';
+import { videosCacheAtom, settingsAtom, openSnackbarAtom, videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from 'atoms';
 
 // a little function to help us with reordering the dnd result
 const reorder = (list: any, startIndex: number, endIndex: number) => {
@@ -50,7 +50,7 @@ export function ChannelList(props: ChannelListProps) {
           onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearRecentVideos,
           onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
   const classes = useStyles();
-  const [cache, setCache] = useAtom(cacheAtom);
+  const [cache, setCache] = useAtom(videosCacheAtom);
   const [settings] = useAtom(settingsAtom);
   const openSnackbar = useUpdateAtom(openSnackbarAtom);
   const [videosSortOrder, setVideosSortOrder] = [useAtomValue(videosSortOrderAtom), useUpdateAtom(setVideosSortOrderAtom)];

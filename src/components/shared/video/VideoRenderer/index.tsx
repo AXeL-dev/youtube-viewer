@@ -7,7 +7,7 @@ import { useStyles } from './styles';
 import { isWebExtension, createTab, executeScript } from 'helpers/browser';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { videosAtom, settingsAtom, cacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from 'atoms';
+import { videosAtom, settingsAtom, videosCacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from 'atoms';
 
 interface VideoRendererProps {
   video: Video;
@@ -19,7 +19,7 @@ export function VideoRenderer(props: VideoRendererProps) {
   const [selectedChannelIndex] = useAtom(selectedChannelIndexAtom);
   const [settings] = useAtom(settingsAtom);
   const [videos, setVideos] = useAtom(videosAtom);
-  const [cache, setCache] = useAtom(cacheAtom);
+  const [cache, setCache] = useAtom(videosCacheAtom);
   const openSnackbar = useUpdateAtom(openSnackbarAtom);
 
   const openVideo = (event: Event, video: Video) => {

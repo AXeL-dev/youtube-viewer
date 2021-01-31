@@ -18,6 +18,10 @@ export interface Video {
   isWatched?: boolean
 }
 
+export interface VideosCache {
+  [key: string]: Video[] // key == channel id
+}
+
 export interface VideosSortOrder {
   [key: number]: SortOrder // key == Channel index || ChannelSelection
 }

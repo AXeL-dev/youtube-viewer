@@ -4,7 +4,7 @@ import { useTheme } from '@material-ui/core/styles';
 import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@material-ui/core';
 import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, OpenInNewIcon, SettingsIcon } from './icons';
 import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
-import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosSortOrderAtom, settingsAtom, defaultSettings, cacheAtom, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
+import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosCacheAtom, videosSortOrderAtom, settingsAtom, defaultSettings, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
 import { Channel, ChannelSelection, Video, SortOrder, SortCriteria } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
@@ -33,7 +33,7 @@ export function Layout(props: LayoutProps) {
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
   const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
   const [lastError, setLastError] = React.useState<Error|null>(null);
-  const [cache, setCache] = useAtom(cacheAtom);
+  const [cache, setCache] = useAtom(videosCacheAtom);
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
