@@ -3,7 +3,7 @@ import { Channel, Settings, Video, Notification } from 'models';
 import { getFromStorage } from 'helpers/storage';
 import { getDateBefore } from 'helpers/utils';
 import { getChannelActivities } from 'helpers/youtube';
-import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab } from 'helpers/browser';
+import { isWebExtension, setBadgeText, setBadgeColors, getBadgeText, sendNotification, createTab, getUrl } from 'helpers/browser';
 
 declare var browser: any;
 
@@ -51,6 +51,13 @@ export class Background extends React.Component<BackgroundProps, BackgroundState
       if (url?.length) {
         createTab(url);
       }
+    });
+    // Handle click on browser action
+    // only works if "browser_action" > "default_popup" is not set on manifest
+    const indexUrl = getUrl('index.html');
+    browser.browserAction.onClicked.addListener((tab: any) => {
+      this.log('BrowserAction clicked:', tab);
+      createTab(indexUrl);
     });
   }
 
