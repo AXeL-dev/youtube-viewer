@@ -8,7 +8,7 @@ export const windowSize = {
 
 const drawerWidth = 240;
 
-const takeFullWidth = !isWebExtension || !isPopup();
+export const takeFullWidth = !isWebExtension || !isPopup();
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({

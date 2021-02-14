@@ -4,16 +4,13 @@ import { MultiVideoGrid, VideoGrid } from 'components';
 import { ArrowDownwardIcon, VideocamOffIcon, SearchIcon } from './icons';
 import { channelsAtom, selectedChannelIndexAtom, videosAtom, settingsAtom } from 'atoms';
 import { useConstructor } from 'hooks';
-import { isWebExtension, isPopup } from 'helpers/browser';
 import { debug } from 'helpers/debug';
-import { windowSize } from 'components/Viewer/styles';
+import { windowSize, takeFullWidth } from 'components/Viewer/styles';
 import { videoImageSize } from 'components/shared/video/VideoRenderer/styles';
 import { useAtom } from 'jotai';
 import { useStyles } from './styles';
 // @ts-ignore
 import ReactPullToRefresh from 'react-pull-to-refresh';
-
-const takeFullWidth = !isWebExtension || !isPopup();
 
 interface ChannelRendererProps {
   isLoading: boolean;
