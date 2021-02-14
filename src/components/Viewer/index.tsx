@@ -547,9 +547,9 @@ export function Viewer(props: ViewerProps) {
         onClick={() => settings.autoCloseDrawer && handleDrawerClose()}
       >
         <div className={classes.drawerHeader} />
-        {selectedChannelIndex !== ChannelSelection.None && (
+        {isReady && selectedChannelIndex !== ChannelSelection.None && (
           <ChannelRenderer
-            isLoading={isLoading || !isReady}
+            isLoading={isLoading}
             onSelect={selectChannel}
             onRefresh={refreshChannels}
           />
