@@ -1,7 +1,7 @@
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { isWebExtension, isPopup, isFirefox } from 'helpers/browser';
 
-export const popupSize = {
+export const windowSize = {
   width: 700,
   height: 500
 };
@@ -14,10 +14,10 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      minWidth: `${popupSize.width}px`,
-      maxWidth: takeFullWidth || !isFirefox() ? 'none' : `${popupSize.width}px`,
-      minHeight: takeFullWidth ? '100vh' : `${popupSize.height}px`,
-      maxHeight: takeFullWidth ? 'none' : `${popupSize.height}px`,
+      minWidth: `${windowSize.width}px`,
+      maxWidth: takeFullWidth || !isFirefox() ? 'none' : `${windowSize.width}px`,
+      minHeight: takeFullWidth ? '100vh' : `${windowSize.height}px`,
+      maxHeight: takeFullWidth ? 'none' : `${windowSize.height}px`,
     },
     appBar: {
       backgroundColor: '#f44336',

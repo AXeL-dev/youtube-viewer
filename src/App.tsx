@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Background, Layout } from './components';
+import { Background, Viewer } from './components';
 import { Provider } from 'jotai';
 
 const App: React.FC = () => {
@@ -9,7 +9,7 @@ const App: React.FC = () => {
     <Provider>
       <Router>
         <Switch>
-          <Route exact path="/" component={Layout} />
+          <Route exact path="/" component={Viewer} />
           <Route path="/background" component={Background} />
         </Switch>
       </Router>

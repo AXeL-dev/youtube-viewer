@@ -17,9 +17,9 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { useConstructor } from 'hooks';
 
-interface LayoutProps { }
+interface ViewerProps { }
 
-export function Layout(props: LayoutProps) {
+export function Viewer(props: ViewerProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [channels, setChannels] = useAtom(channelsAtom);

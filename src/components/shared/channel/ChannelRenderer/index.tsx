@@ -6,7 +6,7 @@ import { channelsAtom, selectedChannelIndexAtom, videosAtom, settingsAtom } from
 import { useConstructor } from 'hooks';
 import { isWebExtension, isPopup } from 'helpers/browser';
 import { debug } from 'helpers/debug';
-import { popupSize } from 'components/Layout/styles';
+import { windowSize } from 'components/Viewer/styles';
 import { videoImageSize } from 'components/shared/video/VideoRenderer/styles';
 import { useAtom } from 'jotai';
 import { useStyles } from './styles';
@@ -38,8 +38,8 @@ export function ChannelRenderer(props: ChannelRendererProps) {
     setHeight(height);
     // Set maxVisibleVideos
     const containerPadding = 48,
-          popupWidth = takeFullWidth ? window.innerWidth : popupSize.width;
-    let maxVisibleVideos = Math.floor((popupWidth - containerPadding) / videoImageSize.width);
+          windowWidth = takeFullWidth ? window.innerWidth : windowSize.width;
+    let maxVisibleVideos = Math.floor((windowWidth - containerPadding) / videoImageSize.width);
     if (maxVisibleVideos > settings.videosPerChannel) {
       maxVisibleVideos = settings.videosPerChannel;
     }

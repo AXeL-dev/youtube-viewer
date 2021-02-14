@@ -1,4 +1,4 @@
 export * from './Background';
-export * from './Layout';
+export * from './Viewer';
 export * from './SettingsDialog';
 export * from './shared';
