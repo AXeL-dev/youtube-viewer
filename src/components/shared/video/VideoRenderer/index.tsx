@@ -5,9 +5,12 @@ import { Video, ChannelSelection } from 'models';
 import { TimeAgo } from 'helpers/utils';
 import { useStyles } from './styles';
 import { isWebExtension, createTab, executeScript } from 'helpers/browser';
-import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
-import { videosAtom, settingsAtom, videosCacheAtom, selectedChannelIndexAtom, openSnackbarAtom } from 'atoms';
+import { useAppDispatch, useAppSelector } from 'store';
+import { selectCurrentChannelIndex } from 'store/selectors/channels';
+import { selectSettings } from 'store/selectors/settings';
+import { selectVideos, selectVideosCache } from 'store/selectors/videos';
+import { openSnackbar } from 'store/reducers/snackbar';
+import { setVideosCache, setVideos } from 'store/reducers/videos';
 
 interface VideoRendererProps {
   video: Video;
@@ -16,11 +19,11 @@ interface VideoRendererProps {
 export function VideoRenderer(props: VideoRendererProps) {
   const { video } = props;
   const classes = useStyles();
-  const [selectedChannelIndex] = useAtom(selectedChannelIndexAtom);
-  const [settings] = useAtom(settingsAtom);
-  const [videos, setVideos] = useAtom(videosAtom);
-  const [cache, setCache] = useAtom(videosCacheAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
+  const selectedChannelIndex = useAppSelector(selectCurrentChannelIndex);
+  const settings = useAppSelector(selectSettings);
+  const videos = useAppSelector(selectVideos);
+  const cache = useAppSelector(selectVideosCache);
+  const dispatch = useAppDispatch();
 
   const openVideo = (event: Event, video: Video) => {
     event.stopPropagation();
@@ -42,7 +45,7 @@ export function VideoRenderer(props: VideoRendererProps) {
     const videoIndex: number = getVideoIndex(video);
     if (videoIndex > -1 && !cache[video.channelId][videoIndex].isWatched) {
       cache[video.channelId][videoIndex].isWatched = true;
-      setCache({...cache});
+      dispatch(setVideosCache({ ...cache }));
     }
     return videoIndex;
   };
@@ -62,22 +65,26 @@ export function VideoRenderer(props: VideoRendererProps) {
     if (videoIndex > -1) {
       if (!cache[video.channelId][videoIndex].isToWatchLater) {
         cache[video.channelId][videoIndex].isToWatchLater = true;
-        setCache({...cache});
-        openSnackbar({
-          message: 'Video added to watch later list!',
-          icon: 'success',
-          autoHideDuration: 3000
-        });
+        dispatch(setVideosCache({ ...cache }));
+        dispatch(
+          openSnackbar({
+            message: 'Video added to watch later list!',
+            icon: 'success',
+            autoHideDuration: 3000,
+          })
+        );
       } else {
-        openSnackbar({
-          message: 'Video is already on watch later list!',
-          autoHideDuration: 3000
-        });
+        dispatch(
+          openSnackbar({
+            message: 'Video is already on watch later list!',
+            autoHideDuration: 3000,
+          })
+        );
       }
     }
   };
 
-  const removeVideoFromWatchLater = (video: Video, event?: Event|null, index: number = -1) => {
+  const removeVideoFromWatchLater = (video: Video, event?: Event | null, index: number = -1) => {
     if (event) {
       preventClick(event);
     }
@@ -85,33 +92,49 @@ export function VideoRenderer(props: VideoRendererProps) {
     if (videoIndex > -1 && cache[video.channelId][videoIndex].isToWatchLater) {
       // exclude video from shown videos
       if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
-        setVideos(videos.filter((v: Video) => v.id !== video.id));
+        dispatch(setVideos(videos.filter((v: Video) => v.id !== video.id)));
       }
       // update cache
       cache[video.channelId][videoIndex].isToWatchLater = false;
-      setCache({...cache});
+      dispatch(setVideosCache({ ...cache }));
     }
   };
 
   return (
-    <Link href={video.url} className={classes.anchor} target="_blank" rel="noopener" onClick={(event: any) => openVideo(event, video)}>
+    <Link
+      href={video.url}
+      className={classes.anchor}
+      target="_blank"
+      rel="noopener"
+      onClick={(event: any) => openVideo(event, video)}
+    >
       <Box className={classes.imageContainer}>
         <img className={classes.image} alt="" src={video.thumbnail} />
         <Box className={`${classes.overlay} overlay`}></Box>
         <Box className={`${classes.options} options`}>
-          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos ? !video.isToWatchLater && (
-            <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => addVideoToWatchLater(event, video)}>
-              <Tooltip title="Watch later" aria-label="watch-later">
-                <WatchLaterIcon className={classes.optionsIcon} />
-              </Tooltip>
-            </IconButton>
-          ) : video.isToWatchLater && (
-            <IconButton size="small" className={classes.optionsButton} onClick={(event: any) => removeVideoFromWatchLater(video, event)}>
-              <Tooltip title="Remove" aria-label="remove">
-                <DeleteIcon className={classes.optionsIcon} />
-              </Tooltip>
-            </IconButton>
-          )}
+          {selectedChannelIndex !== ChannelSelection.WatchLaterVideos
+            ? !video.isToWatchLater && (
+                <IconButton
+                  size="small"
+                  className={classes.optionsButton}
+                  onClick={(event: any) => addVideoToWatchLater(event, video)}
+                >
+                  <Tooltip title="Watch later" aria-label="watch-later">
+                    <WatchLaterIcon className={classes.optionsIcon} />
+                  </Tooltip>
+                </IconButton>
+              )
+            : video.isToWatchLater && (
+                <IconButton
+                  size="small"
+                  className={classes.optionsButton}
+                  onClick={(event: any) => removeVideoFromWatchLater(video, event)}
+                >
+                  <Tooltip title="Remove" aria-label="remove">
+                    <DeleteIcon className={classes.optionsIcon} />
+                  </Tooltip>
+                </IconButton>
+              )}
           <IconButton size="small" className={classes.optionsButton}>
             <Tooltip title="Watch now" aria-label="watch-now">
               <PlayArrowIcon className={`${classes.optionsIcon} bigger`} />

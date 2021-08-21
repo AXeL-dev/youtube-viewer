@@ -1,6 +1,41 @@
 import React from 'react';
-import { List, ListSubheader, ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction, IconButton, Avatar, Badge, Tooltip, RootRef, MenuItem, Menu } from '@material-ui/core';
-import { SubscriptionsIcon, RefreshIcon, MoreVertIcon, KeyboardArrowUpIcon, KeyboardArrowDownIcon, DeleteSweepIcon, GetAppIcon, ImportExportIcon, DeleteOutlineIcon, ArrowUpwardIcon, ArrowDownwardIcon, OpenInNewIcon, VisibilityIcon, VisibilityOffIcon, ControlCameraIcon, AccessTimeIcon, TodayIcon, NotificationsActiveIcon, NotificationsOffIcon, NotificationsNoneIcon } from './icons';
+import {
+  List,
+  ListSubheader,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Avatar,
+  Badge,
+  Tooltip,
+  RootRef,
+  MenuItem,
+  Menu,
+} from '@material-ui/core';
+import {
+  SubscriptionsIcon,
+  RefreshIcon,
+  MoreVertIcon,
+  KeyboardArrowUpIcon,
+  KeyboardArrowDownIcon,
+  DeleteSweepIcon,
+  GetAppIcon,
+  ImportExportIcon,
+  DeleteOutlineIcon,
+  ArrowUpwardIcon,
+  ArrowDownwardIcon,
+  OpenInNewIcon,
+  VisibilityIcon,
+  VisibilityOffIcon,
+  ControlCameraIcon,
+  AccessTimeIcon,
+  TodayIcon,
+  NotificationsActiveIcon,
+  NotificationsOffIcon,
+  NotificationsNoneIcon,
+} from './icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Channel, ChannelSelection, SortOrder } from 'models';
 import { ConfirmationDialog, ImportDialog, MoveToPositionDialog } from 'components';
@@ -8,9 +43,11 @@ import { download } from 'helpers/download';
 import { isWebExtension, createTab, isFirefox } from 'helpers/browser';
 import { useStyles, getListStyle, getListItemStyle } from './styles';
 import { memorySizeOf } from 'helpers/utils';
-import { useAtom } from 'jotai';
-import { useUpdateAtom, useAtomValue } from 'jotai/utils';
-import { videosCacheAtom, settingsAtom, openSnackbarAtom, videosSortOrderAtom, setVideosSortOrderAtom, defaultVideosSortOrder } from 'atoms';
+import { useAppDispatch, useAppSelector } from 'store';
+import { selectVideosCache, selectVideosSortOrder } from 'store/selectors/videos';
+import { selectSettings } from 'store/selectors/settings';
+import { setVideosCache, setVideosSortOrder, defaultVideosSortOrder } from 'store/reducers/videos';
+import { openSnackbar } from 'store/reducers/snackbar';
 
 // a little function to help us with reordering the dnd result
 const reorder = (list: any, startIndex: number, endIndex: number) => {
@@ -44,20 +81,36 @@ interface ChannelListProps {
 }
 
 export function ChannelList(props: ChannelListProps) {
-  const { className, channels, selectedIndex = ChannelSelection.All,
-          todaysVideosCount, recentVideosCount, watchLaterVideosCount,
-          onShowAll, onShowTodaysVideos, onShowRecentVideos, onShowWatchLaterVideos,
-          onRefresh, onSelect, onDelete, onSave, onSelectedIndexChange, onClearRecentVideos,
-          onAddVideosToWatchLater, onClearWatchLaterVideos, onImport } = props;
+  const {
+    className,
+    channels,
+    selectedIndex = ChannelSelection.All,
+    todaysVideosCount,
+    recentVideosCount,
+    watchLaterVideosCount,
+    onShowAll,
+    onShowTodaysVideos,
+    onShowRecentVideos,
+    onShowWatchLaterVideos,
+    onRefresh,
+    onSelect,
+    onDelete,
+    onSave,
+    onSelectedIndexChange,
+    onClearRecentVideos,
+    onAddVideosToWatchLater,
+    onClearWatchLaterVideos,
+    onImport,
+  } = props;
   const classes = useStyles();
-  const [cache, setCache] = useAtom(videosCacheAtom);
-  const [settings] = useAtom(settingsAtom);
-  const openSnackbar = useUpdateAtom(openSnackbarAtom);
-  const [videosSortOrder, setVideosSortOrder] = [useAtomValue(videosSortOrderAtom), useUpdateAtom(setVideosSortOrderAtom)];
+  const cache = useAppSelector(selectVideosCache);
+  const settings = useAppSelector(selectSettings);
+  const videosSortOrder = useAppSelector(selectVideosSortOrder);
+  const dispatch = useAppDispatch();
   const [openDeleteChannelDialog, setOpenDeleteChannelDialog] = React.useState(false);
   const [channelToDeleteIndex, setChannelToDeleteIndex] = React.useState(-1);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number|string>(-1);
+  const [openedMenuIndex, setOpenedMenuIndex] = React.useState<number | string>(-1);
   const [openClearCacheDialog, setOpenClearCacheDialog] = React.useState(false);
   const [openClearRecentVideosDialog, setOpenClearRecentVideosDialog] = React.useState(false);
   const [openClearWatchLaterVideosDialog, setOpenClearWatchLaterVideosDialog] = React.useState(false);
@@ -77,11 +130,7 @@ export function ChannelList(props: ChannelListProps) {
   const moveChannel = (indexFrom: number, indexTo: number) => {
     closeMenu();
     const selectedChannel = getSelectedChannel();
-    const items: Channel[] = reorder(
-      channels,
-      indexFrom,
-      indexTo
-    ) as Channel[];
+    const items: Channel[] = reorder(channels, indexFrom, indexTo) as Channel[];
     //console.log(items);
     onSave(items);
     if (selectedChannel) {
@@ -151,12 +200,12 @@ export function ChannelList(props: ChannelListProps) {
   const toggleChannelNotifications = (index: number, activate: boolean) => {
     channels[index].notifications = {
       ...channels[index].notifications,
-      isDisabled: !activate
+      isDisabled: !activate,
     };
     updateChannels(channels);
   };
 
-  const openMenu = (event: any, index: number|string) => {
+  const openMenu = (event: any, index: number | string) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setOpenedMenuIndex(index);
@@ -168,12 +217,14 @@ export function ChannelList(props: ChannelListProps) {
   };
 
   const confirmClearCache = () => {
-    setCache({});
-    openSnackbar({
-      message: 'Cache cleared!',
-      icon: 'success',
-      showRefreshButton: true
-    });
+    dispatch(setVideosCache({}));
+    dispatch(
+      openSnackbar({
+        message: 'Cache cleared!',
+        icon: 'success',
+        showRefreshButton: true,
+      })
+    );
     closeClearCacheDialog();
   };
 
@@ -190,7 +241,7 @@ export function ChannelList(props: ChannelListProps) {
   const exportChannels = () => {
     closeMenu();
     const data = JSON.stringify(channels, null, 4);
-    const file = new Blob([data], {type: 'text/json'});
+    const file = new Blob([data], { type: 'text/json' });
     download(file, 'channels.json');
   };
 
@@ -287,21 +338,27 @@ export function ChannelList(props: ChannelListProps) {
     setOpenClearWatchLaterVideosDialog(false);
   };
 
-  const renderSortOrderMenuItems = (index: number|ChannelSelection) => {
+  const renderSortOrderMenuItems = (index: number | ChannelSelection) => {
     const sortOrder = videosSortOrder[index] || defaultVideosSortOrder;
     return (
-      <div> {/* using React.Fragment instead of a div returns the following error "the Menu component doesn't accept a Fragment as a child." */}
-        <MenuItem disabled={sortOrder === SortOrder.ASC} onClick={(event) => {
+      <div>
+        {' '}
+        {/* using React.Fragment instead of a div returns the following error "the Menu component doesn't accept a Fragment as a child." */}
+        <MenuItem
+          disabled={sortOrder === SortOrder.ASC}
+          onClick={(event) => {
             closeMenu();
-            setVideosSortOrder({ [index]: SortOrder.ASC });
+            dispatch(setVideosSortOrder({ [index]: SortOrder.ASC }));
             onRefresh(index, event, SortOrder.ASC);
           }}
         >
           <ArrowUpwardIcon className={classes.menuIcon} /> Sort by Asc
         </MenuItem>
-        <MenuItem disabled={sortOrder === SortOrder.DESC} onClick={(event) => {
+        <MenuItem
+          disabled={sortOrder === SortOrder.DESC}
+          onClick={(event) => {
             closeMenu();
-            setVideosSortOrder({ [index]: SortOrder.DESC });
+            dispatch(setVideosSortOrder({ [index]: SortOrder.DESC }));
             onRefresh(index, event, SortOrder.DESC);
           }}
         >
@@ -317,202 +374,304 @@ export function ChannelList(props: ChannelListProps) {
     <div className={className || ''}>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
-        {(provided: any, snapshot: any) => (
-          <RootRef rootRef={provided.innerRef}>
-            <List
-              dense
-              subheader={<ListSubheader className={classes.subheader}>Channels
-                <IconButton edge="end" aria-label="channels-options" size="small" className={classes.channelsOptionsIcon} onClick={(event) => openMenu(event, 'channels-options')}>
-                  <MoreVertIcon fontSize="small" />
-                </IconButton>
-                <Menu
-                  id="menu-channels-options"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={openedMenuIndex === 'channels-options'}
-                  onClose={closeMenu}
+          {(provided: any, snapshot: any) => (
+            <RootRef rootRef={provided.innerRef}>
+              <List
+                dense
+                subheader={
+                  <ListSubheader className={classes.subheader}>
+                    Channels
+                    <IconButton
+                      edge="end"
+                      aria-label="channels-options"
+                      size="small"
+                      className={classes.channelsOptionsIcon}
+                      onClick={(event) => openMenu(event, 'channels-options')}
+                    >
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
+                    <Menu
+                      id="menu-channels-options"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={openedMenuIndex === 'channels-options'}
+                      onClose={closeMenu}
+                    >
+                      <MenuItem onClick={() => exportChannels()}>
+                        <GetAppIcon className={classes.menuIcon} />
+                        Export
+                      </MenuItem>
+                      <MenuItem onClick={() => importChannels()}>
+                        <ImportExportIcon className={classes.menuIcon} />
+                        Import
+                      </MenuItem>
+                      <Tooltip title={'Cache size: ' + getCacheSize()} aria-label="clear-cache">
+                        <MenuItem onClick={() => clearCache()}>
+                          <DeleteSweepIcon className={classes.menuIcon} />
+                          Clear cache
+                        </MenuItem>
+                      </Tooltip>
+                    </Menu>
+                  </ListSubheader>
+                }
+                style={getListStyle(snapshot.isDraggingOver)}
+              >
+                <ListItem
+                  button
+                  key="all"
+                  selected={selectedIndex === ChannelSelection.All}
+                  onClick={() => onShowAll()}
                 >
-                  <MenuItem onClick={() => exportChannels()}><GetAppIcon className={classes.menuIcon} />Export</MenuItem>
-                  <MenuItem onClick={() => importChannels()}><ImportExportIcon className={classes.menuIcon} />Import</MenuItem>
-                  <Tooltip title={"Cache size: " + getCacheSize()} aria-label="clear-cache">
-                    <MenuItem onClick={() => clearCache()}><DeleteSweepIcon className={classes.menuIcon} />Clear cache</MenuItem>
-                  </Tooltip>
-                </Menu>
-              </ListSubheader>}
-              style={getListStyle(snapshot.isDraggingOver)}
-            >
-              <ListItem button key="all" selected={selectedIndex === ChannelSelection.All} onClick={() => onShowAll()}>
-                <ListItemIcon>
-                  <Badge color="secondary" badgeContent={channels.length}>
-                    <Avatar>
-                      <SubscriptionsIcon />
-                    </Avatar>
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText primary="All" />
-                {channels?.length > 0 && (
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.All)}>
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
-                    <Menu
-                      id="menu-all-channels"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={openedMenuIndex === ChannelSelection.All}
-                      onClose={closeMenu}
-                    >
-                      {renderSortOrderMenuItems(ChannelSelection.All)}
-                      <MenuItem onClick={(event) => refreshAll(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                    </Menu>
-                  </ListItemSecondaryAction>
-                )}
-              </ListItem>
-              <ListItem button key="today" selected={selectedIndex === ChannelSelection.TodaysVideos} onClick={() => onShowTodaysVideos()}>
-                <ListItemIcon>
-                  <Badge color="secondary" badgeContent={todaysVideosCount}>
-                    <Avatar>
-                      <TodayIcon />
-                    </Avatar>
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText primary="Today's videos" />
-                {channels?.length > 0 && (
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.TodaysVideos)}>
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
-                    <Menu
-                      id="menu-todays-videos"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={openedMenuIndex === ChannelSelection.TodaysVideos}
-                      onClose={closeMenu}
-                    >
-                      {renderSortOrderMenuItems(ChannelSelection.TodaysVideos)}
-                      <MenuItem onClick={(event) => refreshTodaysVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                    </Menu>
-                  </ListItemSecondaryAction>
-                )}
-              </ListItem>
-              <ListItem button key="recent" selected={selectedIndex === ChannelSelection.RecentVideos} onClick={() => onShowRecentVideos()}>
-                <ListItemIcon>
-                  <Badge color="secondary" badgeContent={recentVideosCount}>
-                    <Avatar>
-                      <NotificationsNoneIcon />
-                    </Avatar>
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText primary="Recent videos" />
-                {channels?.length > 0 && (
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.RecentVideos)}>
-                      <MoreVertIcon fontSize="small" />
-                    </IconButton>
-                    <Menu
-                      id="menu-recent-videos"
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={openedMenuIndex === ChannelSelection.RecentVideos}
-                      onClose={closeMenu}
-                    >
-                      {renderSortOrderMenuItems(ChannelSelection.RecentVideos)}
-                      <MenuItem onClick={(event) => refreshRecentVideos(event)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                      {recentVideosCount > 0 && selectedIndex === ChannelSelection.RecentVideos && <MenuItem onClick={() => addRecentVideosToWatchLater()}><AccessTimeIcon className={classes.menuIcon} /> Add all to watch later list</MenuItem>}
-                      {recentVideosCount > 0 && <MenuItem onClick={() => clearRecentVideos()}><DeleteOutlineIcon className={classes.menuIcon} /> Clear</MenuItem>}
-                    </Menu>
-                  </ListItemSecondaryAction>
-                )}
-              </ListItem>
-              <ListItem button key="watchLater" selected={selectedIndex === ChannelSelection.WatchLaterVideos} onClick={() => onShowWatchLaterVideos()}>
-                <ListItemIcon>
-                  <Badge color="secondary" badgeContent={watchLaterVideosCount}>
-                    <Avatar>
-                      <AccessTimeIcon />
-                    </Avatar>
-                  </Badge>
-                </ListItemIcon>
-                <ListItemText primary="Watch later" />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, ChannelSelection.WatchLaterVideos)}>
-                    <MoreVertIcon fontSize="small" />
-                  </IconButton>
-                  <Menu
-                    id="menu-watch-later-videos"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={openedMenuIndex === ChannelSelection.WatchLaterVideos}
-                    onClose={closeMenu}
-                  >
-                    {renderSortOrderMenuItems(ChannelSelection.WatchLaterVideos)}
-                    {watchLaterVideosCount > 0 && (
-                      <MenuItem onClick={() => clearWatchLaterVideos()}><DeleteOutlineIcon className={classes.menuIcon} /> Clear</MenuItem>
-                    )}
-                  </Menu>
-                </ListItemSecondaryAction>
-              </ListItem>
-              {channels.map((channel: Channel, index: number) => (
-                <Draggable key={channel.id} draggableId={channel.id} index={index}>
-                {(provided: any, snapshot: any) => (
-                  <ListItem
-                    ContainerProps={{ ref: provided.innerRef }}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={getListItemStyle(
-                      snapshot.isDragging,
-                      channel.isHidden,
-                      provided.draggableProps.style
-                    )}
-                    button
-                    selected={index === selectedIndex}
-                    onClick={() => onSelect(channel, index)}
-                  >
-                    <ListItemIcon><Avatar alt={channel.title} src={channel.thumbnail} /></ListItemIcon>
-                    <ListItemText primary={channel.title} />
+                  <ListItemIcon>
+                    <Badge color="secondary" badgeContent={channels.length}>
+                      <Avatar>
+                        <SubscriptionsIcon />
+                      </Avatar>
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText primary="All" />
+                  {channels?.length > 0 && (
                     <ListItemSecondaryAction>
-                      <IconButton edge="end" aria-label="more" size="small" onClick={(event) => openMenu(event, index)}>
+                      <IconButton
+                        edge="end"
+                        aria-label="more"
+                        size="small"
+                        onClick={(event) => openMenu(event, ChannelSelection.All)}
+                      >
                         <MoreVertIcon fontSize="small" />
                       </IconButton>
                       <Menu
-                        id={"menu-" + index}
+                        id="menu-all-channels"
                         anchorEl={anchorEl}
                         keepMounted
-                        open={openedMenuIndex === index}
+                        open={openedMenuIndex === ChannelSelection.All}
                         onClose={closeMenu}
                       >
-                        {renderSortOrderMenuItems(index)}
-                        <MenuItem onClick={() => openChannel(channel)}><OpenInNewIcon className={classes.menuIcon} /> Open channel</MenuItem>
-                        <MenuItem onClick={() => refreshChannel(channel, index)}><RefreshIcon className={classes.menuIcon} /> Refresh</MenuItem>
-                        {isFirefoxExtension && index > 0 && (
-                          <MenuItem onClick={() => moveChannel(index, index - 1)}><KeyboardArrowUpIcon className={classes.menuIcon} />Move up</MenuItem>
-                        )}
-                        {isFirefoxExtension && index < channels.length - 1 && (
-                          <MenuItem onClick={() => moveChannel(index, index + 1)}><KeyboardArrowDownIcon className={classes.menuIcon} />Move down</MenuItem>
-                        )}
-                        {isFirefoxExtension && (
-                          <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}><ControlCameraIcon className={classes.menuIcon} />Move to position</MenuItem>
-                        )}
-                        {channel.isHidden ? (
-                          <MenuItem onClick={() => unhideChannel(index)}><VisibilityIcon className={classes.menuIcon} /> Unhide</MenuItem>
-                        ) : (
-                          <MenuItem onClick={() => hideChannel(index)}><VisibilityOffIcon className={classes.menuIcon} /> Hide</MenuItem>
-                        )}
-                        {isWebExtension && settings.enableRecentVideosNotifications && (channel.notifications?.isDisabled ? (
-                          <MenuItem onClick={() => enableChannelNotifications(index)}><NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications</MenuItem>
-                        ) : (
-                          <MenuItem onClick={() => disableChannelNotifications(index)}><NotificationsOffIcon className={classes.menuIcon} /> Disable notifications</MenuItem>
-                        ))}
-                        <MenuItem onClick={() => deleteChannel(index)}><DeleteOutlineIcon className={classes.menuIcon} /> Delete</MenuItem>
+                        {renderSortOrderMenuItems(ChannelSelection.All)}
+                        <MenuItem onClick={(event) => refreshAll(event)}>
+                          <RefreshIcon className={classes.menuIcon} /> Refresh
+                        </MenuItem>
                       </Menu>
                     </ListItemSecondaryAction>
-                  </ListItem>
-                )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </List>
-          </RootRef>
-        )}
+                  )}
+                </ListItem>
+                <ListItem
+                  button
+                  key="today"
+                  selected={selectedIndex === ChannelSelection.TodaysVideos}
+                  onClick={() => onShowTodaysVideos()}
+                >
+                  <ListItemIcon>
+                    <Badge color="secondary" badgeContent={todaysVideosCount}>
+                      <Avatar>
+                        <TodayIcon />
+                      </Avatar>
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText primary="Today's videos" />
+                  {channels?.length > 0 && (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        edge="end"
+                        aria-label="more"
+                        size="small"
+                        onClick={(event) => openMenu(event, ChannelSelection.TodaysVideos)}
+                      >
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                      <Menu
+                        id="menu-todays-videos"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={openedMenuIndex === ChannelSelection.TodaysVideos}
+                        onClose={closeMenu}
+                      >
+                        {renderSortOrderMenuItems(ChannelSelection.TodaysVideos)}
+                        <MenuItem onClick={(event) => refreshTodaysVideos(event)}>
+                          <RefreshIcon className={classes.menuIcon} /> Refresh
+                        </MenuItem>
+                      </Menu>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+                <ListItem
+                  button
+                  key="recent"
+                  selected={selectedIndex === ChannelSelection.RecentVideos}
+                  onClick={() => onShowRecentVideos()}
+                >
+                  <ListItemIcon>
+                    <Badge color="secondary" badgeContent={recentVideosCount}>
+                      <Avatar>
+                        <NotificationsNoneIcon />
+                      </Avatar>
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText primary="Recent videos" />
+                  {channels?.length > 0 && (
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        edge="end"
+                        aria-label="more"
+                        size="small"
+                        onClick={(event) => openMenu(event, ChannelSelection.RecentVideos)}
+                      >
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                      <Menu
+                        id="menu-recent-videos"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={openedMenuIndex === ChannelSelection.RecentVideos}
+                        onClose={closeMenu}
+                      >
+                        {renderSortOrderMenuItems(ChannelSelection.RecentVideos)}
+                        <MenuItem onClick={(event) => refreshRecentVideos(event)}>
+                          <RefreshIcon className={classes.menuIcon} /> Refresh
+                        </MenuItem>
+                        {recentVideosCount > 0 && selectedIndex === ChannelSelection.RecentVideos && (
+                          <MenuItem onClick={() => addRecentVideosToWatchLater()}>
+                            <AccessTimeIcon className={classes.menuIcon} /> Add all to watch later list
+                          </MenuItem>
+                        )}
+                        {recentVideosCount > 0 && (
+                          <MenuItem onClick={() => clearRecentVideos()}>
+                            <DeleteOutlineIcon className={classes.menuIcon} /> Clear
+                          </MenuItem>
+                        )}
+                      </Menu>
+                    </ListItemSecondaryAction>
+                  )}
+                </ListItem>
+                <ListItem
+                  button
+                  key="watchLater"
+                  selected={selectedIndex === ChannelSelection.WatchLaterVideos}
+                  onClick={() => onShowWatchLaterVideos()}
+                >
+                  <ListItemIcon>
+                    <Badge color="secondary" badgeContent={watchLaterVideosCount}>
+                      <Avatar>
+                        <AccessTimeIcon />
+                      </Avatar>
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText primary="Watch later" />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="more"
+                      size="small"
+                      onClick={(event) => openMenu(event, ChannelSelection.WatchLaterVideos)}
+                    >
+                      <MoreVertIcon fontSize="small" />
+                    </IconButton>
+                    <Menu
+                      id="menu-watch-later-videos"
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={openedMenuIndex === ChannelSelection.WatchLaterVideos}
+                      onClose={closeMenu}
+                    >
+                      {renderSortOrderMenuItems(ChannelSelection.WatchLaterVideos)}
+                      {watchLaterVideosCount > 0 && (
+                        <MenuItem onClick={() => clearWatchLaterVideos()}>
+                          <DeleteOutlineIcon className={classes.menuIcon} /> Clear
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  </ListItemSecondaryAction>
+                </ListItem>
+                {channels.map((channel: Channel, index: number) => (
+                  <Draggable key={channel.id} draggableId={channel.id} index={index}>
+                    {(provided: any, snapshot: any) => (
+                      <ListItem
+                        ContainerProps={{ ref: provided.innerRef }}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getListItemStyle(snapshot.isDragging, channel.isHidden, provided.draggableProps.style)}
+                        button
+                        selected={index === selectedIndex}
+                        onClick={() => onSelect(channel, index)}
+                      >
+                        <ListItemIcon>
+                          <Avatar alt={channel.title} src={channel.thumbnail} />
+                        </ListItemIcon>
+                        <ListItemText primary={channel.title} />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            aria-label="more"
+                            size="small"
+                            onClick={(event) => openMenu(event, index)}
+                          >
+                            <MoreVertIcon fontSize="small" />
+                          </IconButton>
+                          <Menu
+                            id={'menu-' + index}
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={openedMenuIndex === index}
+                            onClose={closeMenu}
+                          >
+                            {renderSortOrderMenuItems(index)}
+                            <MenuItem onClick={() => openChannel(channel)}>
+                              <OpenInNewIcon className={classes.menuIcon} /> Open channel
+                            </MenuItem>
+                            <MenuItem onClick={() => refreshChannel(channel, index)}>
+                              <RefreshIcon className={classes.menuIcon} /> Refresh
+                            </MenuItem>
+                            {isFirefoxExtension && index > 0 && (
+                              <MenuItem onClick={() => moveChannel(index, index - 1)}>
+                                <KeyboardArrowUpIcon className={classes.menuIcon} />
+                                Move up
+                              </MenuItem>
+                            )}
+                            {isFirefoxExtension && index < channels.length - 1 && (
+                              <MenuItem onClick={() => moveChannel(index, index + 1)}>
+                                <KeyboardArrowDownIcon className={classes.menuIcon} />
+                                Move down
+                              </MenuItem>
+                            )}
+                            {isFirefoxExtension && (
+                              <MenuItem onClick={() => openMoveChannelToPositionDialog(index)}>
+                                <ControlCameraIcon className={classes.menuIcon} />
+                                Move to position
+                              </MenuItem>
+                            )}
+                            {channel.isHidden ? (
+                              <MenuItem onClick={() => unhideChannel(index)}>
+                                <VisibilityIcon className={classes.menuIcon} /> Unhide
+                              </MenuItem>
+                            ) : (
+                              <MenuItem onClick={() => hideChannel(index)}>
+                                <VisibilityOffIcon className={classes.menuIcon} /> Hide
+                              </MenuItem>
+                            )}
+                            {isWebExtension &&
+                              settings.enableRecentVideosNotifications &&
+                              (channel.notifications?.isDisabled ? (
+                                <MenuItem onClick={() => enableChannelNotifications(index)}>
+                                  <NotificationsActiveIcon className={classes.menuIcon} /> Enable notifications
+                                </MenuItem>
+                              ) : (
+                                <MenuItem onClick={() => disableChannelNotifications(index)}>
+                                  <NotificationsOffIcon className={classes.menuIcon} /> Disable notifications
+                                </MenuItem>
+                              ))}
+                            <MenuItem onClick={() => deleteChannel(index)}>
+                              <DeleteOutlineIcon className={classes.menuIcon} /> Delete
+                            </MenuItem>
+                          </Menu>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </List>
+            </RootRef>
+          )}
         </Droppable>
       </DragDropContext>
       <ConfirmationDialog
@@ -568,5 +727,5 @@ export function ChannelList(props: ChannelListProps) {
         onConfirm={moveChannelToPosition}
       />
     </div>
-  )
+  );
 }

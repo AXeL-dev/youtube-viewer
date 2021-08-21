@@ -3,8 +3,15 @@ import clsx from 'clsx';
 import { useTheme } from '@material-ui/core/styles';
 import { Drawer, CssBaseline, AppBar, Toolbar, Divider, IconButton } from '@material-ui/core';
 import { MenuIcon, ChevronLeftIcon, ChevronRightIcon, OpenInNewIcon, SettingsIcon } from './icons';
-import { SearchChannelInput, ChannelList, MessageSnackbar, SettingsDialog, BottomSnackbar, ChannelRenderer, Credit } from 'components';
-import { channelsAtom, selectedChannelIndexAtom, videosAtom, videosCacheAtom, videosSortOrderAtom, settingsAtom, defaultSettings, snackbarAtom, openSnackbarAtom, closeSnackbarAtom } from 'atoms';
+import {
+  SearchChannelInput,
+  ChannelList,
+  MessageSnackbar,
+  SettingsDialog,
+  BottomSnackbar,
+  ChannelRenderer,
+  Credit,
+} from 'components';
 import { Channel, ChannelSelection, Video, SortOrder, SortCriteria } from 'models';
 import { getChannelActivities, getVideoInfo } from 'helpers/youtube';
 import { getDateBefore, isInToday, diffHours } from 'helpers/utils';
@@ -13,27 +20,35 @@ import { saveToStorage, getFromStorage } from 'helpers/storage';
 import { resolve } from 'helpers/object';
 import { debug } from 'helpers/debug';
 import { useStyles } from './styles';
-import { useAtom } from 'jotai';
-import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { useConstructor } from 'hooks';
+import { useAppDispatch, useAppSelector } from 'store';
+import { selectChannels, selectCurrentChannelIndex } from 'store/selectors/channels';
+import { selectVideos, selectVideosCache, selectVideosSortOrder } from 'store/selectors/videos';
+import { selectSettings } from 'store/selectors/settings';
+import { selectSnackbar } from 'store/selectors/snackbar';
+import { setChannels, setSelectedChannelIndex } from 'store/reducers/channels';
+import { defaultSettings, setSettings } from 'store/reducers/settings';
+import { setVideos, setVideosCache } from 'store/reducers/videos';
+import { closeSnackbar, openSnackbar } from 'store/reducers/snackbar';
 
-interface ViewerProps { }
+interface ViewerProps {}
 
 export function Viewer(props: ViewerProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const [channels, setChannels] = useAtom(channelsAtom);
-  const [videos, setVideos] = useAtom(videosAtom);
-  const videosSortOrder = useAtomValue(videosSortOrderAtom);
+  const channels = useAppSelector(selectChannels);
+  const videos = useAppSelector(selectVideos);
+  const videosSortOrder = useAppSelector(selectVideosSortOrder);
   const [openDrawer, setOpenDrawer] = React.useState(false);
   const [isReady, setIsReady] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedChannelIndex, setSelectedChannelIndex] = useAtom(selectedChannelIndexAtom);
-  const [settings, setSettings] = useAtom(settingsAtom);
+  const selectedChannelIndex = useAppSelector(selectCurrentChannelIndex);
+  const settings = useAppSelector(selectSettings);
   const [openSettingsDialog, setOpenSettingsDialog] = React.useState(false);
-  const [snackbar, openSnackbar, closeSnackbar] = [useAtomValue(snackbarAtom), useUpdateAtom(openSnackbarAtom), useUpdateAtom(closeSnackbarAtom)];
-  const [lastError, setLastError] = React.useState<Error|null>(null);
-  const [cache, setCache] = useAtom(videosCacheAtom);
+  const snackbar = useAppSelector(selectSnackbar);
+  const [lastError, setLastError] = React.useState<Error | null>(null);
+  const cache = useAppSelector(selectVideosCache);
+  const dispatch = useAppDispatch();
   const [recentVideosCount, setRecentVideosCount] = React.useState(0);
   const [todaysVideosCount, setTodaysVideosCount] = React.useState(0);
   const [watchLaterVideosCount, setWatchLaterVideosCount] = React.useState(0);
@@ -44,10 +59,10 @@ export function Viewer(props: ViewerProps) {
     debug.log('Storage data:', {
       channels: channels,
       settings: settings,
-      cache: cache
+      cache: cache,
     });
     // Set/merge settings
-    settings = settings ? {...defaultSettings, ...settings} : defaultSettings;
+    settings = settings ? { ...defaultSettings, ...settings } : defaultSettings;
     // Clear recent videos
     if (settings?.autoClearRecentVideos && cache) {
       let cacheHasChanged: boolean = false;
@@ -66,9 +81,9 @@ export function Viewer(props: ViewerProps) {
       }
     }
     // Update state
-    setChannels(channels || []);
-    setSettings(settings);
-    setCache(!settings?.autoClearCache && cache ? cache : {});
+    dispatch(setChannels(channels || []));
+    dispatch(setSettings(settings));
+    dispatch(setVideosCache(!settings?.autoClearCache && cache ? cache : {}));
     setIsReady(true);
     // Reset webextension badge
     if (isWebExtension) {
@@ -82,7 +97,7 @@ export function Viewer(props: ViewerProps) {
       if (channels.length && !videos.length) {
         showChannelSelection(settings.defaultChannelSelection, true);
       } else if (selectedChannelIndex !== settings.defaultChannelSelection) {
-        setSelectedChannelIndex(settings.defaultChannelSelection);
+        dispatch(setSelectedChannelIndex(settings.defaultChannelSelection));
       }
       updateVideosCount();
     }
@@ -119,16 +134,18 @@ export function Viewer(props: ViewerProps) {
     debug.log('----------------------');
     debug.log('counting videos');
     let totalRecentVideosCount: number = 0,
-        totalTodaysVideosCount: number = 0,
-        totalWatchLaterVideosCount: number = 0;
+      totalTodaysVideosCount: number = 0,
+      totalWatchLaterVideosCount: number = 0;
     Object.keys(cache).forEach((channelId: string) => {
       const channel = channels.find((c: Channel) => c.id === channelId);
       if (!channel || channel.isHidden) {
         return;
       }
-      const recentVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isRecent)).length;
-      const todaysVideosCountPerChannel = (cache[channelId].filter((video: Video) => isInToday(video.publishedAt))).length;
-      const watchLaterVideosCountPerChannel = (cache[channelId].filter((video: Video) => video.isToWatchLater)).length;
+      const recentVideosCountPerChannel = cache[channelId].filter((video: Video) => video.isRecent).length;
+      const todaysVideosCountPerChannel = cache[channelId].filter((video: Video) =>
+        isInToday(video.publishedAt)
+      ).length;
+      const watchLaterVideosCountPerChannel = cache[channelId].filter((video: Video) => video.isToWatchLater).length;
       debug.log(channel.title, {
         recent: recentVideosCountPerChannel,
         todays: todaysVideosCountPerChannel,
@@ -163,7 +180,7 @@ export function Viewer(props: ViewerProps) {
 
   /**
    * Get a specific channel videos
-   * 
+   *
    * @param channel channel object
    * @param ignoreCache boolean value that defines if the cache should be ignored
    * @param pipeFunction pipe function can be used to filter videos before they get sliced, by default it does nothing more than returning the original videos array
@@ -171,7 +188,7 @@ export function Viewer(props: ViewerProps) {
   const getChannelVideos = (
     channel: Channel,
     ignoreCache: boolean = false,
-    pipeFunction: ((channelVideos: Video[]) => Video[]) = (channelVideos: Video[]) => channelVideos
+    pipeFunction: (channelVideos: Video[]) => Video[] = (channelVideos: Video[]) => channelVideos
   ): Promise<Video[]> => {
     return new Promise((resolve, reject) => {
       if (!ignoreCache && cache[channel.id]?.length) {
@@ -179,58 +196,71 @@ export function Viewer(props: ViewerProps) {
         debug.log('load videos from cache', channel.title, cache[channel.id]);
         resolve(pipeFunction(cache[channel.id]).slice(0, settings.videosPerChannel));
       } else {
-        getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority)).then((results) => {
-          debug.log('----------------------');
-          debug.log('activities of', channel.title, results);
-          if (results?.items) {
-            // Get recent videos ids
-            const videosIds: string[] = results.items.map((item: any) => item.contentDetails.upload?.videoId).filter((id: string) => id?.length);
-            const cacheVideosIds: string[] = cache[channel.id]?.length ? cache[channel.id].map((video: Video) => video.id) : [];
-            const recentVideosIds: string[] = videosIds.filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
-                                                       .slice(0, settings.videosPerChannel)
-                                                       .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
-            // Get recent videos informations
-            if (!recentVideosIds.length) {
-              debug.log('no recent videos for this channel');
-              resolve(pipeFunction(cache[channel.id])?.slice(0, settings.videosPerChannel) || []);
+        getChannelActivities(channel.id, getDateBefore(settings.videosAnteriority))
+          .then((results) => {
+            debug.log('----------------------');
+            debug.log('activities of', channel.title, results);
+            if (results?.items) {
+              // Get recent videos ids
+              const videosIds: string[] = results.items
+                .map((item: any) => item.contentDetails.upload?.videoId)
+                .filter((id: string) => id?.length);
+              const cacheVideosIds: string[] = cache[channel.id]?.length
+                ? cache[channel.id].map((video: Video) => video.id)
+                : [];
+              const recentVideosIds: string[] = videosIds
+                .filter((videoId: string, index: number) => videosIds.indexOf(videoId) === index) // remove duplicates
+                .slice(0, settings.videosPerChannel)
+                .filter((videoId: string) => cacheVideosIds.indexOf(videoId) === -1); // remove videos already in cache
+              // Get recent videos informations
+              if (!recentVideosIds.length) {
+                debug.log('no recent videos for this channel');
+                resolve(pipeFunction(cache[channel.id])?.slice(0, settings.videosPerChannel) || []);
+              } else {
+                debug.log('getting recent videos of', channel.title, {
+                  recentVideosIds: recentVideosIds,
+                  cacheVideosIds: cacheVideosIds,
+                });
+                getVideoInfo(recentVideosIds)
+                  .then((videosData: Video[]) => {
+                    debug.log('recent videos data', videosData);
+                    // Mark new videos as recent
+                    const now = new Date();
+                    videosData = videosData.map((video: Video) => {
+                      const videoDate = new Date(video.publishedAt); // convert timestamp to Date object
+                      if (diffHours(now, videoDate) <= 24) {
+                        // avoid marking too old videos as recent when cache is empty
+                        video.isRecent = true;
+                      }
+                      return video;
+                    });
+                    // Merge cached & new videos
+                    cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
+                    // Sort videos
+                    const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
+                      if (settings.sortVideosBy === SortCriteria.Views && a.views?.count && b.views?.count) {
+                        return b.views.count - a.views.count;
+                      } else {
+                        return b.publishedAt - a.publishedAt;
+                      }
+                    });
+                    // Save to cache
+                    dispatch(setVideosCache({ ...cache }));
+                    resolve(pipeFunction(sortedVideos)?.slice(0, settings.videosPerChannel) || []);
+                  })
+                  .catch((error: Error) => {
+                    displayError(error);
+                    resolve([]);
+                  });
+              }
             } else {
-              debug.log('getting recent videos of', channel.title, { recentVideosIds: recentVideosIds, cacheVideosIds: cacheVideosIds });
-              getVideoInfo(recentVideosIds).then((videosData: Video[]) => {
-                debug.log('recent videos data', videosData);
-                // Mark new videos as recent
-                const now = new Date();
-                videosData = videosData.map((video: Video) => {
-                  const videoDate = new Date(video.publishedAt); // convert timestamp to Date object
-                  if (diffHours(now, videoDate) <= 24) { // avoid marking too old videos as recent when cache is empty
-                    video.isRecent = true;
-                  }
-                  return video;
-                });
-                // Merge cached & new videos
-                cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
-                // Sort videos
-                const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
-                  if (settings.sortVideosBy === SortCriteria.Views && a.views?.count && b.views?.count) {
-                    return b.views.count - a.views.count;
-                  } else {
-                    return b.publishedAt - a.publishedAt;
-                  }
-                });
-                // Save to cache
-                setCache({...cache});
-                resolve(pipeFunction(sortedVideos)?.slice(0, settings.videosPerChannel) || []);
-              }).catch((error: Error) => {
-                displayError(error);
-                resolve([]);
-              });
+              resolve([]);
             }
-          } else {
+          })
+          .catch((error: Error) => {
+            displayError(error);
             resolve([]);
-          }
-        }).catch((error: Error) => {
-          displayError(error);
-          resolve([]);
-        });
+          });
       }
     });
   };
@@ -240,15 +270,15 @@ export function Viewer(props: ViewerProps) {
     debug.log('added channel:', channel);
     const found: Channel | undefined = channels.find((c: Channel) => c.id === channel.id);
     if (!found) {
-      setChannels([...channels, channel]);
-      setSelectedChannelIndex(channels.length);
+      dispatch(setChannels([...channels, channel]));
+      dispatch(setSelectedChannelIndex(channels.length));
     } else {
-      setSelectedChannelIndex(channels.indexOf(found));
+      dispatch(setSelectedChannelIndex(channels.indexOf(found)));
     }
     // Get channel videos
     setIsLoading(true);
     getChannelVideos(channel).then((results: Video[]) => {
-      setVideos(results || []);
+      dispatch(setVideos(results || []));
       setIsLoading(false);
     });
   };
@@ -256,7 +286,7 @@ export function Viewer(props: ViewerProps) {
   const selectChannel = (channel: Channel, index: number, ignoreCache: boolean = false, sortOrder?: SortOrder) => {
     // Select channel
     debug.log('selected channel:', channel);
-    setSelectedChannelIndex(index);
+    dispatch(setSelectedChannelIndex(index));
     if (sortOrder === undefined || sortOrder === null) {
       sortOrder = videosSortOrder[index]; // == undefined if videosSortOrder[index] is not yet set
     }
@@ -266,58 +296,58 @@ export function Viewer(props: ViewerProps) {
       if (sortOrder) {
         results = results.sort(getSortFunction(sortOrder));
       }
-      setVideos(results || []);
+      dispatch(setVideos(results || []));
       setIsLoading(false);
       window.scrollTo(0, 0); // scroll to top
     });
   };
-  
+
   const deleteChannel = (index: number) => {
-    setChannels(channels.filter((_, i) => i !== index));
+    dispatch(setChannels(channels.filter((_, i) => i !== index)));
     if (selectedChannelIndex === index) {
-      setVideos([]);
-      setSelectedChannelIndex(ChannelSelection.None);
+      dispatch(setVideos([]));
+      dispatch(setSelectedChannelIndex(ChannelSelection.None));
     }
   };
 
   const fetchChannelsVideos = (
     selection: ChannelSelection,
-    filterFunction: ((video: Video) => boolean|undefined)|null = null,
-    sortFunction: ((a: Video, b: Video) => number)|null = null,
+    filterFunction: ((video: Video) => boolean | undefined) | null = null,
+    sortFunction: ((a: Video, b: Video) => number) | null = null,
     ignoreCache: boolean = false,
     customChannels?: Channel[]
   ) => {
     // Update channel selection
-    setSelectedChannelIndex(selection);
+    dispatch(setSelectedChannelIndex(selection));
     // Get channels videos
     setIsLoading(true);
-    setVideos([]);
+    dispatch(setVideos([]));
     let promises: Promise<any>[] = [];
     let results: Video[] = [];
     const channelsList = customChannels || channels;
 
-    channelsList.filter((channel: Channel) => !channel.isHidden).forEach((channel: Channel) => {
-
-      const promise = getChannelVideos(channel, ignoreCache, (channelVideos: Video[]) => {
-        if (filterFunction) {
-          return channelVideos?.filter(filterFunction);
-        } else {
-          return channelVideos;
-        }
-      }).then((channelVideos: Video[]) => {
-        debug.log('----------------------');
-        debug.log(channel.title, channelVideos);
-        if (sortFunction) {
-          channelVideos = channelVideos.sort(sortFunction);
-        }
-        results.push(...channelVideos);
+    channelsList
+      .filter((channel: Channel) => !channel.isHidden)
+      .forEach((channel: Channel) => {
+        const promise = getChannelVideos(channel, ignoreCache, (channelVideos: Video[]) => {
+          if (filterFunction) {
+            return channelVideos?.filter(filterFunction);
+          } else {
+            return channelVideos;
+          }
+        }).then((channelVideos: Video[]) => {
+          debug.log('----------------------');
+          debug.log(channel.title, channelVideos);
+          if (sortFunction) {
+            channelVideos = channelVideos.sort(sortFunction);
+          }
+          results.push(...channelVideos);
+        });
+        promises.push(promise);
       });
-      promises.push(promise);
-
-    });
 
     return Promise.all(promises).finally(() => {
-      setVideos(results);
+      dispatch(setVideos(results));
       setIsLoading(false);
     });
   };
@@ -342,25 +372,40 @@ export function Viewer(props: ViewerProps) {
     ignoreCache: boolean = false,
     sortOrder: SortOrder = videosSortOrder[ChannelSelection.TodaysVideos]
   ) => {
-    return fetchChannelsVideos(ChannelSelection.TodaysVideos, (video: Video) => isInToday(video.publishedAt), getSortFunction(sortOrder), ignoreCache);
+    return fetchChannelsVideos(
+      ChannelSelection.TodaysVideos,
+      (video: Video) => isInToday(video.publishedAt),
+      getSortFunction(sortOrder),
+      ignoreCache
+    );
   };
 
   const showRecentVideos = (
     ignoreCache: boolean = false,
     sortOrder: SortOrder = videosSortOrder[ChannelSelection.RecentVideos]
   ) => {
-    return fetchChannelsVideos(ChannelSelection.RecentVideos, (video: Video) => video.isRecent, getSortFunction(sortOrder), ignoreCache);
+    return fetchChannelsVideos(
+      ChannelSelection.RecentVideos,
+      (video: Video) => video.isRecent,
+      getSortFunction(sortOrder),
+      ignoreCache
+    );
   };
 
   const showWatchLaterVideos = (
     ignoreCache: boolean = false,
     sortOrder: SortOrder = videosSortOrder[ChannelSelection.WatchLaterVideos]
   ) => {
-    return fetchChannelsVideos(ChannelSelection.WatchLaterVideos, (video: Video) => video.isToWatchLater, getSortFunction(sortOrder), ignoreCache);
+    return fetchChannelsVideos(
+      ChannelSelection.WatchLaterVideos,
+      (video: Video) => video.isToWatchLater,
+      getSortFunction(sortOrder),
+      ignoreCache
+    );
   };
 
   const showChannelSelection = (selection: ChannelSelection, ignoreCache: boolean = false, sortOrder?: SortOrder) => {
-    switch(selection) {
+    switch (selection) {
       case ChannelSelection.TodaysVideos:
         return showTodaysVideos(ignoreCache, sortOrder);
       case ChannelSelection.RecentVideos:
@@ -380,26 +425,32 @@ export function Viewer(props: ViewerProps) {
         return video;
       });
     });
-    setCache({...cache});
+    dispatch(setVideosCache({ ...cache }));
     if (callback) {
       callback();
     }
   };
 
   const clearRecentVideos = () => {
-    bulkUpdateVideos((video: Video) => video.isRecent = false, () => {
-      if (selectedChannelIndex === ChannelSelection.RecentVideos) {
-        refreshChannels(ChannelSelection.RecentVideos);
+    bulkUpdateVideos(
+      (video: Video) => (video.isRecent = false),
+      () => {
+        if (selectedChannelIndex === ChannelSelection.RecentVideos) {
+          refreshChannels(ChannelSelection.RecentVideos);
+        }
       }
-    });
+    );
   };
 
   const clearWatchLaterVideos = () => {
-    bulkUpdateVideos((video: Video) => video.isToWatchLater = false, () => {
-      if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
-        setVideos([]);
+    bulkUpdateVideos(
+      (video: Video) => (video.isToWatchLater = false),
+      () => {
+        if (selectedChannelIndex === ChannelSelection.WatchLaterVideos) {
+          dispatch(setVideos([]));
+        }
       }
-    });
+    );
   };
 
   const refreshChannels = (selection?: ChannelSelection, event?: any, sortOrder?: SortOrder) => {
@@ -419,13 +470,15 @@ export function Viewer(props: ViewerProps) {
   const importChannels = (channelsList: Channel[]) => {
     debug.log('importing channels', channelsList);
     // Update channels
-    setChannels(channelsList);
+    dispatch(setChannels(channelsList));
     fetchChannelsVideos(ChannelSelection.All, null, null, true, channelsList);
-    openSnackbar({
-      message: 'Channels imported!',
-      icon: 'success',
-      showRefreshButton: true
-    });
+    dispatch(
+      openSnackbar({
+        message: 'Channels imported!',
+        icon: 'success',
+        showRefreshButton: true,
+      })
+    );
   };
 
   const maximize = (event: any) => {
@@ -454,11 +507,13 @@ export function Viewer(props: ViewerProps) {
       }
     });
     if (cacheUpdated) {
-      setCache({...cache});
-      openSnackbar({
-        message: 'All videos added to watch later list!',
-        icon: 'success'
-      });
+      dispatch(setVideosCache({ ...cache }));
+      dispatch(
+        openSnackbar({
+          message: 'All videos added to watch later list!',
+          icon: 'success',
+        })
+      );
     }
   };
 
@@ -488,11 +543,24 @@ export function Viewer(props: ViewerProps) {
           <SearchChannelInput onSelect={addChannel} onError={displayError} />
           <div className={classes.grow} />
           {isWebExtension && isPopup() && (
-            <IconButton edge="end" className={classes.iconButton} aria-label="maximize" title="Maximize" color="inherit" onClick={(event) => maximize(event)}>
+            <IconButton
+              edge="end"
+              className={classes.iconButton}
+              aria-label="maximize"
+              title="Maximize"
+              color="inherit"
+              onClick={(event) => maximize(event)}
+            >
               <OpenInNewIcon />
             </IconButton>
           )}
-          <IconButton edge="end" aria-label="settings" title="Settings" color="inherit" onClick={(event) => openSettings(event)}>
+          <IconButton
+            edge="end"
+            aria-label="settings"
+            title="Settings"
+            color="inherit"
+            onClick={(event) => openSettings(event)}
+          >
             <SettingsIcon />
           </IconButton>
         </Toolbar>
@@ -526,8 +594,8 @@ export function Viewer(props: ViewerProps) {
           onRefresh={refreshChannels}
           onSelect={selectChannel}
           onDelete={deleteChannel}
-          onSave={setChannels}
-          onSelectedIndexChange={setSelectedChannelIndex}
+          onSave={(channels: Channel[]) => dispatch(setChannels(channels))}
+          onSelectedIndexChange={(index: number) => dispatch(setSelectedChannelIndex(index))}
           onClearRecentVideos={clearRecentVideos}
           onAddVideosToWatchLater={addAllVideosToWatchLater}
           onClearWatchLaterVideos={clearWatchLaterVideos}
@@ -535,10 +603,7 @@ export function Viewer(props: ViewerProps) {
         />
         <div className={classes.grow} />
         <Divider />
-        <Credit
-          author="AXeL"
-          repositoryUrl="https://github.com/AXeL-dev/youtube-viewer"
-        />
+        <Credit author="AXeL" repositoryUrl="https://github.com/AXeL-dev/youtube-viewer" />
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -548,17 +613,10 @@ export function Viewer(props: ViewerProps) {
       >
         <div className={classes.drawerHeader} />
         {isReady && selectedChannelIndex !== ChannelSelection.None && (
-          <ChannelRenderer
-            isLoading={isLoading}
-            onSelect={selectChannel}
-            onRefresh={refreshChannels}
-          />
+          <ChannelRenderer isLoading={isLoading} onSelect={selectChannel} onRefresh={refreshChannels} />
         )}
       </main>
-      <SettingsDialog
-        open={openSettingsDialog}
-        onClose={closeSettings}
-      />
+      <SettingsDialog open={openSettingsDialog} onClose={closeSettings} />
       <BottomSnackbar
         open={snackbar.isOpen}
         snackbarKey={snackbar.key}
@@ -566,14 +624,10 @@ export function Viewer(props: ViewerProps) {
         icon={snackbar.icon}
         autoHideDuration={snackbar.autoHideDuration}
         showRefreshButton={snackbar.showRefreshButton}
-        onClose={closeSnackbar}
+        onClose={() => dispatch(closeSnackbar())}
         onRefresh={refreshChannels}
       />
-      <MessageSnackbar
-        message={lastError?.message}
-        open={!!lastError}
-        onClose={() => setLastError(null)}
-      />
+      <MessageSnackbar message={lastError?.message} open={!!lastError} onClose={() => setLastError(null)} />
     </div>
-  )
+  );
 }

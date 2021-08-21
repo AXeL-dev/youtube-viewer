@@ -48,7 +48,7 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 - [Material-UI](https://material-ui.com/): UI toolkit
 - [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
 - [react-pull-to-refresh](https://github.com/bryaneaton13/react-pull-to-refresh): Pull to refresh component
-- [jotai](https://github.com/pmndrs/jotai): State management library
+- [redux](https://redux.js.org/): State management library
 - [Gulp.js](https://gulpjs.com/): Workflow automation toolkit
 
 ### Scripts
