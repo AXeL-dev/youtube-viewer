@@ -235,9 +235,12 @@ export function Viewer(props: ViewerProps) {
                       return video;
                     });
                     // Merge cached & new videos
-                    cache[channel.id] = cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData;
+                    const updatedCache = {
+                      ...cache,
+                      [channel.id]: cache[channel.id]?.length ? [...videosData, ...cache[channel.id]] : videosData,
+                    };
                     // Sort videos
-                    const sortedVideos = cache[channel.id].sort((a: Video, b: Video) => {
+                    const sortedVideos = updatedCache[channel.id].sort((a: Video, b: Video) => {
                       if (settings.sortVideosBy === SortCriteria.Views && a.views?.count && b.views?.count) {
                         return b.views.count - a.views.count;
                       } else {
@@ -245,7 +248,7 @@ export function Viewer(props: ViewerProps) {
                       }
                     });
                     // Save to cache
-                    dispatch(setVideosCache({ ...cache }));
+                    dispatch(setVideosCache({ ...updatedCache }));
                     resolve(pipeFunction(sortedVideos)?.slice(0, settings.videosPerChannel) || []);
                   })
                   .catch((error: Error) => {

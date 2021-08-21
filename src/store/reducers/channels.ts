@@ -21,9 +21,17 @@ export const channelsSlice = createSlice({
     setSelectedChannelIndex: (state, action: PayloadAction<ChannelSelection>) => {
       state.selectedChannelIndex = action.payload;
     },
+    hideChannel: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      state.list[index].isHidden = true;
+    },
+    unhideChannel: (state, action: PayloadAction<number>) => {
+      const index = action.payload;
+      state.list[index].isHidden = false;
+    },
   },
 });
 
-export const { setChannels, setSelectedChannelIndex } = channelsSlice.actions;
+export const { setChannels, setSelectedChannelIndex, hideChannel, unhideChannel } = channelsSlice.actions;
 
 export default channelsSlice.reducer;

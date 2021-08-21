@@ -48,6 +48,7 @@ import { selectVideosCache, selectVideosSortOrder } from 'store/selectors/videos
 import { selectSettings } from 'store/selectors/settings';
 import { setVideosCache, setVideosSortOrder, defaultVideosSortOrder } from 'store/reducers/videos';
 import { openSnackbar } from 'store/reducers/snackbar';
+import { hideChannel, unhideChannel } from 'store/reducers/channels';
 
 // a little function to help us with reordering the dnd result
 const reorder = (list: any, startIndex: number, endIndex: number) => {
@@ -179,14 +180,12 @@ export function ChannelList(props: ChannelListProps) {
     }
   };
 
-  const hideChannel = (index: number) => {
-    channels[index].isHidden = true;
-    updateChannels(channels);
+  const handleChannelHide = (index: number) => {
+    dispatch(hideChannel(index));
   };
 
-  const unhideChannel = (index: number) => {
-    channels[index].isHidden = false;
-    updateChannels(channels);
+  const handleChannelUnhide = (index: number) => {
+    dispatch(unhideChannel(index));
   };
 
   const disableChannelNotifications = (index: number) => {
@@ -640,11 +639,11 @@ export function ChannelList(props: ChannelListProps) {
                               </MenuItem>
                             )}
                             {channel.isHidden ? (
-                              <MenuItem onClick={() => unhideChannel(index)}>
+                              <MenuItem onClick={() => handleChannelUnhide(index)}>
                                 <VisibilityIcon className={classes.menuIcon} /> Unhide
                               </MenuItem>
                             ) : (
-                              <MenuItem onClick={() => hideChannel(index)}>
+                              <MenuItem onClick={() => handleChannelHide(index)}>
                                 <VisibilityOffIcon className={classes.menuIcon} /> Hide
                               </MenuItem>
                             )}
