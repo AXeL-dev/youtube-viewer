@@ -12,6 +12,7 @@
 /build
 /dist
 /old
+/v6.x
 *.zip
 *.xpi
 *.crx

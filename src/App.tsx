@@ -1,19 +1,23 @@
 import React from 'react';
-import './App.css';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Background, Viewer } from './components';
-import { Provider } from 'jotai';
+import { Main, Background } from './ui/components/pages';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import useTheme from './ui/theme';
 
-const App: React.FC = () => {
+function App() {
+  const theme = useTheme();
+
   return (
-    <Provider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Router>
         <Switch>
-          <Route exact path="/" component={Viewer} />
+          <Route exact path="/" component={Main} />
           <Route path="/background" component={Background} />
         </Switch>
       </Router>
-    </Provider>
+    </ThemeProvider>
   );
 }
 
