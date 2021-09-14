@@ -7,16 +7,16 @@ const useTheme = (type: PaletteType = 'light') =>
     palette: {
       type,
       primary: {
-        main: '#fff', //'#f44336',
+        main: '#f21718',
       },
       secondary: {
-        main: '#e50023',
+        main: '#b81112',
       },
       error: {
         main: red.A400,
       },
       background: {
-        default: '#f9f9f9',
+        default: '#fff',
       },
     },
   });

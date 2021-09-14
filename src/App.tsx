@@ -1,6 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Main, Background } from './ui/components/pages';
+import { Home, Channels, Settings, About } from './ui/components/pages';
+import { Background } from './ui/components/webext';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useTheme from './ui/theme';
@@ -13,7 +14,10 @@ function App() {
       <CssBaseline />
       <Router>
         <Switch>
-          <Route exact path="/" component={Main} />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/channels" component={Channels} />
+          <Route exact path="/settings" component={Settings} />
+          <Route exact path="/about" component={About} />
           <Route path="/background" component={Background} />
         </Switch>
       </Router>
