@@ -5,8 +5,8 @@ import SubscriptionsIcon from '@material-ui/icons/Subscriptions';
 import SettingsIcon from '@material-ui/icons/Settings';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import ListItemLink from './common/ListItemLink';
-import Credit from '../Credit';
-import Logo from '../Logo';
+import Credit from './common/Credit';
+import Logo from './common/Logo';
 import useStyles from './styles';
 
 interface SidebarProps {}

@@ -15,15 +15,20 @@ export const useStyles = makeStyles((theme: Theme) =>
         filter: 'contrast(150%) brightness(100%)',
       },
     },
-    text: {
+    title: {
+      display: 'flex',
+      alignItems: 'center',
       color: 'rgba(0, 0, 0, 0.7)',
     },
     version: {
-      backgroundColor: '#e8e8e8',
-      padding: '2px 6px',
+      marginLeft: theme.spacing(1),
+      backgroundColor: '#eee',
+      padding: '3px 6px',
+      border: '1px solid #e8e8e8',
       borderRadius: '4px',
       color: 'rgba(0, 0, 0, 0.7)',
       fontSize: '0.75rem',
+      lineHeight: 1,
     },
   })
 );

@@ -12,7 +12,7 @@ interface ListItemLinkProps {
   to: string;
 }
 
-function ListItemLink(props: ListItemLinkProps) {
+export default function ListItemLink(props: ListItemLinkProps) {
   const { icon, text, badge, to } = props;
   const location = useLocation();
   const isSelected = location.pathname === to;
@@ -39,5 +39,3 @@ function ListItemLink(props: ListItemLinkProps) {
     </ListItem>
   );
 }
-
-export default ListItemLink;

@@ -9,20 +9,18 @@ interface CreditProps {
   repositoryUrl?: string;
 }
 
-function Credit(props: CreditProps) {
+export default function Credit(props: CreditProps) {
   const { author, repositoryUrl } = props;
   const classes = useStyles();
 
   return (
-    <Typography variant="caption" align="center">
+    <Typography variant="caption" className={classes.container}>
       Made with <FavoriteRoundedIcon className={classes.heartIcon} /> by {author}
       <Link href={repositoryUrl || '#'} target={repositoryUrl ? '_blank' : '_self'} rel="noopener">
-        <IconButton edge="end" size="small" aria-label="github link">
+        <IconButton size="small" aria-label="github link" className={classes.githubIcon}>
           <GitHubIcon fontSize="inherit" />
         </IconButton>
       </Link>
     </Typography>
   );
 }
-
-export default Credit;

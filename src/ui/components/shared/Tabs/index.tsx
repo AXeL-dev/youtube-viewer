@@ -23,18 +23,6 @@ export const Tab = withStyles((theme: Theme) =>
       minWidth: 72,
       fontWeight: theme.typography.fontWeightRegular,
       marginRight: theme.spacing(4),
-      // fontFamily: [
-      //   '-apple-system',
-      //   'BlinkMacSystemFont',
-      //   '"Segoe UI"',
-      //   'Roboto',
-      //   '"Helvetica Neue"',
-      //   'Arial',
-      //   'sans-serif',
-      //   '"Apple Color Emoji"',
-      //   '"Segoe UI Emoji"',
-      //   '"Segoe UI Symbol"',
-      // ].join(','),
       '&:hover': {
         color: theme.palette.primary.main,
         opacity: 1,
