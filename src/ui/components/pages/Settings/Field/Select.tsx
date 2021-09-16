@@ -5,7 +5,7 @@ const Select = styled(MuiSelect)(({ theme }) => ({
   fontSize: '0.9rem',
   '&.Mui-focused': {
     '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: theme.palette.secondary.main,
+      borderColor: theme.palette.secondary.light,
     },
   },
 })) as unknown as typeof MuiSelect;

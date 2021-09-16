@@ -5,9 +5,9 @@ import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ListItemLink from './ListItemLink';
-import Credit from './Credit';
-import Logo from './Logo';
-import { Box } from '@mui/material';
+import Header from './Header';
+import { Box, Typography, Link } from '@mui/material';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 
 interface SidebarProps {}
 
@@ -17,14 +17,14 @@ export function Sidebar(props: SidebarProps) {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        minWidth: 280,
+        maxWidth: 280,
         backgroundColor: '#fafafa',
-        borderRight: '1px solid #e8e8e8',
+        borderRight: '1px solid #e0e0e0',
       }}
     >
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', py: 2.5, pl: 3 }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-          <Logo showVersion />
+          <Header showVersion />
         </Box>
         <Box sx={{ flexGrow: 1, paddingLeft: 1, width: '100%' }}>
           <List component="nav" aria-label="main">
@@ -38,14 +38,34 @@ export function Sidebar(props: SidebarProps) {
       <Box
         sx={{
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          flexDirection: 'column',
           py: 2,
           px: 3,
-          borderTop: '1px solid #e8e8e8',
+          borderTop: '1px solid #e0e0e0',
         }}
       >
-        <Credit author="AXeL" repositoryUrl="https://github.com/AXeL-dev/youtube-viewer" />
+        <Typography sx={{ fontSize: '0.8rem', mb: 1 }} variant="caption" color="text.secondary">
+          Facing issues or have some feedback?
+        </Typography>
+        <Link
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+            fontSize: '0.8rem',
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline',
+            },
+          }}
+          href="https://github.com/AXeL-dev/youtube-viewer/issues"
+          target="_blank"
+          color="secondary"
+          rel="noopener"
+        >
+          <ContactSupportIcon sx={{ fontSize: 18 }} />
+          Report a bug | Feedback
+        </Link>
       </Box>
     </Box>
   );

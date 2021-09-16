@@ -1,14 +1,15 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
+import { Logo } from 'ui/components/shared';
 
 const { REACT_APP_NAME, REACT_APP_VERSION } = process.env;
 
-interface LogoProps {
+interface HeaderProps {
   showVersion?: boolean;
 }
 
-export default function Logo(props: LogoProps) {
+export default function Header(props: HeaderProps) {
   const { showVersion } = props;
 
   return (
@@ -21,14 +22,9 @@ export default function Logo(props: LogoProps) {
         gap: '1rem',
         cursor: 'default',
         userSelect: 'none',
-        '& > img': {
-          width: 32,
-          height: 32,
-          filter: 'contrast(150%) brightness(100%)',
-        },
       }}
     >
-      <img alt="logo" src="icons/128.png" />
+      <Logo size={32} />
       <Box
         component="span"
         sx={{

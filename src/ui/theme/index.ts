@@ -12,8 +12,9 @@ const useTheme = (mode: PaletteMode = 'light') =>
         dark: '#b81112',
       },
       secondary: {
-        light: '#3a98df',
-        main: '#0074e8',
+        light: '#1a88ff',
+        main: '#007bff',
+        dark: '#006fe6',
       },
       background: {
         default: '#fff',

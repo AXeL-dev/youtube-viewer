@@ -2,7 +2,7 @@ import { styled, Theme } from '@mui/material/styles';
 import MuiMenuItem from '@mui/material/MenuItem';
 
 const MenuItemSelectedStyle = (theme: Theme) => ({
-  backgroundColor: theme.palette.secondary.light,
+  backgroundColor: theme.palette.secondary.main,
   color: theme.palette.common.white,
 });
 
