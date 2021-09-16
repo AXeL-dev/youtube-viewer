@@ -1,10 +1,10 @@
 import React from 'react';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Home, Channels, Settings, About } from './ui/components/pages';
-import { Background } from './ui/components/webext';
-import { ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import useTheme from './ui/theme';
+import { Home, Channels, Settings, About } from 'ui/components/pages';
+import { Background } from 'ui/components/webext';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import useTheme from 'ui/theme';
 
 function App() {
   const theme = useTheme();

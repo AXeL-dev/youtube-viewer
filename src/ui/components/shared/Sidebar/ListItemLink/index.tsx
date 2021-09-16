@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, LinkProps, useLocation } from 'react-router-dom';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItem from './ListItem';
+import ListItemText from './ListItemText';
 import Badge from './Badge';
 
 interface ListItemLinkProps {
@@ -19,20 +19,20 @@ export default function ListItemLink(props: ListItemLinkProps) {
 
   const renderLink = React.useMemo(
     () =>
-      React.forwardRef<any, Omit<LinkProps, 'to'>>((itemProps, ref) => (
+      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>((itemProps, ref) => (
         <Link to={to} ref={ref} {...itemProps} />
       )),
-    [to],
+    [to]
   );
 
   return (
-    <ListItem button component={renderLink} selected={isSelected}>
+    <ListItem component={renderLink} selected={isSelected} disableRipple>
       {icon && <ListItemIcon>{icon}</ListItemIcon>}
       <ListItemText
         primary={
           <>
             {text}
-            {badge && isSelected && <Badge color="secondary" badgeContent={badge} />}
+            {badge && isSelected && <Badge badgeContent={badge} />}
           </>
         }
       />

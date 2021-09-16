@@ -1,20 +1,16 @@
 import React from 'react';
+import { Box } from '@mui/material';
 import { Sidebar } from 'ui/components/shared';
-import useStyles from './styles';
 
 interface LayoutProps {
   children?: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
-  const classes = useStyles();
-
   return (
-    <div className={classes.root}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
       <Sidebar />
-      <div className={classes.content}>
-        {children}
-      </div>
-    </div>
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>{children}</Box>
+    </Box>
   );
 }

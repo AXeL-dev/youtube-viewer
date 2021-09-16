@@ -1,19 +1,19 @@
 import React from 'react';
-import { InputBase, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 import { debounce } from 'helpers/utils';
-import SearchIcon from '@material-ui/icons/Search';
-import CloseIcon from '@material-ui/icons/Close';
-import { useStyles } from './styles';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
+import Input from './Input';
 
 interface SearchInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
-  width?: number;
+  width?: string | number;
+  clearable?: boolean;
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder = 'Search…', width, onChange } = props;
-  const classes = useStyles();
+  const { placeholder = 'Search…', width, clearable, onChange } = props;
   const [value, setValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +23,6 @@ export function SearchInput(props: SearchInputProps) {
   const lazyChange = React.useMemo(
     () =>
       debounce((input: { value: string }) => {
-        //console.log(input);
         onChange(input.value);
       }, 300),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,24 +38,32 @@ export function SearchInput(props: SearchInputProps) {
   }, [value, lazyChange]);
 
   return (
-    <div className={classes.search} style={{ width }}>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
-      </div>
-      <InputBase
-        placeholder={placeholder}
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
+    <Box sx={{ position: 'relative', display: 'flex', flexGrow: 1, width }}>
+      <Box
+        sx={{
+          width: 48,
+          height: '100%',
+          position: 'absolute',
+          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'rgba(0, 0, 0, 0.7)',
         }}
-        inputProps={{ value, 'aria-label': 'search' }}
-        onChange={handleChange}
-      />
-      {value?.length > 0 && (
-        <IconButton aria-label="clear" size="small" className={classes.clearButton} onClick={() => setValue('')}>
+      >
+        <SearchIcon />
+      </Box>
+      <Input placeholder={placeholder} inputProps={{ value, 'aria-label': 'search' }} onChange={handleChange} />
+      {clearable && value?.length > 0 && (
+        <IconButton
+          sx={{ position: 'absolute', right: 0, top: 0, margin: 0.75, color: 'rgba(0, 0, 0, 0.7)' }}
+          aria-label="clear"
+          size="small"
+          onClick={() => setValue('')}
+        >
           <CloseIcon fontSize="inherit" />
         </IconButton>
       )}
-    </div>
+    </Box>
   );
 }
