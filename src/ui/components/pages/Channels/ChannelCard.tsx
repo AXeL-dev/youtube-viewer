@@ -23,6 +23,7 @@ export default function ChannelCard(props: ChannelCardProps) {
         borderColor: 'divider',
         borderRadius: 'unset',
         backgroundImage: 'none',
+        backgroundColor: 'transparent',
       }}
     >
       <CardHeader

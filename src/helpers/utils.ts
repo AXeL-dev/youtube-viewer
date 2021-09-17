@@ -243,10 +243,10 @@ export function memorySizeOf(obj: any) {
  * Create a new function that limits calls to func to once every given timeframe.
  * Stolen from: https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_throttle
  *
- * @param func
+ * @param callback
  * @param timeFrame
  */
-export function throttle(callback: Function, timeFrame: number): Function {
+export function throttle(callback: Function, timeFrame: number) {
   let lastTime = 0;
   return (...args: any) => {
     let now = new Date().getTime();
@@ -263,19 +263,20 @@ export function throttle(callback: Function, timeFrame: number): Function {
  * Create a new function that calls func with thisArg and args.
  * Stolen from: https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_debounce
  *
- * @param func
+ * @param callback
  * @param wait
+ * @param immediate
  */
-export function debounce(func: Function, wait: number): Function {
+export function debounce(callback: Function, wait: number, immediate?: boolean) {
   let timeout: any = null;
-  return function (this: any) {
-    const context = this,
-      args = arguments;
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(function () {
-      timeout = null;
-      func.apply(context, args);
-    }, wait);
+  return function(this: any, ...args: any) {
+  	const context = this;
+  	clearTimeout(timeout);
+  	timeout = setTimeout(function() {
+  		timeout = null;
+  		if (!immediate) callback.apply(context, args);
+  	}, wait);
+  	if (immediate && !timeout) callback.apply(context, args);
   };
 }
 

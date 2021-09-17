@@ -6,24 +6,32 @@ import CloseIcon from '@mui/icons-material/Close';
 import Input from './Input';
 
 interface SearchInputProps {
-  onChange: (value: string) => void;
   placeholder?: string;
   width?: string | number;
   clearable?: boolean;
+  onChange: (value: string) => void;
+  onClear?: () => void;
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder = 'Search…', width, clearable, onChange } = props;
+  const { placeholder = 'Search…', width, clearable, onChange, onClear } = props;
   const [value, setValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const lazyChange = React.useMemo(
+  const handleClear = () => {
+    setValue('');
+    if (onClear) {
+      onClear();
+    }
+  };
+
+  const debounceChange = React.useMemo(
     () =>
-      debounce((input: { value: string }) => {
-        onChange(input.value);
+      debounce((value: string) => {
+        onChange(value);
       }, 300),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -34,8 +42,8 @@ export function SearchInput(props: SearchInputProps) {
       return;
     }
 
-    lazyChange({ value: value });
-  }, [value, lazyChange]);
+    debounceChange(value);
+  }, [value, debounceChange]);
 
   return (
     <Box sx={{ position: 'relative', display: 'flex', flexGrow: 1, width }}>
@@ -60,7 +68,7 @@ export function SearchInput(props: SearchInputProps) {
           sx={{ position: 'absolute', right: 0, top: 0, my: 0.75, mx: 1, color: 'action.active' }}
           aria-label="clear"
           size="small"
-          onClick={() => setValue('')}
+          onClick={handleClear}
         >
           <CloseIcon fontSize="inherit" />
         </IconButton>

@@ -10,7 +10,7 @@ declare module '@mui/material/styles' {
     silver: string;
     lightGrey: string;
     darkGrey: string;
-    inputBorder: string;
+    greyBorder: string;
     lightBorder: string;
     transparentBorder: string;
   }
@@ -36,23 +36,35 @@ const useTheme = (mode: PaletteMode = 'light') =>
         main: '#007bff',
         dark: '#006fe6',
       },
-      custom: mode === 'light' ? {
-        grey: '#f4f4f4',
-        silver: '#eee',
-        lightGrey: '#fafafa',
-        darkGrey: grey[800],
-        inputBorder: 'rgba(0, 0, 0, 0.23)',
-        lightBorder: light.divider,
-        transparentBorder: 'transparent',
-      } : {
-        grey: 'transparent',
-        silver: 'transparent',
-        lightGrey: 'transparent',
-        darkGrey: grey[100],
-        inputBorder: 'rgba(255, 255, 255, 0.23)',
-        lightBorder: 'rgba(255, 255, 255, 0.23)',
-        transparentBorder: dark.divider,
-      },
+      ...(mode === 'light'
+        ? {
+            background: {
+              default: '#fff',
+            },
+            custom: {
+              grey: '#f4f4f4',
+              silver: '#eee',
+              lightGrey: '#fafafa',
+              darkGrey: grey[800],
+              greyBorder: 'rgba(0, 0, 0, 0.23)',
+              lightBorder: light.divider,
+              transparentBorder: 'transparent',
+            },
+          }
+        : {
+            background: {
+              default: '#181818',
+            },
+            custom: {
+              grey: 'transparent',
+              silver: 'transparent',
+              lightGrey: '#212121',
+              darkGrey: grey[100],
+              greyBorder: 'rgba(255, 255, 255, 0.23)',
+              lightBorder: 'rgba(255, 255, 255, 0.23)',
+              transparentBorder: dark.divider,
+            },
+          }),
     },
   });
 

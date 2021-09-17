@@ -24,6 +24,11 @@
     "default_icon": "icons/128.png"
   },
 
+  "options_ui":{
+    "page": "index.html#settings",
+    "open_in_tab": true
+  },
+
   "background": {
     "page": "index.html#background"
   },
