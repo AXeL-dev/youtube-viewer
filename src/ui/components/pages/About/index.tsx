@@ -9,13 +9,25 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Credit from './Credit';
 import Socials from './Socials';
+import { useAppSelector } from 'store';
+import { selectMode } from 'store/selectors/settings';
 
 interface AboutProps {}
 
 export function About(props: AboutProps) {
+  const mode = useAppSelector(selectMode);
+
   return (
     <Layout>
-      <Box sx={{ bgcolor: '#f4f4f4', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          bgcolor: mode === 'light' ? '#f4f4f4' : 'background.default',
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <Card variant="outlined">
           <CardContent
             sx={{
@@ -35,7 +47,7 @@ export function About(props: AboutProps) {
             <Credit author="AXeL" />
             <Socials sx={{ mt: 4 }} />
           </CardContent>
-          <CardActions sx={{ borderTop: '1px solid #e0e0e0', px: 1.5 }}>
+          <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Link href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors" target="_blank" rel="noopener">
               <Button
                 sx={{ fontSize: '0.875rem', fontWeight: 400, textTransform: 'capitalize' }}
@@ -46,7 +58,7 @@ export function About(props: AboutProps) {
               </Button>
             </Link>
           </CardActions>
-          <CardActions sx={{ borderTop: '1px solid #e0e0e0', px: 1.5 }}>
+          <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Button
               sx={{ fontSize: '0.875rem', fontWeight: 400, textTransform: 'capitalize' }}
               size="small"

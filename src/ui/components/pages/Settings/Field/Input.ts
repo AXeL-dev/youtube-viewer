@@ -5,7 +5,7 @@ const Input = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
     borderRadius: 4,
     position: 'relative',
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.default,
     border: '1px solid #ced4da',
     fontSize: '0.9rem',
     width: 'auto',

@@ -19,8 +19,10 @@ export default function ChannelCard(props: ChannelCardProps) {
       sx={{
         width: '100%',
         boxShadow: 'none',
-        borderBottom: '1px solid #e0e0e0',
+        borderBottom: 1,
+        borderColor: 'divider',
         borderRadius: 'unset',
+        backgroundImage: 'none',
       }}
     >
       <CardHeader

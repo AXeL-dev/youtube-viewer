@@ -5,9 +5,12 @@ import { Background } from 'ui/components/webext';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import useTheme from 'ui/theme';
+import { useAppSelector } from 'store';
+import { selectMode } from 'store/selectors/settings';
 
 function App() {
-  const theme = useTheme();
+  const mode = useAppSelector(selectMode);
+  const theme = useTheme(mode);
 
   return (
     <ThemeProvider theme={theme}>

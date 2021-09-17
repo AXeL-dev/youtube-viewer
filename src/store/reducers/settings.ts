@@ -17,11 +17,14 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setSettings: (state, action: PayloadAction<Settings>) => {
-      state = action.payload;
+    setSettings: (state, action: PayloadAction<Partial<Settings>>) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
     resetSettings: (state) => {
-      state = defaultSettings;
+      return defaultSettings;
     },
   },
 });

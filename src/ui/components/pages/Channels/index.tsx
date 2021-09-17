@@ -10,7 +10,7 @@ interface ChannelsProps {}
 export function Channels(props: ChannelsProps) {
   return (
     <Layout>
-      <Box sx={{ display: 'flex', py: 1, pr: 3, pl: 2, borderBottom: '1px solid #e0e0e0' }}>
+      <Box sx={{ display: 'flex', py: 1, pr: 3, pl: 2, borderBottom: 1, borderColor: 'divider' }}>
         <SearchInput
           placeholder="Search for a channel…"
           onChange={(value: string) => {

@@ -8,18 +8,23 @@ import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { Box, Typography, Link } from '@mui/material';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import { useAppSelector } from 'store';
+import { selectMode } from 'store/selectors/settings';
 
 interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
+  const mode = useAppSelector(selectMode);
+
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
         maxWidth: 280,
-        backgroundColor: '#fafafa',
-        borderRight: '1px solid #e0e0e0',
+        backgroundColor: mode === 'light' ? '#fafafa' : 'background.default',
+        borderRight: 1,
+        borderColor: 'divider',
       }}
     >
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', py: 2.5, pl: 3 }}>
@@ -41,7 +46,8 @@ export function Sidebar(props: SidebarProps) {
           flexDirection: 'column',
           py: 2,
           px: 3,
-          borderTop: '1px solid #e0e0e0',
+          borderTop: 1,
+          borderColor: 'divider',
         }}
       >
         <Typography sx={{ fontSize: '0.8rem', mb: 1 }} variant="caption" color="text.secondary">

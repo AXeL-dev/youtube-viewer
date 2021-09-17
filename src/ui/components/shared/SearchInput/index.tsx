@@ -48,7 +48,7 @@ export function SearchInput(props: SearchInputProps) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'rgba(0, 0, 0, 0.7)',
+          color: 'text.primary',
         }}
       >
         <SearchIcon />
@@ -56,7 +56,7 @@ export function SearchInput(props: SearchInputProps) {
       <Input placeholder={placeholder} inputProps={{ value, 'aria-label': 'search' }} onChange={handleChange} />
       {clearable && value?.length > 0 && (
         <IconButton
-          sx={{ position: 'absolute', right: 0, top: 0, margin: 0.75, color: 'rgba(0, 0, 0, 0.7)' }}
+          sx={{ position: 'absolute', right: 0, top: 0, margin: 0.75, color: 'text.primary' }}
           aria-label="clear"
           size="small"
           onClick={() => setValue('')}

@@ -22,7 +22,7 @@ interface FieldProps {
   value: ValueType;
   type: SettingType;
   noBorder?: boolean;
-  onChange?: (value: ValueType) => void;
+  onChange?: (value: any) => void;
 }
 
 export default function Field(props: FieldProps) {
@@ -30,7 +30,8 @@ export default function Field(props: FieldProps) {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
     if (onChange) {
-      onChange(event.target.value);
+      const value = type === SettingType.Boolean ? (event.target as HTMLInputElement).checked : event.target.value;
+      onChange(value);
     }
   };
 
@@ -41,7 +42,8 @@ export default function Field(props: FieldProps) {
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
-        borderBottom: noBorder ? 0 : '1px solid #e0e0e0',
+        borderBottom: noBorder ? 0 : 1,
+        borderColor: 'divider',
         py: 2.5,
         pr: 1,
       }}
@@ -60,12 +62,12 @@ export default function Field(props: FieldProps) {
           </Typography>
         )}
       </Box>
-      {type === SettingType.String && <Input defaultValue={value} placeholder={placeholder} onChange={handleChange} />}
+      {type === SettingType.String && <Input value={value} placeholder={placeholder} onChange={handleChange} />}
       {type === SettingType.Boolean && (
-        <Switch defaultChecked={value as boolean} onChange={handleChange} inputProps={{ 'aria-label': 'checkbox' }} />
+        <Switch checked={value as boolean} onChange={handleChange} inputProps={{ 'aria-label': 'checkbox' }} />
       )}
       {type === SettingType.List && (
-        <Select defaultValue={value as string} size="small" onChange={handleChange}>
+        <Select value={value as string} size="small" onChange={handleChange}>
           {options.map((option: OptionType, index: number) => (
             <MenuItem key={index} value={option.value}>
               {option.label}
