@@ -8,21 +8,17 @@ import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { Box, Typography, Link } from '@mui/material';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
-import { useAppSelector } from 'store';
-import { selectMode } from 'store/selectors/settings';
 
 interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
-  const mode = useAppSelector(selectMode);
-
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
         maxWidth: 280,
-        backgroundColor: mode === 'light' ? '#fafafa' : 'background.default',
+        backgroundColor: 'custom.lightGrey',
         borderRight: 1,
         borderColor: 'divider',
       }}

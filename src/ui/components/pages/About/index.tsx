@@ -9,19 +9,15 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Credit from './Credit';
 import Socials from './Socials';
-import { useAppSelector } from 'store';
-import { selectMode } from 'store/selectors/settings';
 
 interface AboutProps {}
 
 export function About(props: AboutProps) {
-  const mode = useAppSelector(selectMode);
-
   return (
     <Layout>
       <Box
         sx={{
-          bgcolor: mode === 'light' ? '#f4f4f4' : 'background.default',
+          bgcolor: 'custom.grey',
           flexGrow: 1,
           display: 'flex',
           alignItems: 'center',

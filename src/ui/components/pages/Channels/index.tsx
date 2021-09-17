@@ -10,13 +10,17 @@ interface ChannelsProps {}
 export function Channels(props: ChannelsProps) {
   return (
     <Layout>
-      <Box sx={{ display: 'flex', py: 1, pr: 3, pl: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <SearchInput
-          placeholder="Search for a channel…"
-          onChange={(value: string) => {
-            console.log(value);
-          }}
-        />
+      <Box sx={{ display: 'flex', gap: 2, py: 1.5, pr: 4, pl: 3, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <SearchInput
+            width={400}
+            placeholder="Search for a channel…"
+            onChange={(value: string) => {
+              console.log(value);
+            }}
+            clearable
+          />
+        </Box>
         <IconButton title="Export" aria-label="export">
           <DownloadIcon />
         </IconButton>

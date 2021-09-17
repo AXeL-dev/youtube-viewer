@@ -48,6 +48,7 @@ export function Settings(props: SettingsProps) {
         />
         <Field
           label="Youtube API key"
+          placeholder="__________-______-_____________________"
           description={
             <span>
               Don't have an API key yet?{' '}

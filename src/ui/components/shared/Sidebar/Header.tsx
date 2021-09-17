@@ -2,8 +2,6 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Logo } from 'ui/components/shared';
-import { useAppSelector } from 'store';
-import { selectMode } from 'store/selectors/settings';
 
 const { REACT_APP_NAME, REACT_APP_VERSION } = process.env;
 
@@ -13,7 +11,6 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   const { showVersion } = props;
-  const mode = useAppSelector(selectMode);
 
   return (
     <Box
@@ -42,10 +39,10 @@ export default function Header(props: HeaderProps) {
             variant="caption"
             sx={{
               marginLeft: 1,
-              backgroundColor: mode === 'light' ? '#eee' : 'transparent',
+              backgroundColor: 'custom.silver',
               padding: '3px 6px',
-              border: mode === 'dark' ? 1 : 0,
-              borderColor: 'divider',
+              border: 1,
+              borderColor: 'custom.transparentBorder',
               borderRadius: '4px',
               color: 'text.primary',
               fontSize: '0.75rem',
