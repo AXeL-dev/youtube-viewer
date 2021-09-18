@@ -30,11 +30,24 @@ store.subscribe(
 
 (async () => {
   const { settings, channels } = (await storage.get(stateKey)) || {};
-  if (settings) {
-    store.dispatch(setSettings(settings));
-  }
-  if (channels) {
-    store.dispatch(setChannels(channels.list));
+  if (!settings && !channels) {
+    // Handle backward compatibility with v0.6.x
+    const legacy = (await storage.get('settings', 'channels')) || {};
+    if (legacy.settings) {
+      const { apiKey } = legacy.settings;
+      store.dispatch(setSettings({ apiKey }));
+    }
+    if (legacy.channels) {
+      store.dispatch(setChannels(legacy.channels));
+    }
+  } else {
+    // Load stored data
+    if (settings) {
+      store.dispatch(setSettings(settings));
+    }
+    if (channels) {
+      store.dispatch(setChannels(channels.list));
+    }
   }
   // ToDo: the above dispatch(s) triggers a state save into the storage (this should be avoided)
 })();
