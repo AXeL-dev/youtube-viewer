@@ -34,7 +34,7 @@ export default function Header(props: HeaderProps) {
         }}
       >
         <Typography variant="subtitle1">{REACT_APP_NAME}</Typography>
-        {showVersion && (
+        {showVersion ? (
           <Typography
             variant="caption"
             sx={{
@@ -51,7 +51,7 @@ export default function Header(props: HeaderProps) {
           >
             v{REACT_APP_VERSION}
           </Typography>
-        )}
+        ) : null}
       </Box>
     </Box>
   );

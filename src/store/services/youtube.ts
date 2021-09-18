@@ -17,14 +17,15 @@ export const youtubeApi = createApi({
   reducerPath: 'youtubeApi',
   baseQuery,
   endpoints: (builder) => ({
-    findChannelByName: builder.query<Channel[], string>({
-      query: (name) => ({
+    findChannelByName: builder.query<Channel[], { name: string; maxResults?: number }>({
+      query: ({ name: q, maxResults = 10 }) => ({
         url: 'search',
         params: {
           part: 'snippet',
           type: 'channel',
           order: 'relevance',
-          q: name,
+          maxResults,
+          q,
         },
       }),
       transformResponse: (response: Response) => {

@@ -17,13 +17,13 @@ export default function Credit(props: CreditProps) {
       color="text.secondary"
     >
       Made with <FavoriteRoundedIcon sx={{ color: '#e1495c', fontSize: 18 }} /> by {author}
-      {repositoryUrl && (
+      {repositoryUrl ? (
         <Link href={repositoryUrl} target="_blank" rel="noopener">
           <IconButton sx={{ p: 0 }} size="small" aria-label="github link">
             <GitHubIcon fontSize="inherit" />
           </IconButton>
         </Link>
-      )}
+      ) : null}
     </Typography>
   );
 }

@@ -6,13 +6,15 @@ import CloseIcon from '@mui/icons-material/Close';
 import { RawHTML } from '../RawHTML';
 
 interface AlertProps {
-  children: string;
+  children?: string;
+  error?: any;
   severity?: AlertColor;
   closable?: boolean;
 }
 
 export function Alert(props: AlertProps) {
-  const { children, severity = 'error', closable } = props;
+  const { error, severity = 'error', closable } = props;
+  const children = props.children || error?.data.error.message;
   const [open, setOpen] = useState(true);
 
   return (
@@ -21,7 +23,7 @@ export function Alert(props: AlertProps) {
         sx={{ borderRadius: 'unset' }}
         severity={severity}
         action={
-          closable && (
+          closable ? (
             <IconButton
               aria-label="close"
               color="inherit"
@@ -32,7 +34,7 @@ export function Alert(props: AlertProps) {
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
-          )
+          ) : null
         }
       >
         <RawHTML>{children}</RawHTML>

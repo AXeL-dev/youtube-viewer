@@ -1,10 +1,11 @@
 import React from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
-import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Channel } from 'types';
+import ChannelPicture from './ChannelPicture';
+import ChannelTitle from './ChannelTitle';
 
 interface ChannelCardProps {
   channel: Channel;
@@ -30,24 +31,21 @@ export default function ChannelCard(props: ChannelCardProps) {
           pt: 2.5,
           pl: 0,
           pr: 1,
+          '& .MuiCardHeader-title': {
+            fontSize: '0.975rem',
+            mb: 0.25,
+          },
+          '& .MuiCardHeader-action': {
+            ml: 2,
+          },
         }}
-        avatar={
-          <Avatar
-            sx={{
-              width: 60,
-              height: 60,
-            }}
-            alt={channel.title}
-            src={channel.thumbnail}
-            aria-label="channel"
-          />
-        }
+        avatar={<ChannelPicture channel={channel} />}
         action={
           <IconButton aria-label="settings">
             <MoreVertIcon />
           </IconButton>
         }
-        title={channel.title}
+        title={<ChannelTitle channel={channel} />}
         subheader={channel.description}
       />
     </Card>

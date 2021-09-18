@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import settingsReducer, { setSettings } from './reducers/settings';
+import channelsReducer, { setChannels } from './reducers/channels';
 import storage from 'helpers/storage';
 import { debounce } from 'helpers/utils';
 import { youtubeApi } from './services/youtube';
@@ -9,6 +10,7 @@ const stateKey = 'APP_YOUTUBE_VIEWER';
 const store = configureStore({
   reducer: {
     settings: settingsReducer,
+    channels: channelsReducer,
     [youtubeApi.reducerPath]: youtubeApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(youtubeApi.middleware),
@@ -16,20 +18,25 @@ const store = configureStore({
 
 store.subscribe(
   debounce(() => {
-    const { settings } = store.getState();
+    const { settings, channels } = store.getState();
     storage.save({
       [stateKey]: {
         settings,
+        channels,
       },
     });
   }, 1000)
 );
 
 (async () => {
-  const { settings } = (await storage.get(stateKey)) || {};
+  const { settings, channels } = (await storage.get(stateKey)) || {};
   if (settings) {
     store.dispatch(setSettings(settings));
   }
+  if (channels) {
+    store.dispatch(setChannels(channels.list));
+  }
+  // ToDo: the above dispatch(s) triggers a state save into the storage (this should be avoided)
 })();
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -8,7 +8,10 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Credit from './Credit';
-import Socials from './Socials';
+import SocialLink from './SocialLink';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import MailIcon from '@mui/icons-material/Mail';
+import ForumIcon from '@mui/icons-material/Forum';
 
 interface AboutProps {}
 
@@ -41,7 +44,17 @@ export function About(props: AboutProps) {
               Youtube viewer
             </Typography>
             <Credit author="AXeL" />
-            <Socials sx={{ mt: 4 }} />
+            <Box sx={{ display: 'flex', gap: 1.5, color: 'custom.darkGrey', mt: 4 }}>
+              <SocialLink tooltip="Gmail" href="mailto:contact.axel.dev@gmail.com">
+                <MailIcon />
+              </SocialLink>
+              <SocialLink tooltip="Discord" href="https://discord.gg/rpD4fgxBgj">
+                <ForumIcon />
+              </SocialLink>
+              <SocialLink tooltip="Github" href="https://github.com/AXeL-dev/youtube-viewer">
+                <GitHubIcon />
+              </SocialLink>
+            </Box>
           </CardContent>
           <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Link href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors" target="_blank" rel="noopener">

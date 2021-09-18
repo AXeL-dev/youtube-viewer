@@ -15,7 +15,7 @@ interface SearchInputProps {
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder = 'Search…', width, clearable, debounceTime = 300, onChange, onClear } = props;
+  const { placeholder = 'Search…', width: maxWidth, clearable, debounceTime = 300, onChange, onClear } = props;
   const [value, setValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,6 +26,12 @@ export function SearchInput(props: SearchInputProps) {
     setValue('');
     if (onClear) {
       onClear();
+    }
+  };
+
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onChange(value);
     }
   };
 
@@ -47,7 +53,7 @@ export function SearchInput(props: SearchInputProps) {
   }, [value, debounceChange]);
 
   return (
-    <Box sx={{ position: 'relative', display: 'flex', flexGrow: 1, width }}>
+    <Box sx={{ position: 'relative', display: 'flex', flexGrow: 1, maxWidth }}>
       <Box
         sx={{
           width: 48,
@@ -63,8 +69,13 @@ export function SearchInput(props: SearchInputProps) {
       >
         <SearchIcon />
       </Box>
-      <Input placeholder={placeholder} inputProps={{ value, 'aria-label': 'search' }} onChange={handleChange} />
-      {clearable && value?.length > 0 && (
+      <Input
+        placeholder={placeholder}
+        inputProps={{ value, 'aria-label': 'search' }}
+        onChange={handleChange}
+        onKeyUp={handleKeyUp}
+      />
+      {clearable && value?.length > 0 ? (
         <IconButton
           sx={{ position: 'absolute', right: 0, top: 0, my: 0.75, mx: 1, color: 'action.active' }}
           aria-label="clear"
@@ -73,7 +84,7 @@ export function SearchInput(props: SearchInputProps) {
         >
           <CloseIcon fontSize="inherit" />
         </IconButton>
-      )}
+      ) : null}
     </Box>
   );
 }

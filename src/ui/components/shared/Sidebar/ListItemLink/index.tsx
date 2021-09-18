@@ -27,12 +27,12 @@ export default function ListItemLink(props: ListItemLinkProps) {
 
   return (
     <ListItem component={renderLink} selected={isSelected} disableRipple>
-      {icon && <ListItemIcon>{icon}</ListItemIcon>}
+      {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText
         primary={
           <>
             {text}
-            {badge && isSelected && <Badge badgeContent={badge} />}
+            {badge && isSelected ? <Badge badgeContent={badge} /> : null}
           </>
         }
       />

@@ -56,17 +56,17 @@ export default function Field(props: FieldProps) {
         }}
       >
         <Typography variant="subtitle1">{label}</Typography>
-        {description && (
+        {description ? (
           <Typography variant="body2" color="textSecondary">
             {description}
           </Typography>
-        )}
+        ) : null}
       </Box>
-      {type === SettingType.String && <Input value={value} placeholder={placeholder} onChange={handleChange} />}
-      {type === SettingType.Boolean && (
+      {type === SettingType.String ? <Input value={value} placeholder={placeholder} onChange={handleChange} /> : null}
+      {type === SettingType.Boolean ? (
         <Switch checked={value as boolean} onChange={handleChange} inputProps={{ 'aria-label': 'checkbox' }} />
-      )}
-      {type === SettingType.List && (
+      ) : null}
+      {type === SettingType.List ? (
         <Select value={value as string} size="small" onChange={handleChange}>
           {options.map((option: OptionType, index: number) => (
             <MenuItem key={index} value={option.value}>
@@ -74,7 +74,7 @@ export default function Field(props: FieldProps) {
             </MenuItem>
           ))}
         </Select>
-      )}
+      ) : null}
     </Box>
   );
 }

@@ -8,10 +8,14 @@ import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { Box, Typography, Link } from '@mui/material';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import { useAppSelector } from 'store';
+import { selectChannelsCount } from 'store/selectors/channels';
 
 interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
+  const channelsCount = useAppSelector(selectChannelsCount);
+
   return (
     <Box
       sx={{
@@ -31,7 +35,7 @@ export function Sidebar(props: SidebarProps) {
         <Box sx={{ flexGrow: 1, paddingLeft: 1, width: '100%' }}>
           <List component="nav" aria-label="main">
             <ListItemLink icon={<ExploreIcon />} text="Home" to="/" />
-            <ListItemLink icon={<SubscriptionsIcon />} text="Channels" to="/channels" badge={2} />
+            <ListItemLink icon={<SubscriptionsIcon />} text="Channels" to="/channels" badge={channelsCount} />
             <ListItemLink icon={<SettingsIcon />} text="Settings" to="/settings" />
             <ListItemLink icon={<InfoOutlinedIcon />} text="About" to="/about" />
           </List>
