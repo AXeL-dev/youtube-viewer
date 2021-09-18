@@ -9,12 +9,13 @@ interface SearchInputProps {
   placeholder?: string;
   width?: string | number;
   clearable?: boolean;
+  debounceTime?: number;
   onChange: (value: string) => void;
   onClear?: () => void;
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder = 'Search…', width, clearable, onChange, onClear } = props;
+  const { placeholder = 'Search…', width, clearable, debounceTime = 300, onChange, onClear } = props;
   const [value, setValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +33,7 @@ export function SearchInput(props: SearchInputProps) {
     () =>
       debounce((value: string) => {
         onChange(value);
-      }, 300),
+      }, debounceTime),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );

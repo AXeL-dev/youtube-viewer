@@ -17,6 +17,7 @@ export function Sidebar(props: SidebarProps) {
       sx={{
         display: 'flex',
         flexDirection: 'column',
+        minWidth: 280,
         maxWidth: 280,
         backgroundColor: 'custom.lightGrey',
         borderRight: 1,

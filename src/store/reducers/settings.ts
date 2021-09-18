@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { HomeView, Settings } from 'models';
+import { HomeView, Settings } from 'types';
 
 export const defaultSettings = {
   defaultView: HomeView.All,

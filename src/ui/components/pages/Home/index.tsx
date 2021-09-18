@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from './Tab';
 import { Layout } from 'ui/components/shared';
-import { HomeView } from 'models';
+import { HomeView } from 'types';
 
 interface HomeProps {}
 

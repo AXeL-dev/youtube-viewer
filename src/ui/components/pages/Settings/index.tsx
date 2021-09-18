@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
-import { HomeView, SettingType } from 'models';
+import { HomeView, SettingType } from 'types';
 import Field from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
@@ -48,7 +48,7 @@ export function Settings(props: SettingsProps) {
         />
         <Field
           label="Youtube API key"
-          placeholder="__________-______-_____________________"
+          placeholder="_______________________________________"
           description={
             <span>
               Don't have an API key yet?{' '}

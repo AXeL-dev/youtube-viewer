@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { Box, Typography } from '@mui/material';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { SettingType } from 'models';
+import { SettingType } from 'types';
 import Input from './Input';
 import Switch from './Switch';
 import Select from './Select';

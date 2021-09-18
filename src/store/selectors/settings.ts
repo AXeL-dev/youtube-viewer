@@ -1,6 +1,6 @@
 import type { RootState } from 'store';
 import { createSelector } from 'reselect';
-import { Settings } from 'models';
+import { Settings } from 'types';
 
 export const selectSettings = (state: RootState) => state.settings;
 

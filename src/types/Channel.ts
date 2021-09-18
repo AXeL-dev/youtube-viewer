@@ -4,8 +4,8 @@ export interface Channel {
   title: string;
   url: string;
   description: string;
-  isHidden: boolean;
-  notifications: ChannelNotifications;
+  isHidden?: boolean;
+  notifications?: ChannelNotifications;
 }
 
 export interface ChannelNotifications {

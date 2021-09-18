@@ -3,12 +3,15 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import settingsReducer, { setSettings } from './reducers/settings';
 import storage from 'helpers/storage';
 import { debounce } from 'helpers/utils';
+import { youtubeApi } from './services/youtube';
 
 const stateKey = 'APP_YOUTUBE_VIEWER';
 const store = configureStore({
   reducer: {
     settings: settingsReducer,
+    [youtubeApi.reducerPath]: youtubeApi.reducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(youtubeApi.middleware),
 });
 
 store.subscribe(
