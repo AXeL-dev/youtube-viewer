@@ -39,10 +39,12 @@ export default function Header(props: HeaderProps) {
             variant="caption"
             sx={{
               marginLeft: 1,
-              backgroundColor: 'custom.silver',
+              bgcolor: (theme) =>
+                theme.palette.mode === 'light' ? '#eee' : 'transparent',
               padding: '3px 6px',
               border: 1,
-              borderColor: 'custom.transparentBorder',
+              borderColor: (theme) =>
+                theme.palette.mode === 'light' ? 'transparent' : 'divider',
               borderRadius: '4px',
               color: 'text.primary',
               fontSize: '0.75rem',

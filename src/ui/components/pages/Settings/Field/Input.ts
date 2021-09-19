@@ -6,7 +6,11 @@ const Input = styled(InputBase)(({ theme }) => ({
     borderRadius: 4,
     position: 'relative',
     backgroundColor: theme.palette.background.default,
-    border: `1px solid ${theme.palette.custom.greyBorder}`,
+    border: `1px solid ${
+      theme.palette.mode === 'light'
+        ? 'rgba(0, 0, 0, 0.23)'
+        : 'rgba(255, 255, 255, 0.23)'
+    }`,
     fontSize: '0.9rem',
     width: 'auto',
     minWidth: 320,

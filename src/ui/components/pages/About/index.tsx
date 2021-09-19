@@ -20,7 +20,8 @@ export function About(props: AboutProps) {
     <Layout>
       <Box
         sx={{
-          bgcolor: 'custom.grey',
+          bgcolor: (theme) =>
+            theme.palette.mode === 'light' ? '#f4f4f4' : 'transparent',
           flexGrow: 1,
           display: 'flex',
           alignItems: 'center',
@@ -52,7 +53,8 @@ export function About(props: AboutProps) {
               sx={{
                 display: 'flex',
                 gap: 1.5,
-                color: 'custom.darkGrey',
+                color: (theme) =>
+                  theme.palette.mode === 'light' ? 'grey.800' : 'grey.100',
                 mt: 4,
               }}
             >
