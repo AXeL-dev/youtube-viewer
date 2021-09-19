@@ -17,6 +17,8 @@ import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
 import { moveChannel } from 'store/reducers/channels';
+import { downloadFile } from 'helpers/file';
+import { NoChannels } from './NoChannels';
 
 interface ChannelsProps {}
 
@@ -33,6 +35,12 @@ export function Channels(props: ChannelsProps) {
 
   const toggleDragHandles = () => {
     setShowDragHandles(!showDragHandles);
+  };
+
+  const exportChannels = () => {
+    const data = JSON.stringify(channels, null, 4);
+    const file = new Blob([data], { type: 'text/json' });
+    downloadFile(file, 'channels.json');
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -77,7 +85,7 @@ export function Channels(props: ChannelsProps) {
             clearable
           />
         </Box>
-        <Fade in={!isSearchActive} appear={channels.length > 1}>
+        <Fade in={!isSearchActive && channels.length > 1}>
           <Tooltip title="Toggle drag handles" placement="left" arrow>
             <IconButton
               sx={showDragHandles ? { bgcolor: 'action.selected' } : {}}
@@ -88,9 +96,9 @@ export function Channels(props: ChannelsProps) {
             </IconButton>
           </Tooltip>
         </Fade>
-        <Fade in={!isSearchActive} appear={channels.length > 0}>
+        <Fade in={!isSearchActive && channels.length > 0}>
           <Tooltip title="Export" placement="left" arrow>
-            <IconButton aria-label="export">
+            <IconButton aria-label="export" onClick={exportChannels}>
               <DownloadIcon />
             </IconButton>
           </Tooltip>
@@ -98,7 +106,7 @@ export function Channels(props: ChannelsProps) {
       </Box>
       {search ? (
         <ChannelResults search={search} />
-      ) : (
+      ) : channels.length > 0 ? (
         <Box sx={{ px: 3, overflow: 'auto' }}>
           <DndContext
             collisionDetection={closestCenter}
@@ -112,6 +120,8 @@ export function Channels(props: ChannelsProps) {
             </SortableContext>
           </DndContext>
         </Box>
+      ) : (
+        <NoChannels />
       )}
     </Layout>
   );
