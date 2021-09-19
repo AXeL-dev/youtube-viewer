@@ -1194,6 +1194,45 @@
   "resolved" "https://registry.npmjs.org/@csstools/normalize.css/-/normalize.css-10.1.0.tgz"
   "version" "10.1.0"
 
+"@dnd-kit/accessibility@^3.0.0":
+  "integrity" "sha512-QwaQ1IJHQHMMuAGOOYHQSx7h7vMZPfO97aDts8t5N/MY7n2QTDSnW+kF7uRQ1tVBkr6vJ+BqHWG5dlgGvwVjow=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/accessibility/-/accessibility-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
+"@dnd-kit/core@^3.1.0", "@dnd-kit/core@^3.1.1":
+  "integrity" "sha512-18YY5+1lTqJbGSg6JBSa/fjAOTUYAysFrQ5Ti8oppEPHFacQbC+owM51y2z2KN0LkDHBfGZKw2sFT7++ttwfpA=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/core/-/core-3.1.1.tgz"
+  "version" "3.1.1"
+  dependencies:
+    "@dnd-kit/accessibility" "^3.0.0"
+    "@dnd-kit/utilities" "^2.0.0"
+    "tslib" "^2.0.0"
+
+"@dnd-kit/modifiers@^3.0.0":
+  "integrity" "sha512-CmskqOcW4Bw61JP1Lqkx7cRzv9xQS/5seI+Q5eKhx+mS/MA5IrX2jgtMxvQ6PKYDnx2v/uHxqLNVhlvumtBTSQ=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/modifiers/-/modifiers-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "@dnd-kit/utilities" "^2.0.0"
+    "tslib" "^2.0.0"
+
+"@dnd-kit/sortable@^4.0.0":
+  "integrity" "sha512-teYVFy6mQG/u6F6CaGxAkzPfiNJvguFzWfJ/zonYQRxfANHX6QJ6GziMG9KON/Ae9Q2ODJP8vib+guWJrDXeGg=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/sortable/-/sortable-4.0.0.tgz"
+  "version" "4.0.0"
+  dependencies:
+    "@dnd-kit/utilities" "^2.0.0"
+    "tslib" "^2.0.0"
+
+"@dnd-kit/utilities@^2.0.0":
+  "integrity" "sha512-bjs49yMNzMM+BYRsBUhTqhTk6HEvhuY3leFt6Em6NaYGgygaMbtGbbXof/UXBv7rqyyi0OkmBBnrCCcxqS2t/g=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/utilities/-/utilities-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
 "@emotion/babel-plugin@^11.3.0":
   "integrity" "sha512-UZKwBV2rADuhRp+ZOGgNWg2eYgbzKzQXfQPtJbu/PLy8onurxlNCLvxMQEvlr1/GudguPI5IU9qIY1+2z1M5bA=="
   "resolved" "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.3.0.tgz"
@@ -10414,7 +10453,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@*", "react-dom@^17.0.2", "react-dom@>=16.6.0":
+"react-dom@*", "react-dom@^17.0.2", "react-dom@>=16.6.0", "react-dom@>=16.8.0":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -12378,7 +12417,7 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   "version" "1.14.1"
 
-"tslib@^2.0.3", "tslib@~2.1.0":
+"tslib@^2.0.0", "tslib@^2.0.3", "tslib@~2.1.0":
   "integrity" "sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A=="
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.1.0.tgz"
   "version" "2.1.0"

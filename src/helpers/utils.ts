@@ -269,14 +269,14 @@ export function throttle(callback: Function, timeFrame: number) {
  */
 export function debounce(callback: Function, wait: number, immediate?: boolean) {
   let timeout: any = null;
-  return function(this: any, ...args: any) {
-  	const context = this;
-  	clearTimeout(timeout);
-  	timeout = setTimeout(function() {
-  		timeout = null;
-  		if (!immediate) callback.apply(context, args);
-  	}, wait);
-  	if (immediate && !timeout) callback.apply(context, args);
+  return function (this: any, ...args: any) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      timeout = null;
+      if (!immediate) callback.apply(context, args);
+    }, wait);
+    if (immediate && !timeout) callback.apply(context, args);
   };
 }
 
@@ -289,4 +289,21 @@ export function debounce(callback: Function, wait: number, immediate?: boolean) 
  */
 export function generateGuid() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
+// -------------------------------------------------------------------
+
+/**
+ * A little function to help us with reordering lists
+ *
+ * @param list
+ * @param currentIndex
+ * @param newIndex
+ */
+export function reorder<T>(list: T[], currentIndex: number, newIndex: number): T[] {
+  const result = Array.from(list);
+  const [removed] = result.splice(currentIndex, 1);
+  result.splice(newIndex, 0, removed);
+
+  return result;
 }

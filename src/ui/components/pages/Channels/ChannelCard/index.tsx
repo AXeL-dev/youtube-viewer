@@ -1,53 +1,193 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
+import Collapse from '@mui/material/Collapse';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Channel } from 'types';
 import ChannelPicture from './ChannelPicture';
 import ChannelTitle from './ChannelTitle';
+import StyledMenu from './StyledMenu';
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
+import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { useAppDispatch } from 'store';
+import { removeChannel, toggleChannel, toggleChannelNotifications } from 'store/reducers/channels';
+import RemoveChannelDialog from './RemoveChannelDialog';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ChannelCardProps {
   channel: Channel;
+  showDragHandle?: boolean;
 }
 
 export default function ChannelCard(props: ChannelCardProps) {
-  const { channel } = props;
+  const { channel, showDragHandle } = props;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openedDialog, setOpenedDialog] = useState<null | string>(null);
+  const dispatch = useAppDispatch();
+  const isMenuOpen = Boolean(anchorEl);
+  const { attributes, listeners, setNodeRef, transform, transition, active, isDragging } = useSortable({
+    id: channel.id,
+  });
+
+  const style = {
+    position: 'relative',
+    zIndex: isDragging ? 1 : 'auto',
+    transition: active ? transition : 'none',
+    transform: CSS.Transform.toString(transform),
+  } as React.CSSProperties;
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <Card
-      sx={{
-        width: '100%',
-        boxShadow: 'none',
-        borderBottom: 1,
-        borderColor: 'divider',
-        borderRadius: 'unset',
-        backgroundImage: 'none',
-        backgroundColor: 'transparent',
-      }}
-    >
-      <CardHeader
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <Card
         sx={{
-          pt: 2.5,
-          pl: 0,
-          pr: 1,
-          '& .MuiCardHeader-title': {
-            fontSize: '0.975rem',
-            mb: 0.25,
-          },
-          '& .MuiCardHeader-action': {
-            ml: 2,
-          },
+          width: '100%',
+          boxShadow: 'none',
+          borderBottom: 1,
+          borderColor: 'divider',
+          borderRadius: 'unset',
+          backgroundImage: 'none',
+          backgroundColor: 'background.default',
         }}
-        avatar={<ChannelPicture channel={channel} />}
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={<ChannelTitle channel={channel} />}
-        subheader={channel.description}
+      >
+        <CardHeader
+          sx={{
+            pt: 2.5,
+            pl: 0,
+            pr: 1,
+            '& .MuiCardHeader-title': {
+              fontSize: '0.975rem',
+              mb: 0.25,
+            },
+            '& .MuiCardHeader-action': {
+              ml: 2,
+            },
+            ...(channel.isHidden
+              ? {
+                  '& .MuiCardHeader-avatar': {
+                    opacity: 0.5,
+                  },
+                  '& .MuiCardHeader-content': {
+                    textDecoration: 'line-through',
+                    opacity: 0.5,
+                  },
+                }
+              : {}),
+          }}
+          avatar={
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Collapse in={showDragHandle} appear={showDragHandle} orientation="horizontal">
+                <IconButton sx={{ cursor: 'move' }} aria-label="drag-handle" {...listeners}>
+                  <DragIndicatorIcon />
+                </IconButton>
+              </Collapse>
+              <ChannelPicture channel={channel} />
+            </Box>
+          }
+          action={
+            <>
+              <IconButton
+                id="channel-settings-button"
+                aria-controls="channel-settings-menu"
+                aria-haspopup="true"
+                aria-expanded={isMenuOpen ? 'true' : undefined}
+                aria-label="settings"
+                onClick={handleMenuClick}
+              >
+                <MoreVertIcon />
+              </IconButton>
+              <StyledMenu
+                id="channel-settings-menu"
+                MenuListProps={{
+                  'aria-labelledby': 'channel-settings-button',
+                }}
+                anchorEl={anchorEl}
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+              >
+                <MenuItem
+                  onClick={() => {
+                    dispatch(toggleChannelNotifications(channel));
+                    handleMenuClose();
+                  }}
+                  disableRipple
+                >
+                  {channel.notifications?.isDisabled ? (
+                    <>
+                      <NotificationsActiveOutlinedIcon />
+                      Enable notifications
+                    </>
+                  ) : (
+                    <>
+                      <NotificationsOffOutlinedIcon />
+                      Disable notifications
+                    </>
+                  )}
+                </MenuItem>
+                <Divider sx={{ my: 0.5 }} />
+                <MenuItem
+                  onClick={() => {
+                    dispatch(toggleChannel(channel));
+                    handleMenuClose();
+                  }}
+                  disableRipple
+                >
+                  {channel.isHidden ? (
+                    <>
+                      <VisibilityOutlinedIcon />
+                      Unhide
+                    </>
+                  ) : (
+                    <>
+                      <VisibilityOffOutlinedIcon />
+                      Hide
+                    </>
+                  )}
+                </MenuItem>
+                <MenuItem
+                  sx={{ color: 'primary.main' }}
+                  onClick={() => {
+                    setOpenedDialog('remove-channel');
+                    handleMenuClose();
+                  }}
+                  disableRipple
+                >
+                  <DeleteOutlineOutlinedIcon className="inherit-color" />
+                  Remove
+                </MenuItem>
+              </StyledMenu>
+            </>
+          }
+          title={<ChannelTitle channel={channel} />}
+          subheader={channel.description}
+        />
+      </Card>
+      <RemoveChannelDialog
+        open={openedDialog === 'remove-channel'}
+        channel={channel}
+        onClose={(confirmed) => {
+          if (confirmed) {
+            dispatch(removeChannel(channel));
+          }
+          setOpenedDialog(null);
+        }}
       />
-    </Card>
+    </div>
   );
 }
