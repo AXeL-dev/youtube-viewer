@@ -40,26 +40,54 @@ export function About(props: AboutProps) {
             }}
           >
             <Logo size={60} sx={{ mb: 3 }} />
-            <Typography sx={{ fontSize: '1.25rem', mb: 1 }} variant="h5" color="text.primary">
+            <Typography
+              sx={{ fontSize: '1.25rem', mb: 1 }}
+              variant="h5"
+              color="text.primary"
+            >
               Youtube viewer
             </Typography>
             <Credit author="AXeL" />
-            <Box sx={{ display: 'flex', gap: 1.5, color: 'custom.darkGrey', mt: 4 }}>
-              <SocialLink tooltip="Gmail" href="mailto:contact.axel.dev@gmail.com">
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 1.5,
+                color: 'custom.darkGrey',
+                mt: 4,
+              }}
+            >
+              <SocialLink
+                tooltip="Gmail"
+                href="mailto:contact.axel.dev@gmail.com"
+              >
                 <MailIcon />
               </SocialLink>
-              <SocialLink tooltip="Discord" href="https://discord.gg/rpD4fgxBgj">
+              <SocialLink
+                tooltip="Discord"
+                href="https://discord.gg/rpD4fgxBgj"
+              >
                 <ForumIcon />
               </SocialLink>
-              <SocialLink tooltip="Github" href="https://github.com/AXeL-dev/youtube-viewer">
+              <SocialLink
+                tooltip="Github"
+                href="https://github.com/AXeL-dev/youtube-viewer"
+              >
                 <GitHubIcon />
               </SocialLink>
             </Box>
           </CardContent>
           <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
-            <Link href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors" target="_blank" rel="noopener">
+            <Link
+              href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors"
+              target="_blank"
+              rel="noopener"
+            >
               <Button
-                sx={{ fontSize: '0.875rem', fontWeight: 400, textTransform: 'capitalize' }}
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 400,
+                  textTransform: 'capitalize',
+                }}
                 size="small"
                 color="secondary"
               >
@@ -69,7 +97,11 @@ export function About(props: AboutProps) {
           </CardActions>
           <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Button
-              sx={{ fontSize: '0.875rem', fontWeight: 400, textTransform: 'capitalize' }}
+              sx={{
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                textTransform: 'capitalize',
+              }}
               size="small"
               color="secondary"
             >

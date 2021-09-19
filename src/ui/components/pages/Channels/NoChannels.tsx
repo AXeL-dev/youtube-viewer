@@ -29,7 +29,15 @@ export function NoChannels(props: NoChannelsProps) {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
       <Typography variant="h5" gutterBottom>
         No channels found.
       </Typography>

@@ -31,9 +31,20 @@ export default function RemoveChannelDialog(props: RemoveChannelDialogProps) {
       <DialogContent>
         <Box sx={{ display: 'flex' }}>
           <ChannelPicture channel={channel} />
-          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', px: 2 }}>
-            <DialogTitle sx={{ px: 0, pt: 0 }}>Remove {channel.title}'s channel ?</DialogTitle>
-            <DialogContentText>Are you sure that you want to remove this channel?</DialogContentText>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              px: 2,
+            }}
+          >
+            <DialogTitle sx={{ px: 0, pt: 0 }}>
+              Remove {channel.title}'s channel ?
+            </DialogTitle>
+            <DialogContentText>
+              Are you sure that you want to remove this channel?
+            </DialogContentText>
           </Box>
         </Box>
       </DialogContent>

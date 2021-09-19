@@ -4,7 +4,12 @@ import { Channel } from 'types';
 
 export const selectChannels = (state: RootState) => state.channels.list;
 
-export const selectChannelsCount = createSelector(selectChannels, (channels) => channels.length);
+export const selectChannelsCount = createSelector(
+  selectChannels,
+  (channels) => channels.length
+);
 
 export const selectChannel = (channel: Channel) =>
-  createSelector(selectChannels, (channels) => channels.find((c: Channel) => c.id === channel.id));
+  createSelector(selectChannels, (channels) =>
+    channels.find((c: Channel) => c.id === channel.id)
+  );

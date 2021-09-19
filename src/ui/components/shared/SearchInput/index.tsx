@@ -15,7 +15,14 @@ interface SearchInputProps {
 }
 
 export function SearchInput(props: SearchInputProps) {
-  const { placeholder = 'Search…', width: maxWidth, clearable, debounceTime = 300, onChange, onClear } = props;
+  const {
+    placeholder = 'Search…',
+    width: maxWidth,
+    clearable,
+    debounceTime = 300,
+    onChange,
+    onClear,
+  } = props;
   const [value, setValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +84,14 @@ export function SearchInput(props: SearchInputProps) {
       />
       {clearable && value?.length > 0 ? (
         <IconButton
-          sx={{ position: 'absolute', right: 0, top: 0, my: 0.75, mx: 1, color: 'action.active' }}
+          sx={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            my: 0.75,
+            mx: 1,
+            color: 'action.active',
+          }}
           aria-label="clear"
           size="small"
           onClick={handleClear}

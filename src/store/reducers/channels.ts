@@ -28,7 +28,10 @@ export const channelsSlice = createSlice({
       const { id } = action.payload;
       state.list = state.list.filter((channel: Channel) => channel.id !== id);
     },
-    moveChannel: (state, action: PayloadAction<{ from: number; to: number }>) => {
+    moveChannel: (
+      state,
+      action: PayloadAction<{ from: number; to: number }>
+    ) => {
       const { from, to } = action.payload;
       state.list = arrayMove(state.list, from, to);
     },
@@ -45,14 +48,22 @@ export const channelsSlice = createSlice({
       if (found) {
         found.notifications = {
           ...found.notifications,
-          isDisabled: found.notifications ? !found.notifications.isDisabled : true,
+          isDisabled: found.notifications
+            ? !found.notifications.isDisabled
+            : true,
         };
       }
     },
   },
 });
 
-export const { setChannels, addChannel, removeChannel, moveChannel, toggleChannel, toggleChannelNotifications } =
-  channelsSlice.actions;
+export const {
+  setChannels,
+  addChannel,
+  removeChannel,
+  moveChannel,
+  toggleChannel,
+  toggleChannelNotifications,
+} = channelsSlice.actions;
 
 export default channelsSlice.reducer;

@@ -18,7 +18,12 @@ export function Home(props: HomeProps) {
     <Layout>
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs sx={{ pt: 1, px: 3 }} value={activeTab} onChange={handleTabChange} aria-label="tabs">
+          <Tabs
+            sx={{ pt: 1, px: 3 }}
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="tabs"
+          >
             <Tab label="All" value={HomeView.All} />
             <Tab label="Recent" value={HomeView.Recent} />
             <Tab label="Watch later" value={HomeView.WatchLater} />

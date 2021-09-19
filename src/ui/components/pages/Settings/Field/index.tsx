@@ -26,11 +26,27 @@ interface FieldProps {
 }
 
 export default function Field(props: FieldProps) {
-  const { label, description, placeholder, options = [], value, type, noBorder, onChange } = props;
+  const {
+    label,
+    description,
+    placeholder,
+    options = [],
+    value,
+    type,
+    noBorder,
+    onChange,
+  } = props;
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent) => {
+  const handleChange = (
+    event:
+      | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent
+  ) => {
     if (onChange) {
-      const value = type === SettingType.Boolean ? (event.target as HTMLInputElement).checked : event.target.value;
+      const value =
+        type === SettingType.Boolean
+          ? (event.target as HTMLInputElement).checked
+          : event.target.value;
       onChange(value);
     }
   };
@@ -62,9 +78,19 @@ export default function Field(props: FieldProps) {
           </Typography>
         ) : null}
       </Box>
-      {type === SettingType.String ? <Input value={value} placeholder={placeholder} onChange={handleChange} /> : null}
+      {type === SettingType.String ? (
+        <Input
+          value={value}
+          placeholder={placeholder}
+          onChange={handleChange}
+        />
+      ) : null}
       {type === SettingType.Boolean ? (
-        <Switch checked={value as boolean} onChange={handleChange} inputProps={{ 'aria-label': 'checkbox' }} />
+        <Switch
+          checked={value as boolean}
+          onChange={handleChange}
+          inputProps={{ 'aria-label': 'checkbox' }}
+        />
       ) : null}
       {type === SettingType.List ? (
         <Select value={value as string} size="small" onChange={handleChange}>

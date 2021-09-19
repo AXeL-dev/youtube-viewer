@@ -13,7 +13,8 @@ const store = configureStore({
     channels: channelsReducer,
     [youtubeApi.reducerPath]: youtubeApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(youtubeApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(youtubeApi.middleware),
 });
 
 store.subscribe(

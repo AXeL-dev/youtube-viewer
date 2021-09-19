@@ -10,7 +10,9 @@ export function Layout({ children }: LayoutProps) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
       <Sidebar />
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>{children}</Box>
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {children}
+      </Box>
     </Box>
   );
 }

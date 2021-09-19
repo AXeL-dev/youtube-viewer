@@ -19,9 +19,9 @@ export default function ListItemLink(props: ListItemLinkProps) {
 
   const renderLink = React.useMemo(
     () =>
-      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>((itemProps, ref) => (
-        <Link to={to} ref={ref} {...itemProps} />
-      )),
+      React.forwardRef<HTMLAnchorElement, Omit<LinkProps, 'to'>>(
+        (itemProps, ref) => <Link to={to} ref={ref} {...itemProps} />
+      ),
     [to]
   );
 

@@ -11,7 +11,11 @@ interface ChannelResultsProps {
 
 export default function ChannelResults(props: ChannelResultsProps) {
   const { search } = props;
-  const { data: results = [], error, isLoading } = useFindChannelByNameQuery({ name: search }, { skip: search === '' });
+  const {
+    data: results = [],
+    error,
+    isLoading,
+  } = useFindChannelByNameQuery({ name: search }, { skip: search === '' });
 
   return error ? (
     <Alert error={error} closable />

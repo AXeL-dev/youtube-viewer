@@ -28,16 +28,44 @@ export function Sidebar(props: SidebarProps) {
         borderColor: 'divider',
       }}
     >
-      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', py: 2.5, pl: 3 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          py: 2.5,
+          pl: 3,
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 6,
+          }}
+        >
           <Header showVersion />
         </Box>
         <Box sx={{ flexGrow: 1, paddingLeft: 1, width: '100%' }}>
           <List component="nav" aria-label="main">
             <ListItemLink icon={<ExploreIcon />} text="Home" to="/" />
-            <ListItemLink icon={<SubscriptionsIcon />} text="Channels" to="/channels" badge={channelsCount} />
-            <ListItemLink icon={<SettingsIcon />} text="Settings" to="/settings" />
-            <ListItemLink icon={<InfoOutlinedIcon />} text="About" to="/about" />
+            <ListItemLink
+              icon={<SubscriptionsIcon />}
+              text="Channels"
+              to="/channels"
+              badge={channelsCount}
+            />
+            <ListItemLink
+              icon={<SettingsIcon />}
+              text="Settings"
+              to="/settings"
+            />
+            <ListItemLink
+              icon={<InfoOutlinedIcon />}
+              text="About"
+              to="/about"
+            />
           </List>
         </Box>
       </Box>
@@ -51,7 +79,11 @@ export function Sidebar(props: SidebarProps) {
           borderColor: 'divider',
         }}
       >
-        <Typography sx={{ fontSize: '0.8rem', mb: 1 }} variant="caption" color="text.secondary">
+        <Typography
+          sx={{ fontSize: '0.8rem', mb: 1 }}
+          variant="caption"
+          color="text.secondary"
+        >
           Facing issues or have some feedback?
         </Typography>
         <Link

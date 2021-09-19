@@ -267,7 +267,11 @@ export function throttle(callback: Function, timeFrame: number) {
  * @param wait
  * @param immediate
  */
-export function debounce(callback: Function, wait: number, immediate?: boolean) {
+export function debounce(
+  callback: Function,
+  wait: number,
+  immediate?: boolean
+) {
   let timeout: any = null;
   return function (this: any, ...args: any) {
     const context = this;
@@ -288,7 +292,10 @@ export function debounce(callback: Function, wait: number, immediate?: boolean) 
  * Stolen from: https://stackoverflow.com/a/13403498
  */
 export function generateGuid() {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return (
+    Math.random().toString(36).substring(2, 15) +
+    Math.random().toString(36).substring(2, 15)
+  );
 }
 
 // -------------------------------------------------------------------
@@ -300,7 +307,11 @@ export function generateGuid() {
  * @param currentIndex
  * @param newIndex
  */
-export function reorder<T>(list: T[], currentIndex: number, newIndex: number): T[] {
+export function reorder<T>(
+  list: T[],
+  currentIndex: number,
+  newIndex: number
+): T[] {
   const result = Array.from(list);
   const [removed] = result.splice(currentIndex, 1);
   result.splice(newIndex, 0, removed);
