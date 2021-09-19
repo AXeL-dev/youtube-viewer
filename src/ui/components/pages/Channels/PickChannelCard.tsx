@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
+import { Box, Card, CardHeader, Tooltip, IconButton } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { Channel } from 'types';
 import { useAppSelector } from 'store';
@@ -24,12 +20,11 @@ export default function PickChannelCard(props: PickChannelCardProps) {
   const dispatch = useAppDispatch();
 
   return (
-    <Box sx={{ display: 'flex', borderBottom: 1, borderColor: 'divider' }}>
+    <Box sx={{ display: 'flex' }}>
       <Card
-        variant="outlined"
+        elevation={0}
         sx={{
           flexGrow: 1,
-          border: 'none',
           backgroundColor: 'transparent',
         }}
       >

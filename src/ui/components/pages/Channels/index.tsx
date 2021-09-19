@@ -1,13 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { Layout, SearchInput } from 'ui/components/shared';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
+import {
+  Box,
+  IconButton,
+  Fade,
+  Collapse,
+  Tooltip,
+  Stack,
+  Divider,
+} from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import Fade from '@mui/material/Fade';
-import Collapse from '@mui/material/Collapse';
-import Tooltip from '@mui/material/Tooltip';
 import ChannelResults from './ChannelResults';
 import ChannelCard from './ChannelCard';
 import { Channel } from 'types';
@@ -60,19 +64,16 @@ export function Channels(props: ChannelsProps) {
     };
 
     return (
-      <Box sx={{ px: 3, overflow: 'auto' }}>
-        <DndContext
-          collisionDetection={closestCenter}
-          modifiers={[
-            restrictToVerticalAxis,
-            restrictToFirstScrollableAncestor,
-          ]}
-          onDragEnd={handleDragEnd}
+      <DndContext
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={channels}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={channels}
-            strategy={verticalListSortingStrategy}
-          >
+          <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
             {channels.map((channel: Channel, index: number) => (
               <ChannelCard
                 key={index}
@@ -80,9 +81,9 @@ export function Channels(props: ChannelsProps) {
                 showDragHandle={showDragHandles}
               />
             ))}
-          </SortableContext>
-        </DndContext>
-      </Box>
+          </Stack>
+        </SortableContext>
+      </DndContext>
     );
   }, [channels, showDragHandles, dispatch]);
 
@@ -92,12 +93,12 @@ export function Channels(props: ChannelsProps) {
         sx={{
           display: 'flex',
           alignItems: 'center',
+          borderBottom: 1,
+          borderColor: 'divider',
           gap: 2,
           py: 1.5,
           pr: 4,
           pl: 3,
-          borderBottom: 1,
-          borderColor: 'divider',
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex' }}>

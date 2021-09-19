@@ -1,5 +1,5 @@
 import React from 'react';
-import Box from '@mui/material/Box';
+import { Box } from '@mui/material';
 import { SxProps } from '@mui/system/styleFunctionSx';
 import { Theme } from '@mui/material/styles';
 

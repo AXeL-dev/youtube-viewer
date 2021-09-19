@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import MuiAlert, { AlertColor } from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
+import { IconButton, Collapse } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { RawHTML } from '../RawHTML';
 

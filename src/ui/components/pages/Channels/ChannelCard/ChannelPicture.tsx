@@ -1,7 +1,5 @@
 import React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Link from '@mui/material/Link';
-import Fade from '@mui/material/Fade';
+import { Avatar, Link, Fade } from '@mui/material';
 import { Channel } from 'types';
 
 interface ChannelPictureProps {

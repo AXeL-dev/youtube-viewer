@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import IconButton from '@mui/material/IconButton';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import Collapse from '@mui/material/Collapse';
+import {
+  Box,
+  Card,
+  CardHeader,
+  IconButton,
+  MenuItem,
+  Divider,
+  Collapse,
+} from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Channel } from 'types';
 import ChannelPicture from './ChannelPicture';
@@ -68,10 +70,9 @@ export default function ChannelCard(props: ChannelCardProps) {
   const renderCard = useMemo(
     () => (
       <Card
-        variant="outlined"
+        elevation={0}
         sx={{
           flexGrow: 1,
-          border: 'none',
           backgroundColor: 'background.default',
         }}
       >
@@ -189,8 +190,6 @@ export default function ChannelCard(props: ChannelCardProps) {
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          borderBottom: 1,
-          borderColor: 'divider',
         }}
         ref={setNodeRef}
         style={style}

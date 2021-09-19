@@ -1,6 +1,5 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Tabs from '@mui/material/Tabs';
+import { Box, Tabs } from '@mui/material';
 import Tab from './Tab';
 import { Layout } from 'ui/components/shared';
 import { HomeView } from 'types';

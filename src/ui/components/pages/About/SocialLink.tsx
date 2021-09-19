@@ -1,7 +1,5 @@
 import React from 'react';
-import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
-
+import { Link, Tooltip } from '@mui/material';
 interface SocialLinkProps {
   children: React.ReactNode;
   tooltip: string;

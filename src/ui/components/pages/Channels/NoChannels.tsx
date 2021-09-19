@@ -1,7 +1,5 @@
 import React, { useRef, MouseEvent, ChangeEvent } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import { Box, Typography, Button } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import { readFile } from 'helpers/file';
 import { useAppDispatch } from 'store';

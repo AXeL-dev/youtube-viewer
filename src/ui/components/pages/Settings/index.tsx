@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Link } from '@mui/material';
+import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView, SettingType } from 'types';
 import Field from './Field';
@@ -15,7 +15,7 @@ export function Settings(props: SettingsProps) {
 
   return (
     <Layout>
-      <Box sx={{ px: 3, overflow: 'auto' }}>
+      <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
         <Field
           label="Default view"
           value={settings.defaultView}
@@ -67,9 +67,8 @@ export function Settings(props: SettingsProps) {
             dispatch(setSettings({ apiKey }));
           }}
           type={SettingType.String}
-          noBorder
         />
-      </Box>
+      </Stack>
     </Layout>
   );
 }

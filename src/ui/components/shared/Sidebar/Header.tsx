@@ -1,6 +1,5 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { Box, Typography } from '@mui/material';
 import { Logo } from 'ui/components/shared';
 
 const { REACT_APP_NAME, REACT_APP_VERSION } = process.env;

@@ -1,6 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { Box, Typography } from '@mui/material';
-import { SelectChangeEvent } from '@mui/material/Select';
+import { Box, Typography, SelectChangeEvent } from '@mui/material';
 import { SettingType } from 'types';
 import Input from './Input';
 import Switch from './Switch';
@@ -21,7 +20,6 @@ interface FieldProps {
   options?: OptionType[];
   value: ValueType;
   type: SettingType;
-  noBorder?: boolean;
   onChange?: (value: any) => void;
 }
 
@@ -33,7 +31,6 @@ export default function Field(props: FieldProps) {
     options = [],
     value,
     type,
-    noBorder,
     onChange,
   } = props;
 
@@ -58,10 +55,7 @@ export default function Field(props: FieldProps) {
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
-        borderBottom: noBorder ? 0 : 1,
-        borderColor: 'divider',
         py: 2.5,
-        pr: 1,
       }}
     >
       <Box

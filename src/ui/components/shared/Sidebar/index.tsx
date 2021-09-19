@@ -1,13 +1,12 @@
 import React from 'react';
-import List from '@mui/material/List';
+import { Box, Typography, Link, List } from '@mui/material';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import ListItemLink from './ListItemLink';
 import Header from './Header';
-import { Box, Typography, Link } from '@mui/material';
-import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import { useAppSelector } from 'store';
 import { selectChannelsCount } from 'store/selectors/channels';
 

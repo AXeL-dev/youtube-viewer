@@ -1,12 +1,14 @@
 import React from 'react';
 import { Layout, Logo } from 'ui/components/shared';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import {
+  Box,
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  Typography,
+  Link,
+} from '@mui/material';
 import Credit from './Credit';
 import SocialLink from './SocialLink';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -80,6 +82,7 @@ export function About(props: AboutProps) {
           </CardContent>
           <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Link
+              sx={{ textDecoration: 'none' }}
               href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors"
               target="_blank"
               rel="noopener"

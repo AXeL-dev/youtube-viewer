@@ -1,6 +1,5 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import { LinearProgressProps } from '@mui/material/LinearProgress';
+import { Box, LinearProgressProps } from '@mui/material';
 import LinearProgress from './LinearProgress';
 
 export function ProgressBar(props: LinearProgressProps) {

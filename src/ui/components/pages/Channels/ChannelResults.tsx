@@ -1,5 +1,5 @@
 import React from 'react';
-import Box from '@mui/material/Box';
+import { Stack, Divider } from '@mui/material';
 import { Alert, ProgressBar } from 'ui/components/shared';
 import { useFindChannelByNameQuery } from 'store/services/youtube';
 import { Channel } from 'types';
@@ -22,10 +22,10 @@ export default function ChannelResults(props: ChannelResultsProps) {
   ) : isLoading ? (
     <ProgressBar variant="indeterminate" />
   ) : (
-    <Box sx={{ px: 3, overflow: 'auto' }}>
+    <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
       {results.map((channel: Channel, index: number) => (
         <PickChannelCard key={index} channel={channel} />
       ))}
-    </Box>
+    </Stack>
   );
 }
