@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -18,7 +18,11 @@ import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { useAppDispatch } from 'store';
-import { removeChannel, toggleChannel, toggleChannelNotifications } from 'store/reducers/channels';
+import {
+  removeChannel,
+  toggleChannel,
+  toggleChannelNotifications,
+} from 'store/reducers/channels';
 import RemoveChannelDialog from './RemoveChannelDialog';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -34,7 +38,15 @@ export default function ChannelCard(props: ChannelCardProps) {
   const [openedDialog, setOpenedDialog] = useState<null | string>(null);
   const dispatch = useAppDispatch();
   const isMenuOpen = Boolean(anchorEl);
-  const { attributes, listeners, setNodeRef, transform, transition, active, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    active,
+    isDragging,
+  } = useSortable({
     id: channel.id,
   });
 
@@ -53,16 +65,13 @@ export default function ChannelCard(props: ChannelCardProps) {
     setAnchorEl(null);
   };
 
-  return (
-    <div ref={setNodeRef} style={style} {...attributes}>
+  const renderCard = useMemo(
+    () => (
       <Card
+        variant="outlined"
         sx={{
-          width: '100%',
-          boxShadow: 'none',
-          borderBottom: 1,
-          borderColor: 'divider',
-          borderRadius: 'unset',
-          backgroundImage: 'none',
+          flexGrow: 1,
+          border: 'none',
           backgroundColor: 'background.default',
         }}
       >
@@ -90,16 +99,7 @@ export default function ChannelCard(props: ChannelCardProps) {
                 }
               : {}),
           }}
-          avatar={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Collapse in={showDragHandle} appear={showDragHandle} orientation="horizontal">
-                <IconButton sx={{ cursor: 'move' }} aria-label="drag-handle" {...listeners}>
-                  <DragIndicatorIcon />
-                </IconButton>
-              </Collapse>
-              <ChannelPicture channel={channel} />
-            </Box>
-          }
+          avatar={<ChannelPicture channel={channel} />}
           action={
             <>
               <IconButton
@@ -178,6 +178,39 @@ export default function ChannelCard(props: ChannelCardProps) {
           subheader={channel.description}
         />
       </Card>
+    ),
+    [channel, anchorEl, dispatch, isMenuOpen]
+  );
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+      >
+        <Collapse
+          in={showDragHandle}
+          appear={showDragHandle}
+          orientation="horizontal"
+        >
+          <IconButton
+            sx={{ cursor: 'move' }}
+            aria-label="drag-handle"
+            {...listeners}
+          >
+            <DragIndicatorIcon />
+          </IconButton>
+        </Collapse>
+        {renderCard}
+      </Box>
       <RemoveChannelDialog
         open={openedDialog === 'remove-channel'}
         channel={channel}
@@ -188,6 +221,6 @@ export default function ChannelCard(props: ChannelCardProps) {
           setOpenedDialog(null);
         }}
       />
-    </div>
+    </>
   );
 }

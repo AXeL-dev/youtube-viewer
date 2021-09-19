@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Layout, SearchInput } from 'ui/components/shared';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -14,8 +14,14 @@ import { Channel } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectChannels } from 'store/selectors/channels';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { restrictToVerticalAxis, restrictToFirstScrollableAncestor } from '@dnd-kit/modifiers';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  restrictToVerticalAxis,
+  restrictToFirstScrollableAncestor,
+} from '@dnd-kit/modifiers';
 import { moveChannel } from 'store/reducers/channels';
 import { downloadFile } from 'helpers/file';
 import { NoChannels } from './NoChannels';
@@ -43,14 +49,42 @@ export function Channels(props: ChannelsProps) {
     downloadFile(file, 'channels.json');
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (active.id !== over?.id) {
-      const from = channels.findIndex((channel: Channel) => channel.id === active.id);
-      const to = channels.findIndex((channel: Channel) => channel.id === over?.id);
-      dispatch(moveChannel({ from, to }));
-    }
-  };
+  const renderChannels = useMemo(() => {
+    const handleDragEnd = (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (active.id !== over?.id) {
+        const from = channels.findIndex((c: Channel) => c.id === active.id);
+        const to = channels.findIndex((c: Channel) => c.id === over?.id);
+        dispatch(moveChannel({ from, to }));
+      }
+    };
+
+    return (
+      <Box sx={{ px: 3, overflow: 'auto' }}>
+        <DndContext
+          collisionDetection={closestCenter}
+          modifiers={[
+            restrictToVerticalAxis,
+            restrictToFirstScrollableAncestor,
+          ]}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={channels}
+            strategy={verticalListSortingStrategy}
+          >
+            {channels.map((channel: Channel, index: number) => (
+              <ChannelCard
+                key={index}
+                channel={channel}
+                showDragHandle={showDragHandles}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </Box>
+    );
+  }, [channels, showDragHandles, dispatch]);
 
   return (
     <Layout>
@@ -67,9 +101,17 @@ export function Channels(props: ChannelsProps) {
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
-          <Collapse in={isSearchActive} appear={isSearchActive} orientation="horizontal">
+          <Collapse
+            in={isSearchActive}
+            appear={isSearchActive}
+            orientation="horizontal"
+          >
             <Tooltip title="Go back to channels list" placement="bottom" arrow>
-              <IconButton sx={{ mr: 2, bgcolor: 'custom.lightGrey' }} aria-label="show-list" onClick={showList}>
+              <IconButton
+                sx={{ mr: 2, bgcolor: 'custom.lightGrey' }}
+                aria-label="show-list"
+                onClick={showList}
+              >
                 <ArrowBackIcon />
               </IconButton>
             </Tooltip>
@@ -107,19 +149,7 @@ export function Channels(props: ChannelsProps) {
       {search ? (
         <ChannelResults search={search} />
       ) : channels.length > 0 ? (
-        <Box sx={{ px: 3, overflow: 'auto' }}>
-          <DndContext
-            collisionDetection={closestCenter}
-            modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={channels} strategy={verticalListSortingStrategy}>
-              {channels.map((channel: Channel, index: number) => (
-                <ChannelCard key={index} channel={channel} showDragHandle={showDragHandles} />
-              ))}
-            </SortableContext>
-          </DndContext>
-        </Box>
+        renderChannels
       ) : (
         <NoChannels />
       )}
