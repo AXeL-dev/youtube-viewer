@@ -1,34 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Layout, SearchInput } from 'ui/components/shared';
-import {
-  Box,
-  IconButton,
-  Fade,
-  Collapse,
-  Tooltip,
-  Stack,
-  Divider,
-} from '@mui/material';
+import { Box, IconButton, Fade, Collapse, Tooltip } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import ChannelResults from './ChannelResults';
-import ChannelCard from './ChannelCard';
-import { Channel } from 'types';
-import { useAppDispatch, useAppSelector } from 'store';
+import ChannelList from './ChannelList';
+import NoChannels from './NoChannels';
+import { useAppSelector } from 'store';
 import { selectChannels } from 'store/selectors/channels';
-import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import {
-  restrictToVerticalAxis,
-  restrictToFirstScrollableAncestor,
-} from '@dnd-kit/modifiers';
-import { moveChannel } from 'store/reducers/channels';
 import { downloadFile } from 'helpers/file';
-import { NoChannels } from './NoChannels';
 
 interface ChannelsProps {}
 
@@ -36,7 +17,6 @@ export function Channels(props: ChannelsProps) {
   const [search, setSearch] = useState('');
   const [showDragHandles, setShowDragHandles] = useState(false);
   const channels = useAppSelector(selectChannels);
-  const dispatch = useAppDispatch();
   const isSearchActive = Boolean(search);
 
   const showList = () => {
@@ -52,40 +32,6 @@ export function Channels(props: ChannelsProps) {
     const file = new Blob([data], { type: 'text/json' });
     downloadFile(file, 'channels.json');
   };
-
-  const renderChannels = useMemo(() => {
-    const handleDragEnd = (event: DragEndEvent) => {
-      const { active, over } = event;
-      if (active.id !== over?.id) {
-        const from = channels.findIndex((c: Channel) => c.id === active.id);
-        const to = channels.findIndex((c: Channel) => c.id === over?.id);
-        dispatch(moveChannel({ from, to }));
-      }
-    };
-
-    return (
-      <DndContext
-        collisionDetection={closestCenter}
-        modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
-        onDragEnd={handleDragEnd}
-      >
-        <SortableContext
-          items={channels}
-          strategy={verticalListSortingStrategy}
-        >
-          <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
-            {channels.map((channel: Channel, index: number) => (
-              <ChannelCard
-                key={index}
-                channel={channel}
-                showDragHandle={showDragHandles}
-              />
-            ))}
-          </Stack>
-        </SortableContext>
-      </DndContext>
-    );
-  }, [channels, showDragHandles, dispatch]);
 
   return (
     <Layout>
@@ -150,7 +96,7 @@ export function Channels(props: ChannelsProps) {
       {search ? (
         <ChannelResults search={search} />
       ) : channels.length > 0 ? (
-        renderChannels
+        <ChannelList channels={channels} showDragHandles={showDragHandles} />
       ) : (
         <NoChannels />
       )}

@@ -7,7 +7,7 @@ import { setChannels } from 'store/reducers/channels';
 
 interface NoChannelsProps {}
 
-export function NoChannels(props: NoChannelsProps) {
+export default function NoChannels(props: NoChannelsProps) {
   const fileInputRef = useRef(null);
   const dispatch = useAppDispatch();
 

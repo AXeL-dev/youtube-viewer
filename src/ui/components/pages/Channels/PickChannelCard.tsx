@@ -25,7 +25,7 @@ export default function PickChannelCard(props: PickChannelCardProps) {
         elevation={0}
         sx={{
           flexGrow: 1,
-          backgroundColor: 'transparent',
+          bgcolor: 'transparent',
         }}
       >
         <CardHeader

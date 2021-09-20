@@ -22,7 +22,7 @@ export function Sidebar(props: SidebarProps) {
         flexDirection: 'column',
         minWidth: 280,
         maxWidth: 280,
-        backgroundColor: 'custom.lightGrey',
+        bgcolor: 'custom.lightGrey',
         borderRight: 1,
         borderColor: 'divider',
       }}
