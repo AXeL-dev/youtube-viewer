@@ -48,11 +48,7 @@ export function Channels(props: ChannelsProps) {
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
-          <Collapse
-            in={isSearchActive}
-            appear={isSearchActive}
-            orientation="horizontal"
-          >
+          <Collapse in={isSearchActive} orientation="horizontal">
             <Tooltip title="Go back to channels list" placement="bottom" arrow>
               <IconButton
                 sx={{ mr: 2, bgcolor: 'custom.lightGrey' }}

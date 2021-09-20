@@ -8,7 +8,7 @@ import { setChannels } from 'store/reducers/channels';
 interface NoChannelsProps {}
 
 export default function NoChannels(props: NoChannelsProps) {
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useAppDispatch();
 
   const importChannels = (event: ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +54,7 @@ export default function NoChannels(props: NoChannelsProps) {
         variant="contained"
         color="secondary"
         onClick={() => {
-          (fileInputRef.current as any)?.click();
+          fileInputRef.current?.click();
         }}
       >
         Import channels
@@ -72,7 +72,7 @@ export default function NoChannels(props: NoChannelsProps) {
         }}
         accept=".json"
         onClick={(event: MouseEvent<HTMLInputElement>) => {
-          (event.target as any).value = '';
+          event.currentTarget.value = '';
         }}
         onChange={importChannels}
       />

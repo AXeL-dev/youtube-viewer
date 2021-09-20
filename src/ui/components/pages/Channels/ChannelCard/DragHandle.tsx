@@ -6,7 +6,11 @@ interface DragHandleProps {}
 
 function DragHandle(props: DragHandleProps) {
   return (
-    <IconButton sx={{ cursor: 'move' }} aria-label="drag-handle" {...props}>
+    <IconButton
+      sx={{ cursor: 'move', mr: 1.5 }}
+      aria-label="drag-handle"
+      {...props}
+    >
       <DragIndicatorIcon />
     </IconButton>
   );

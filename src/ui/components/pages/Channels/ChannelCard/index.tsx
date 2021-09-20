@@ -64,7 +64,6 @@ const ChannelCard = React.forwardRef(
               display: 'flex',
               alignItems: 'center',
               bgcolor: 'background.default',
-              gap: 1.5,
             }}
           >
             {isOverlay ? (

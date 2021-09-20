@@ -11,7 +11,12 @@ export default function ChannelPicture(props: ChannelPictureProps) {
 
   return (
     <Fade in={true}>
-      <Link href={channel.url} target="_blank" rel="noopener">
+      <Link
+        sx={{ textDecoration: 'none' }}
+        href={channel.url}
+        target="_blank"
+        rel="noopener"
+      >
         <Avatar
           sx={{
             width: 60,
