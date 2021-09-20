@@ -1,33 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Paper,
-  Card,
-  CardHeader,
-  IconButton,
-  MenuItem,
-  Divider,
-  Collapse,
-} from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import React from 'react';
+import { Box, Paper, Card, CardHeader, Collapse } from '@mui/material';
 import { Channel } from 'types';
 import ChannelPicture from './ChannelPicture';
 import ChannelTitle from './ChannelTitle';
-import StyledMenu from './StyledMenu';
-import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
-import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { useAppDispatch } from 'store';
-import {
-  removeChannel,
-  toggleChannel,
-  toggleChannelNotifications,
-} from 'store/reducers/channels';
-import RemoveChannelDialog from './RemoveChannelDialog';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
+import ChannelActions from './ChannelActions';
+import DragHandle from './DragHandle';
 
 export interface ChannelCardProps {
   channel: Channel;
@@ -40,85 +18,6 @@ export interface ChannelCardProps {
 const ChannelCard = React.forwardRef(
   (props: ChannelCardProps, ref: React.LegacyRef<HTMLDivElement>) => {
     const { channel, isOverlay, showDragHandle, listeners, ...rest } = props;
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [openedDialog, setOpenedDialog] = useState<null | string>(null);
-    const dispatch = useAppDispatch();
-    const isMenuOpen = Boolean(anchorEl);
-
-    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-      setAnchorEl(null);
-    };
-
-    const renderCardActions = React.useMemo(
-      () => (
-        <>
-          <IconButton aria-label="settings" onClick={handleMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
-          <StyledMenu
-            anchorEl={anchorEl}
-            open={isMenuOpen}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => {
-                dispatch(toggleChannelNotifications(channel));
-                handleMenuClose();
-              }}
-              disableRipple
-            >
-              {channel.notifications?.isDisabled ? (
-                <>
-                  <NotificationsActiveOutlinedIcon />
-                  Enable notifications
-                </>
-              ) : (
-                <>
-                  <NotificationsOffOutlinedIcon />
-                  Disable notifications
-                </>
-              )}
-            </MenuItem>
-            <Divider sx={{ my: 0.5 }} />
-            <MenuItem
-              onClick={() => {
-                dispatch(toggleChannel(channel));
-                handleMenuClose();
-              }}
-              disableRipple
-            >
-              {channel.isHidden ? (
-                <>
-                  <VisibilityOutlinedIcon />
-                  Unhide
-                </>
-              ) : (
-                <>
-                  <VisibilityOffOutlinedIcon />
-                  Hide
-                </>
-              )}
-            </MenuItem>
-            <MenuItem
-              sx={{ color: 'primary.main' }}
-              onClick={() => {
-                setOpenedDialog('remove-channel');
-                handleMenuClose();
-              }}
-              disableRipple
-            >
-              <DeleteOutlineOutlinedIcon className="inherit-color" />
-              Remove
-            </MenuItem>
-          </StyledMenu>
-        </>
-      ),
-      [channel, anchorEl, isMenuOpen, dispatch]
-    );
 
     const renderCard = React.useMemo(
       () => (
@@ -148,42 +47,13 @@ const ChannelCard = React.forwardRef(
                 : {}),
             }}
             avatar={<ChannelPicture channel={channel} />}
-            action={renderCardActions}
+            action={<ChannelActions channel={channel} />}
             title={<ChannelTitle channel={channel} />}
             subheader={channel.description}
           />
         </Card>
       ),
-      [channel, renderCardActions]
-    );
-
-    const renderDragHandle = React.useMemo(
-      () => (
-        <IconButton
-          sx={{ cursor: 'move' }}
-          aria-label="drag-handle"
-          {...listeners}
-        >
-          <DragIndicatorIcon />
-        </IconButton>
-      ),
-      [listeners]
-    );
-
-    const renderDialogs = React.useMemo(
-      () => (
-        <RemoveChannelDialog
-          open={openedDialog === 'remove-channel'}
-          channel={channel}
-          onClose={(confirmed) => {
-            if (confirmed) {
-              dispatch(removeChannel(channel));
-            }
-            setOpenedDialog(null);
-          }}
-        />
-      ),
-      [channel, openedDialog, dispatch]
+      [channel]
     );
 
     return (
@@ -198,16 +68,15 @@ const ChannelCard = React.forwardRef(
             }}
           >
             {isOverlay ? (
-              renderDragHandle
+              <DragHandle />
             ) : (
               <Collapse in={showDragHandle} orientation="horizontal">
-                {renderDragHandle}
+                <DragHandle {...listeners} />
               </Collapse>
             )}
             {renderCard}
           </Box>
         </Paper>
-        {renderDialogs}
       </div>
     );
   }

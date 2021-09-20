@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import { Channel } from 'types';
-import ChannelPicture from './ChannelPicture';
+import ChannelPicture from '../ChannelPicture';
 
 interface RemoveChannelDialogProps {
   open: boolean;

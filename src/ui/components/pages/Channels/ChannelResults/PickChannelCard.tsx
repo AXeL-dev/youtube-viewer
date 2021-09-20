@@ -6,8 +6,8 @@ import { useAppSelector } from 'store';
 import { selectChannel } from 'store/selectors/channels';
 import { useAppDispatch } from 'store';
 import { addChannel, removeChannel } from 'store/reducers/channels';
-import ChannelPicture from './ChannelCard/ChannelPicture';
-import ChannelTitle from './ChannelCard/ChannelTitle';
+import ChannelPicture from '../ChannelCard/ChannelPicture';
+import ChannelTitle from '../ChannelCard/ChannelTitle';
 
 interface PickChannelCardProps {
   channel: Channel;

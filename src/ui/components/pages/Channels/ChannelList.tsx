@@ -47,29 +47,34 @@ function ChannelList(props: ChannelListProps) {
   };
 
   return (
-    <DndContext
-      collisionDetection={closestCenter}
-      modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={channels} strategy={verticalListSortingStrategy}>
-        <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
-          {channels.map((channel: Channel, index: number) => (
-            <DraggableChannelCard
-              key={index}
-              channel={channel}
-              showDragHandle={showDragHandles}
-            />
-          ))}
-        </Stack>
-      </SortableContext>
-      <DragOverlay>
-        {draggedChannel ? (
-          <ChannelCard channel={draggedChannel} isOverlay />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+    <>
+      <DndContext
+        collisionDetection={closestCenter}
+        modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={channels}
+          strategy={verticalListSortingStrategy}
+        >
+          <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
+            {channels.map((channel: Channel, index: number) => (
+              <DraggableChannelCard
+                key={index}
+                channel={channel}
+                showDragHandle={showDragHandles}
+              />
+            ))}
+          </Stack>
+        </SortableContext>
+        <DragOverlay>
+          {draggedChannel ? (
+            <ChannelCard channel={draggedChannel} isOverlay />
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+    </>
   );
 }
 
