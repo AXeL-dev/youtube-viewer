@@ -181,6 +181,18 @@ export function diffHours(dt1: Date, dt2: Date): number {
 // -------------------------------------------------------------------
 
 /**
+ * Returns elapsed hours since the provided date
+ *
+ * @param dt
+ */
+export function elapsedHours(dt: Date): number {
+  const now = new Date();
+  return diffHours(now, dt);
+}
+
+// -------------------------------------------------------------------
+
+/**
  * Return a new RegExp object instance
  *
  * @param pattern
@@ -317,4 +329,16 @@ export function reorder<T>(
   result.splice(newIndex, 0, removed);
 
   return result;
+}
+
+// -------------------------------------------------------------------
+
+/**
+ * Prevent event operations
+ *
+ * @param event
+ */
+export function noop(event: React.MouseEvent) {
+  event.stopPropagation();
+  event.preventDefault();
 }

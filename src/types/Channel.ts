@@ -11,3 +11,7 @@ export interface Channel {
 export interface ChannelNotifications {
   isDisabled: boolean;
 }
+
+export interface ChannelActivities {
+  videoId: string;
+}

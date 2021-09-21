@@ -4,14 +4,10 @@ export interface Video {
   url: string;
   duration: string;
   publishedAt: number;
+  publishedSince: string;
   thumbnail: string;
-  views: {
-    count: number;
-    asString: string;
-  };
+  views: string | number;
   channelId: string;
   channelTitle: string;
   isRecent?: boolean;
-  isToWatchLater?: boolean;
-  isWatched?: boolean;
 }

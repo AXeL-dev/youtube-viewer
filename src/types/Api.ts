@@ -12,11 +12,12 @@ export interface Response {
 
 interface Thumbnail {
   url: string;
+  width: number;
+  height: number;
 }
 
 export interface Item {
-  kind?: string;
-  etag?: string;
+  id: string;
   snippet: {
     channelId: string;
     channelTitle: string;
@@ -31,8 +32,13 @@ export interface Item {
       high: Thumbnail;
     };
   };
-  id: {
-    kind?: string;
-    channelId: string;
+  contentDetails: {
+    upload: {
+      videoId: string;
+    };
+    duration: string;
+  };
+  statistics: {
+    viewCount: number;
   };
 }
