@@ -4,6 +4,10 @@ import { Channel } from 'types';
 
 export const selectChannels = (state: RootState) => state.channels.list;
 
+export const selectActiveChannels = createSelector(selectChannels, (channels) =>
+  channels.filter((c: Channel) => !c.isHidden)
+);
+
 export const selectChannelsCount = createSelector(
   selectChannels,
   (channels) => channels.length

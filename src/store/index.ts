@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import settingsReducer, { setSettings } from './reducers/settings';
 import channelsReducer, { setChannels } from './reducers/channels';
+import videosReducer, { setVideos } from './reducers/videos';
 import storage from 'helpers/storage';
 import { debounce } from 'helpers/utils';
 import { youtubeApi } from './services/youtube';
@@ -11,6 +12,7 @@ const store = configureStore({
   reducer: {
     settings: settingsReducer,
     channels: channelsReducer,
+    videos: videosReducer,
     [youtubeApi.reducerPath]: youtubeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -19,18 +21,19 @@ const store = configureStore({
 
 store.subscribe(
   debounce(() => {
-    const { settings, channels } = store.getState();
+    const { settings, channels, videos } = store.getState();
     storage.save({
       [stateKey]: {
         settings,
         channels,
+        videos,
       },
     });
   }, 1000)
 );
 
 (async () => {
-  const { settings, channels } = (await storage.get(stateKey)) || {};
+  const { settings, channels, videos } = (await storage.get(stateKey)) || {};
   if (!settings && !channels) {
     // Handle backward compatibility with v0.6.x
     const legacy = (await storage.get('settings', 'channels')) || {};
@@ -48,6 +51,9 @@ store.subscribe(
     }
     if (channels) {
       store.dispatch(setChannels(channels.list));
+    }
+    if (videos) {
+      store.dispatch(setVideos(videos));
     }
   }
   // ToDo: the above dispatch(s) triggers a state save into the storage (this should be avoided)

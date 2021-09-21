@@ -2,11 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Channel } from 'types';
 
-interface channelsState {
+interface ChannelsState {
   list: Channel[];
 }
 
-const initialState: channelsState = {
+const initialState: ChannelsState = {
   list: [],
 };
 

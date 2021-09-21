@@ -7,9 +7,9 @@ export const defaultSettings = {
   darkMode: false,
 };
 
-interface settingsState extends Settings {}
+interface SettingsState extends Settings {}
 
-const initialState: settingsState = {
+const initialState: SettingsState = {
   ...defaultSettings,
 };
 
