@@ -5,6 +5,7 @@ export const defaultSettings = {
   defaultView: HomeView.All,
   apiKey: '',
   darkMode: false,
+  autoPlayVideos: true,
 };
 
 interface SettingsState extends Settings {}

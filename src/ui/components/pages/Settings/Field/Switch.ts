@@ -28,7 +28,10 @@ const Switch = styled(MuiSwitch)(({ theme }) => ({
     border: `1px solid ${theme.palette.grey[500]}`,
     borderRadius: 20 / 2,
     opacity: 1,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor:
+      theme.palette.mode === 'light'
+        ? theme.palette.common.white
+        : 'transparent',
   },
 }));
 

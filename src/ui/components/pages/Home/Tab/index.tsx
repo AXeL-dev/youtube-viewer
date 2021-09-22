@@ -5,11 +5,11 @@ import Badge from './Badge';
 
 interface TabProps extends MuiTabProps {
   badge?: React.ReactNode;
-  isSelected?: boolean;
+  selected?: boolean;
 }
 
 export default function Tab(props: TabProps) {
-  const { label, badge, isSelected, ...rest } = props;
+  const { label, badge, selected, ...rest } = props;
 
   return (
     <MuiTab
@@ -22,7 +22,7 @@ export default function Tab(props: TabProps) {
       label={
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {label}
-          {badge && isSelected ? <Badge badgeContent={badge} /> : null}
+          {badge && selected ? <Badge badgeContent={badge} /> : null}
         </Box>
       }
       disableRipple

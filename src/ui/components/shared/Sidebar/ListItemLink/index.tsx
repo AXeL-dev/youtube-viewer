@@ -15,7 +15,7 @@ interface ListItemLinkProps {
 export default function ListItemLink(props: ListItemLinkProps) {
   const { icon, text, badge, to } = props;
   const location = useLocation();
-  const isSelected = location.pathname === to;
+  const selected = location.pathname === to;
 
   const renderLink = React.useMemo(
     () =>
@@ -26,13 +26,13 @@ export default function ListItemLink(props: ListItemLinkProps) {
   );
 
   return (
-    <ListItem component={renderLink} selected={isSelected} disableRipple>
+    <ListItem component={renderLink} selected={selected} disableRipple>
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText
         primary={
           <>
             {text}
-            {badge && isSelected ? <Badge badgeContent={badge} /> : null}
+            {badge && selected ? <Badge badgeContent={badge} /> : null}
           </>
         }
       />

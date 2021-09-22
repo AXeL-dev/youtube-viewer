@@ -47,6 +47,14 @@ export function Settings(props: SettingsProps) {
           type={SettingType.Boolean}
         />
         <Field
+          label="Auto play videos"
+          value={settings.autoPlayVideos}
+          onChange={(autoPlayVideos: boolean) => {
+            dispatch(setSettings({ autoPlayVideos }));
+          }}
+          type={SettingType.Boolean}
+        />
+        <Field
           label="Youtube API key"
           placeholder="_______________________________________"
           description={

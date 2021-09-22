@@ -338,7 +338,7 @@ export function reorder<T>(
  *
  * @param event
  */
-export function noop(event: React.MouseEvent) {
+export function noop<T>(event: React.MouseEvent<T>) {
   event.stopPropagation();
   event.preventDefault();
 }

@@ -19,10 +19,17 @@ interface VideoCardProps {
   view: HomeView;
   thumbnailWidth?: number;
   thumbnailHeight?: number;
+  onVideoPlay: (video: Video) => void;
 }
 
 function VideoCard(props: VideoCardProps) {
-  const { video, view, thumbnailWidth = '100%', thumbnailHeight = 120 } = props;
+  const {
+    video,
+    view,
+    thumbnailWidth = '100%',
+    thumbnailHeight = 120,
+    onVideoPlay,
+  } = props;
   const { isViewed, isToWatchLater } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
 
@@ -108,6 +115,7 @@ function VideoCard(props: VideoCardProps) {
               sx={{ color: '#fff', margin: 0.5 }}
               size="small"
               onClick={() => {
+                onVideoPlay(video);
                 dispatch(addToViewedList(video));
               }}
             >

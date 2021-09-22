@@ -2,6 +2,7 @@ export interface Settings {
   defaultView: HomeView;
   apiKey: string;
   darkMode: boolean;
+  autoPlayVideos: boolean;
 }
 
 export enum HomeView {

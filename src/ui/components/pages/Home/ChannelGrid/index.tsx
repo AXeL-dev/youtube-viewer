@@ -12,13 +12,14 @@ export interface ChannelGridProps {
   channel: Channel;
   view: HomeView;
   onError?: (error: any) => void;
+  onVideoPlay: (video: Video) => void;
 }
 
 const publishedAfter = getDateBefore(10).toISOString();
 const maxResults = 6;
 
 function ChannelGrid(props: ChannelGridProps) {
-  const { channel, view, onError } = props;
+  const { channel, view, onError, onVideoPlay } = props;
   const {
     data: videos,
     error,
@@ -60,7 +61,11 @@ function ChannelGrid(props: ChannelGridProps) {
               ))
             : videos.map((video: Video, index: number) => (
                 <GridItem key={index}>
-                  <VideoCard video={video} view={view} />
+                  <VideoCard
+                    video={video}
+                    view={view}
+                    onVideoPlay={onVideoPlay}
+                  />
                 </GridItem>
               ))}
         </Grid>
