@@ -29,6 +29,7 @@ function ChannelGrid(props: ChannelGridProps) {
     publishedAfter,
     maxResults,
   });
+  const hasVideos = isLoading || videos.length > 0;
 
   useEffect(() => {
     if (error && onError) {
@@ -36,7 +37,7 @@ function ChannelGrid(props: ChannelGridProps) {
     }
   }, [error, onError]);
 
-  return (
+  return hasVideos ? (
     <Box
       sx={{
         display: 'flex',
@@ -65,7 +66,7 @@ function ChannelGrid(props: ChannelGridProps) {
         </Grid>
       </Box>
     </Box>
-  );
+  ) : null;
 }
 
 export default React.memo(ChannelGrid);

@@ -32,7 +32,10 @@ export function useChannelVideos({
     [activities]
   );
 
-  const { data, error, isLoading } = useGetVideosByIdQuery({ id, maxResults });
+  const { data, error, isLoading } = useGetVideosByIdQuery(
+    { id, maxResults },
+    { skip: id.length === 0 && view !== HomeView.WatchLater }
+  );
   const videos =
     data?.slice().sort((a, b) => b.publishedAt - a.publishedAt) || [];
 
