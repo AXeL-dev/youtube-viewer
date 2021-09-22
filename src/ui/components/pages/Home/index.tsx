@@ -1,14 +1,24 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Box, Tabs } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView } from 'types';
 import Tab from './Tab';
-import MainView from './MainView';
+import TabPanel from './TabPanel';
+import { useAppSelector } from 'store';
+import { selectSettings } from 'store/selectors/settings';
 
 interface HomeProps {}
 
 export function Home(props: HomeProps) {
-  const [activeTab, setActiveTab] = useState(HomeView.All);
+  const settings = useAppSelector(selectSettings);
+  const [activeTab, setActiveTab] = useState(settings.defaultView);
+
+  useEffect(() => {
+    if (activeTab !== settings.defaultView) {
+      setActiveTab(settings.defaultView);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings.defaultView]);
 
   const handleTabChange = (event: ChangeEvent<{}>, value: HomeView) => {
     setActiveTab(value);
@@ -28,7 +38,7 @@ export function Home(props: HomeProps) {
           <Tab label="Watch later" value={HomeView.WatchLater} />
         </Tabs>
       </Box>
-      <MainView />
+      <TabPanel tab={activeTab} />
     </Layout>
   );
 }

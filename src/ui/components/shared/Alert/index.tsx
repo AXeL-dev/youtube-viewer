@@ -5,16 +5,31 @@ import CloseIcon from '@mui/icons-material/Close';
 import { RawHTML } from '../RawHTML';
 
 interface AlertProps {
+  open?: boolean;
   children?: string;
   error?: any;
   severity?: AlertColor;
   closable?: boolean;
+  onClose?: () => void;
 }
 
 export function Alert(props: AlertProps) {
-  const { error, severity = 'error', closable } = props;
+  const {
+    open: openProp = true,
+    error,
+    severity = 'error',
+    closable,
+    onClose,
+  } = props;
   const children = props.children || error?.data.error.message;
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(openProp);
+
+  const handleClose = () => {
+    setOpen(false);
+    if (onClose) {
+      onClose();
+    }
+  };
 
   return (
     <Collapse in={open}>
@@ -27,9 +42,7 @@ export function Alert(props: AlertProps) {
               aria-label="close"
               color="inherit"
               size="small"
-              onClick={() => {
-                setOpen(false);
-              }}
+              onClick={handleClose}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>

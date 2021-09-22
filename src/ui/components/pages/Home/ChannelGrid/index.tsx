@@ -6,17 +6,19 @@ import VideoCard from './VideoCard';
 import VideoSkeleton from './VideoSkeleton';
 import { useChannelVideos } from 'hooks';
 import { getDateBefore } from 'helpers/utils';
+import GridItem from './GridItem';
 
 interface ChannelGridProps {
   channel: Channel;
   onError?: (error: any) => void;
+  filterCallback?: (video: Video) => boolean;
 }
 
 const publishedAfter = getDateBefore(10).toISOString();
+const maxResults = 6;
 
 function ChannelGrid(props: ChannelGridProps) {
-  const { channel, onError } = props;
-  const maxResults = 6;
+  const { channel, onError, filterCallback = () => true } = props;
   const {
     data: videos,
     error,
@@ -46,15 +48,17 @@ function ChannelGrid(props: ChannelGridProps) {
         >
           {isLoading
             ? Array.from(new Array(maxResults)).map((_, index: number) => (
-                <Grid item xs={1} sm={1} md={1} lg={1} xl={1} key={index}>
+                <GridItem key={index}>
                   <VideoSkeleton />
-                </Grid>
+                </GridItem>
               ))
-            : videos.map((video: Video, index: number) => (
-                <Grid item xs={1} sm={1} md={1} lg={1} xl={1} key={index}>
-                  <VideoCard video={video} />
-                </Grid>
-              ))}
+            : videos
+                .filter(filterCallback)
+                .map((video: Video, index: number) => (
+                  <GridItem key={index}>
+                    <VideoCard video={video} />
+                  </GridItem>
+                ))}
         </Grid>
       </Box>
     </Box>
