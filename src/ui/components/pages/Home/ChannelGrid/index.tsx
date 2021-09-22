@@ -59,7 +59,7 @@ function ChannelGrid(props: ChannelGridProps) {
               ))
             : videos.map((video: Video, index: number) => (
                 <GridItem key={index}>
-                  <VideoCard video={video} />
+                  <VideoCard video={video} view={view} />
                 </GridItem>
               ))}
         </Grid>

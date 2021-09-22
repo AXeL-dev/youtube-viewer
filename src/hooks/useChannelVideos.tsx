@@ -33,7 +33,8 @@ export function useChannelVideos({
   );
 
   const { data, error, isLoading } = useGetVideosByIdQuery({ id, maxResults });
-  const videos = data || [];
+  const videos =
+    data?.slice().sort((a, b) => b.publishedAt - a.publishedAt) || [];
 
   return {
     data:

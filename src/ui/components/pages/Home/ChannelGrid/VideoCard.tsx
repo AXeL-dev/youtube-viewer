@@ -4,33 +4,27 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
-import { Video } from 'types';
+import CloseIcon from '@mui/icons-material/Close';
+import { HomeView, Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
-import { addToWatchLaterList, addToViewedList } from 'store/reducers/videos';
+import {
+  addToWatchLaterList,
+  addToViewedList,
+  removeFromWatchLaterList,
+} from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
 interface VideoCardProps {
   video: Video;
+  view: HomeView;
   thumbnailWidth?: number;
   thumbnailHeight?: number;
 }
 
 function VideoCard(props: VideoCardProps) {
-  const { video, thumbnailWidth = '100%', thumbnailHeight = 120 } = props;
+  const { video, view, thumbnailWidth = '100%', thumbnailHeight = 120 } = props;
   const { isViewed, isToWatchLater } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
-
-  const handleOpenInYoutube = () => {
-    dispatch(addToViewedList(video));
-  };
-
-  const handleVideoPlay = () => {
-    dispatch(addToViewedList(video));
-  };
-
-  const handleWatchLaterClick = () => {
-    dispatch(addToWatchLaterList(video));
-  };
 
   return (
     <>
@@ -100,7 +94,9 @@ function VideoCard(props: VideoCardProps) {
               href={video.url}
               target="_blank"
               rel="noopener"
-              onClick={handleOpenInYoutube}
+              onClick={() => {
+                dispatch(addToViewedList(video));
+              }}
             >
               <IconButton sx={{ color: '#fff', margin: 0.5 }} size="small">
                 <Tooltip title="Open in Youtube" aria-label="watch-later">
@@ -111,7 +107,9 @@ function VideoCard(props: VideoCardProps) {
             <IconButton
               sx={{ color: '#fff', margin: 0.5 }}
               size="small"
-              onClick={handleVideoPlay}
+              onClick={() => {
+                dispatch(addToViewedList(video));
+              }}
             >
               <Tooltip title="Watch" aria-label="watch">
                 <PlayArrowIcon sx={{ fontSize: '2.1rem' }} />
@@ -136,9 +134,36 @@ function VideoCard(props: VideoCardProps) {
                   },
                 }}
                 size="small"
-                onClick={handleWatchLaterClick}
+                onClick={() => {
+                  dispatch(addToWatchLaterList(video));
+                }}
               >
                 <WatchLaterOutlinedIcon sx={{ fontSize: '1.25rem' }} />
+              </IconButton>
+            </Tooltip>
+          ) : view === HomeView.WatchLater ? (
+            <Tooltip title="Remove" aria-label="remove-from-watch-later">
+              <IconButton
+                sx={{
+                  display: 'flex',
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  margin: '4px',
+                  color: '#eee',
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  padding: '4px',
+                  borderRadius: '2px',
+                  '&:hover': {
+                    color: '#fff',
+                  },
+                }}
+                size="small"
+                onClick={() => {
+                  dispatch(removeFromWatchLaterList(video));
+                }}
+              >
+                <CloseIcon sx={{ fontSize: '1.125rem' }} />
               </IconButton>
             </Tooltip>
           ) : null}
