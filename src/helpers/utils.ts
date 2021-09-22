@@ -143,6 +143,7 @@ export const TimeAgo = (() => {
 export function getDateBefore(before: number = 0): Date {
   let date = new Date();
   date.setDate(date.getDate() - before);
+  date.setHours(0, 0, 0, 0);
   return date;
 }
 

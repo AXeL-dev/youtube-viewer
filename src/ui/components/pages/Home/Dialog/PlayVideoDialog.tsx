@@ -52,7 +52,7 @@ export default function PlayVideoDialog(props: PlayVideoDialogProps) {
           right: (theme) => theme.spacing(-1.75),
           bgcolor: 'primary.main',
           color: 'common.white',
-          fontSize: '1.4rem',
+          fontSize: '1.275rem',
           '&:hover': {
             bgcolor: 'primary.main',
             color: 'common.white',

@@ -9,5 +9,4 @@ export interface Video {
   views: string | number;
   channelId: string;
   channelTitle: string;
-  isRecent?: boolean;
 }

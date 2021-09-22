@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { Alert } from 'ui/components/shared';
 import { Channel, HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
-import ChannelGrid from './ChannelGrid';
 import PlayVideoDialog from './Dialog/PlayVideoDialog';
+import { AllView, RecentView, WatchLaterView } from './Views';
 
 interface TabPanelProps {
   tab: HomeView;
@@ -16,6 +16,16 @@ export default function TabPanel(props: TabPanelProps) {
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Video | null>(null);
   const channels = useAppSelector(selectActiveChannels);
+  const ViewComponent = useMemo(() => {
+    switch (tab) {
+      case HomeView.WatchLater:
+        return WatchLaterView;
+      case HomeView.Recent:
+        return RecentView;
+      default:
+        return AllView;
+    }
+  }, [tab]);
 
   const handleVideoPlay = (video: Video) => {
     setActiveVideo(video);
@@ -44,9 +54,8 @@ export default function TabPanel(props: TabPanelProps) {
         }}
       >
         {channels.map((channel: Channel, index: number) => (
-          <ChannelGrid
+          <ViewComponent
             key={index}
-            view={tab}
             channel={channel}
             onError={handleError}
             onVideoPlay={handleVideoPlay}
