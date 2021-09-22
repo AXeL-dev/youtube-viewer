@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
-import {
-  useGetChannelActivitiesQuery,
-  useGetVideosByIdQuery,
-} from 'store/services/youtube';
-import { Channel } from 'types';
+import { useGetVideosByIdQuery } from 'store/services/youtube';
+import { Channel, HomeView } from 'types';
+import { useChannelActivities } from './useChannelActivities';
 
 interface Props {
   channel: Channel;
+  view: HomeView;
   publishedAfter: string;
   maxResults: number;
 }
 
 export function useChannelVideos({
   channel,
+  view,
   publishedAfter,
   maxResults,
 }: Props) {
@@ -20,27 +20,26 @@ export function useChannelVideos({
     data: activities,
     error: activitiesError,
     isLoading: isActivitiesLoading,
-  } = useGetChannelActivitiesQuery(
-    {
-      channel,
-      publishedAfter,
-      maxResults,
-    },
-    { skip: !channel }
-  );
+  } = useChannelActivities({
+    channel,
+    view,
+    publishedAfter,
+    maxResults,
+  });
 
   const id = useMemo(
     () => activities?.map(({ videoId }) => videoId) || [],
     [activities]
   );
 
-  const { data, error, isLoading } = useGetVideosByIdQuery(
-    { id, maxResults },
-    { skip: id.length === 0 }
-  );
+  const { data, error, isLoading } = useGetVideosByIdQuery({ id, maxResults });
+  const videos = data || [];
 
   return {
-    data: data || [],
+    data:
+      view === HomeView.Recent
+        ? videos.filter(({ isRecent }) => isRecent)
+        : videos,
     error: activitiesError || error,
     isLoading: isActivitiesLoading || isLoading,
   };

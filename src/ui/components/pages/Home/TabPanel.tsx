@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { Alert } from 'ui/components/shared';
-import { Channel, HomeView, Video } from 'types';
+import { Channel, HomeView } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import ChannelGrid from './ChannelGrid';
@@ -19,9 +19,6 @@ export default function TabPanel(props: TabPanelProps) {
     setError(err);
   };
 
-  const filterCallback =
-    tab === HomeView.Recent ? (video: Video) => !!video.isRecent : () => true;
-
   return error ? (
     <Alert error={error} closable />
   ) : (
@@ -38,9 +35,9 @@ export default function TabPanel(props: TabPanelProps) {
       {channels.map((channel: Channel, index: number) => (
         <ChannelGrid
           key={index}
+          view={tab}
           channel={channel}
           onError={handleError}
-          filterCallback={filterCallback}
         />
       ))}
     </Box>

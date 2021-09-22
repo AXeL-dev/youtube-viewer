@@ -6,7 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import { Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
-import { addToWatchLaterList, markVideoAsWatched } from 'store/reducers/videos';
+import { addToWatchLaterList, addToViewedList } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
 interface VideoCardProps {
@@ -17,15 +17,15 @@ interface VideoCardProps {
 
 function VideoCard(props: VideoCardProps) {
   const { video, thumbnailWidth = '100%', thumbnailHeight = 120 } = props;
-  const { isWatched, isToWatchLater } = useAppSelector(selectVideoMeta(video));
+  const { isViewed, isToWatchLater } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
 
   const handleOpenInYoutube = () => {
-    dispatch(markVideoAsWatched(video));
+    dispatch(addToViewedList(video));
   };
 
   const handleVideoPlay = () => {
-    dispatch(markVideoAsWatched(video));
+    dispatch(addToViewedList(video));
   };
 
   const handleWatchLaterClick = () => {
@@ -143,8 +143,8 @@ function VideoCard(props: VideoCardProps) {
             </Tooltip>
           ) : null}
         </Box>
-        {isWatched ? (
-          <Tooltip title="Watched" aria-label="watched">
+        {isViewed ? (
+          <Tooltip title="Viewed" aria-label="viewed">
             <Box
               sx={{
                 display: 'flex',

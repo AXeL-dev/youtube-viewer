@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Box, Grid } from '@mui/material';
-import { Channel, Video } from 'types';
+import { Channel, HomeView, Video } from 'types';
 import ChannelTitle from './ChannelTitle';
 import VideoCard from './VideoCard';
 import VideoSkeleton from './VideoSkeleton';
@@ -8,22 +8,27 @@ import { useChannelVideos } from 'hooks';
 import { getDateBefore } from 'helpers/utils';
 import GridItem from './GridItem';
 
-interface ChannelGridProps {
+export interface ChannelGridProps {
   channel: Channel;
+  view: HomeView;
   onError?: (error: any) => void;
-  filterCallback?: (video: Video) => boolean;
 }
 
 const publishedAfter = getDateBefore(10).toISOString();
 const maxResults = 6;
 
 function ChannelGrid(props: ChannelGridProps) {
-  const { channel, onError, filterCallback = () => true } = props;
+  const { channel, view, onError } = props;
   const {
     data: videos,
     error,
     isLoading,
-  } = useChannelVideos({ channel, publishedAfter, maxResults });
+  } = useChannelVideos({
+    channel,
+    view,
+    publishedAfter,
+    maxResults,
+  });
 
   useEffect(() => {
     if (error && onError) {
@@ -52,13 +57,11 @@ function ChannelGrid(props: ChannelGridProps) {
                   <VideoSkeleton />
                 </GridItem>
               ))
-            : videos
-                .filter(filterCallback)
-                .map((video: Video, index: number) => (
-                  <GridItem key={index}>
-                    <VideoCard video={video} />
-                  </GridItem>
-                ))}
+            : videos.map((video: Video, index: number) => (
+                <GridItem key={index}>
+                  <VideoCard video={video} />
+                </GridItem>
+              ))}
         </Grid>
       </Box>
     </Box>

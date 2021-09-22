@@ -1,13 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Video } from 'types';
 
+interface WatchLater {
+  videoId: string;
+  channelId: string;
+}
+
 interface VideosState {
-  watched: string[];
-  watchLater: string[];
+  viewed: string[];
+  watchLater: WatchLater[];
 }
 
 const initialState: VideosState = {
-  watched: [],
+  viewed: [],
   watchLater: [],
 };
 
@@ -23,26 +28,29 @@ export const videosSlice = createSlice({
     },
     addToWatchLaterList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.watchLater.find((id: string) => id === video.id);
+      const found = state.watchLater.find(
+        ({ videoId }) => videoId === video.id
+      );
       if (!found) {
-        state.watchLater.push(video.id);
+        state.watchLater.push({
+          videoId: video.id,
+          channelId: video.channelId,
+        });
       }
     },
     removeFromWatchLaterList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
       state.watchLater = state.watchLater.filter(
-        (id: string) => id !== video.id
+        ({ videoId }) => videoId !== video.id
       );
     },
-    markVideoAsWatched: (state, action: PayloadAction<Video>) => {
+    addToViewedList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.watched.find((id: string) => id === video.id);
+      const found = state.viewed.find((id) => id === video.id);
       if (!found) {
-        state.watched.push(video.id);
+        state.viewed.push(video.id);
       }
-      state.watchLater = state.watchLater.filter(
-        (id: string) => id !== video.id
-      );
+      videosSlice.caseReducers.removeFromWatchLaterList(state, action);
     },
   },
 });
@@ -51,7 +59,7 @@ export const {
   setVideos,
   addToWatchLaterList,
   removeFromWatchLaterList,
-  markVideoAsWatched,
+  addToViewedList,
 } = videosSlice.actions;
 
 export default videosSlice.reducer;
