@@ -6,12 +6,14 @@ import Tab from './Tab';
 import TabPanel from './TabPanel';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
+import { selectWatchLaterVideosCount } from 'store/selectors/videos';
 
 interface HomeProps {}
 
 export function Home(props: HomeProps) {
   const settings = useAppSelector(selectSettings);
   const [activeTab, setActiveTab] = useState(settings.defaultView);
+  const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
 
   useEffect(() => {
     if (activeTab !== settings.defaultView) {
@@ -33,9 +35,22 @@ export function Home(props: HomeProps) {
           onChange={handleTabChange}
           aria-label="tabs"
         >
-          <Tab label="All" value={HomeView.All} />
-          <Tab label="Recent" value={HomeView.Recent} />
-          <Tab label="Watch later" value={HomeView.WatchLater} />
+          <Tab
+            label="All"
+            value={HomeView.All}
+            isSelected={activeTab === HomeView.All}
+          />
+          <Tab
+            label="Recent"
+            value={HomeView.Recent}
+            isSelected={activeTab === HomeView.Recent}
+          />
+          <Tab
+            label="Watch later"
+            value={HomeView.WatchLater}
+            isSelected={activeTab === HomeView.WatchLater}
+            badge={watchLaterVideosCount}
+          />
         </Tabs>
       </Box>
       <TabPanel tab={activeTab} />
