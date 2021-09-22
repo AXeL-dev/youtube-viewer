@@ -1,40 +1,26 @@
-import {
-  createApi,
-  fetchBaseQuery,
-  FetchBaseQueryError,
-} from '@reduxjs/toolkit/query/react';
-import { RootState } from 'store';
-import { Channel, ChannelActivities, Response, Video } from 'types';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
+import { Channel, Response } from 'types';
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://www.googleapis.com/youtube/v3/',
-  prepareHeaders: (headers, { getState }) => {
-    const apiKey = (getState() as RootState).settings.apiKey;
-    if (apiKey) {
-      headers.set('X-Goog-Api-Key', apiKey);
-    }
-    return headers;
-  },
-});
-
-interface FindChannelByNameArgs {
+export type FindChannelByNameArgs = {
   name: string;
   maxResults?: number;
-}
+};
 
-interface GetChannelActivitiesArgs {
+export type GetChannelActivitiesArgs = {
   channel: Channel;
   publishedAfter: string;
   maxResults?: number;
-}
+};
 
-interface GetVideosByIdArgs {
+export type GetVideosByIdArgs = {
   id: string | string[];
   maxResults?: number;
-}
+};
 
-const queries = {
+export type GetChannelVideosArgs = GetChannelActivitiesArgs;
+
+export const queries = {
+  // Channel search query
   findChannelByName: {
     query: ({ name: q, maxResults = 10 }: FindChannelByNameArgs) => ({
       url: 'search',
@@ -60,6 +46,7 @@ const queries = {
       }));
     },
   },
+  // Channel activities query
   getChannelActivities: {
     query: ({
       channel,
@@ -86,6 +73,7 @@ const queries = {
         .filter(({ videoId }) => videoId);
     },
   },
+  // Videos informations query
   getVideosById: {
     query: ({ id, maxResults = 10 }: GetVideosByIdArgs) => ({
       url: 'videos',
@@ -119,64 +107,3 @@ const queries = {
     },
   },
 };
-
-export const youtubeApi = createApi({
-  reducerPath: 'youtubeApi',
-  baseQuery,
-  endpoints: (builder) => ({
-    // Channel search query
-    findChannelByName: builder.query<Channel[], FindChannelByNameArgs>(
-      queries.findChannelByName
-    ),
-    // Channel activities query
-    getChannelActivities: builder.query<
-      ChannelActivities[],
-      GetChannelActivitiesArgs
-    >(queries.getChannelActivities),
-    // Videos informations query
-    getVideosById: builder.query<Video[], GetVideosByIdArgs>(
-      queries.getVideosById
-    ),
-    // Channel videos query
-    getChannelVideos: builder.query<Video[], GetChannelActivitiesArgs>({
-      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { channel, publishedAfter, maxResults } = _arg;
-        // Fetch channel activities
-        const activities = await fetchWithBQ(
-          queries.getChannelActivities.query({
-            channel,
-            publishedAfter,
-            maxResults,
-          })
-        );
-        if (activities.error) {
-          return { error: activities.error as FetchBaseQueryError };
-        }
-        const id = queries.getChannelActivities
-          .transformResponse(activities.data as Response)
-          .map(({ videoId }) => videoId);
-        // Fetch channel videos
-        const result = await fetchWithBQ(
-          queries.getVideosById.query({
-            id,
-            maxResults,
-          })
-        );
-        return result.data
-          ? {
-              data: queries.getVideosById.transformResponse(
-                result.data as Response
-              ),
-            }
-          : { error: result.error as FetchBaseQueryError };
-      },
-    }),
-  }),
-});
-
-export const {
-  useFindChannelByNameQuery,
-  useGetChannelActivitiesQuery,
-  useGetVideosByIdQuery,
-  useGetChannelVideosQuery,
-} = youtubeApi;
