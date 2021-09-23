@@ -14,6 +14,9 @@ declare module '@mui/material/styles' {
   interface PaletteOptions {
     custom: CustomColors;
   }
+  interface BreakpointOverrides {
+    xxs: true;
+  }
 }
 
 const useTheme = (mode: PaletteMode = 'light') =>
@@ -49,6 +52,16 @@ const useTheme = (mode: PaletteMode = 'light') =>
               lightBorder: 'rgba(255, 255, 255, 0.23)',
             },
           }),
+    },
+    breakpoints: {
+      values: {
+        xxs: 0,
+        xs: 780,
+        sm: 1000,
+        md: 1200,
+        lg: 1400,
+        xl: 1600,
+      },
     },
   });
 

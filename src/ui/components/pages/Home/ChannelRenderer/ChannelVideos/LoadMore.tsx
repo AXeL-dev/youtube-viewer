@@ -1,43 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, IconButton } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 interface LoadMoreProps {
   isLoading: boolean;
+  hasMore?: boolean;
   onClick?: () => void;
 }
 
 export default function LoadMore(props: LoadMoreProps) {
-  const { isLoading, onClick } = props;
-  const [loadMoreHits, setLoadMoreHits] = useState(0);
-
-  const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-    setLoadMoreHits(loadMoreHits + 1);
-  };
+  const { isLoading, hasMore, onClick } = props;
 
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        justifyContent: 'flex-end',
+        minWidth: (theme) => theme.spacing(3.5),
         ml: 2,
+        gap: 2,
       }}
     >
-      {Array.from(new Array(loadMoreHits)).map((_, index: number) => (
-        <Box sx={{ flexGrow: 1, flexBasis: 0 }} key={index}></Box>
-      ))}
-      <IconButton
-        sx={{ flexGrow: 1, flexBasis: 0, borderRadius: 0, py: 0 }}
-        disabled={isLoading}
-        size="small"
-        onClick={handleClick}
-      >
-        <ArrowForwardIosIcon fontSize="inherit" />
-      </IconButton>
+      {hasMore ? (
+        <IconButton
+          sx={{ height: 216, borderRadius: 0 }}
+          disabled={isLoading}
+          size="small"
+          onClick={onClick}
+        >
+          <ArrowForwardIosIcon fontSize="inherit" />
+        </IconButton>
+      ) : null}
     </Box>
   );
 }

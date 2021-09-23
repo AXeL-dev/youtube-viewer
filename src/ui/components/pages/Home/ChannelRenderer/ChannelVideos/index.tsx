@@ -27,7 +27,6 @@ function ChannelVideos(props: ChannelVideosProps) {
     onVideoPlay,
     onLoadMore,
   } = props;
-
   const skeletonNumber = maxResults - videos.length;
 
   return (
@@ -46,7 +45,7 @@ function ChannelVideos(props: ChannelVideosProps) {
             ))
           : null}
       </Grid>
-      {hasMore ? <LoadMore isLoading={isLoading} onClick={onLoadMore} /> : null}
+      <LoadMore isLoading={isLoading} hasMore={hasMore} onClick={onLoadMore} />
     </Box>
   );
 }

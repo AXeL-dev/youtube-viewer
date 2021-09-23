@@ -215,7 +215,12 @@ function VideoCard(props: VideoCardProps) {
         </Typography>
       </Box>
       <Box pr={2} mt={1}>
-        <Tooltip title={video.title} aria-label="video-title">
+        <Tooltip
+          title={video.title}
+          enterDelay={700}
+          enterNextDelay={700}
+          aria-label="video-title"
+        >
           <Typography
             sx={{
               display: '-webkit-box',
