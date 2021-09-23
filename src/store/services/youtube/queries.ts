@@ -1,9 +1,14 @@
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
-import { Channel, Response } from 'types';
+import { Channel, ChannelActivities, Response, Video } from 'types';
 
 export type FindChannelByNameArgs = {
   name: string;
   maxResults?: number;
+};
+
+export type FindChannelByNameResponse = {
+  items: Channel[];
+  total: number;
 };
 
 export type GetChannelActivitiesArgs = {
@@ -12,12 +17,24 @@ export type GetChannelActivitiesArgs = {
   maxResults?: number;
 };
 
+export type GetChannelActivitiesResponse = {
+  items: ChannelActivities[];
+  total: number;
+};
+
 export type GetVideosByIdArgs = {
   ids: string[];
   maxResults?: number;
 };
 
+export type GetVideosByIdResponse = {
+  items: Video[];
+  total: number;
+};
+
 export type GetChannelVideosArgs = GetChannelActivitiesArgs;
+
+export type GetChannelVideosResponse = GetVideosByIdResponse;
 
 export const queries = {
   // Channel search query
@@ -33,18 +50,16 @@ export const queries = {
         q,
       },
     }),
-    transformResponse: (response: Response) => {
-      if (response.pageInfo.totalResults === 0) {
-        return [];
-      }
-      return response.items.map((item) => ({
+    transformResponse: (response: Response): FindChannelByNameResponse => ({
+      items: response.items.map((item) => ({
         title: item.snippet.title,
         url: `https://www.youtube.com/channel/${item.snippet.channelId}/videos`,
         description: item.snippet.description,
         thumbnail: item.snippet.thumbnails.medium.url,
         id: item.snippet.channelId,
-      }));
-    },
+      })),
+      total: response.pageInfo.totalResults,
+    }),
   },
   // Channel activities query
   getChannelActivities: {
@@ -62,16 +77,14 @@ export const queries = {
         maxResults,
       },
     }),
-    transformResponse: (response: Response) => {
-      if (response.pageInfo.totalResults === 0) {
-        return [];
-      }
-      return response.items
+    transformResponse: (response: Response): GetChannelActivitiesResponse => ({
+      items: response.items
         .map((item) => ({
           videoId: item.contentDetails.upload?.videoId,
         }))
-        .filter(({ videoId }) => videoId);
-    },
+        .filter(({ videoId }) => videoId),
+      total: response.pageInfo.totalResults,
+    }),
   },
   // Videos informations query
   getVideosById: {
@@ -85,11 +98,8 @@ export const queries = {
         maxResults,
       },
     }),
-    transformResponse: (response: Response) => {
-      if (response.pageInfo.totalResults === 0) {
-        return [];
-      }
-      return response.items.map((item) => {
+    transformResponse: (response: Response): GetVideosByIdResponse => ({
+      items: response.items.map((item) => {
         const publishedAt = new Date(item.snippet.publishedAt).getTime();
         return {
           id: item.id,
@@ -103,7 +113,8 @@ export const queries = {
           publishedAt,
           publishedSince: TimeAgo.inWords(publishedAt),
         };
-      });
-    },
+      }),
+      total: response.pageInfo.totalResults,
+    }),
   },
 };

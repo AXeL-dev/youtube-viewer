@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import { Channel, HomeView, Video } from 'types';
 import ChannelTitle from './ChannelTitle';
@@ -8,24 +8,18 @@ export interface BaseViewProps {
   view: HomeView;
   channel: Channel;
   videos: Video[];
-  error: any;
+  total: number;
   isLoading: boolean;
   maxResults: number;
-  hasMore: boolean;
-  onError?: (error: any) => void;
   onLoadMore: () => void;
   onVideoPlay: (video: Video) => void;
 }
 
 function BaseView(props: BaseViewProps) {
-  const { channel, videos, error, isLoading, onError, ...rest } = props;
+  const { channel, videos, total, isLoading, ...rest } = props;
   const hasVideos = isLoading || videos.length > 0;
-
-  useEffect(() => {
-    if (error && onError) {
-      onError(error);
-    }
-  }, [error, onError]);
+  const canLoadMore = total > videos.length;
+  const hasMore = total > 0 && ((isLoading && canLoadMore) || canLoadMore);
 
   return hasVideos ? (
     <Box
@@ -36,7 +30,12 @@ function BaseView(props: BaseViewProps) {
       }}
     >
       <ChannelTitle channel={channel} />
-      <ChannelVideos videos={videos} isLoading={isLoading} {...rest} />
+      <ChannelVideos
+        videos={videos}
+        isLoading={isLoading}
+        hasMore={hasMore}
+        {...rest}
+      />
     </Box>
   ) : null;
 }

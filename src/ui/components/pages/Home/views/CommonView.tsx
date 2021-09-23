@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Channel, HomeView, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import BaseView from './BaseView';
@@ -13,34 +13,34 @@ export interface CommonViewProps {
 }
 
 function CommonView(props: CommonViewProps) {
-  const { channel, publishedAfter, ...rest } = props;
+  const { channel, publishedAfter, onError, ...rest } = props;
   const [page, setPage] = useState(1);
   const maxResults = config.itemsPerRow * page;
-  const {
-    data: videos = [],
-    error,
-    isLoading,
-    isFetching,
-  } = useGetChannelVideosQuery({
+  const { data, error, isLoading, isFetching } = useGetChannelVideosQuery({
     channel,
     publishedAfter,
     maxResults,
   });
-  const hasMore =
-    videos.length > 0 && (isFetching || videos.length >= maxResults);
+  const videos = data?.items || [];
+  const total = data?.total || 0;
 
   const handleLoadMore = () => {
     setPage(page + 1);
   };
 
+  useEffect(() => {
+    if (error && onError) {
+      onError(error);
+    }
+  }, [error, onError]);
+
   return (
     <BaseView
       channel={channel}
       videos={videos}
-      error={error}
+      total={total}
       isLoading={isLoading || isFetching}
       maxResults={maxResults}
-      hasMore={hasMore}
       onLoadMore={handleLoadMore}
       {...rest}
     />

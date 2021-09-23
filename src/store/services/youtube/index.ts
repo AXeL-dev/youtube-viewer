@@ -4,13 +4,17 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { RootState } from 'store';
-import { Channel, ChannelActivities, Response, Video } from 'types';
+import { Response } from 'types';
 import {
   queries,
   FindChannelByNameArgs,
   GetChannelActivitiesArgs,
   GetVideosByIdArgs,
   GetChannelVideosArgs,
+  FindChannelByNameResponse,
+  GetChannelActivitiesResponse,
+  GetVideosByIdResponse,
+  GetChannelVideosResponse,
 } from './queries';
 
 const baseQuery = fetchBaseQuery({
@@ -28,17 +32,21 @@ export const youtubeApi = createApi({
   reducerPath: 'youtubeApi',
   baseQuery,
   endpoints: (builder) => ({
-    findChannelByName: builder.query<Channel[], FindChannelByNameArgs>(
-      queries.findChannelByName
-    ),
+    findChannelByName: builder.query<
+      FindChannelByNameResponse,
+      FindChannelByNameArgs
+    >(queries.findChannelByName),
     getChannelActivities: builder.query<
-      ChannelActivities[],
+      GetChannelActivitiesResponse,
       GetChannelActivitiesArgs
     >(queries.getChannelActivities),
-    getVideosById: builder.query<Video[], GetVideosByIdArgs>(
+    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>(
       queries.getVideosById
     ),
-    getChannelVideos: builder.query<Video[], GetChannelVideosArgs>({
+    getChannelVideos: builder.query<
+      GetChannelVideosResponse,
+      GetChannelVideosArgs
+    >({
       queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
         const { channel, publishedAfter, maxResults } = _arg;
         // Fetch channel activities
@@ -52,10 +60,11 @@ export const youtubeApi = createApi({
         if (activities.error) {
           return { error: activities.error as FetchBaseQueryError };
         }
-        const ids = queries.getChannelActivities
-          .transformResponse(activities.data as Response)
-          .map(({ videoId }) => videoId);
+        const { items, total } = queries.getChannelActivities.transformResponse(
+          activities.data as Response
+        );
         // Fetch channel videos
+        const ids = items.map(({ videoId }) => videoId);
         const result = await fetchWithBQ(
           queries.getVideosById.query({
             ids,
@@ -64,9 +73,12 @@ export const youtubeApi = createApi({
         );
         return result.data
           ? {
-              data: queries.getVideosById.transformResponse(
-                result.data as Response
-              ),
+              data: {
+                ...queries.getVideosById.transformResponse(
+                  result.data as Response
+                ),
+                total,
+              },
             }
           : { error: result.error as FetchBaseQueryError };
       },

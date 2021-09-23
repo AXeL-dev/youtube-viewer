@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Channel, HomeView, Video } from 'types';
 import { useGetVideosByIdQuery } from 'store/services/youtube';
 import { useAppSelector } from 'store';
@@ -17,30 +17,32 @@ function WatchLaterView(props: WatchLaterViewProps) {
   const [page, setPage] = useState(1);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const ids = watchLaterVideos.map(({ videoId }) => videoId);
-  const initialMaxResults = config.itemsPerRow * page;
-  const maxResults = Math.min(ids.length, initialMaxResults);
+  const total = ids.length;
+  const maxResults = Math.min(total, config.itemsPerRow * page);
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery({
     ids,
     maxResults,
   });
-  const videos = (data || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
-  const hasMore =
-    videos.length > 0 && (isFetching || videos.length >= initialMaxResults);
+  const videos = (data?.items || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
 
   const handleLoadMore = () => {
     setPage(page + 1);
   };
+
+  useEffect(() => {
+    if (error && onError) {
+      onError(error);
+    }
+  }, [error, onError]);
 
   return (
     <BaseView
       view={HomeView.WatchLater}
       channel={channel}
       videos={videos}
-      error={error}
+      total={total}
       isLoading={isLoading || isFetching}
       maxResults={maxResults}
-      hasMore={hasMore}
-      onError={onError}
       onLoadMore={handleLoadMore}
       onVideoPlay={onVideoPlay}
     />

@@ -4,7 +4,7 @@ import { Alert } from 'ui/components/shared';
 import { Channel, HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
-import PlayVideoDialog from './dialogs/PlayVideoDialog';
+import PlayVideoDialog from './PlayVideoDialog';
 import { AllView, RecentView, WatchLaterView } from './views';
 
 interface TabPanelProps {
