@@ -37,7 +37,7 @@ function ChannelVideos(props: ChannelVideosProps) {
             <VideoCard video={video} view={view} onVideoPlay={onVideoPlay} />
           </GridItem>
         ))}
-        {isLoading
+        {isLoading && skeletonNumber > 0
           ? Array.from(new Array(skeletonNumber)).map((_, index: number) => (
               <GridItem key={index}>
                 <VideoSkeleton />

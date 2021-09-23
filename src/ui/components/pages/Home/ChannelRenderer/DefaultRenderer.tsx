@@ -3,6 +3,7 @@ import { Channel, HomeView, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
+import { useGrid } from 'hooks';
 
 export interface DefaultRendererProps {
   channel: Channel;
@@ -15,7 +16,8 @@ export interface DefaultRendererProps {
 function DefaultRenderer(props: DefaultRendererProps) {
   const { channel, publishedAfter, onError, ...rest } = props;
   const [page, setPage] = useState(1);
-  const maxResults = config.itemsPerRow * page;
+  const { itemsPerRow } = useGrid(config.gridColumns);
+  const maxResults = itemsPerRow * page;
   const { data, error, isLoading, isFetching } = useGetChannelVideosQuery({
     channel,
     publishedAfter,
