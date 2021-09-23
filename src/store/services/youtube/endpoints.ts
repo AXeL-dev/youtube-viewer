@@ -1,42 +1,45 @@
+import { youtubeApi } from './api';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
 import { Channel, ChannelActivities, Response, Video } from 'types';
 
-export type FindChannelByNameArgs = {
+type FindChannelByNameArgs = {
   name: string;
   maxResults?: number;
 };
 
-export type FindChannelByNameResponse = {
+type FindChannelByNameResponse = {
   items: Channel[];
   total: number;
 };
 
-export type GetChannelActivitiesArgs = {
+type GetChannelActivitiesArgs = {
   channel: Channel;
-  publishedAfter: string;
+  publishedAfter?: string;
+  publishedBefore?: string;
   maxResults?: number;
 };
 
-export type GetChannelActivitiesResponse = {
+type GetChannelActivitiesResponse = {
   items: ChannelActivities[];
   total: number;
 };
 
-export type GetVideosByIdArgs = {
+type GetVideosByIdArgs = {
   ids: string[];
   maxResults?: number;
 };
 
-export type GetVideosByIdResponse = {
+type GetVideosByIdResponse = {
   items: Video[];
   total: number;
 };
 
-export type GetChannelVideosArgs = GetChannelActivitiesArgs;
+type GetChannelVideosArgs = GetChannelActivitiesArgs;
 
-export type GetChannelVideosResponse = GetVideosByIdResponse;
+type GetChannelVideosResponse = GetVideosByIdResponse;
 
-export const queries = {
+const queries = {
   // Channel search query
   findChannelByName: {
     query: ({ name: q, maxResults = 10 }: FindChannelByNameArgs) => ({
@@ -66,6 +69,7 @@ export const queries = {
     query: ({
       channel,
       publishedAfter,
+      publishedBefore,
       maxResults = 10,
     }: GetChannelActivitiesArgs) => ({
       url: 'activities',
@@ -73,16 +77,17 @@ export const queries = {
         part: 'contentDetails',
         fields: 'pageInfo,items(contentDetails)',
         channelId: channel.id,
-        publishedAfter,
+        ...(publishedAfter ? { publishedAfter } : {}),
+        ...(publishedBefore ? { publishedBefore } : {}),
         maxResults,
       },
     }),
     transformResponse: (response: Response): GetChannelActivitiesResponse => ({
       items: response.items
+        .filter((item) => item.contentDetails.upload?.videoId)
         .map((item) => ({
-          videoId: item.contentDetails.upload?.videoId,
-        }))
-        .filter(({ videoId }) => videoId),
+          videoId: item.contentDetails.upload.videoId,
+        })),
       total: response.pageInfo.totalResults,
     }),
   },
@@ -95,7 +100,6 @@ export const queries = {
         fields:
           'pageInfo,items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))',
         id: ids.slice(0, maxResults).join(','),
-        maxResults,
       },
     }),
     transformResponse: (response: Response): GetVideosByIdResponse => ({
@@ -118,3 +122,67 @@ export const queries = {
     }),
   },
 };
+
+const extendedApi = youtubeApi.injectEndpoints({
+  endpoints: (builder) => ({
+    findChannelByName: builder.query<
+      FindChannelByNameResponse,
+      FindChannelByNameArgs
+    >(queries.findChannelByName),
+    getChannelActivities: builder.query<
+      GetChannelActivitiesResponse,
+      GetChannelActivitiesArgs
+    >(queries.getChannelActivities),
+    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>(
+      queries.getVideosById
+    ),
+    getChannelVideos: builder.query<
+      GetChannelVideosResponse,
+      GetChannelVideosArgs
+    >({
+      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { channel, publishedAfter, maxResults } = _arg;
+        // Fetch channel activities
+        const activities = await fetchWithBQ(
+          queries.getChannelActivities.query({
+            channel,
+            publishedAfter,
+            maxResults,
+          })
+        );
+        if (activities.error) {
+          return { error: activities.error as FetchBaseQueryError };
+        }
+        const { items, total } = queries.getChannelActivities.transformResponse(
+          activities.data as Response
+        );
+        // Fetch channel videos
+        const ids = items.map(({ videoId }) => videoId);
+        const result = await fetchWithBQ(
+          queries.getVideosById.query({
+            ids,
+            maxResults,
+          })
+        );
+        return result.data
+          ? {
+              data: {
+                ...queries.getVideosById.transformResponse(
+                  result.data as Response
+                ),
+                total,
+              },
+            }
+          : { error: result.error as FetchBaseQueryError };
+      },
+    }),
+  }),
+  overrideExisting: false,
+});
+
+export const {
+  useFindChannelByNameQuery,
+  useGetChannelActivitiesQuery,
+  useGetVideosByIdQuery,
+  useGetChannelVideosQuery,
+} = extendedApi;
