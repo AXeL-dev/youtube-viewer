@@ -13,7 +13,7 @@ export type GetChannelActivitiesArgs = {
 };
 
 export type GetVideosByIdArgs = {
-  id: string | string[];
+  ids: string[];
   maxResults?: number;
 };
 
@@ -75,13 +75,13 @@ export const queries = {
   },
   // Videos informations query
   getVideosById: {
-    query: ({ id, maxResults = 10 }: GetVideosByIdArgs) => ({
+    query: ({ ids, maxResults = 10 }: GetVideosByIdArgs) => ({
       url: 'videos',
       params: {
         part: 'snippet,contentDetails,statistics,id',
         fields:
           'pageInfo,items(id,contentDetails/duration,statistics/viewCount,snippet(title,channelTitle,channelId,publishedAt,thumbnails/medium))',
-        id: id instanceof Array ? id.join(',') : id,
+        id: ids.slice(0, maxResults).join(','),
         maxResults,
       },
     }),

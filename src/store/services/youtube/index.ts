@@ -52,13 +52,13 @@ export const youtubeApi = createApi({
         if (activities.error) {
           return { error: activities.error as FetchBaseQueryError };
         }
-        const id = queries.getChannelActivities
+        const ids = queries.getChannelActivities
           .transformResponse(activities.data as Response)
           .map(({ videoId }) => videoId);
         // Fetch channel videos
         const result = await fetchWithBQ(
           queries.getVideosById.query({
-            id,
+            ids,
             maxResults,
           })
         );

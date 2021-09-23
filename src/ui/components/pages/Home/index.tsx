@@ -35,20 +35,11 @@ export function Home(props: HomeProps) {
           onChange={handleTabChange}
           aria-label="tabs"
         >
-          <Tab
-            label="All"
-            value={HomeView.All}
-            selected={activeTab === HomeView.All}
-          />
-          <Tab
-            label="Recent"
-            value={HomeView.Recent}
-            selected={activeTab === HomeView.Recent}
-          />
+          <Tab label="All" value={HomeView.All} />
+          <Tab label="Recent" value={HomeView.Recent} />
           <Tab
             label="Watch later"
             value={HomeView.WatchLater}
-            selected={activeTab === HomeView.WatchLater}
             badge={watchLaterVideosCount}
           />
         </Tabs>

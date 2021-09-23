@@ -4,6 +4,7 @@ import { Video } from 'types';
 interface WatchLater {
   videoId: string;
   channelId: string;
+  publishedAt: number;
 }
 
 interface VideosState {
@@ -35,7 +36,11 @@ export const videosSlice = createSlice({
         state.watchLater.push({
           videoId: video.id,
           channelId: video.channelId,
+          publishedAt: video.publishedAt,
         });
+        state.watchLater = state.watchLater.sort(
+          (a, b) => b.publishedAt - a.publishedAt
+        );
       }
     },
     removeFromWatchLaterList: (state, action: PayloadAction<Video>) => {
@@ -50,7 +55,7 @@ export const videosSlice = createSlice({
       if (!found) {
         state.viewed.push(video.id);
       }
-      videosSlice.caseReducers.removeFromWatchLaterList(state, action);
+      // videosSlice.caseReducers.removeFromWatchLaterList(state, action);
     },
   },
 });
