@@ -133,9 +133,32 @@ const extendedApi = youtubeApi.injectEndpoints({
       GetChannelActivitiesResponse,
       GetChannelActivitiesArgs
     >(queries.getChannelActivities),
-    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>(
-      queries.getVideosById
-    ),
+    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>({
+      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { ids, maxResults } = _arg;
+        if (ids.length === 0) {
+          return {
+            data: {
+              items: [],
+              total: 0,
+            },
+          };
+        }
+        const result = await fetchWithBQ(
+          queries.getVideosById.query({
+            ids,
+            maxResults,
+          })
+        );
+        return result.data
+          ? {
+              data: queries.getVideosById.transformResponse(
+                result.data as Response
+              ),
+            }
+          : { error: result.error as FetchBaseQueryError };
+      },
+    }),
     getChannelVideos: builder.query<
       GetChannelVideosResponse,
       GetChannelVideosArgs
@@ -158,6 +181,14 @@ const extendedApi = youtubeApi.injectEndpoints({
         );
         // Fetch channel videos
         const ids = items.map(({ videoId }) => videoId);
+        if (ids.length === 0) {
+          return {
+            data: {
+              items: [],
+              total: 0,
+            },
+          };
+        }
         const result = await fetchWithBQ(
           queries.getVideosById.query({
             ids,
