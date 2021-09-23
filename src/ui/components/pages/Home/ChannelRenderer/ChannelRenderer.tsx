@@ -42,4 +42,19 @@ function ChannelRenderer(props: ChannelRendererProps) {
   ) : null;
 }
 
-export default React.memo(ChannelRenderer);
+export function propsAreEqual(
+  prevProps: ChannelRendererProps,
+  nextProps: ChannelRendererProps
+) {
+  return (
+    prevProps.view === nextProps.view &&
+    prevProps.channel.id === nextProps.channel.id &&
+    prevProps.total === nextProps.total &&
+    prevProps.isLoading === nextProps.isLoading &&
+    prevProps.maxResults === nextProps.maxResults &&
+    JSON.stringify(prevProps.videos.map(({ id }) => id)) ===
+      JSON.stringify(nextProps.videos.map(({ id }) => id))
+  );
+}
+
+export default React.memo(ChannelRenderer, propsAreEqual);

@@ -58,7 +58,8 @@ function propsAreEqual(
 ) {
   return (
     prevProps.view === nextProps.view &&
-    JSON.stringify(prevProps.channels) === JSON.stringify(nextProps.channels)
+    JSON.stringify(prevProps.channels.map(({ id }) => id)) ===
+      JSON.stringify(nextProps.channels.map(({ id }) => id))
   );
 }
 

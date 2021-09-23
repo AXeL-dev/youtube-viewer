@@ -20,10 +20,10 @@ function WatchLaterRenderer(props: WatchLaterRendererProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const ids = watchLaterVideos.map(({ videoId }) => videoId);
   const total = ids.length;
-  const maxResults = Math.max(Math.min(total, itemsPerRow * page), itemsPerRow);
+  const maxResults = Math.min(total, itemsPerRow * page);
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery({
     ids,
-    maxResults,
+    maxResults: Math.max(maxResults, itemsPerRow),
   });
   const videos = (data?.items || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
 
