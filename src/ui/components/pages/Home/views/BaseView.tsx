@@ -16,9 +16,9 @@ export interface BaseViewProps {
 }
 
 function BaseView(props: BaseViewProps) {
-  const { channel, videos, total, isLoading, ...rest } = props;
+  const { channel, videos, total, isLoading, maxResults, ...rest } = props;
   const hasVideos = isLoading || videos.length > 0;
-  const canLoadMore = total > videos.length;
+  const canLoadMore = total > maxResults;
   const hasMore = total > 0 && ((isLoading && canLoadMore) || canLoadMore);
 
   return hasVideos ? (
@@ -33,6 +33,7 @@ function BaseView(props: BaseViewProps) {
       <ChannelVideos
         videos={videos}
         isLoading={isLoading}
+        maxResults={maxResults}
         hasMore={hasMore}
         {...rest}
       />

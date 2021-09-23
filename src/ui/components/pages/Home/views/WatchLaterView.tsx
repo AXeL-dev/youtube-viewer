@@ -18,7 +18,10 @@ function WatchLaterView(props: WatchLaterViewProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const ids = watchLaterVideos.map(({ videoId }) => videoId);
   const total = ids.length;
-  const maxResults = Math.min(total, config.itemsPerRow * page);
+  const maxResults = Math.max(
+    Math.min(total, config.itemsPerRow * page),
+    config.itemsPerRow
+  );
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery({
     ids,
     maxResults,

@@ -7,7 +7,7 @@ import config from './ChannelVideos/config';
 export interface CommonViewProps {
   channel: Channel;
   view: HomeView;
-  publishedAfter: string;
+  publishedAfter?: string;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }

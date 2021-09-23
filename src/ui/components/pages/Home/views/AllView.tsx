@@ -1,6 +1,5 @@
 import React from 'react';
 import { Channel, HomeView, Video } from 'types';
-import { getDateBefore } from 'helpers/utils';
 import CommonView from './CommonView';
 
 export interface AllViewProps {
@@ -10,15 +9,7 @@ export interface AllViewProps {
 }
 
 function AllView(props: AllViewProps) {
-  const publishedAfter = getDateBefore(30).toISOString();
-
-  return (
-    <CommonView
-      view={HomeView.All}
-      publishedAfter={publishedAfter}
-      {...props}
-    />
-  );
+  return <CommonView view={HomeView.All} {...props} />;
 }
 
 export default React.memo(AllView);
