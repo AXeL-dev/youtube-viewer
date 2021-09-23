@@ -215,9 +215,20 @@ function VideoCard(props: VideoCardProps) {
         </Typography>
       </Box>
       <Box pr={2} mt={1}>
-        <Typography gutterBottom variant="body2">
-          {video.title}
-        </Typography>
+        <Tooltip title={video.title} aria-label="video-title">
+          <Typography
+            sx={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+            gutterBottom
+            variant="body2"
+          >
+            {video.title}
+          </Typography>
+        </Tooltip>
         <Typography display="block" variant="caption" color="textSecondary">
           {video.channelTitle}
         </Typography>

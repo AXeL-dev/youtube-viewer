@@ -4,7 +4,7 @@ import { Channel, HomeView, Video } from 'types';
 import ChannelTitle from './ChannelTitle';
 import ChannelVideos from './ChannelVideos';
 
-export interface BaseViewProps {
+export interface ChannelRendererProps {
   view: HomeView;
   channel: Channel;
   videos: Video[];
@@ -15,11 +15,12 @@ export interface BaseViewProps {
   onVideoPlay: (video: Video) => void;
 }
 
-function BaseView(props: BaseViewProps) {
+function ChannelRenderer(props: ChannelRendererProps) {
   const { channel, videos, total, isLoading, maxResults, ...rest } = props;
   const hasVideos = isLoading || videos.length > 0;
   const canLoadMore = total > maxResults;
-  const hasMore = total > 0 && ((isLoading && canLoadMore) || canLoadMore);
+  const hasMore =
+    videos.length > 0 && ((isLoading && canLoadMore) || canLoadMore);
 
   return hasVideos ? (
     <Box
@@ -41,4 +42,4 @@ function BaseView(props: BaseViewProps) {
   ) : null;
 }
 
-export default React.memo(BaseView);
+export default React.memo(ChannelRenderer);

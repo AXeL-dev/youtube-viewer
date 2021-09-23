@@ -5,7 +5,8 @@ import { Channel, HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import PlayVideoDialog from './PlayVideoDialog';
-import { AllView, RecentView, WatchLaterView } from './views';
+import { DefaultRenderer, WatchLaterRenderer } from './ChannelRenderer';
+import { getDateBefore } from 'helpers/utils';
 
 interface TabPanelProps {
   tab: HomeView;
@@ -16,14 +17,17 @@ export default function TabPanel(props: TabPanelProps) {
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Video | null>(null);
   const channels = useAppSelector(selectActiveChannels);
-  const ViewComponent = useMemo(() => {
+  const [ChannelRenderer, rendererProps] = useMemo(() => {
     switch (tab) {
       case HomeView.WatchLater:
-        return WatchLaterView;
+        return [WatchLaterRenderer];
       case HomeView.Recent:
-        return RecentView;
+        return [
+          DefaultRenderer,
+          { publishedAfter: getDateBefore(1).toISOString() },
+        ];
       default:
-        return AllView;
+        return [DefaultRenderer];
     }
   }, [tab]);
 
@@ -54,11 +58,13 @@ export default function TabPanel(props: TabPanelProps) {
         }}
       >
         {channels.map((channel: Channel, index: number) => (
-          <ViewComponent
+          <ChannelRenderer
             key={index}
+            view={tab}
             channel={channel}
             onError={handleError}
             onVideoPlay={handleVideoPlay}
+            {...rendererProps}
           />
         ))}
       </Box>

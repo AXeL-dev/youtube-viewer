@@ -1,11 +1,11 @@
 import React, { MouseEvent } from 'react';
 import YouTube, { PlayerVars } from 'react-youtube';
-import { Dialog, IconButton, DialogContent } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogContent } from '@mui/material';
 import { Video } from 'types';
 import { noop } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
+import CloseButton from './CloseButton';
 
 interface PlayVideoDialogProps {
   open: boolean;
@@ -45,24 +45,7 @@ export default function PlayVideoDialog(props: PlayVideoDialogProps) {
       open={open}
       onClose={handleClose}
     >
-      <IconButton
-        sx={{
-          position: 'absolute',
-          top: (theme) => theme.spacing(-1.75),
-          right: (theme) => theme.spacing(-1.75),
-          bgcolor: 'primary.main',
-          color: 'common.white',
-          fontSize: '1.275rem',
-          '&:hover': {
-            bgcolor: 'primary.main',
-            color: 'common.white',
-          },
-        }}
-        size="small"
-        onClick={handleClose}
-      >
-        <CloseIcon fontSize="inherit" />
-      </IconButton>
+      <CloseButton onClick={handleClose} />
       <DialogContent
         sx={{
           display: 'flex',

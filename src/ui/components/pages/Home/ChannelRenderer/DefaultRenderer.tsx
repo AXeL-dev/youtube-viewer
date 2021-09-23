@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Channel, HomeView, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
-import BaseView from './BaseView';
+import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 
-export interface CommonViewProps {
+export interface DefaultRendererProps {
   channel: Channel;
   view: HomeView;
   publishedAfter?: string;
@@ -12,7 +12,7 @@ export interface CommonViewProps {
   onVideoPlay: (video: Video) => void;
 }
 
-function CommonView(props: CommonViewProps) {
+function DefaultRenderer(props: DefaultRendererProps) {
   const { channel, publishedAfter, onError, ...rest } = props;
   const [page, setPage] = useState(1);
   const maxResults = config.itemsPerRow * page;
@@ -35,7 +35,7 @@ function CommonView(props: CommonViewProps) {
   }, [error, onError]);
 
   return (
-    <BaseView
+    <ChannelRenderer
       channel={channel}
       videos={videos}
       total={total}
@@ -47,4 +47,4 @@ function CommonView(props: CommonViewProps) {
   );
 }
 
-export default React.memo(CommonView);
+export default React.memo(DefaultRenderer);

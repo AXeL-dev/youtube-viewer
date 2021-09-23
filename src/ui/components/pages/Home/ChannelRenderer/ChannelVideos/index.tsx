@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, Grid, IconButton } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { HomeView, Video } from 'types';
 import VideoCard from './VideoCard';
 import VideoSkeleton from './VideoSkeleton';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import GridItem from './GridItem';
 import config from './config';
+import LoadMore from './LoadMore';
 
 interface ChannelVideosProps {
   videos: Video[];
@@ -27,6 +27,7 @@ function ChannelVideos(props: ChannelVideosProps) {
     onVideoPlay,
     onLoadMore,
   } = props;
+
   const skeletonNumber = maxResults - videos.length;
 
   return (
@@ -45,16 +46,7 @@ function ChannelVideos(props: ChannelVideosProps) {
             ))
           : null}
       </Grid>
-      {hasMore ? (
-        <IconButton
-          sx={{ ml: 2, borderRadius: 0 }}
-          disabled={isLoading}
-          size="small"
-          onClick={onLoadMore}
-        >
-          <ArrowForwardIosIcon fontSize="inherit" />
-        </IconButton>
-      ) : null}
+      {hasMore ? <LoadMore isLoading={isLoading} onClick={onLoadMore} /> : null}
     </Box>
   );
 }

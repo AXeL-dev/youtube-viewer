@@ -3,16 +3,16 @@ import { Channel, HomeView, Video } from 'types';
 import { useGetVideosByIdQuery } from 'store/services/youtube';
 import { useAppSelector } from 'store';
 import { selectWatchLaterVideos } from 'store/selectors/videos';
-import BaseView from './BaseView';
+import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 
-export interface WatchLaterViewProps {
+export interface WatchLaterRendererProps {
   channel: Channel;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
-function WatchLaterView(props: WatchLaterViewProps) {
+function WatchLaterRenderer(props: WatchLaterRendererProps) {
   const { channel, onError, onVideoPlay } = props;
   const [page, setPage] = useState(1);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
@@ -39,7 +39,7 @@ function WatchLaterView(props: WatchLaterViewProps) {
   }, [error, onError]);
 
   return (
-    <BaseView
+    <ChannelRenderer
       view={HomeView.WatchLater}
       channel={channel}
       videos={videos}
@@ -52,4 +52,4 @@ function WatchLaterView(props: WatchLaterViewProps) {
   );
 }
 
-export default React.memo(WatchLaterView);
+export default React.memo(WatchLaterRenderer);
