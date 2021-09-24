@@ -1,5 +1,5 @@
 import DefaultRenderer from './DefaultRenderer';
-import RecentRenderer from './RecentRenderer';
-import WatchLaterRenderer from './WatchLaterRenderer';
+import RecentViewRenderer from './RecentViewRenderer';
+import WatchLaterViewRenderer from './WatchLaterViewRenderer';
 
-export { DefaultRenderer, RecentRenderer, WatchLaterRenderer };
+export { DefaultRenderer, RecentViewRenderer, WatchLaterViewRenderer };

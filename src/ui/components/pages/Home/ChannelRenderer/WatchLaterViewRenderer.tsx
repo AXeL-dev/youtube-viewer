@@ -7,13 +7,13 @@ import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
 
-export interface WatchLaterRendererProps {
+export interface WatchLaterViewRendererProps {
   channel: Channel;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
-function WatchLaterRenderer(props: WatchLaterRendererProps) {
+function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
   const { channel, onError, onVideoPlay } = props;
   const [page, setPage] = useState(1);
   const { itemsPerRow } = useGrid(config.gridColumns);
@@ -52,4 +52,4 @@ function WatchLaterRenderer(props: WatchLaterRendererProps) {
   );
 }
 
-export default WatchLaterRenderer;
+export default WatchLaterViewRenderer;

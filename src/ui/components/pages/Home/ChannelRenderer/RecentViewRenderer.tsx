@@ -4,10 +4,10 @@ import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 
-export interface RecentRendererProps
+export interface RecentViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
 
-function RecentRenderer(props: RecentRendererProps) {
+function RecentViewRenderer(props: RecentViewRendererProps) {
   const settings = useAppSelector(selectSettings);
   const publishedAfter = getDateBefore(
     settings.recentVideosSeniority
@@ -16,4 +16,4 @@ function RecentRenderer(props: RecentRendererProps) {
   return <DefaultRenderer publishedAfter={publishedAfter} {...props} />;
 }
 
-export default RecentRenderer;
+export default RecentViewRenderer;

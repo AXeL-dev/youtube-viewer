@@ -3,8 +3,8 @@ import { Box } from '@mui/material';
 import { Channel, HomeView, Video } from 'types';
 import {
   DefaultRenderer,
-  RecentRenderer,
-  WatchLaterRenderer,
+  RecentViewRenderer,
+  WatchLaterViewRenderer,
 } from './ChannelRenderer';
 
 interface ChannelsWrapperProps {
@@ -19,9 +19,9 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
   const ChannelRenderer = useMemo(() => {
     switch (view) {
       case HomeView.WatchLater:
-        return WatchLaterRenderer;
+        return WatchLaterViewRenderer;
       case HomeView.Recent:
-        return RecentRenderer;
+        return RecentViewRenderer;
       default:
         return DefaultRenderer;
     }
