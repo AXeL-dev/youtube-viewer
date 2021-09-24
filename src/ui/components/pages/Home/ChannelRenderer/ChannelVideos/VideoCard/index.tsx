@@ -2,17 +2,11 @@ import React from 'react';
 import { Box, IconButton, Tooltip, Typography, Link } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
-import CloseIcon from '@mui/icons-material/Close';
 import { HomeView, Video } from 'types';
-import { useAppDispatch, useAppSelector } from 'store';
-import {
-  addToWatchLaterList,
-  addToViewedList,
-  removeFromWatchLaterList,
-} from 'store/reducers/videos';
-import { selectVideoMeta } from 'store/selectors/videos';
+import { useAppDispatch } from 'store';
+import { addToViewedList } from 'store/reducers/videos';
+import WatchLaterAction from './WatchLaterAction';
+import ViewedBadge from './ViewedBadge';
 
 interface VideoCardProps {
   video: Video;
@@ -30,7 +24,6 @@ function VideoCard(props: VideoCardProps) {
     thumbnailHeight = 120,
     onVideoPlay,
   } = props;
-  const { isViewed, isToWatchLater } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
 
   return (
@@ -124,80 +117,9 @@ function VideoCard(props: VideoCardProps) {
               </Tooltip>
             </IconButton>
           </Box>
-          {!isToWatchLater ? (
-            <Tooltip title="Watch later" aria-label="watch-later">
-              <IconButton
-                sx={{
-                  display: 'flex',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  margin: '4px',
-                  color: '#eee',
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  padding: '4px',
-                  borderRadius: '2px',
-                  '&:hover': {
-                    color: '#fff',
-                  },
-                }}
-                size="small"
-                onClick={() => {
-                  dispatch(addToWatchLaterList(video));
-                }}
-              >
-                <WatchLaterOutlinedIcon sx={{ fontSize: '1.25rem' }} />
-              </IconButton>
-            </Tooltip>
-          ) : view === HomeView.WatchLater ? (
-            <Tooltip title="Remove" aria-label="remove-from-watch-later">
-              <IconButton
-                sx={{
-                  display: 'flex',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  margin: '4px',
-                  color: '#eee',
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  padding: '4px',
-                  borderRadius: '2px',
-                  '&:hover': {
-                    color: '#fff',
-                  },
-                }}
-                size="small"
-                onClick={() => {
-                  dispatch(removeFromWatchLaterList(video));
-                }}
-              >
-                <CloseIcon sx={{ fontSize: '1.125rem' }} />
-              </IconButton>
-            </Tooltip>
-          ) : null}
+          <WatchLaterAction video={video} view={view} />
         </Box>
-        {isViewed ? (
-          <Tooltip title="Viewed" aria-label="viewed">
-            <Box
-              sx={{
-                display: 'flex',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                margin: '4px',
-                color: '#eee',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                padding: '3px 5px',
-                borderRadius: '2px',
-                '&:hover': {
-                  color: '#fff',
-                },
-              }}
-            >
-              <VisibilityIcon sx={{ fontSize: '1rem' }} />
-            </Box>
-          </Tooltip>
-        ) : null}
+        <ViewedBadge video={video} />
         <Typography
           sx={{
             position: 'absolute',
