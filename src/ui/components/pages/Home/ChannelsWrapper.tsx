@@ -3,6 +3,8 @@ import { Box } from '@mui/material';
 import { Channel, HomeView, Video } from 'types';
 import { DefaultRenderer, WatchLaterRenderer } from './ChannelRenderer';
 import { getDateBefore } from 'helpers/utils';
+import { useAppSelector } from 'store';
+import { selectSettings } from 'store/selectors/settings';
 
 interface ChannelsWrapperProps {
   view: HomeView;
@@ -13,6 +15,7 @@ interface ChannelsWrapperProps {
 
 function ChannelsWrapper(props: ChannelsWrapperProps) {
   const { view, channels, onError, onVideoPlay } = props;
+  const settings = useAppSelector(selectSettings);
   const [ChannelRenderer, rendererProps] = useMemo(() => {
     switch (view) {
       case HomeView.WatchLater:
@@ -20,12 +23,16 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
       case HomeView.Recent:
         return [
           DefaultRenderer,
-          { publishedAfter: getDateBefore(1).toISOString() },
+          {
+            publishedAfter: getDateBefore(
+              settings.recentVideosSeniority
+            ).toISOString(),
+          },
         ];
       default:
         return [DefaultRenderer];
     }
-  }, [view]);
+  }, [view, settings.recentVideosSeniority]);
 
   return (
     <Box

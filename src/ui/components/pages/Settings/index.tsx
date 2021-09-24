@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
-import { HomeView, SettingType } from 'types';
+import { HomeView, SettingType, VideosSeniority } from 'types';
 import Field from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
@@ -34,6 +34,28 @@ export function Settings(props: SettingsProps) {
             {
               label: 'Watch later',
               value: HomeView.WatchLater,
+            },
+          ]}
+          type={SettingType.List}
+        />
+        <Field
+          label="Recent videos seniority"
+          value={settings.recentVideosSeniority}
+          onChange={(recentVideosSeniority: VideosSeniority) => {
+            dispatch(setSettings({ recentVideosSeniority }));
+          }}
+          options={[
+            {
+              label: '1 day',
+              value: VideosSeniority.OneDay,
+            },
+            {
+              label: '3 days',
+              value: VideosSeniority.ThreeDays,
+            },
+            {
+              label: '7 days',
+              value: VideosSeniority.SevenDays,
             },
           ]}
           type={SettingType.List}

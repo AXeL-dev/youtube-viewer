@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { HomeView, Settings } from 'types';
+import { HomeView, Settings, VideosSeniority } from 'types';
 
 export const defaultSettings = {
   defaultView: HomeView.All,
   apiKey: '',
   darkMode: false,
   autoPlayVideos: true,
+  recentVideosSeniority: VideosSeniority.OneDay,
 };
 
 interface SettingsState extends Settings {}

@@ -5,7 +5,7 @@ interface GridColumns {
 }
 
 export function useGrid(columns: GridColumns) {
-  const width = useWidth();
+  const width = useWidth('xl');
 
   return {
     itemsPerRow: columns[width],
