@@ -6,6 +6,7 @@ import Field from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
+import Alerts from './Alerts';
 
 interface SettingsProps {}
 
@@ -15,6 +16,7 @@ export function Settings(props: SettingsProps) {
 
   return (
     <Layout>
+      <Alerts settings={settings} />
       <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
         <Field
           label="Default view"

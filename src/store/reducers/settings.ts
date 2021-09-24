@@ -9,9 +9,12 @@ export const defaultSettings = {
   recentVideosSeniority: VideosSeniority.OneDay,
 };
 
-interface SettingsState extends Settings {}
+export interface SettingsState extends Settings {
+  _loaded: boolean;
+}
 
 const initialState: SettingsState = {
+  _loaded: false,
   ...defaultSettings,
 };
 
@@ -19,14 +22,17 @@ export const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setSettings: (state, action: PayloadAction<Partial<Settings>>) => {
+    setSettings: (state, action: PayloadAction<Partial<SettingsState>>) => {
       return {
         ...state,
         ...action.payload,
       };
     },
     resetSettings: (state) => {
-      return defaultSettings;
+      return {
+        ...state,
+        ...defaultSettings,
+      };
     },
   },
 });

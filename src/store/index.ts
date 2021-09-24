@@ -39,16 +39,24 @@ store.subscribe(
     const legacy = (await storage.get('settings', 'channels')) || {};
     if (legacy.settings) {
       const { apiKey } = legacy.settings;
-      store.dispatch(setSettings({ apiKey }));
+      store.dispatch(
+        setSettings({
+          _loaded: true,
+          apiKey,
+        })
+      );
     }
     if (legacy.channels) {
       store.dispatch(setChannels(legacy.channels));
     }
   } else {
     // Load stored data
-    if (settings) {
-      store.dispatch(setSettings(settings));
-    }
+    store.dispatch(
+      setSettings({
+        _loaded: true,
+        ...(settings || {}),
+      })
+    );
     if (channels) {
       store.dispatch(setChannels(channels.list));
     }

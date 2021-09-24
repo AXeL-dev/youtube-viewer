@@ -9,12 +9,16 @@ interface RawHTMLProps {
 export const RawHTML = ({
   children,
   tag = 'span',
-  nl2br = true,
+  nl2br,
   ...rest
 }: RawHTMLProps) =>
   React.createElement(tag, {
     dangerouslySetInnerHTML: {
-      __html: nl2br ? children && children.replace(/\n/g, '<br />') : children,
+      __html: nl2br
+        ? children.replace
+          ? children.replace(/\n/g, '<br />')
+          : children
+        : children,
     },
     ...rest,
   });
