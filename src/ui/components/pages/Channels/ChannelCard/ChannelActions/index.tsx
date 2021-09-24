@@ -110,4 +110,13 @@ function ChannelActions(props: ChannelActionsProps) {
   );
 }
 
-export default React.memo(ChannelActions);
+function propsAreEqual(
+  prevProps: ChannelActionsProps,
+  nextProps: ChannelActionsProps
+) {
+  return (
+    JSON.stringify(prevProps.channel) === JSON.stringify(nextProps.channel)
+  );
+}
+
+export default React.memo(ChannelActions, propsAreEqual);

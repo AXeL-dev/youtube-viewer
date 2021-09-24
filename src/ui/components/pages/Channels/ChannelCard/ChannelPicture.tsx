@@ -6,7 +6,7 @@ interface ChannelPictureProps {
   channel: Channel;
 }
 
-export default function ChannelPicture(props: ChannelPictureProps) {
+function ChannelPicture(props: ChannelPictureProps) {
   const { channel } = props;
 
   return (
@@ -30,3 +30,16 @@ export default function ChannelPicture(props: ChannelPictureProps) {
     </Fade>
   );
 }
+
+function propsAreEqual(
+  prevProps: ChannelPictureProps,
+  nextProps: ChannelPictureProps
+) {
+  return (
+    prevProps.channel.title === nextProps.channel.title &&
+    prevProps.channel.thumbnail === nextProps.channel.thumbnail &&
+    prevProps.channel.url === nextProps.channel.url
+  );
+}
+
+export default React.memo(ChannelPicture, propsAreEqual);

@@ -4,7 +4,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 interface DragHandleProps {}
 
-function DragHandle(props: DragHandleProps) {
+export default function DragHandle(props: DragHandleProps) {
   return (
     <IconButton
       sx={{ cursor: 'move', mr: 1.5 }}
@@ -15,5 +15,3 @@ function DragHandle(props: DragHandleProps) {
     </IconButton>
   );
 }
-
-export default React.memo(DragHandle);

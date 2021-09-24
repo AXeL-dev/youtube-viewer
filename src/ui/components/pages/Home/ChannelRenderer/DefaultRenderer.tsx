@@ -49,4 +49,4 @@ function DefaultRenderer(props: DefaultRendererProps) {
   );
 }
 
-export default React.memo(DefaultRenderer);
+export default DefaultRenderer;

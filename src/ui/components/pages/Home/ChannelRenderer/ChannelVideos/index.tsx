@@ -50,4 +50,4 @@ function ChannelVideos(props: ChannelVideosProps) {
   );
 }
 
-export default React.memo(ChannelVideos);
+export default ChannelVideos;

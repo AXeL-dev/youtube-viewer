@@ -30,4 +30,11 @@ function ChannelTitle(props: ChannelTitleProps) {
   );
 }
 
-export default React.memo(ChannelTitle);
+function propsAreEqual(
+  prevProps: ChannelTitleProps,
+  nextProps: ChannelTitleProps
+) {
+  return prevProps.channel.id === nextProps.channel.id;
+}
+
+export default React.memo(ChannelTitle, propsAreEqual);

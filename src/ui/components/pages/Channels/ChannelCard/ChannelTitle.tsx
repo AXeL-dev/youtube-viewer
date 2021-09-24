@@ -6,7 +6,7 @@ interface ChannelTitleProps {
   channel: Channel;
 }
 
-export default function ChannelTitle(props: ChannelTitleProps) {
+function ChannelTitle(props: ChannelTitleProps) {
   const { channel } = props;
 
   return (
@@ -23,3 +23,15 @@ export default function ChannelTitle(props: ChannelTitleProps) {
     </Link>
   );
 }
+
+function propsAreEqual(
+  prevProps: ChannelTitleProps,
+  nextProps: ChannelTitleProps
+) {
+  return (
+    prevProps.channel.title === nextProps.channel.title &&
+    prevProps.channel.url === nextProps.channel.url
+  );
+}
+
+export default React.memo(ChannelTitle, propsAreEqual);

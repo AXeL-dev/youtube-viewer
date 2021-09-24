@@ -22,4 +22,4 @@ function ChannelLink(props: ChannelLinkProps) {
   );
 }
 
-export default React.memo(ChannelLink);
+export default ChannelLink;

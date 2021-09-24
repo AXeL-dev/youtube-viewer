@@ -78,4 +78,14 @@ function ChannelList(props: ChannelListProps) {
   );
 }
 
-export default React.memo(ChannelList);
+function propsAreEqual(
+  prevProps: ChannelListProps,
+  nextProps: ChannelListProps
+) {
+  return (
+    prevProps.showDragHandles === nextProps.showDragHandles &&
+    JSON.stringify(prevProps.channels) === JSON.stringify(nextProps.channels)
+  );
+}
+
+export default React.memo(ChannelList, propsAreEqual);

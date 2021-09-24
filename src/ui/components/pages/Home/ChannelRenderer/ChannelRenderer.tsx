@@ -42,7 +42,7 @@ function ChannelRenderer(props: ChannelRendererProps) {
   ) : null;
 }
 
-export function propsAreEqual(
+function propsAreEqual(
   prevProps: ChannelRendererProps,
   nextProps: ChannelRendererProps
 ) {

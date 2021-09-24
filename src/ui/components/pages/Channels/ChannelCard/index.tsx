@@ -81,4 +81,4 @@ const ChannelCard = React.forwardRef(
   }
 );
 
-export default React.memo(ChannelCard);
+export default ChannelCard;

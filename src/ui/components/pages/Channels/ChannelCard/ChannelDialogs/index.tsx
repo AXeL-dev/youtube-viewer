@@ -28,4 +28,14 @@ function ChannelDialogs(props: ChannelDialogsProps) {
   );
 }
 
-export default React.memo(ChannelDialogs);
+function propsAreEqual(
+  prevProps: ChannelDialogsProps,
+  nextProps: ChannelDialogsProps
+) {
+  return (
+    prevProps.openedDialog === nextProps.openedDialog &&
+    prevProps.channel.id === nextProps.channel.id
+  );
+}
+
+export default React.memo(ChannelDialogs, propsAreEqual);

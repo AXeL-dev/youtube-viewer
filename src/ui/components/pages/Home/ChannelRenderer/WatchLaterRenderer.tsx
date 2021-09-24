@@ -51,4 +51,4 @@ function WatchLaterRenderer(props: WatchLaterRendererProps) {
   );
 }
 
-export default React.memo(WatchLaterRenderer);
+export default WatchLaterRenderer;

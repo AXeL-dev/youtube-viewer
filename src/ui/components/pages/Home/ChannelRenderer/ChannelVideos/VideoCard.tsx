@@ -245,4 +245,13 @@ function VideoCard(props: VideoCardProps) {
   );
 }
 
-export default React.memo(VideoCard);
+function propsAreEqual(prevProps: VideoCardProps, nextProps: VideoCardProps) {
+  return (
+    prevProps.view === nextProps.view &&
+    prevProps.thumbnailHeight === nextProps.thumbnailHeight &&
+    prevProps.thumbnailWidth === nextProps.thumbnailWidth &&
+    prevProps.video.id === nextProps.video.id
+  );
+}
+
+export default React.memo(VideoCard, propsAreEqual);

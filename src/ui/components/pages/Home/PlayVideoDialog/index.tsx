@@ -13,7 +13,7 @@ interface PlayVideoDialogProps {
   onClose: () => void;
 }
 
-export default function PlayVideoDialog(props: PlayVideoDialogProps) {
+function PlayVideoDialog(props: PlayVideoDialogProps) {
   const { open, video, onClose } = props;
   const settings = useAppSelector(selectSettings);
   const opts = {
@@ -60,3 +60,15 @@ export default function PlayVideoDialog(props: PlayVideoDialogProps) {
     </Dialog>
   );
 }
+
+function propsAreEqual(
+  prevProps: PlayVideoDialogProps,
+  nextProps: PlayVideoDialogProps
+) {
+  return (
+    prevProps.open === nextProps.open &&
+    prevProps.video?.id === nextProps.video?.id
+  );
+}
+
+export default React.memo(PlayVideoDialog, propsAreEqual);
