@@ -335,7 +335,7 @@ export function reorder<T>(
 // -------------------------------------------------------------------
 
 /**
- * Prevent event operations
+ * Prevent default event operations
  *
  * @param event
  */
