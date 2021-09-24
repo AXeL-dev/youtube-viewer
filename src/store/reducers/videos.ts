@@ -49,6 +49,12 @@ export const videosSlice = createSlice({
         ({ videoId }) => videoId !== video.id
       );
     },
+    clearWatchLaterList: (state) => {
+      const viewedIds = state.viewed.map((id) => id);
+      state.watchLater = state.watchLater.filter(
+        ({ videoId }) => !viewedIds.includes(videoId)
+      );
+    },
     addToViewedList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
       const found = state.viewed.find((id) => id === video.id);
@@ -64,6 +70,7 @@ export const {
   setVideos,
   addToWatchLaterList,
   removeFromWatchLaterList,
+  clearWatchLaterList,
   addToViewedList,
 } = videosSlice.actions;
 

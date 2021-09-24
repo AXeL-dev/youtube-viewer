@@ -25,6 +25,17 @@ export const selectWatchLaterVideosCount = (state: RootState) => {
   ).length;
 };
 
+export const selectViewedWatchLaterVideosCount = (state: RootState) => {
+  const viewedIds = state.videos.viewed.map((id) => id);
+  const hiddenChannels = state.channels.list
+    .filter((channel) => channel.isHidden)
+    .map(({ id }) => id);
+  return state.videos.watchLater.filter(
+    ({ channelId, videoId }) =>
+      !hiddenChannels.includes(channelId) && viewedIds.includes(videoId)
+  ).length;
+};
+
 export const selectVideoMeta = (video: Video) =>
   createSelector(selectVideos, (videos) => ({
     isViewed: !!videos.viewed.find((id) => id === video.id),

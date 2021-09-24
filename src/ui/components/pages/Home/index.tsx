@@ -7,6 +7,7 @@ import TabPanel from './TabPanel';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { selectWatchLaterVideosCount } from 'store/selectors/videos';
+import TabActions from './TabActions';
 
 interface HomeProps {}
 
@@ -28,9 +29,18 @@ export function Home(props: HomeProps) {
 
   return (
     <Layout>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: 1,
+          borderColor: 'divider',
+          gap: 2,
+          px: 3,
+        }}
+      >
         <Tabs
-          sx={{ pt: 1, px: 3 }}
+          sx={{ flexGrow: 1, pt: 1 }}
           value={activeTab}
           onChange={handleTabChange}
           aria-label="tabs"
@@ -43,6 +53,7 @@ export function Home(props: HomeProps) {
             badge={watchLaterVideosCount}
           />
         </Tabs>
+        <TabActions tab={activeTab} />
       </Box>
       <TabPanel tab={activeTab} />
     </Layout>
