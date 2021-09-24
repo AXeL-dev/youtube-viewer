@@ -16,10 +16,14 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
       : videos.watchLater
   );
 
-export const selectWatchLaterVideosCount = createSelector(
-  selectVideos,
-  (videos) => videos.watchLater.length
-);
+export const selectWatchLaterVideosCount = (state: RootState) => {
+  const hiddenChannels = state.channels.list
+    .filter((channel) => channel.isHidden)
+    .map(({ id }) => id);
+  return state.videos.watchLater.filter(
+    ({ channelId }) => !hiddenChannels.includes(channelId)
+  ).length;
+};
 
 export const selectVideoMeta = (video: Video) =>
   createSelector(selectVideos, (videos) => ({

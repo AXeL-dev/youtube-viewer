@@ -9,9 +9,10 @@ import LoadMore from './LoadMore';
 
 interface ChannelVideosProps {
   videos: Video[];
-  isLoading: boolean;
-  maxResults: number;
   view: HomeView;
+  isLoading: boolean;
+  itemsPerRow: number;
+  maxResults: number;
   hasMore?: boolean;
   onVideoPlay: (video: Video) => void;
   onLoadMore?: () => void;
@@ -20,14 +21,15 @@ interface ChannelVideosProps {
 function ChannelVideos(props: ChannelVideosProps) {
   const {
     videos,
-    isLoading,
-    maxResults,
     view,
+    isLoading,
+    itemsPerRow,
+    maxResults,
     hasMore,
     onVideoPlay,
     onLoadMore,
   } = props;
-  const skeletonNumber = maxResults - videos.length;
+  const skeletonNumber = Math.min(maxResults - videos.length, itemsPerRow);
 
   return (
     <Box sx={{ display: 'flex', pl: 6 }}>

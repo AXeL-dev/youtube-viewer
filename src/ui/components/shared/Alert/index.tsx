@@ -21,7 +21,7 @@ export function Alert(props: AlertProps) {
     closable,
     onClose,
   } = props;
-  const children = props.children || error?.data.error.message;
+  const children = props.children || error?.data?.error.message || error?.error;
   const [open, setOpen] = useState(openProp);
 
   const handleClose = () => {

@@ -2,6 +2,7 @@ import { createTheme } from '@mui/material/styles';
 import { PaletteMode } from '@mui/material';
 import { light } from '@mui/material/styles/createPalette';
 import './fonts';
+import './styles.css';
 
 declare module '@mui/material/styles' {
   interface CustomColors {

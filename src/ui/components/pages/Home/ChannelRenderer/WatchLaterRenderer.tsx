@@ -44,6 +44,7 @@ function WatchLaterRenderer(props: WatchLaterRendererProps) {
       videos={videos}
       total={total}
       isLoading={isLoading || isFetching}
+      itemsPerRow={itemsPerRow}
       maxResults={maxResults}
       onLoadMore={handleLoadMore}
       onVideoPlay={onVideoPlay}

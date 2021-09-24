@@ -42,6 +42,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       videos={videos}
       total={total}
       isLoading={isLoading || isFetching}
+      itemsPerRow={itemsPerRow}
       maxResults={maxResults}
       onLoadMore={handleLoadMore}
       {...rest}

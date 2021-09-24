@@ -10,6 +10,7 @@ export interface ChannelRendererProps {
   videos: Video[];
   total: number;
   isLoading: boolean;
+  itemsPerRow: number;
   maxResults: number;
   onLoadMore: () => void;
   onVideoPlay: (video: Video) => void;
@@ -51,6 +52,7 @@ function propsAreEqual(
     prevProps.channel.id === nextProps.channel.id &&
     prevProps.total === nextProps.total &&
     prevProps.isLoading === nextProps.isLoading &&
+    prevProps.itemsPerRow === nextProps.itemsPerRow &&
     prevProps.maxResults === nextProps.maxResults &&
     JSON.stringify(prevProps.videos.map(({ id }) => id)) ===
       JSON.stringify(nextProps.videos.map(({ id }) => id))
