@@ -5,6 +5,7 @@ import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import PlayVideoDialog from './PlayVideoDialog';
 import ChannelsWrapper from './ChannelsWrapper';
+import NoChannels from './NoChannels';
 
 interface TabPanelProps {
   tab: HomeView;
@@ -32,12 +33,16 @@ function TabPanel(props: TabPanelProps) {
     <Alert error={error} closable />
   ) : (
     <>
-      <ChannelsWrapper
-        view={tab}
-        channels={channels}
-        onError={handleError}
-        onVideoPlay={handleVideoPlay}
-      />
+      {channels.length > 0 ? (
+        <ChannelsWrapper
+          view={tab}
+          channels={channels}
+          onError={handleError}
+          onVideoPlay={handleVideoPlay}
+        />
+      ) : (
+        <NoChannels />
+      )}
       <PlayVideoDialog
         open={!!activeVideo}
         video={activeVideo}

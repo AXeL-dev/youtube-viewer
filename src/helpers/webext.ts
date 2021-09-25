@@ -36,7 +36,7 @@ export function getUrl(path: string): string {
   return browser.extension.getURL(path);
 }
 
-export const indexUrl = getUrl('index.html');
+export const indexUrl = isWebExtension ? getUrl('index.html') : '';
 
 export function executeScript(tabId: number, code: string): void {
   browser.tabs.executeScript(tabId, {

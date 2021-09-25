@@ -58,7 +58,7 @@ export default function NoChannels(props: NoChannelsProps) {
         }}
       >
         Import channels
-        <UploadIcon />
+        <UploadIcon sx={{ fontSize: '1.25rem', ml: 0.5 }} />
       </Button>
       <input
         type="file"
