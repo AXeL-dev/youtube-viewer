@@ -9,7 +9,7 @@ import {
   sendNotification,
 } from 'helpers/webext';
 import { useAppSelector, useAppDispatch, storageKey } from 'store';
-import { selectActiveChannels } from 'store/selectors/channels';
+import { selectNotificationEnabledChannels } from 'store/selectors/channels';
 import { setSettings } from 'store/reducers/settings';
 import { setChannels } from 'store/reducers/channels';
 import { setVideos } from 'store/reducers/videos';
@@ -25,9 +25,15 @@ export let isBackgroundPageRunning = false;
 
 export function Background(props: BackgroundProps) {
   const responses = useRef<CheckEndData[]>([]);
-  const channels = useAppSelector(selectActiveChannels);
+  const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (settings.enableNotifications) {
+      responses.current = [];
+    }
+  }, [settings.enableNotifications]);
 
   const openHomePage = () => {
     setBadgeText('');
@@ -97,27 +103,32 @@ export function Background(props: BackgroundProps) {
         (acc, cur) => acc + cur.newVideos.length,
         0
       );
-      // Update badge count & send notifications
+      // Update badge count & send notification
       if (count > 0) {
         updateBadge(count);
-        for (const { channel, newVideos } of responses.current) {
-          sendNotification({
-            id: `${new Date().getTime()}::${channel.id}`,
-            message: `${channel.title} posted ${newVideos.length} recent video${
-              newVideos.length > 1 ? 's' : ''
-            }`,
-            // items: newVideos.map((video) => ({ // only if notification type is 'list'
-            //   title: video.title,
-            //   message: video.url,
-            // })),
-            // contextMessage: channel.url,
-            // buttons: [
-            //   {
-            //     title: 'Open channel',
-            //   },
-            // ],
-          });
-        }
+        const maxChannelTitles = 5;
+        const responsesCount = responses.current.length;
+        const channelTitles = responses.current
+          .slice(0, Math.min(maxChannelTitles, responsesCount))
+          .map(({ channel }) => channel.title)
+          .join(', ');
+        sendNotification({
+          title: `YouTube viewer (${count} new video${count > 1 ? 's' : ''})`,
+          message: `Posted by ${channelTitles}${
+            responsesCount > maxChannelTitles ? ' & others' : ''
+          }.`,
+          // id: `${new Date().getTime()}::${channel.id}`,
+          // items: newVideos.map((video) => ({ // only if notification type is 'list'
+          //   title: video.title,
+          //   message: video.url,
+          // })),
+          // contextMessage: channel.url,
+          // buttons: [
+          //   {
+          //     title: 'Open channel',
+          //   },
+          // ],
+        });
       }
       // Reset the responses array
       responses.current = [];
@@ -127,15 +138,13 @@ export function Background(props: BackgroundProps) {
   return isWebExtension ? (
     <>
       {settings.enableNotifications
-        ? channels
-            .filter(({ notifications }) => !notifications?.isDisabled)
-            .map((channel, index) => (
-              <ChannelChecker
-                key={index}
-                channel={channel}
-                onCheckEnd={handleCheckEnd}
-              />
-            ))
+        ? channels.map((channel, index) => (
+            <ChannelChecker
+              key={index}
+              channel={channel}
+              onCheckEnd={handleCheckEnd}
+            />
+          ))
         : null}
     </>
   ) : (

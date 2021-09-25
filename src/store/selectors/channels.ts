@@ -5,7 +5,15 @@ import { Channel } from 'types';
 export const selectChannels = (state: RootState) => state.channels.list;
 
 export const selectActiveChannels = createSelector(selectChannels, (channels) =>
-  channels.filter((c: Channel) => !c.isHidden)
+  channels.filter(({ isHidden }) => !isHidden)
+);
+
+export const selectNotificationEnabledChannels = createSelector(
+  selectChannels,
+  (channels) =>
+    channels.filter(
+      ({ isHidden, notifications }) => !isHidden && !notifications?.isDisabled
+    )
 );
 
 export const selectChannelsCount = createSelector(
@@ -15,5 +23,5 @@ export const selectChannelsCount = createSelector(
 
 export const selectChannel = (channel: Channel) =>
   createSelector(selectChannels, (channels) =>
-    channels.find((c: Channel) => c.id === channel.id)
+    channels.find(({ id }) => id === channel.id)
   );
