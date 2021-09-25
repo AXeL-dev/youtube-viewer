@@ -4,6 +4,7 @@ export interface Settings {
   darkMode: boolean;
   autoPlayVideos: boolean;
   recentVideosSeniority: VideosSeniority;
+  enableNotifications: boolean;
 }
 
 export enum HomeView {

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
 import Alerts from './Alerts';
+import { isWebExtension } from 'helpers/webext';
 
 interface SettingsProps {}
 
@@ -78,6 +79,17 @@ export function Settings(props: SettingsProps) {
           }}
           type={SettingType.Boolean}
         />
+        {isWebExtension ? (
+          <Field
+            label="Enable notifications"
+            description="Checking for new videos is performed every 30 minutes"
+            value={settings.enableNotifications}
+            onChange={(enableNotifications: boolean) => {
+              dispatch(setSettings({ enableNotifications }));
+            }}
+            type={SettingType.Boolean}
+          />
+        ) : null}
         <Field
           label="Youtube API key"
           placeholder="_______________________________________"

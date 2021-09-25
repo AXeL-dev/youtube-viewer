@@ -4,7 +4,7 @@ import {
   setBadgeColors,
   setBadgeText,
   createTab,
-  getUrl,
+  indexUrl,
 } from 'helpers/webext';
 import { useAppSelector, useAppDispatch, storageKey } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
@@ -13,6 +13,7 @@ import { setChannels } from 'store/reducers/channels';
 import { setVideos } from 'store/reducers/videos';
 import ChannelChecker from './ChannelChecker';
 import { log } from './logger';
+import { selectSettings } from 'store/selectors/settings';
 
 declare var browser: any;
 
@@ -22,15 +23,20 @@ export let isBackgroundPageRunning = false;
 
 export function Background(props: BackgroundProps) {
   const channels = useAppSelector(selectActiveChannels);
+  const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
+
+  const openHomePage = () => {
+    setBadgeText('');
+    createTab(indexUrl);
+  };
 
   const init = () => {
     setBadgeColors('#666', '#fff');
-    const indexUrl = getUrl('index.html');
     // Handle click on notifications
     browser.notifications.onClicked.addListener((notificationId: string) => {
       log('Notification clicked:', notificationId);
-      createTab(indexUrl);
+      openHomePage();
     });
     browser.notifications.onButtonClicked.addListener(
       (notificationId: string, buttonIndex: number) => {
@@ -47,8 +53,7 @@ export function Background(props: BackgroundProps) {
     // only works if "browser_action" > "default_popup" is not set on manifest
     browser.browserAction.onClicked.addListener((tab: any) => {
       log('Browser action clicked:', tab);
-      setBadgeText('');
-      createTab(indexUrl);
+      openHomePage();
     });
     // Handle storage change
     browser.storage.onChanged.addListener((changes: any, areaName: string) => {
@@ -73,11 +78,13 @@ export function Background(props: BackgroundProps) {
 
   return isWebExtension ? (
     <>
-      {channels
-        .filter(({ notifications }) => !notifications?.isDisabled)
-        .map((channel, index) => (
-          <ChannelChecker key={index} channel={channel} />
-        ))}
+      {settings.enableNotifications
+        ? channels
+            .filter(({ notifications }) => !notifications?.isDisabled)
+            .map((channel, index) => (
+              <ChannelChecker key={index} channel={channel} />
+            ))
+        : null}
     </>
   ) : (
     <span>This script is not intended to run on a webapp.</span>

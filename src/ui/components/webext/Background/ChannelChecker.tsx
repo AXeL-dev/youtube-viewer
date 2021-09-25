@@ -5,7 +5,7 @@ import { getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectViewedVideos } from 'store/selectors/videos';
 import { getBadgeText, sendNotification, setBadgeText } from 'helpers/webext';
-import { useTimeout } from 'hooks';
+import { useInterval } from 'hooks';
 import { log } from './logger';
 
 interface ChannelCheckerProps {
@@ -24,19 +24,23 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const viewed = useAppSelector(selectViewedVideos);
   const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
   const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
-  const { data } = useGetChannelVideosQuery(
+  const { data, refetch } = useGetChannelVideosQuery(
     {
       channel,
       publishedAfter,
     },
     {
       skip: !ready,
-      pollingInterval,
+      // pollingInterval,
     }
   );
 
-  useTimeout(() => {
-    setReady(true);
+  useInterval(() => {
+    if (!ready) {
+      setReady(true);
+    } else {
+      refetch();
+    }
   }, pollingInterval);
 
   const updateBadge = async (count: number) => {
@@ -52,6 +56,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   useEffect(() => {
     const videos = data?.items || [];
     const total = data?.total || 0;
+    log('Data changed:', total, data);
     if (total > 0) {
       const newVideos = videos.filter(
         (video) =>

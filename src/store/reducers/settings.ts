@@ -9,6 +9,7 @@ export const defaultSettings = {
   darkMode: false,
   autoPlayVideos: true,
   recentVideosSeniority: VideosSeniority.OneDay,
+  enableNotifications: true,
 };
 
 export interface SettingsState extends Settings {
