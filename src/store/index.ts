@@ -6,8 +6,9 @@ import videosReducer, { setVideos } from './reducers/videos';
 import storage from 'helpers/storage';
 import { debounce } from 'helpers/utils';
 import { youtubeApi } from './services/youtube';
+import { isBackgroundPageRunning } from 'ui/components/webext';
 
-const stateKey = 'APP_YOUTUBE_VIEWER';
+export const stateKey = 'APP_YOUTUBE_VIEWER';
 const store = configureStore({
   reducer: {
     settings: settingsReducer,
@@ -21,6 +22,9 @@ const store = configureStore({
 
 store.subscribe(
   debounce(() => {
+    if (isBackgroundPageRunning) {
+      return;
+    }
     const { settings, channels, videos } = store.getState();
     storage.save({
       [stateKey]: {
@@ -53,8 +57,8 @@ store.subscribe(
     // Load stored data
     store.dispatch(
       setSettings({
-        _loaded: true,
         ...(settings || {}),
+        _loaded: true,
       })
     );
     if (channels) {
@@ -63,8 +67,8 @@ store.subscribe(
     if (videos) {
       store.dispatch(setVideos(videos));
     }
+    // ToDo: the above 3 dispatch(s) triggers a state save into the storage (this should be avoided)
   }
-  // ToDo: the above dispatch(s) triggers a state save into the storage (this should be avoided)
 })();
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -21,7 +21,7 @@ export const videosSlice = createSlice({
   name: 'videos',
   initialState,
   reducers: {
-    setVideos: (state, action: PayloadAction<VideosState>) => {
+    setVideos: (state, action: PayloadAction<Partial<VideosState>>) => {
       return {
         ...state,
         ...action.payload,
