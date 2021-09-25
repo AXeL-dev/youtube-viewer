@@ -9,6 +9,10 @@ export const defaultSettings = {
   darkMode: false,
   autoPlayVideos: true,
   recentVideosSeniority: VideosSeniority.OneDay,
+  recentVideosDisplayOptions: {
+    hideViewedVideos: false,
+    hideWatchLaterVideos: false,
+  },
   enableNotifications: true,
 };
 

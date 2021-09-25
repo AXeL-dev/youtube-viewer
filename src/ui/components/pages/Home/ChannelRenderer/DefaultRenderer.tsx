@@ -9,12 +9,19 @@ export interface DefaultRendererProps {
   channel: Channel;
   view: HomeView;
   publishedAfter?: string;
+  excludedVideosIds?: string[];
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
 function DefaultRenderer(props: DefaultRendererProps) {
-  const { channel, publishedAfter, onError, ...rest } = props;
+  const {
+    channel,
+    publishedAfter,
+    excludedVideosIds = [],
+    onError,
+    ...rest
+  } = props;
   const [page, setPage] = useState(1);
   const { itemsPerRow } = useGrid(config.gridColumns);
   const maxResults = itemsPerRow * page;
@@ -23,7 +30,8 @@ function DefaultRenderer(props: DefaultRendererProps) {
     publishedAfter,
     maxResults,
   });
-  const videos = data?.items || [];
+  const videos =
+    data?.items.filter((video) => !excludedVideosIds.includes(video.id)) || [];
   const total = data?.total || 0;
 
   const handleLoadMore = () => {
