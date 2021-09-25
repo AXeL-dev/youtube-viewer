@@ -109,6 +109,7 @@ export function Background(props: BackgroundProps) {
         const maxChannelTitles = 5;
         const responsesCount = responses.current.length;
         const channelTitles = responses.current
+          .filter(({ newVideos }) => newVideos.length > 0)
           .slice(0, Math.min(maxChannelTitles, responsesCount))
           .map(({ channel }) => channel.title)
           .join(', ');
