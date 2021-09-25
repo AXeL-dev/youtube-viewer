@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   isWebExtension,
   setBadgeColors,
   setBadgeText,
   createTab,
   indexUrl,
+  getBadgeText,
 } from 'helpers/webext';
 import { useAppSelector, useAppDispatch, storageKey } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
@@ -14,6 +15,7 @@ import { setVideos } from 'store/reducers/videos';
 import ChannelChecker from './ChannelChecker';
 import { log } from './logger';
 import { selectSettings } from 'store/selectors/settings';
+import { debounce } from 'helpers/utils';
 
 declare var browser: any;
 
@@ -22,6 +24,7 @@ interface BackgroundProps {}
 export let isBackgroundPageRunning = false;
 
 export function Background(props: BackgroundProps) {
+  const badgeCount = useRef(0);
   const channels = useAppSelector(selectActiveChannels);
   const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
@@ -76,13 +79,36 @@ export function Background(props: BackgroundProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateBadge = useMemo(
+    () =>
+      debounce(async (count: number) => {
+        const badgeText: string = await getBadgeText();
+        if (badgeText.length) {
+          count += +badgeText;
+        }
+        log('Updating badge:', count);
+        setBadgeText(count);
+        badgeCount.current = 0;
+      }, 1000),
+    []
+  );
+
+  const handleUpdate = (count: number) => {
+    badgeCount.current += count;
+    updateBadge(badgeCount.current);
+  };
+
   return isWebExtension ? (
     <>
       {settings.enableNotifications
         ? channels
             .filter(({ notifications }) => !notifications?.isDisabled)
             .map((channel, index) => (
-              <ChannelChecker key={index} channel={channel} />
+              <ChannelChecker
+                key={index}
+                channel={channel}
+                onUpdate={handleUpdate}
+              />
             ))
         : null}
     </>
