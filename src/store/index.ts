@@ -8,7 +8,7 @@ import { debounce } from 'helpers/utils';
 import { youtubeApi } from './services/youtube';
 import { isBackgroundPageRunning } from 'ui/components/webext';
 
-export const stateKey = 'APP_YOUTUBE_VIEWER';
+export const storageKey = 'APP_YOUTUBE_VIEWER';
 const store = configureStore({
   reducer: {
     settings: settingsReducer,
@@ -27,7 +27,7 @@ store.subscribe(
     }
     const { settings, channels, videos } = store.getState();
     storage.save({
-      [stateKey]: {
+      [storageKey]: {
         settings,
         channels,
         videos,
@@ -37,7 +37,7 @@ store.subscribe(
 );
 
 (async () => {
-  const { settings, channels, videos } = (await storage.get(stateKey)) || {};
+  const { settings, channels, videos } = (await storage.get(storageKey)) || {};
   if (!settings && !channels) {
     // Handle backward compatibility with v0.6.x
     const legacy = (await storage.get('settings', 'channels')) || {};

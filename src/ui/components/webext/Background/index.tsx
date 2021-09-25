@@ -6,7 +6,7 @@ import {
   createTab,
   getUrl,
 } from 'helpers/webext';
-import { useAppSelector, useAppDispatch, stateKey } from 'store';
+import { useAppSelector, useAppDispatch, storageKey } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import { setSettings } from 'store/reducers/settings';
 import { setChannels } from 'store/reducers/channels';
@@ -54,7 +54,7 @@ export function Background(props: BackgroundProps) {
     browser.storage.onChanged.addListener((changes: any, areaName: string) => {
       log('Storage changed:', areaName, changes);
       if (areaName === 'local') {
-        const { settings, channels, videos } = changes[stateKey].newValue;
+        const { settings, channels, videos } = changes[storageKey].newValue;
         dispatch(setSettings(settings));
         dispatch(setChannels(channels.list));
         dispatch(setVideos(videos));
