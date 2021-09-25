@@ -41,15 +41,12 @@ store.subscribe(
   if (!settings && !channels) {
     // Handle backward compatibility with v0.6.x
     const legacy = (await storage.get('settings', 'channels')) || {};
-    if (legacy.settings) {
-      const { apiKey } = legacy.settings;
-      store.dispatch(
-        setSettings({
-          _loaded: true,
-          apiKey,
-        })
-      );
-    }
+    store.dispatch(
+      setSettings({
+        ...(legacy.settings ? { apiKey: legacy.settings.apiKey } : {}),
+        _loaded: true,
+      })
+    );
     if (legacy.channels) {
       store.dispatch(setChannels(legacy.channels));
     }

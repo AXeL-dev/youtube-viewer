@@ -11,6 +11,7 @@ export function useDidMountEffect(callback?: () => void, deps?: any) {
     } else {
       didMount.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   return didMount.current;

@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HomeView, Settings, VideosSeniority } from 'types';
 
+const { REACT_APP_YOUTUBE_API_KEY } = process.env;
+
 export const defaultSettings = {
   defaultView: HomeView.All,
-  apiKey: '',
+  apiKey: REACT_APP_YOUTUBE_API_KEY || '',
   darkMode: false,
   autoPlayVideos: true,
   recentVideosSeniority: VideosSeniority.OneDay,

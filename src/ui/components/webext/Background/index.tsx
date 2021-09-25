@@ -56,7 +56,7 @@ export function Background(props: BackgroundProps) {
       if (areaName === 'local') {
         const { settings, channels, videos } = changes[stateKey].newValue;
         dispatch(setSettings(settings));
-        dispatch(setChannels(channels));
+        dispatch(setChannels(channels.list));
         dispatch(setVideos(videos));
       }
     });
