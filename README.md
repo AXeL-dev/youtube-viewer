@@ -1,4 +1,4 @@
-# <img src="public/icons/128.png" alt="icon" width="32"/> Youtube viewer
+# <img src="public/icons/128.png" alt="icon" width="32"/> YouTube viewer
 
 [![Mozilla Add-on version](https://img.shields.io/amo/v/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-shield-downloads)
 [![Mozilla Add-on downloads](https://img.shields.io/amo/dw/yt-viewer.svg)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-shield-downloads)
@@ -49,6 +49,7 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 - [Material-UI](https://mui.com/): UI toolkit
 - [dnd-kit](https://dndkit.com/): Drag and drop library
 - [redux](https://redux.js.org/): State management library
+- [react-youtube](https://github.com/tjallingt/react-youtube): YouTube player component
 
 ### Scripts
 

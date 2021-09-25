@@ -73,7 +73,7 @@ export function sendNotification(params: NotificationParams): void {
   const {
     id,
     type = 'basic',
-    title = 'Youtube viewer',
+    title = 'YouTube viewer',
     iconUrl = 'icons/128.png',
     ...rest
   } = params;

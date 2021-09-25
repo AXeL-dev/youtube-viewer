@@ -48,7 +48,7 @@ export function About(props: AboutProps) {
               variant="h5"
               color="text.primary"
             >
-              Youtube viewer
+              YouTube viewer
             </Typography>
             <Credit author="AXeL" />
             <Box
