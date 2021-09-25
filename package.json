@@ -33,6 +33,8 @@
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "build:firefox": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && mv -f manifest.firefox.json manifest.json",
     "build:chrome": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
+    "build:dev": "REACT_APP_DEBUG=true npm run build:chrome",
+    "build:dev:firefox": "REACT_APP_DEBUG=true npm run build:firefox",
     "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
     "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
     "package:source": "zip -r -FS youtube_viewer-source.zip * -x .env.* dist\\* node_modules\\* v6.x\\* old\\* screenshots\\* web-ext-artifacts\\* *.zip",

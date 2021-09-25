@@ -1,3 +1,7 @@
+const { REACT_APP_DEBUG } = process.env;
+
 export function log(message: any, ...params: any) {
-  console.log(message, ...params); // comment/uncomment this to manually enable/disable logs
+  if (REACT_APP_DEBUG) {
+    console.log(message, ...params);
+  }
 }
