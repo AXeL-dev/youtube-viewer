@@ -67,6 +67,7 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.8",
-    "release-it": "^14.11.5"
+    "release-it": "^14.11.5",
+    "web-ext": "^6.4.0"
   }
 }
