@@ -43,7 +43,9 @@
     "sign": "npx web-ext-submit --source-dir=dist/web-ext --channel=unlisted --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "release": "release-it"
+    "release:major": "release-it major",
+    "release:minor": "release-it minor",
+    "release:patch": "release-it patch"
   },
   "eslintConfig": {
     "extends": [
