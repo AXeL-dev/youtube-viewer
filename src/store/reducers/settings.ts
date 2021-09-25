@@ -12,12 +12,9 @@ export const defaultSettings = {
   enableNotifications: true,
 };
 
-export interface SettingsState extends Settings {
-  _loaded: boolean;
-}
+interface SettingsState extends Settings {}
 
 const initialState: SettingsState = {
-  _loaded: false,
   ...defaultSettings,
 };
 

@@ -1,17 +1,20 @@
 import React, { MouseEvent } from 'react';
 import { Link } from '@mui/material';
 import { Alert } from 'ui/components/shared';
-import { useAppDispatch } from 'store';
-import { setSettings, SettingsState } from 'store/reducers/settings';
+import { useAppDispatch, useAppSelector } from 'store';
+import { setSettings } from 'store/reducers/settings';
+import { selectApp } from 'store/selectors/app';
+import { Settings } from 'types';
 
 const { REACT_APP_YOUTUBE_API_KEY: temporaryApiKey } = process.env;
 
 interface AlertsProps {
-  settings: SettingsState;
+  settings: Settings;
 }
 
 export default function Alerts(props: AlertsProps) {
   const { settings } = props;
+  const app = useAppSelector(selectApp);
   const dispatch = useAppDispatch();
 
   const handleUseTemporaryKey = (event: MouseEvent) => {
@@ -22,7 +25,7 @@ export default function Alerts(props: AlertsProps) {
   return (
     <>
       <Alert
-        open={settings._loaded && !settings.apiKey}
+        open={app.loaded && !settings.apiKey}
         severity="warning"
         closable
         syncOpen
@@ -38,7 +41,7 @@ export default function Alerts(props: AlertsProps) {
         </Link>
       </Alert>
       <Alert
-        open={settings._loaded && settings.apiKey === temporaryApiKey}
+        open={app.loaded && settings.apiKey === temporaryApiKey}
         severity="warning"
         closable
         syncOpen

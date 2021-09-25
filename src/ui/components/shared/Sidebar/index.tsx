@@ -10,10 +10,12 @@ import Header from './Header';
 import { useAppSelector } from 'store';
 import { selectChannelsCount } from 'store/selectors/channels';
 import { selectSettings } from 'store/selectors/settings';
+import { selectApp } from 'store/selectors/app';
 
 interface SidebarProps {}
 
 export function Sidebar(props: SidebarProps) {
+  const app = useAppSelector(selectApp);
   const channelsCount = useAppSelector(selectChannelsCount);
   const settings = useAppSelector(selectSettings);
 
@@ -61,7 +63,7 @@ export function Sidebar(props: SidebarProps) {
               icon={<SettingsIcon />}
               text="Settings"
               to="/settings"
-              hasWarning={settings._loaded && !settings.apiKey}
+              hasWarning={app.loaded && !settings.apiKey}
             />
             <ListItemLink
               icon={<InfoOutlinedIcon />}
