@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   isWebExtension,
   setBadgeColors,
@@ -6,16 +6,16 @@ import {
   createTab,
   indexUrl,
   getBadgeText,
+  sendNotification,
 } from 'helpers/webext';
 import { useAppSelector, useAppDispatch, storageKey } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import { setSettings } from 'store/reducers/settings';
 import { setChannels } from 'store/reducers/channels';
 import { setVideos } from 'store/reducers/videos';
-import ChannelChecker from './ChannelChecker';
+import ChannelChecker, { CheckEndData } from './ChannelChecker';
 import { log } from './logger';
 import { selectSettings } from 'store/selectors/settings';
-import { debounce } from 'helpers/utils';
 
 declare var browser: any;
 
@@ -24,7 +24,7 @@ interface BackgroundProps {}
 export let isBackgroundPageRunning = false;
 
 export function Background(props: BackgroundProps) {
-  const badgeCount = useRef(0);
+  const responses = useRef<CheckEndData[]>([]);
   const channels = useAppSelector(selectActiveChannels);
   const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
@@ -79,23 +79,49 @@ export function Background(props: BackgroundProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const updateBadge = useMemo(
-    () =>
-      debounce(async (count: number) => {
-        const badgeText: string = await getBadgeText();
-        if (badgeText.length) {
-          count += +badgeText;
-        }
-        log('Updating badge:', count);
-        setBadgeText(count);
-        badgeCount.current = 0;
-      }, 1000),
-    []
-  );
+  const updateBadge = async (count: number) => {
+    const badgeText: string = await getBadgeText();
+    if (badgeText.length) {
+      count += +badgeText;
+    }
+    log('Updating badge:', count);
+    setBadgeText(count);
+  };
 
-  const handleUpdate = (count: number) => {
-    badgeCount.current += count;
-    updateBadge(badgeCount.current);
+  const handleCheckEnd = (data: CheckEndData) => {
+    responses.current.push(data);
+    // Once all channel checkers responded to us
+    if (responses.current.length === channels.length) {
+      // Get total count of new videos
+      const count = responses.current.reduce(
+        (acc, cur) => acc + cur.newVideos.length,
+        0
+      );
+      // Update badge count & send notifications
+      if (count > 0) {
+        updateBadge(count);
+        for (const { channel, newVideos } of responses.current) {
+          sendNotification({
+            id: `${new Date().getTime()}::${channel.id}`,
+            message: `${channel.title} posted ${newVideos.length} recent video${
+              newVideos.length > 1 ? 's' : ''
+            }`,
+            // items: newVideos.map((video) => ({ // only if notification type is 'list'
+            //   title: video.title,
+            //   message: video.url,
+            // })),
+            // contextMessage: channel.url,
+            // buttons: [
+            //   {
+            //     title: 'Open channel',
+            //   },
+            // ],
+          });
+        }
+      }
+      // Reset the responses array
+      responses.current = [];
+    }
   };
 
   return isWebExtension ? (
@@ -107,7 +133,7 @@ export function Background(props: BackgroundProps) {
               <ChannelChecker
                 key={index}
                 channel={channel}
-                onUpdate={handleUpdate}
+                onCheckEnd={handleCheckEnd}
               />
             ))
         : null}
