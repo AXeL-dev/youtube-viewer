@@ -33,7 +33,7 @@ export function createTab(url: string, isActive: boolean = true): Promise<any> {
 }
 
 export function getUrl(path: string): string {
-  return browser.extension.getURL(path);
+  return browser.runtime.getURL(path);
 }
 
 export const indexUrl = isWebExtension ? getUrl('index.html') : '';
