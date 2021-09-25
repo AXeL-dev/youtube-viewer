@@ -30,7 +30,15 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "build:firefox": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && mv -f manifest.firefox.json manifest.json",
+    "build:chrome": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
+    "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
+    "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
+    "package:source": "zip -r -FS youtube_viewer-source.zip * -x .env.* dist\\* node_modules\\* v6.x\\* old\\* screenshots\\* web-ext-artifacts\\* *.zip",
+    "build:github": "BUILD_PATH='./dist/github' PUBLIC_URL=/youtube-viewer/ react-scripts build",
+    "deploy:github": "ngh --dir=dist/github",
+    "sign": "npx web-ext-submit --source-dir=dist/web-ext --channel=unlisted --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "release": "release-it"

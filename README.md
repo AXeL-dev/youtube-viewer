@@ -8,7 +8,7 @@
 
 A web extension to keep tracking your favorite youtube channels with less hassle.
 
-![screenshot](screenshots/popup.png)
+![screenshot](screenshots/youtube-viewer.jpg)
 
 ## Motivation
 
@@ -39,17 +39,16 @@ Or [try it as a web application](https://axel-dev.github.io/youtube-viewer/).
 - [x] Option to auto-play videos once opened
 - [ ] Option to open videos directly in [Picture-in-Picture](https://w3c.github.io/picture-in-picture/) mode
 - [ ] Translations
+- [ ] Unit tests
 
 ## Technical
 
 ### Stack
 
 - [React](https://reactjs.org/): Core library
-- [Material-UI](https://material-ui.com/): UI toolkit
-- [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd): Drag and drop library
-- [react-pull-to-refresh](https://github.com/bryaneaton13/react-pull-to-refresh): Pull to refresh component
-- [jotai](https://github.com/pmndrs/jotai): State management library
-- [Gulp.js](https://gulpjs.com/): Workflow automation toolkit
+- [Material-UI](https://mui.com/): UI toolkit
+- [dnd-kit](https://dndkit.com/): Drag and drop library
+- [redux](https://redux.js.org/): State management library
 
 ### Scripts
 
