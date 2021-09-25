@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import { Box, IconButton, Tooltip, Typography, Link } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -7,6 +7,7 @@ import { useAppDispatch } from 'store';
 import { addToViewedList } from 'store/reducers/videos';
 import WatchLaterAction from './WatchLaterAction';
 import ViewedBadge from './ViewedBadge';
+import { createTab, isWebExtension } from 'helpers/webext';
 
 interface VideoCardProps {
   video: Video;
@@ -94,7 +95,11 @@ function VideoCard(props: VideoCardProps) {
               href={video.url}
               target="_blank"
               rel="noopener"
-              onClick={() => {
+              onClick={(event: MouseEvent) => {
+                if (isWebExtension) {
+                  event.preventDefault();
+                  createTab(video.url, false);
+                }
                 dispatch(addToViewedList(video));
               }}
             >
