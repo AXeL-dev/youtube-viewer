@@ -8,7 +8,7 @@
 
 A web extension to keep tracking your favorite youtube channels with less hassle.
 
-![screenshot](screenshots/youtube-viewer.jpg)
+![screenshot](screenshots/youtube-viewer.gif)
 
 ## Motivation
 
