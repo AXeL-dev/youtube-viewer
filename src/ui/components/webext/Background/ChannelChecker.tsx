@@ -3,7 +3,7 @@ import { Channel, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import { getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
-import { selectViewedVideos } from 'store/selectors/videos';
+import { selectVideos } from 'store/selectors/videos';
 import { useInterval } from 'hooks';
 import { log } from './logger';
 
@@ -26,7 +26,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
   const checkedVideosIds = useRef<string[]>([]);
-  const viewedVideos = useAppSelector(selectViewedVideos(channel));
+  const cachedVideos = useAppSelector(selectVideos(channel));
   const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
   const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
@@ -55,10 +55,12 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       const total = data?.total || 0;
       log('Fetch ended:', total, data);
       if (total > 0) {
-        const viewedVideosIds = viewedVideos.map(({ id }) => id);
+        const cachedVideosIds = cachedVideos
+          .filter(({ isViewed, isToWatchLater }) => isViewed || isToWatchLater)
+          .map(({ id }) => id);
         newVideos = videos.filter(
           (video) =>
-            !viewedVideosIds.includes(video.id) &&
+            !cachedVideosIds.includes(video.id) &&
             !checkedVideosIds.current.includes(video.id)
         );
         if (newVideos.length > 0) {

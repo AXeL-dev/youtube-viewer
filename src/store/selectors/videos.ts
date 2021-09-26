@@ -2,23 +2,20 @@ import type { RootState } from 'store';
 import { createSelector } from '@reduxjs/toolkit';
 import { Channel, Video } from 'types';
 
-const selectVideos = (state: RootState) => state.videos.list;
+export const selectVideos = (channel?: Channel) => (state: RootState) =>
+  channel
+    ? state.videos.list.filter(({ channelId }) => channel.id === channelId)
+    : state.videos.list;
 
 export const selectViewedVideos = (channel?: Channel) =>
-  createSelector(selectVideos, (videos) =>
-    videos.filter(
-      ({ isViewed, channelId }) =>
-        isViewed && (!channel || channel.id === channelId)
-    )
+  createSelector(selectVideos(channel), (videos) =>
+    videos.filter(({ isViewed }) => isViewed)
   );
 
 export const selectWatchLaterVideos = (channel?: Channel) =>
-  createSelector(selectVideos, (videos) =>
+  createSelector(selectVideos(channel), (videos) =>
     videos
-      .filter(
-        ({ isToWatchLater, channelId }) =>
-          isToWatchLater && (!channel || channel.id === channelId)
-      )
+      .filter(({ isToWatchLater }) => isToWatchLater)
       .sort((a, b) => b.publishedAt - a.publishedAt)
   );
 
@@ -43,7 +40,7 @@ export const selectViewedWatchLaterVideosCount = (state: RootState) => {
 };
 
 export const selectVideoMeta = (video: Video) =>
-  createSelector(selectVideos, (videos) => {
+  createSelector(selectVideos(), (videos) => {
     const { isViewed = false, isToWatchLater = false } =
       videos.find(({ id }) => id === video.id) || {};
     return {
