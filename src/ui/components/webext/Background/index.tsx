@@ -107,16 +107,17 @@ export function Background(props: BackgroundProps) {
       if (count > 0) {
         updateBadge(count);
         const maxChannelTitles = 5;
-        const responsesCount = responses.current.length;
-        const channelTitles = responses.current
-          .filter(({ newVideos }) => newVideos.length > 0)
-          .slice(0, Math.min(maxChannelTitles, responsesCount))
+        const fulfilledResponses = responses.current.filter(
+          ({ newVideos }) => newVideos.length > 0
+        );
+        const channelTitles = fulfilledResponses
+          .slice(0, Math.min(maxChannelTitles, fulfilledResponses.length))
           .map(({ channel }) => channel.title)
           .join(', ');
         sendNotification({
           title: `YouTube viewer (${count} new video${count > 1 ? 's' : ''})`,
           message: `Posted by ${channelTitles}${
-            responsesCount > maxChannelTitles ? ' & others' : ''
+            fulfilledResponses.length > maxChannelTitles ? ' & others' : ''
           }.`,
           // id: `${new Date().getTime()}::${channel.id}`,
           // items: newVideos.map((video) => ({ // only if notification type is 'list'

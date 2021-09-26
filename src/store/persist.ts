@@ -17,7 +17,9 @@ export const preloadState = async () => {
     const legacy = (await storage.get('settings', 'channels')) || {};
     if (legacy.settings) {
       const { apiKey } = legacy.settings;
-      store.dispatch(setSettings({ apiKey }));
+      if (apiKey) {
+        store.dispatch(setSettings({ apiKey }));
+      }
     }
     if (legacy.channels) {
       store.dispatch(setChannels({ list: legacy.channels }));
