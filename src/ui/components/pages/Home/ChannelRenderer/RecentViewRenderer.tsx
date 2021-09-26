@@ -3,7 +3,7 @@ import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import { selectVideos } from 'store/selectors/videos';
+import { selectChannelVideos } from 'store/selectors/videos';
 
 export interface RecentViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
@@ -11,7 +11,7 @@ export interface RecentViewRendererProps
 function RecentViewRenderer(props: RecentViewRendererProps) {
   const { channel } = props;
   const settings = useAppSelector(selectSettings);
-  const videos = useAppSelector(selectVideos(channel));
+  const videos = useAppSelector(selectChannelVideos(channel));
   const { hideViewedVideos, hideWatchLaterVideos } =
     settings.recentVideosDisplayOptions;
   const excludedVideosIds = useMemo(

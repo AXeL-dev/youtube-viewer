@@ -8,6 +8,10 @@ export const selectActiveChannels = createSelector(selectChannels, (channels) =>
   channels.filter(({ isHidden }) => !isHidden)
 );
 
+export const selectHiddenChannels = createSelector(selectChannels, (channels) =>
+  channels.filter(({ isHidden }) => isHidden)
+);
+
 export const selectNotificationEnabledChannels = createSelector(
   selectChannels,
   (channels) =>

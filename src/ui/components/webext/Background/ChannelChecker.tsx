@@ -3,7 +3,7 @@ import { Channel, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import { getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
-import { selectVideos } from 'store/selectors/videos';
+import { selectChannelVideos } from 'store/selectors/videos';
 import { useInterval } from 'hooks';
 import { log } from './logger';
 
@@ -26,7 +26,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
   const checkedVideosIds = useRef<string[]>([]);
-  const cachedVideos = useAppSelector(selectVideos(channel));
+  const cachedVideos = useAppSelector(selectChannelVideos(channel));
   const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
   const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
