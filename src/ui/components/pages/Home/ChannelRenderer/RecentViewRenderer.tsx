@@ -12,13 +12,16 @@ export interface RecentViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
 
 function RecentViewRenderer(props: RecentViewRendererProps) {
+  const { channel } = props;
   const settings = useAppSelector(selectSettings);
-  const viewed = useAppSelector(selectViewedVideos);
-  const watchLater = useAppSelector(selectWatchLaterVideos());
+  const viewedVideos = useAppSelector(selectViewedVideos(channel));
+  const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const excludedVideosIds = [
-    ...(settings.recentVideosDisplayOptions.hideViewedVideos ? viewed : []),
+    ...(settings.recentVideosDisplayOptions.hideViewedVideos
+      ? viewedVideos.map(({ id }) => id)
+      : []),
     ...(settings.recentVideosDisplayOptions.hideWatchLaterVideos
-      ? watchLater.map(({ videoId }) => videoId)
+      ? watchLaterVideos.map(({ id }) => id)
       : []),
   ];
   const publishedAfter = getDateBefore(

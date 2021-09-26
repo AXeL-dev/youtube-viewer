@@ -25,8 +25,8 @@ const defaults = {
 export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
-  const checkedVideos = useRef<string[]>([]);
-  const viewed = useAppSelector(selectViewedVideos);
+  const checkedVideosIds = useRef<string[]>([]);
+  const viewedVideos = useAppSelector(selectViewedVideos(channel));
   const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
   const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
@@ -55,14 +55,15 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       const total = data?.total || 0;
       log('Fetch ended:', total, data);
       if (total > 0) {
+        const viewedVideosIds = viewedVideos.map(({ id }) => id);
         newVideos = videos.filter(
           (video) =>
-            !viewed.includes(video.id) &&
-            !checkedVideos.current.includes(video.id)
+            !viewedVideosIds.includes(video.id) &&
+            !checkedVideosIds.current.includes(video.id)
         );
         if (newVideos.length > 0) {
           log(`New videos for channel ${channel.title}:`, newVideos);
-          checkedVideos.current.push(...newVideos.map(({ id }) => id));
+          checkedVideosIds.current.push(...newVideos.map(({ id }) => id));
         }
       }
       onCheckEnd({

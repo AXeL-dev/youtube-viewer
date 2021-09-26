@@ -18,7 +18,7 @@ function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
   const [page, setPage] = useState(1);
   const { itemsPerRow } = useGrid(config.gridColumns);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
-  const ids = watchLaterVideos.map(({ videoId }) => videoId);
+  const ids = watchLaterVideos.map(({ id }) => id);
   const total = ids.length;
   const maxResults = Math.min(total, itemsPerRow * page);
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery({

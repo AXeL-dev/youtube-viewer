@@ -1,20 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Video } from 'types';
 
-interface WatchLater {
-  videoId: string;
+interface VideoItem {
+  id: string;
   channelId: string;
   publishedAt: number;
+  isViewed?: boolean;
+  isToWatchLater?: boolean;
 }
 
 interface VideosState {
-  viewed: string[];
-  watchLater: WatchLater[];
+  list: VideoItem[];
 }
 
 const initialState: VideosState = {
-  viewed: [],
-  watchLater: [],
+  list: [],
 };
 
 export const videosSlice = createSlice({
@@ -27,47 +27,59 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
+    removeVideosGarbage: (state) => {
+      state.list = state.list.filter(
+        ({ isViewed, isToWatchLater }) => isViewed || isToWatchLater
+      );
+    },
     addToWatchLaterList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.watchLater.find(
-        ({ videoId }) => videoId === video.id
-      );
-      if (!found) {
-        state.watchLater.push({
-          videoId: video.id,
+      const found = state.list.find(({ id }) => id === video.id);
+      if (found) {
+        found.isToWatchLater = true;
+      } else {
+        state.list.push({
+          id: video.id,
           channelId: video.channelId,
           publishedAt: video.publishedAt,
+          isToWatchLater: true,
         });
-        state.watchLater = state.watchLater.sort(
-          (a, b) => b.publishedAt - a.publishedAt
-        );
       }
     },
     removeFromWatchLaterList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      state.watchLater = state.watchLater.filter(
-        ({ videoId }) => videoId !== video.id
-      );
+      const found = state.list.find(({ id }) => id === video.id);
+      if (found) {
+        found.isToWatchLater = false;
+      }
+      videosSlice.caseReducers.removeVideosGarbage(state);
     },
     clearWatchLaterList: (state) => {
-      const viewedIds = state.viewed.map((id) => id);
-      state.watchLater = state.watchLater.filter(
-        ({ videoId }) => !viewedIds.includes(videoId)
-      );
+      state.list = state.list.map((video) => ({
+        ...video,
+        isToWatchLater: !video.isViewed,
+      }));
     },
     addToViewedList: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.viewed.find((id) => id === video.id);
-      if (!found) {
-        state.viewed.push(video.id);
+      const found = state.list.find(({ id }) => id === video.id);
+      if (found) {
+        found.isViewed = true;
+      } else {
+        state.list.push({
+          id: video.id,
+          channelId: video.channelId,
+          publishedAt: video.publishedAt,
+          isViewed: true,
+        });
       }
-      // videosSlice.caseReducers.removeFromWatchLaterList(state, action);
     },
   },
 });
 
 export const {
   setVideos,
+  removeVideosGarbage,
   addToWatchLaterList,
   removeFromWatchLaterList,
   clearWatchLaterList,
