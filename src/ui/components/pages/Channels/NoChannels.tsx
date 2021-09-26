@@ -19,7 +19,7 @@ export default function NoChannels(props: NoChannelsProps) {
     try {
       readFile(file).then((content) => {
         const channels = JSON.parse(content as string);
-        dispatch(setChannels(channels));
+        dispatch(setChannels({ list: channels }));
       });
     } catch (e) {
       console.error(e);

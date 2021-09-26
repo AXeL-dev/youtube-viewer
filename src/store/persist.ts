@@ -20,7 +20,7 @@ export const preloadState = async () => {
       store.dispatch(setSettings({ apiKey }));
     }
     if (legacy.channels) {
-      store.dispatch(setChannels(legacy.channels));
+      store.dispatch(setChannels({ list: legacy.channels }));
     }
   } else {
     // Load stored data
@@ -29,7 +29,7 @@ export const preloadState = async () => {
       store.dispatch(setSettings(settings));
     }
     if (channels) {
-      store.dispatch(setChannels(channels.list));
+      store.dispatch(setChannels(channels));
     }
     if (videos) {
       store.dispatch(setVideos(videos));
