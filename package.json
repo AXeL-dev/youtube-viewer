@@ -1,7 +1,6 @@
 {
   "name": "youtube-viewer",
   "version": "1.0.0",
-  "homepage": "https://axel-dev.github.io/youtube-viewer",
   "private": true,
   "dependencies": {
     "@dnd-kit/core": "^3.1.1",
