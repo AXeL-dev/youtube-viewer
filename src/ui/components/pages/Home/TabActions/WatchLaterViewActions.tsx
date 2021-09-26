@@ -30,10 +30,10 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
         if (confirmed) {
           dispatch(clearWatchLaterList());
         }
-        setConfirmationDialogProps({
-          ...confirmationDialogProps,
+        setConfirmationDialogProps((state) => ({
+          ...state,
           open: false,
-        });
+        }));
       },
     });
   };
