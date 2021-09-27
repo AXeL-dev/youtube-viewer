@@ -7,13 +7,13 @@ import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import CloseButton from './CloseButton';
 
-interface PlayVideoDialogProps {
+interface VideoPlayerDialogProps {
   open: boolean;
   video: Video | null;
   onClose: () => void;
 }
 
-function PlayVideoDialog(props: PlayVideoDialogProps) {
+function VideoPlayerDialog(props: VideoPlayerDialogProps) {
   const { open, video, onClose } = props;
   const settings = useAppSelector(selectSettings);
   const opts = {
@@ -62,8 +62,8 @@ function PlayVideoDialog(props: PlayVideoDialogProps) {
 }
 
 function propsAreEqual(
-  prevProps: PlayVideoDialogProps,
-  nextProps: PlayVideoDialogProps
+  prevProps: VideoPlayerDialogProps,
+  nextProps: VideoPlayerDialogProps
 ) {
   return (
     prevProps.open === nextProps.open &&
@@ -71,4 +71,4 @@ function propsAreEqual(
   );
 }
 
-export default React.memo(PlayVideoDialog, propsAreEqual);
+export default React.memo(VideoPlayerDialog, propsAreEqual);

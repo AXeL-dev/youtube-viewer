@@ -3,7 +3,7 @@ import { Alert } from 'ui/components/shared';
 import { HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
-import PlayVideoDialog from './PlayVideoDialog';
+import VideoPlayerDialog from './VideoPlayerDialog';
 import ChannelsWrapper from './ChannelsWrapper';
 import NoChannels from './NoChannels';
 
@@ -43,7 +43,7 @@ function TabPanel(props: TabPanelProps) {
       ) : (
         <NoChannels />
       )}
-      <PlayVideoDialog
+      <VideoPlayerDialog
         open={!!activeVideo}
         video={activeVideo}
         onClose={handleVideoDialogClose}
