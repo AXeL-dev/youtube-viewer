@@ -16,15 +16,20 @@ export interface WatchLaterViewRendererProps {
 function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
   const { channel, onError, onVideoPlay } = props;
   const [page, setPage] = useState(1);
-  const { itemsPerRow } = useGrid(config.gridColumns);
+  const { itemsPerRow = 0 } = useGrid(config.gridColumns);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const ids = watchLaterVideos.map(({ id }) => id);
   const total = ids.length;
   const maxResults = Math.min(total, itemsPerRow * page);
-  const { data, error, isLoading, isFetching } = useGetVideosByIdQuery({
-    ids,
-    maxResults: Math.max(maxResults, itemsPerRow),
-  });
+  const { data, error, isLoading, isFetching } = useGetVideosByIdQuery(
+    {
+      ids,
+      maxResults: Math.max(maxResults, itemsPerRow),
+    },
+    {
+      skip: itemsPerRow === 0,
+    }
+  );
   const videos = (data?.items || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
 
   const handleLoadMore = () => {

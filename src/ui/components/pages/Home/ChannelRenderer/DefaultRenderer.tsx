@@ -23,13 +23,18 @@ function DefaultRenderer(props: DefaultRendererProps) {
     ...rest
   } = props;
   const [page, setPage] = useState(1);
-  const { itemsPerRow } = useGrid(config.gridColumns);
+  const { itemsPerRow = 0 } = useGrid(config.gridColumns);
   const maxResults = itemsPerRow * page;
-  const { data, error, isLoading, isFetching } = useGetChannelVideosQuery({
-    channel,
-    publishedAfter,
-    maxResults,
-  });
+  const { data, error, isLoading, isFetching } = useGetChannelVideosQuery(
+    {
+      channel,
+      publishedAfter,
+      maxResults,
+    },
+    {
+      skip: itemsPerRow === 0,
+    }
+  );
   const videos =
     data?.items.filter((video) => !excludedVideosIds.includes(video.id)) || [];
   const total = data?.total || 0;
