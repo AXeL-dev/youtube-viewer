@@ -20,9 +20,18 @@ export const selectNotificationEnabledChannels = createSelector(
     )
 );
 
-export const selectChannelsCount = createSelector(
-  selectChannels,
+export const selectActiveChannelsCount = createSelector(
+  selectActiveChannels,
   (channels) => channels.length
+);
+
+export const selectChannelsCount = createSelector(
+  selectActiveChannels,
+  selectChannels,
+  (activeChannels, channels) =>
+    activeChannels.length === channels.length
+      ? channels.length
+      : `${activeChannels.length}/${channels.length}`
 );
 
 export const selectChannel = (channel: Channel) =>
