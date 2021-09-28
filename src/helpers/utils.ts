@@ -173,10 +173,28 @@ export function isInToday(timestamp: number) {
  * @param dt1
  * @param dt2
  */
-export function diffHours(dt1: Date, dt2: Date): number {
-  let diff = (dt2.getTime() - dt1.getTime()) / 1000;
+export function diffHours(dt1: Date | number, dt2: Date | number): number {
+  const tms1 = dt1 instanceof Date ? dt1.getTime() : dt1;
+  const tms2 = dt2 instanceof Date ? dt2.getTime() : dt2;
+  let diff = (tms2 - tms1) / 1000;
   diff /= 60 * 60;
   return Math.abs(Math.round(diff));
+}
+
+// -------------------------------------------------------------------
+
+/**
+ * Returns days difference between two dates
+ * Stolen from: https://www.w3resource.com/javascript-exercises/javascript-date-exercise-8.php
+ *
+ * @param dt1
+ * @param dt2
+ */
+export function diffDays(dt1: Date | number, dt2: Date | number): number {
+  const tms1 = dt1 instanceof Date ? dt1.getTime() : dt1;
+  const tms2 = dt2 instanceof Date ? dt2.getTime() : dt2;
+  const diff = (tms2 - tms1) / (1000 * 60 * 60 * 24);
+  return Math.floor(diff);
 }
 
 // -------------------------------------------------------------------
@@ -186,9 +204,21 @@ export function diffHours(dt1: Date, dt2: Date): number {
  *
  * @param dt
  */
-export function elapsedHours(dt: Date): number {
+export function elapsedHours(dt: Date | number): number {
   const now = new Date();
   return diffHours(now, dt);
+}
+
+// -------------------------------------------------------------------
+
+/**
+ * Returns elapsed days since the provided date
+ *
+ * @param dt
+ */
+export function elapsedDays(dt: Date | number): number {
+  const now = new Date();
+  return diffDays(dt, now);
 }
 
 // -------------------------------------------------------------------

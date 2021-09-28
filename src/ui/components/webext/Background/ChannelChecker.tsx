@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Channel, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import { getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectChannelVideos } from 'store/selectors/videos';
 import { useInterval } from 'hooks';
-import { log } from './logger';
+import { log } from 'helpers/logger';
 
 export interface CheckEndData {
   channel: Channel;
@@ -17,7 +17,7 @@ interface ChannelCheckerProps {
   onCheckEnd: (data: CheckEndData) => void;
 }
 
-const defaults = {
+export const defaults = {
   checkInterval: 30, // minute(s)
   videosSeniority: 1, // day(s)
 };
@@ -25,7 +25,6 @@ const defaults = {
 export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
-  const checkedVideosIds = useRef<string[]>([]);
   const cachedVideos = useAppSelector(selectChannelVideos(channel));
   const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
   const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
@@ -55,17 +54,17 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       const total = data?.total || 0;
       log('Fetch ended:', total, data);
       if (total > 0) {
-        const cachedVideosIds = cachedVideos
-          .filter(({ isViewed, isToWatchLater }) => isViewed || isToWatchLater)
+        const checkedVideosIds = cachedVideos
+          .filter(
+            ({ isViewed, isToWatchLater, isNotified }) =>
+              isViewed || isToWatchLater || isNotified
+          )
           .map(({ id }) => id);
         newVideos = videos.filter(
-          (video) =>
-            !cachedVideosIds.includes(video.id) &&
-            !checkedVideosIds.current.includes(video.id)
+          (video) => !checkedVideosIds.includes(video.id)
         );
         if (newVideos.length > 0) {
           log(`New videos for channel ${channel.title}:`, newVideos);
-          checkedVideosIds.current.push(...newVideos.map(({ id }) => id));
         }
       }
       onCheckEnd({

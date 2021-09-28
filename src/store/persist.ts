@@ -1,14 +1,21 @@
 import store, { RootState } from 'store';
 import storage from 'helpers/storage';
-import { isBackgroundPageRunning } from 'ui/components/webext';
 import { setSettings } from './reducers/settings';
 import { setChannels } from './reducers/channels';
 import { setVideos } from './reducers/videos';
 import { setApp } from './reducers/app';
+import { AnyAction } from '@reduxjs/toolkit';
+import { log } from 'helpers/logger';
 
 export const storageKey = 'APP_YOUTUBE_VIEWER';
 
-let ignoreNextStatePersist = false;
+let canPersistState = true;
+let prevSerializedState = '';
+
+export const dispatch = (action: AnyAction, persist: boolean = false) => {
+  canPersistState = persist;
+  store.dispatch(action);
+};
 
 export const preloadState = async () => {
   const state = await storage.get(storageKey);
@@ -18,42 +25,46 @@ export const preloadState = async () => {
     if (legacy.settings) {
       const { apiKey } = legacy.settings;
       if (apiKey) {
-        store.dispatch(setSettings({ apiKey }));
+        dispatch(setSettings({ apiKey }));
       }
     }
     if (legacy.channels) {
-      store.dispatch(setChannels({ list: legacy.channels }));
+      dispatch(setChannels({ list: legacy.channels }));
     }
   } else {
     // Load stored data
     const { settings, channels, videos } = state || {};
     if (settings) {
-      store.dispatch(setSettings(settings));
+      dispatch(setSettings(settings));
     }
     if (channels) {
-      store.dispatch(setChannels(channels));
+      dispatch(setChannels(channels));
     }
     if (videos) {
-      store.dispatch(setVideos(videos));
+      dispatch(setVideos(videos));
     }
-    ignoreNextStatePersist = !!state;
   }
-  store.dispatch(setApp({ loaded: true }));
+  dispatch(setApp({ loaded: true }), !state);
 };
 
-export const persistState = (state: RootState) => {
-  const ignore =
-    !state.app.loaded || isBackgroundPageRunning || ignoreNextStatePersist;
-  // console.log('Persist state:', !ignore, {
-  //   state,
-  //   isBackgroundPageRunning,
-  //   ignoreNextStatePersist,
-  // });
-  if (ignore) {
-    ignoreNextStatePersist = false;
+export const persistState = (state: RootState, onlyIfChanged?: boolean) => {
+  log('Persist state:', {
+    canPersistState,
+    state,
+  });
+  if (!canPersistState) {
+    canPersistState = true;
     return;
   }
   const { settings, channels, videos } = state;
+  if (onlyIfChanged) {
+    const serializedState = JSON.stringify({ settings, channels, videos });
+    if (prevSerializedState === serializedState) {
+      log('State did not change!');
+      return;
+    }
+    prevSerializedState = serializedState;
+  }
   storage.save({
     [storageKey]: {
       settings,

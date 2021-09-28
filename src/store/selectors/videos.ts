@@ -18,6 +18,14 @@ export const selectViewedVideos = (channel?: Channel) =>
     )
   );
 
+export const selectNotifiedVideos = (channel?: Channel) =>
+  createSelector(selectVideos, (videos) =>
+    videos.filter(
+      ({ isNotified, channelId }) =>
+        isNotified && (!channel || channel.id === channelId)
+    )
+  );
+
 export const selectWatchLaterVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos

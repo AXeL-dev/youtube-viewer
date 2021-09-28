@@ -8,26 +8,31 @@ import {
   getBadgeText,
   sendNotification,
 } from 'helpers/webext';
-import { useAppSelector, useAppDispatch, storageKey } from 'store';
+import { useAppSelector, storageKey } from 'store';
 import { selectNotificationEnabledChannels } from 'store/selectors/channels';
 import { setSettings } from 'store/reducers/settings';
 import { setChannels } from 'store/reducers/channels';
-import { setVideos } from 'store/reducers/videos';
+import {
+  addNotifiedVideos,
+  removeOutdatedVideos,
+  setVideos,
+} from 'store/reducers/videos';
 import ChannelChecker, { CheckEndData } from './ChannelChecker';
-import { log } from './logger';
+import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
+import { Video } from 'types';
+import { selectApp } from 'store/selectors/app';
+import { dispatch } from 'store/persist';
 
 declare var browser: any;
 
 interface BackgroundProps {}
 
-export let isBackgroundPageRunning = false;
-
 export function Background(props: BackgroundProps) {
   const responses = useRef<CheckEndData[]>([]);
   const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
-  const dispatch = useAppDispatch();
+  const app = useAppSelector(selectApp);
 
   useEffect(() => {
     if (settings.enableNotifications) {
@@ -80,10 +85,17 @@ export function Background(props: BackgroundProps) {
     if (isWebExtension) {
       init();
       log('Background page initialised.');
-      isBackgroundPageRunning = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (isWebExtension && app.loaded) {
+      log('Removing outdated videos.');
+      dispatch(removeOutdatedVideos(), true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [app.loaded]);
 
   const updateBadge = async (count: number) => {
     const badgeText: string = await getBadgeText();
@@ -103,6 +115,7 @@ export function Background(props: BackgroundProps) {
         (acc, cur) => acc + cur.newVideos.length,
         0
       );
+      log('All channel checkers responded, new videos count:', count);
       // Update badge count & send notification
       if (count > 0) {
         updateBadge(count);
@@ -131,6 +144,13 @@ export function Background(props: BackgroundProps) {
           //   },
           // ],
         });
+        // Save notified videos
+        const videos = fulfilledResponses.reduce(
+          (acc: Video[], cur: CheckEndData) => [...acc, ...cur.newVideos],
+          []
+        );
+        log('Saving notified videos.', videos);
+        dispatch(addNotifiedVideos(videos), true);
       }
       // Reset the responses array
       responses.current = [];
@@ -139,7 +159,7 @@ export function Background(props: BackgroundProps) {
 
   return isWebExtension ? (
     <>
-      {settings.enableNotifications
+      {app.loaded && settings.enableNotifications
         ? channels.map((channel, index) => (
             <ChannelChecker
               key={index}

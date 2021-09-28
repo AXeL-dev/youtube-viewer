@@ -5,8 +5,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { HomeView, Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
 import {
-  addToWatchLaterList,
-  removeFromWatchLaterList,
+  addWatchLaterVideo,
+  removeWatchLaterVideo,
 } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
@@ -39,7 +39,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(addToWatchLaterList(video));
+          dispatch(addWatchLaterVideo(video));
         }}
       >
         <WatchLaterOutlinedIcon sx={{ fontSize: '1.25rem' }} />
@@ -64,7 +64,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(removeFromWatchLaterList(video));
+          dispatch(removeWatchLaterVideo(video));
         }}
       >
         <CloseIcon sx={{ fontSize: '1.125rem' }} />
