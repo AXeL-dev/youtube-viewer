@@ -11,7 +11,7 @@ export interface DefaultRendererProps {
   publishedAfter?: string;
   excludedVideosIds?: string[];
   onError?: (error: any) => void;
-  onSuccess?: (data: any) => void;
+  onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
@@ -21,7 +21,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     publishedAfter,
     excludedVideosIds = [],
     onError,
-    onSuccess,
+    onChange,
     ...rest
   } = props;
   const [page, setPage] = useState(1);
@@ -52,11 +52,11 @@ function DefaultRenderer(props: DefaultRendererProps) {
   }, [error, onError]);
 
   useEffect(() => {
-    if (!isFetching && data && onSuccess) {
-      onSuccess(data);
+    if (!isFetching && data && onChange) {
+      onChange({ channel, items: videos, total });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, onSuccess]);
+  }, [isFetching, onChange, videos]);
 
   return (
     <ChannelRenderer

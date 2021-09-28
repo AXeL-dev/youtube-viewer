@@ -7,7 +7,6 @@ import TabPanel from './TabPanel';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { selectWatchLaterVideosCount } from 'store/selectors/videos';
-import { GetChannelVideosResponse } from 'store/services/youtube';
 import TabActions from './TabActions';
 
 interface HomeProps {}
@@ -32,9 +31,9 @@ export function Home(props: HomeProps) {
     setActiveTab(value);
   };
 
-  const handleSuccess = (tab: HomeView, data: GetChannelVideosResponse) => {
+  const handleCountChange = (tab: HomeView, count: number) => {
     if (tab === HomeView.Recent) {
-      setRecentVideosCount((count) => count + (data?.items?.length || 0));
+      setRecentVideosCount(count);
     }
   };
 
@@ -70,7 +69,7 @@ export function Home(props: HomeProps) {
         </Tabs>
         <TabActions tab={activeTab} />
       </Box>
-      <TabPanel tab={activeTab} onSuccess={handleSuccess} />
+      <TabPanel tab={activeTab} onCountChange={handleCountChange} />
     </Layout>
   );
 }

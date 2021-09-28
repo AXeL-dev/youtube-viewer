@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Alert } from 'ui/components/shared';
-import { HomeView, Video } from 'types';
+import { Channel, HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
+import { GetChannelVideosResponse } from 'store/services/youtube';
 import VideoPlayerDialog from './VideoPlayerDialog';
 import ChannelsWrapper from './ChannelsWrapper';
 import NoChannels from './NoChannels';
 
+interface ChannelData extends GetChannelVideosResponse {
+  channel: Channel;
+}
+
 interface TabPanelProps {
   tab: HomeView;
-  onSuccess?: (tab: HomeView, data: any) => void;
+  onCountChange?: (tab: HomeView, count: number) => void;
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { tab, onSuccess } = props;
+  const { tab, onCountChange } = props;
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Video | null>(null);
   const channels = useAppSelector(selectActiveChannels);
+  const channelsData = useRef<ChannelData[]>([]);
 
   const handleVideoPlay = (video: Video) => {
     setActiveVideo(video);
@@ -30,9 +36,17 @@ function TabPanel(props: TabPanelProps) {
     setError(err);
   };
 
-  const handleSuccess = (data: any) => {
-    if (onSuccess) {
-      onSuccess(tab, data);
+  const handleChange = (data: ChannelData) => {
+    if (onCountChange) {
+      channelsData.current.push(data);
+      if (channelsData.current.length === channels.length) {
+        const count = channelsData.current.reduce(
+          (acc, cur) => acc + (cur?.items?.length || 0),
+          0
+        );
+        onCountChange(tab, count);
+        channelsData.current = [];
+      }
     }
   };
 
@@ -45,7 +59,7 @@ function TabPanel(props: TabPanelProps) {
           view={tab}
           channels={channels}
           onError={handleError}
-          onSuccess={handleSuccess}
+          onChange={handleChange}
           onVideoPlay={handleVideoPlay}
         />
       ) : (
