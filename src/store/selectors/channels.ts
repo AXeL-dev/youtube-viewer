@@ -26,10 +26,10 @@ export const selectActiveChannelsCount = createSelector(
 );
 
 export const selectChannelsCount = createSelector(
-  selectActiveChannels,
   selectChannels,
-  (activeChannels, channels) =>
-    activeChannels.length === channels.length
+  selectActiveChannels,
+  (channels, activeChannels) =>
+    channels.length === activeChannels.length
       ? channels.length
       : `${activeChannels.length}/${channels.length}`
 );
