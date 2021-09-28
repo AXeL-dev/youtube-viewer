@@ -4,16 +4,13 @@ import { isWebExtension } from 'helpers/webext';
 import { Video } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
-interface VideoOption {
-  isViewed?: boolean;
-  isToWatchLater?: boolean;
-  isNotified?: boolean;
-}
-
-interface VideoItem extends VideoOption {
+interface VideoItem {
   id: string;
   channelId: string;
   publishedAt: number;
+  isViewed?: boolean;
+  isToWatchLater?: boolean;
+  isNotified?: boolean;
 }
 
 interface VideosState {
@@ -34,41 +31,33 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
-    addVideo: (
-      state,
-      action: PayloadAction<{ video: Video; option: VideoOption }>
-    ) => {
-      const { video, option } = action.payload;
-      let found = state.list.find(({ id }) => id === video.id);
+    addViewedVideo: (state, action: PayloadAction<Video>) => {
+      const video = action.payload;
+      const found = state.list.find(({ id }) => id === video.id);
       if (found) {
-        found = {
-          ...found,
-          ...option,
-        };
+        found.isViewed = true;
       } else {
         state.list.push({
           id: video.id,
           channelId: video.channelId,
           publishedAt: video.publishedAt,
-          ...option,
+          isViewed: true,
         });
       }
     },
-    addViewedVideo: (state, action: PayloadAction<Video>) => {
-      const video = action.payload;
-      const nextAction = {
-        payload: { video, option: { isViewed: true } },
-        type: action.type,
-      };
-      videosSlice.caseReducers.addVideo(state, nextAction);
-    },
     addWatchLaterVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const nextAction = {
-        payload: { video, option: { isToWatchLater: true } },
-        type: action.type,
-      };
-      videosSlice.caseReducers.addVideo(state, nextAction);
+      const found = state.list.find(({ id }) => id === video.id);
+      if (found) {
+        found.isToWatchLater = true;
+      } else {
+        state.list.push({
+          id: video.id,
+          channelId: video.channelId,
+          publishedAt: video.publishedAt,
+          isToWatchLater: true,
+        });
+      }
     },
     removeWatchLaterVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
