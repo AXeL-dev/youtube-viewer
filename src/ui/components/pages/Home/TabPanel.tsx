@@ -9,10 +9,11 @@ import NoChannels from './NoChannels';
 
 interface TabPanelProps {
   tab: HomeView;
+  onSuccess?: (tab: HomeView, data: any) => void;
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { tab } = props;
+  const { tab, onSuccess } = props;
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Video | null>(null);
   const channels = useAppSelector(selectActiveChannels);
@@ -29,6 +30,12 @@ function TabPanel(props: TabPanelProps) {
     setError(err);
   };
 
+  const handleSuccess = (data: any) => {
+    if (onSuccess) {
+      onSuccess(tab, data);
+    }
+  };
+
   return error ? (
     <Alert error={error} closable />
   ) : (
@@ -38,6 +45,7 @@ function TabPanel(props: TabPanelProps) {
           view={tab}
           channels={channels}
           onError={handleError}
+          onSuccess={handleSuccess}
           onVideoPlay={handleVideoPlay}
         />
       ) : (

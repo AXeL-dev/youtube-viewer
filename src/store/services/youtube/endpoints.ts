@@ -37,7 +37,7 @@ type GetVideosByIdResponse = {
 
 type GetChannelVideosArgs = GetChannelActivitiesArgs;
 
-type GetChannelVideosResponse = GetVideosByIdResponse;
+export type GetChannelVideosResponse = GetVideosByIdResponse;
 
 const queries = {
   // Channel search query
