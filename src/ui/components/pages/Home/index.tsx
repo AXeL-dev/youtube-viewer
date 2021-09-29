@@ -25,9 +25,6 @@ export function Home(props: HomeProps) {
   }, [settings.defaultView]);
 
   const handleTabChange = (event: ChangeEvent<{}>, value: HomeView) => {
-    if (value === HomeView.Recent) {
-      setRecentVideosCount(0); // reset count
-    }
     setActiveTab(value);
   };
 
