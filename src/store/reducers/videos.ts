@@ -71,10 +71,14 @@ export const videosSlice = createSlice({
       }
     },
     clearWatchLaterList: (state) => {
-      state.list = state.list.map((video) => ({
-        ...video,
-        isToWatchLater: !video.isViewed,
-      }));
+      state.list = state.list.map((video) =>
+        video.isToWatchLater
+          ? {
+              ...video,
+              isToWatchLater: !video.isViewed,
+            }
+          : video
+      );
     },
     addNotifiedVideos: (state, action: PayloadAction<Video[]>) => {
       const videos = action.payload;
