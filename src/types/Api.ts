@@ -16,7 +16,7 @@ interface Thumbnail {
   height: number;
 }
 
-export interface Item {
+interface Item {
   id: string;
   snippet: {
     channelId: string;

@@ -1,4 +1,5 @@
 // import { browser } from "webextension-polyfill-ts";
+import { SendNotificationParams } from 'types';
 
 declare var browser: any;
 
@@ -44,32 +45,10 @@ export function executeScript(tabId: number, code: string): void {
   });
 }
 
-interface NotificationButton {
-  title: string;
-  iconUrl?: string;
-}
-
-interface NotificationItem {
-  title: string;
-  message: string;
-}
-
-interface NotificationParams {
-  id?: string;
-  title?: string;
-  message: string;
-  contextMessage?: string;
-  type?: string;
-  imageUrl?: string;
-  iconUrl?: string;
-  buttons?: NotificationButton[];
-  items?: NotificationItem[];
-}
-
 // Notes:
 // - id will be auto-generated if empty
 // - Firefox only supports the 'basic' type @see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/notifications/TemplateType#type
-export function sendNotification(params: NotificationParams): void {
+export function sendNotification(params: SendNotificationParams): void {
   const {
     id,
     type = 'basic',
