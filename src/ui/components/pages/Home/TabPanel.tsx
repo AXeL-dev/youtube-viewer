@@ -12,9 +12,14 @@ interface ChannelData extends GetChannelVideosResponse {
   channel: Channel;
 }
 
+export interface RecentVideosCount {
+  displayed: number;
+  total: number;
+}
+
 interface TabPanelProps {
   tab: HomeView;
-  onCountChange?: (tab: HomeView, count: number) => void;
+  onCountChange?: (tab: HomeView, count: RecentVideosCount) => void;
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -41,8 +46,11 @@ function TabPanel(props: TabPanelProps) {
       channelsData.current.push(data);
       if (channelsData.current.length === channels.length) {
         const count = channelsData.current.reduce(
-          (acc, cur) => acc + (cur?.items?.length || 0),
-          0
+          (acc, cur) => ({
+            displayed: acc.displayed + (cur.items?.length || 0),
+            total: acc.total + (cur.total || 0),
+          }),
+          { displayed: 0, total: 0 }
         );
         onCountChange(tab, count);
         channelsData.current = [];

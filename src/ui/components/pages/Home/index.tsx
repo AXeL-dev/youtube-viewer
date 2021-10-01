@@ -3,7 +3,7 @@ import { Box, Tabs } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView } from 'types';
 import Tab from './Tab';
-import TabPanel from './TabPanel';
+import TabPanel, { RecentVideosCount } from './TabPanel';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { selectWatchLaterVideosCount } from 'store/selectors/videos';
@@ -14,7 +14,12 @@ interface HomeProps {}
 export function Home(props: HomeProps) {
   const settings = useAppSelector(selectSettings);
   const [activeTab, setActiveTab] = useState(settings.defaultView);
-  const [recentVideosCount, setRecentVideosCount] = useState(0);
+  const [recentVideosCount, setRecentVideosCount] = useState<RecentVideosCount>(
+    {
+      displayed: 0,
+      total: 0,
+    }
+  );
   const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
 
   useEffect(() => {
@@ -28,7 +33,7 @@ export function Home(props: HomeProps) {
     setActiveTab(value);
   };
 
-  const handleCountChange = (tab: HomeView, count: number) => {
+  const handleCountChange = (tab: HomeView, count: RecentVideosCount) => {
     if (tab === HomeView.Recent) {
       setRecentVideosCount(count);
     }
@@ -56,7 +61,7 @@ export function Home(props: HomeProps) {
           <Tab
             label="Recent"
             value={HomeView.Recent}
-            badge={recentVideosCount}
+            badge={recentVideosCount.displayed}
           />
           <Tab
             label="Watch later"
@@ -64,7 +69,10 @@ export function Home(props: HomeProps) {
             badge={watchLaterVideosCount}
           />
         </Tabs>
-        <TabActions tab={activeTab} />
+        <TabActions
+          tab={activeTab}
+          recentVideosCount={recentVideosCount.total}
+        />
       </Box>
       <TabPanel tab={activeTab} onCountChange={handleCountChange} />
     </Layout>
