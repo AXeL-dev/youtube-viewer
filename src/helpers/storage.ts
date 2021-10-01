@@ -4,74 +4,66 @@ declare var browser: any;
 
 /**
  * Get data from storage
- * 
- * EX: getFromStorage('key1', 'key2', ...)
- * 
- * @param keys 
+ *
+ * e.g.: get('key1', 'key2', ...)
+ *
+ * @param keys
  */
-export function getFromStorage(...keys: string[]): Promise<any> {
-  let promises: Promise<any>[] = [];
-  keys.forEach((key: string) => {
-    promises.push(__get(key));
-  });
-  return Promise.all(promises);
+async function get(...keys: string[]) {
+  try {
+    const result = await browser.storage.local.get(keys);
+    return keys.length > 1 ? result : result[keys[0]];
+  } catch (error) {
+    const result: { [key: string]: string } = {};
+    for (const key of keys) {
+      const value = localStorage.getItem(key);
+      result[key] = parse(value);
+    }
+    return keys.length > 1 ? result : result[keys[0]];
+  }
 }
 
-function __get(key: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    try {
-      browser.storage.local.get(key).then((storage: any) => {
-        resolve(storage[key]);
-      });
-    }
-    catch(error) {
-      //console.log(error.message);
-      const value: any = localStorage.getItem(key);
-      let finalValue: any;
-      try {
-        finalValue = JSON.parse(value);
-      }
-      catch(error) {
-        finalValue = value;
-      }
-      resolve(finalValue);
-    }
-  });
+function parse(value: string | null) {
+  if (!value) {
+    return value;
+  }
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    return value;
+  }
 }
 
 /**
  * Save data to storage
- * 
- * EX: saveToStorage({ key1: value1, key2: value2, ... })
- * 
- * @param values 
+ *
+ * e.g.: save({ key1: value1, key2: value2, ... })
+ *
+ * @param values
  */
-export function saveToStorage(values: {[key: string]: any}): Promise<any> {
-  let promises: Promise<any>[] = [];
-  Object.keys(values).forEach((key: string) => {
-    promises.push(__save(key, values[key]));
-  });
-  return Promise.all(promises);
+function save(values: { [key: string]: any }) {
+  try {
+    browser.storage.local.set(values);
+  } catch (error) {
+    const keys = Object.keys(values);
+    for (const key of keys) {
+      const value = stringify(values[key]);
+      localStorage.setItem(key, value);
+    }
+  }
 }
 
-function __save(key: string, value: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    try {
-      browser.storage.local.set({[key]: value}).then(() => {
-        resolve();
-      });
-    }
-    catch(error) {
-      //console.log(error.message);
-      let finalValue: any;
-      try {
-        finalValue = JSON.stringify(value);
-      }
-      catch(error) {
-        finalValue = value;
-      }
-      localStorage.setItem(key, finalValue);
-      resolve();
-    }
-  });
+function stringify(value: any) {
+  try {
+    return JSON.stringify(value);
+  } catch (error) {
+    return value;
+  }
 }
+
+const storage = {
+  get,
+  save,
+};
+
+export default storage;

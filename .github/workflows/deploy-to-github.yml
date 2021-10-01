@@ -18,9 +18,8 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           npm install
-          echo "REACT_APP_YOUTUBE_API_KEY=$YOUTUBE_API_KEY" > .env
+          echo "REACT_APP_YOUTUBE_API_KEY=$YOUTUBE_API_KEY" >> .env
           npm run build:github
-          cp dist/github/index.html dist/github/404.html
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.6.2

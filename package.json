@@ -1,46 +1,58 @@
 {
   "name": "youtube-viewer",
-  "version": "0.6.5",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "4.8.3",
-    "@material-ui/icons": "4.5.1",
-    "@material-ui/lab": "4.0.0-alpha.39",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.19.8",
-    "@types/react": "^16.14.2",
-    "@types/react-dom": "^16.9.10",
-    "jotai": "^0.12.0",
-    "react": "^16.14.0",
-    "react-beautiful-dnd": "^12.2.0",
-    "react-dom": "^16.14.0",
-    "react-pull-to-refresh": "^1.1.2",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.4",
-    "typescript": "^3.9.7"
+    "@dnd-kit/core": "^3.1.1",
+    "@dnd-kit/modifiers": "^3.0.0",
+    "@dnd-kit/sortable": "^4.0.0",
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@fontsource/roboto": "^4.5.0",
+    "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.0.0",
+    "@reduxjs/toolkit": "^1.6.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "react-youtube": "^7.13.1",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build && gulp postbuild:web-ext --dest-dir=dist/web-ext",
-    "build:firefox": "npm run build && cd dist/web-ext && mv -f manifest.firefox.json manifest.json",
-    "build:firefox:new-tab": "npm run build:firefox && cd dist/web-ext && sed -i -z 's/,\\n    \"default_popup\": \"index.html\"//g' manifest.json",
-    "build:chrome": "npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
+    "start:dev": "REACT_APP_DEBUG=true react-scripts start",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "build:firefox": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && mv -f manifest.firefox.json manifest.json",
+    "build:chrome": "BUILD_PATH='./dist/web-ext' npm run build && cd dist/web-ext && rm -f manifest.firefox.json",
+    "build:dev": "REACT_APP_DEBUG=true npm run build:chrome",
+    "build:dev:firefox": "REACT_APP_DEBUG=true npm run build:firefox",
     "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
     "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
-    "package:source": "zip -r -FS youtube_viewer-source.zip * -x dist\\* node_modules\\* old\\* screenshots\\* *.zip",
-    "release": "npm run build && npm run package",
-    "release:dev": "npm run build && npm run package:dev",
-    "build:github": "PUBLIC_URL=/youtube-viewer/ react-scripts build && gulp postbuild:github --dest-dir=dist/github",
-    "deploy:github": "ngh --dir=dist/github",
-    "sign": "npx web-ext-submit --source-dir=dist/web-ext --channel=unlisted --api-key=$AMO_JWT_ISSUER --api-secret=$AMO_JWT_SECRET",
+    "package:source": "zip -r -FS youtube_viewer-source.zip * -x .env.* dist\\* node_modules\\* v6.x\\* old\\* screenshots\\* web-ext-artifacts\\* *.zip",
+    "build:github": "BUILD_PATH='./dist/github' PUBLIC_URL=/youtube-viewer/ react-scripts build && cp dist/github/index.html dist/github/404.html",
+    "deploy:github": "gh-pages -d dist/github",
+    "sign": "node ./scripts/sign-addon.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "release:major": "release-it major",
+    "release:minor": "release-it minor",
+    "release:patch": "release-it patch"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -55,14 +67,9 @@
     ]
   },
   "devDependencies": {
-    "@types/react-beautiful-dnd": "^11.0.5",
-    "@types/react-router-dom": "^5.1.6",
-    "gulp": "^4.0.2",
-    "gulp-file": "^0.4.0",
-    "gulp-replace": "^1.0.0",
-    "gulp-shell": "^0.8.0",
-    "webextension-polyfill": "^0.6.0",
-    "webextension-polyfill-ts": "^0.11.0",
-    "yargs": "^15.4.1"
+    "@types/react-router-dom": "^5.1.8",
+    "gh-pages": "^3.2.3",
+    "release-it": "^14.11.5",
+    "web-ext": "^6.4.0"
   }
 }

@@ -1,19 +1,30 @@
 import React from 'react';
-import './App.css';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Background, Viewer } from './components';
-import { Provider } from 'jotai';
+import { Home, Channels, Settings, About } from 'ui/components/pages';
+import { Background } from 'ui/components/webext';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import useTheme from 'ui/theme';
+import { useAppSelector } from 'store';
+import { selectMode } from 'store/selectors/settings';
 
-const App: React.FC = () => {
+function App() {
+  const mode = useAppSelector(selectMode);
+  const theme = useTheme(mode);
+
   return (
-    <Provider>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Router>
         <Switch>
-          <Route exact path="/" component={Viewer} />
+          <Route exact path="/" component={Home} />
+          <Route exact path="/channels" component={Channels} />
+          <Route exact path="/settings" component={Settings} />
+          <Route exact path="/about" component={About} />
           <Route path="/background" component={Background} />
         </Switch>
       </Router>
-    </Provider>
+    </ThemeProvider>
   );
 }
 
