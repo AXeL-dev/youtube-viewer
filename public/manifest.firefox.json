@@ -41,7 +41,6 @@
   "permissions": [
     "storage",
     "notifications",
-    "tabs",
-    "<all_urls>"
+    "tabs"
   ]
 }
