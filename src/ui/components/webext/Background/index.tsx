@@ -20,7 +20,7 @@ import {
 import ChannelChecker, { CheckEndData } from './ChannelChecker';
 import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
-import { Video } from 'types';
+import { MessageRequest, Video } from 'types';
 import { selectApp } from 'store/selectors/app';
 import { dispatch } from 'store/persist';
 
@@ -30,6 +30,7 @@ interface BackgroundProps {}
 
 export function Background(props: BackgroundProps) {
   const responses = useRef<CheckEndData[]>([]);
+  const lastCheckDate = useRef<Date | null>(null);
   const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
   const app = useAppSelector(selectApp);
@@ -45,8 +46,32 @@ export function Background(props: BackgroundProps) {
     createTab(indexUrl);
   };
 
+  const handleMessage = (
+    request: MessageRequest,
+    sender: any,
+    sendResponse: any
+  ) => {
+    log('Handle message:', request);
+    let response: any = null;
+    return new Promise((resolve) => {
+      switch (request.message) {
+        // getLastCheckDate
+        case 'getLastCheckDate':
+          response = lastCheckDate.current;
+          break;
+        // default
+        default:
+          break;
+      }
+      log('response:', response);
+      resolve(response);
+    });
+  };
+
   const init = () => {
     setBadgeColors('#666', '#fff');
+    // Handle messages
+    browser.runtime.onMessage.addListener(handleMessage);
     // Handle click on notifications
     browser.notifications.onClicked.addListener((notificationId: string) => {
       log('Notification clicked:', notificationId);
@@ -110,6 +135,8 @@ export function Background(props: BackgroundProps) {
     responses.current.push(data);
     // Once all channel checkers responded to us
     if (responses.current.length === channels.length) {
+      // Save last check date
+      lastCheckDate.current = new Date();
       // Get total count of new videos
       const count = responses.current.reduce(
         (acc, cur) => acc + cur.newVideos.length,

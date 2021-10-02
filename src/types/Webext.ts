@@ -19,3 +19,8 @@ export interface SendNotificationParams {
   buttons?: NotificationButton[];
   items?: NotificationItem[];
 }
+
+export interface MessageRequest {
+  message: string;
+  params: any;
+}
