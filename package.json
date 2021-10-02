@@ -38,7 +38,7 @@
     "build:dev:firefox": "REACT_APP_DEBUG=true npm run build:firefox",
     "package": "web-ext build --source-dir=dist/web-ext --artifacts-dir=. --overwrite-dest",
     "package:dev": "cd dist/web-ext && zip -r -FS ../../youtube_viewer-dev.zip *",
-    "package:source": "zip -r -FS youtube_viewer-source.zip * -x .env.* dist\\* node_modules\\* v6.x\\* old\\* screenshots\\* web-ext-artifacts\\* *.zip",
+    "package:source": "zip -r -FS youtube_viewer-source.zip * .env -x .env.* dist\\* node_modules\\* v6.x\\* old\\* screenshots\\* web-ext-artifacts\\* *.zip",
     "build:github": "BUILD_PATH='./dist/github' PUBLIC_URL=/youtube-viewer/ react-scripts build && cp dist/github/index.html dist/github/404.html",
     "deploy:github": "gh-pages -d dist/github",
     "sign": "node ./scripts/sign-addon.js",
