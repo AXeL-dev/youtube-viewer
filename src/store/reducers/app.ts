@@ -9,7 +9,7 @@ const initialState: AppState = {
 };
 
 export const appSlice = createSlice({
-  name: 'settings',
+  name: 'app',
   initialState,
   reducers: {
     setApp: (state, action: PayloadAction<Partial<AppState>>) => {
