@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { HomeView, Settings, VideosSeniority } from 'types';
+import {
+  HomeView,
+  Settings,
+  VideosDisplayOptions,
+  VideosSeniority,
+} from 'types';
 
 const { REACT_APP_YOUTUBE_API_KEY } = process.env;
 
@@ -38,9 +43,22 @@ export const settingsSlice = createSlice({
         ...defaultSettings,
       };
     },
+    setRecentVideosDisplayOptions: (
+      state,
+      action: PayloadAction<Partial<VideosDisplayOptions>>
+    ) => {
+      return {
+        ...state,
+        recentVideosDisplayOptions: {
+          ...state.recentVideosDisplayOptions,
+          ...action.payload,
+        },
+      };
+    },
   },
 });
 
-export const { setSettings, resetSettings } = settingsSlice.actions;
+export const { setSettings, resetSettings, setRecentVideosDisplayOptions } =
+  settingsSlice.actions;
 
 export default settingsSlice.reducer;

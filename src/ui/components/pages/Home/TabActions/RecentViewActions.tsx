@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'store';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
 import { selectSettings } from 'store/selectors/settings';
-import { setSettings } from 'store/reducers/settings';
+import { setRecentVideosDisplayOptions } from 'store/reducers/settings';
 import { selectActiveChannels } from 'store/selectors/channels';
 
 interface RecentViewActionsProps {}
@@ -18,22 +18,16 @@ function RecentViewActions(props: RecentViewActionsProps) {
 
   const handleFilterViewedToggle = () => {
     dispatch(
-      setSettings({
-        recentVideosDisplayOptions: {
-          ...settings.recentVideosDisplayOptions,
-          hideViewedVideos: !hideViewedVideos,
-        },
+      setRecentVideosDisplayOptions({
+        hideViewedVideos: !hideViewedVideos,
       })
     );
   };
 
   const handleFilterWatchLaterToggle = () => {
     dispatch(
-      setSettings({
-        recentVideosDisplayOptions: {
-          ...settings.recentVideosDisplayOptions,
-          hideWatchLaterVideos: !hideWatchLaterVideos,
-        },
+      setRecentVideosDisplayOptions({
+        hideWatchLaterVideos: !hideWatchLaterVideos,
       })
     );
   };
