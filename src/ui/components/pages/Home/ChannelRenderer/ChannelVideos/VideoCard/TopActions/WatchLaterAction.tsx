@@ -24,11 +24,6 @@ function WatchLaterAction(props: WatchLaterActionProps) {
     <Tooltip title="Watch later" aria-label="watch-later">
       <IconButton
         sx={{
-          display: 'flex',
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          margin: '4px',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',
@@ -49,11 +44,6 @@ function WatchLaterAction(props: WatchLaterActionProps) {
     <Tooltip title="Remove" aria-label="remove-from-watch-later">
       <IconButton
         sx={{
-          display: 'flex',
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          margin: '4px',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',
@@ -73,14 +63,4 @@ function WatchLaterAction(props: WatchLaterActionProps) {
   ) : null;
 }
 
-function propsAreEqual(
-  prevProps: WatchLaterActionProps,
-  nextProps: WatchLaterActionProps
-) {
-  return (
-    prevProps.view === nextProps.view &&
-    prevProps.video.id === nextProps.video.id
-  );
-}
-
-export default React.memo(WatchLaterAction, propsAreEqual);
+export default WatchLaterAction;

@@ -5,7 +5,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { HomeView, Video } from 'types';
 import { useAppDispatch } from 'store';
 import { addViewedVideo } from 'store/reducers/videos';
-import WatchLaterAction from './WatchLaterAction';
+import TopActions from './TopActions';
 import ViewedBadge from './ViewedBadge';
 import { createTab, isWebExtension } from 'helpers/webext';
 
@@ -122,7 +122,7 @@ function VideoCard(props: VideoCardProps) {
               </Tooltip>
             </IconButton>
           </Box>
-          <WatchLaterAction video={video} view={view} />
+          <TopActions video={video} view={view} />
         </Box>
         <ViewedBadge video={video} />
         <Typography

@@ -45,6 +45,13 @@ export const videosSlice = createSlice({
         });
       }
     },
+    removeViewedVideo: (state, action: PayloadAction<Video>) => {
+      const video = action.payload;
+      const found = state.list.find(({ id }) => id === video.id);
+      if (found) {
+        found.isViewed = false;
+      }
+    },
     addWatchLaterVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
       const found = state.list.find(({ id }) => id === video.id);
@@ -111,6 +118,7 @@ export const videosSlice = createSlice({
 export const {
   setVideos,
   addViewedVideo,
+  removeViewedVideo,
   addWatchLaterVideo,
   removeWatchLaterVideo,
   clearWatchLaterList,
