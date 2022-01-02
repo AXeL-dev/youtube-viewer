@@ -107,7 +107,6 @@ export function Settings(props: SettingsProps) {
         ) : null}
         <Field
           label="Youtube API key"
-          placeholder="_______________________________________"
           description={
             <span>
               Don't have an API key yet?{' '}
@@ -125,7 +124,7 @@ export function Settings(props: SettingsProps) {
           onChange={(apiKey: string) => {
             dispatch(setSettings({ apiKey }));
           }}
-          type={SettingType.String}
+          type={SettingType.Secret}
         />
       </Stack>
     </Layout>

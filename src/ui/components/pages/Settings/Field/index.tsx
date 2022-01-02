@@ -5,6 +5,7 @@ import Input from './Input';
 import Switch from './Switch';
 import Select from './Select';
 import MenuItem from './MenuItem';
+import Secret from './Secret';
 
 type ValueType = string | number | boolean;
 
@@ -48,6 +49,47 @@ export default function Field(props: FieldProps) {
     }
   };
 
+  const renderField = () => {
+    switch (type) {
+      case SettingType.String:
+        return (
+          <Input
+            value={value}
+            placeholder={placeholder}
+            onChange={handleChange}
+          />
+        );
+      case SettingType.Secret:
+        return (
+          <Secret
+            value={value as string}
+            placeholder={placeholder}
+            onChange={handleChange}
+          />
+        );
+      case SettingType.Boolean:
+        return (
+          <Switch
+            checked={value as boolean}
+            onChange={handleChange}
+            inputProps={{ 'aria-label': 'checkbox' }}
+          />
+        );
+      case SettingType.List:
+        return (
+          <Select value={value as string} size="small" onChange={handleChange}>
+            {options.map((option: OptionType, index: number) => (
+              <MenuItem key={index} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -72,29 +114,7 @@ export default function Field(props: FieldProps) {
           </Typography>
         ) : null}
       </Box>
-      {type === SettingType.String ? (
-        <Input
-          value={value}
-          placeholder={placeholder}
-          onChange={handleChange}
-        />
-      ) : null}
-      {type === SettingType.Boolean ? (
-        <Switch
-          checked={value as boolean}
-          onChange={handleChange}
-          inputProps={{ 'aria-label': 'checkbox' }}
-        />
-      ) : null}
-      {type === SettingType.List ? (
-        <Select value={value as string} size="small" onChange={handleChange}>
-          {options.map((option: OptionType, index: number) => (
-            <MenuItem key={index} value={option.value}>
-              {option.label}
-            </MenuItem>
-          ))}
-        </Select>
-      ) : null}
+      {renderField()}
     </Box>
   );
 }

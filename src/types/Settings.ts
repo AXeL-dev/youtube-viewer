@@ -27,6 +27,7 @@ export interface VideosDisplayOptions {
 
 export enum SettingType {
   String,
+  Secret,
   Number,
   Boolean,
   List,
