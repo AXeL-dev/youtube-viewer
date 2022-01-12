@@ -1,3 +1,4 @@
+import { Nullable } from 'types';
 //import { browser } from "webextension-polyfill-ts";
 
 declare var browser: any;
@@ -23,7 +24,7 @@ async function get(...keys: string[]) {
   }
 }
 
-function parse(value: string | null) {
+function parse(value: Nullable<string>) {
   if (!value) {
     return value;
   }

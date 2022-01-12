@@ -1,12 +1,12 @@
 import React from 'react';
-import { Channel } from 'types';
+import { Channel, Nullable } from 'types';
 import { useAppDispatch } from 'store';
 import { removeChannel } from 'store/reducers/channels';
 import RemoveChannelDialog from './RemoveChannelDialog';
 
 interface ChannelDialogsProps {
   channel: Channel;
-  openedDialog: string | null;
+  openedDialog: Nullable<string>;
   onClose: () => void;
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { Nullable } from 'types';
 
-export function useTimeout(callback: () => void, delay: number | null) {
+export function useTimeout(callback: () => void, delay: Nullable<number>) {
   const savedCallback = useRef(callback);
 
   useEffect(() => {

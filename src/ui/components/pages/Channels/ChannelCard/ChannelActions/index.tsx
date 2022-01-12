@@ -12,7 +12,7 @@ import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOu
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import { Channel } from 'types';
+import { Channel, Nullable } from 'types';
 import ChannelDialogs from '../ChannelDialogs';
 
 interface ChannelActionsProps {
@@ -21,8 +21,8 @@ interface ChannelActionsProps {
 
 function ChannelActions(props: ChannelActionsProps) {
   const { channel } = props;
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [openedDialog, setOpenedDialog] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
+  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
   const dispatch = useAppDispatch();
   const isMenuOpen = Boolean(anchorEl);
 

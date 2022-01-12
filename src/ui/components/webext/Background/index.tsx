@@ -20,7 +20,7 @@ import {
 import ChannelChecker, { CheckEndData } from './ChannelChecker';
 import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
-import { MessageRequest, Video } from 'types';
+import { MessageRequest, Video, Nullable } from 'types';
 import { selectApp } from 'store/selectors/app';
 import { dispatch } from 'store/persist';
 
@@ -30,7 +30,7 @@ interface BackgroundProps {}
 
 export function Background(props: BackgroundProps) {
   const responses = useRef<CheckEndData[]>([]);
-  const lastCheckDate = useRef<Date | null>(null);
+  const lastCheckDate = useRef<Nullable<Date>>(null);
   const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
   const app = useAppSelector(selectApp);

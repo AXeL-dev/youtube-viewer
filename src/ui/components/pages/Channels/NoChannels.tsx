@@ -4,11 +4,12 @@ import UploadIcon from '@mui/icons-material/Upload';
 import { readFile } from 'helpers/file';
 import { useAppDispatch } from 'store';
 import { setChannels } from 'store/reducers/channels';
+import { Nullable } from 'types';
 
 interface NoChannelsProps {}
 
 export default function NoChannels(props: NoChannelsProps) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<Nullable<HTMLInputElement>>(null);
   const dispatch = useAppDispatch();
 
   const importChannels = (event: ChangeEvent<HTMLInputElement>) => {

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Alert } from 'ui/components/shared';
-import { Channel, HomeView, Video } from 'types';
+import { Channel, HomeView, Video, Nullable } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
 import { GetChannelVideosResponse } from 'store/services/youtube';
@@ -25,7 +25,7 @@ interface TabPanelProps {
 function TabPanel(props: TabPanelProps) {
   const { tab, onCountChange } = props;
   const [error, setError] = useState(null);
-  const [activeVideo, setActiveVideo] = useState<Video | null>(null);
+  const [activeVideo, setActiveVideo] = useState<Nullable<Video>>(null);
   const channels = useAppSelector(selectActiveChannels);
   const channelsData = useRef<ChannelData[]>([]);
 

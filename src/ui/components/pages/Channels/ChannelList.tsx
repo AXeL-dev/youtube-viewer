@@ -19,7 +19,7 @@ import {
   restrictToFirstScrollableAncestor,
 } from '@dnd-kit/modifiers';
 import { moveChannel } from 'store/reducers/channels';
-import { Channel } from 'types';
+import { Channel, Nullable } from 'types';
 
 interface ChannelListProps {
   channels: Channel[];
@@ -28,7 +28,7 @@ interface ChannelListProps {
 
 function ChannelList(props: ChannelListProps) {
   const { channels, showDragHandles } = props;
-  const [draggedChannel, setDraggedChannel] = useState<Channel | null>(null);
+  const [draggedChannel, setDraggedChannel] = useState<Nullable<Channel>>(null);
   const dispatch = useAppDispatch();
 
   const handleDragStart = (event: DragStartEvent) => {

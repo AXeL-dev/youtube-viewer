@@ -1,7 +1,7 @@
 import React, { MouseEvent } from 'react';
 import YouTube, { PlayerVars } from 'react-youtube';
 import { Dialog, DialogContent } from '@mui/material';
-import { Video } from 'types';
+import { Video, Nullable } from 'types';
 import { noop } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
@@ -9,7 +9,7 @@ import CloseButton from './CloseButton';
 
 interface VideoPlayerDialogProps {
   open: boolean;
-  video: Video | null;
+  video: Nullable<Video>;
   onClose: () => void;
 }
 
