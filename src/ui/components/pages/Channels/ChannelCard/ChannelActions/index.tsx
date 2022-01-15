@@ -5,7 +5,7 @@ import {
   toggleChannel,
   toggleChannelNotifications,
 } from 'store/reducers/channels';
-import StyledMenu from './StyledMenu';
+import { StyledMenu } from 'ui/components/shared';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOutlined';

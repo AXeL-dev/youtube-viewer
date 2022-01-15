@@ -77,12 +77,16 @@ export const videosSlice = createSlice({
         videosSlice.caseReducers.removeOutdatedVideos(state);
       }
     },
-    clearWatchLaterList: (state) => {
+    clearWatchLaterList: (
+      state,
+      action: PayloadAction<{ viewedOnly: boolean } | undefined>
+    ) => {
+      const { viewedOnly } = action.payload || {};
       state.list = state.list.map((video) =>
         video.isToWatchLater
           ? {
               ...video,
-              isToWatchLater: !video.isViewed,
+              isToWatchLater: viewedOnly ? !video.isViewed : false,
             }
           : video
       );

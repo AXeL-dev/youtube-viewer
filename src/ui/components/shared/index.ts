@@ -6,3 +6,4 @@ export * from './RawHTML';
 export * from './SearchInput';
 export * from './ProgressBar';
 export * from './LoadingSpinner';
+export * from './StyledMenu';

@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import {
   IconButton,
-  Menu,
   MenuItem,
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { StyledMenu } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
@@ -48,7 +48,6 @@ function RecentViewActions(props: RecentViewActionsProps) {
         hideViewedVideos: !hideViewedVideos,
       })
     );
-    handleClose();
   };
 
   const handleFilterWatchLaterToggle = () => {
@@ -57,7 +56,6 @@ function RecentViewActions(props: RecentViewActionsProps) {
         hideWatchLaterVideos: !hideWatchLaterVideos,
       })
     );
-    handleClose();
   };
 
   return (
@@ -72,7 +70,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
       >
         <MoreVertIcon />
       </IconButton>
-      <Menu
+      <StyledMenu
         id="more-menu"
         MenuListProps={{
           'aria-labelledby': 'more-button',
@@ -104,7 +102,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
           </ListItemIcon>
           <ListItemText>Filter watch later videos</ListItemText>
         </MenuItem>
-      </Menu>
+      </StyledMenu>
     </>
   );
 }

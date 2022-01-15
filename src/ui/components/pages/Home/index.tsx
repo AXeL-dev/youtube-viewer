@@ -72,6 +72,7 @@ export function Home(props: HomeProps) {
         <TabActions
           tab={activeTab}
           recentVideosCount={recentVideosCount.total}
+          watchLaterVideosCount={watchLaterVideosCount}
         />
       </Box>
       <TabPanel tab={activeTab} onCountChange={handleCountChange} />
