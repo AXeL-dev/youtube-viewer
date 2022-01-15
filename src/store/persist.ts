@@ -6,6 +6,7 @@ import { setVideos } from './reducers/videos';
 import { setApp } from './reducers/app';
 import { AnyAction } from '@reduxjs/toolkit';
 import { log } from 'helpers/logger';
+import { LegacyVideoCache } from 'types';
 
 export const storageKey = 'APP_YOUTUBE_VIEWER';
 
@@ -19,6 +20,7 @@ export const dispatch = (action: AnyAction, persist: boolean = false) => {
 
 export const preloadState = async () => {
   const state = await storage.get(storageKey);
+  let shouldPersist = !state;
   if (!state) {
     // Handle backward compatibility with v0.6.x
     const legacy = (await storage.get('settings', 'channels')) || {};
@@ -41,10 +43,40 @@ export const preloadState = async () => {
       dispatch(setChannels(channels));
     }
     if (videos) {
-      dispatch(setVideos(videos));
+      // Handle legacy videos cache
+      const legacyVideos = videos.list.filter(
+        (video: LegacyVideoCache) =>
+          !!Object.keys(video).find((key) =>
+            ['isViewed', 'isToWatchLater', 'isNotified'].includes(key)
+          )
+      );
+      if (legacyVideos.length > 0) {
+        shouldPersist = true;
+        dispatch(
+          setVideos({
+            list: videos.list.map(
+              ({
+                isViewed,
+                isToWatchLater,
+                isNotified,
+                ...video
+              }: LegacyVideoCache) => ({
+                ...video,
+                flags: {
+                  viewed: isViewed || false,
+                  toWatchLater: isToWatchLater || false,
+                  checked: isNotified || false,
+                },
+              })
+            ),
+          })
+        );
+      } else {
+        dispatch(setVideos(videos));
+      }
     }
   }
-  dispatch(setApp({ loaded: true }), !state);
+  dispatch(setApp({ loaded: true }), shouldPersist);
 };
 
 export const persistState = (state: RootState, onlyIfChanged?: boolean) => {

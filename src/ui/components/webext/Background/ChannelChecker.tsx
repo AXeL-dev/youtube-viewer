@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Channel, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import { getDateBefore } from 'helpers/utils';
@@ -56,8 +56,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       if (total > 0) {
         const checkedVideosIds = cachedVideos
           .filter(
-            ({ isViewed, isToWatchLater, isNotified }) =>
-              isViewed || isToWatchLater || isNotified
+            ({ flags }) => flags.viewed || flags.toWatchLater || flags.checked
           )
           .map(({ id }) => id);
         newVideos = videos.filter(
@@ -75,5 +74,5 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching]);
 
-  return <span>Silence is golden!</span>;
+  return null;
 }

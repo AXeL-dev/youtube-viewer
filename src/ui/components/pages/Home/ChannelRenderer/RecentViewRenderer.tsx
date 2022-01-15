@@ -17,12 +17,10 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   const excludedVideosIds = useMemo(
     () => [
       ...(hideViewedVideos
-        ? videos.filter(({ isViewed }) => isViewed).map(({ id }) => id)
+        ? videos.filter(({ flags }) => flags.viewed).map(({ id }) => id)
         : []),
       ...(hideWatchLaterVideos
-        ? videos
-            .filter(({ isToWatchLater }) => isToWatchLater)
-            .map(({ id }) => id)
+        ? videos.filter(({ flags }) => flags.toWatchLater).map(({ id }) => id)
         : []),
     ],
     [videos, hideViewedVideos, hideWatchLaterVideos]

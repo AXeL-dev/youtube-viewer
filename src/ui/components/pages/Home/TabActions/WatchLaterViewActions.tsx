@@ -83,7 +83,7 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
   };
 
   const handleExport = () => {
-    const videos = watchLaterVideos.map(({ isToWatchLater, ...video }) => ({
+    const videos = watchLaterVideos.map((video) => ({
       ...video,
       url: `https://www.youtube.com/watch?v=${video.id}`,
     }));

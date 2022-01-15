@@ -1,25 +1,48 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { elapsedDays } from 'helpers/utils';
 import { isWebExtension } from 'helpers/webext';
-import { Video } from 'types';
+import { VideoCache, Video, VideoFlags } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
-interface VideoItem {
-  id: string;
-  channelId: string;
-  publishedAt: number;
-  isViewed?: boolean;
-  isToWatchLater?: boolean;
-  isNotified?: boolean;
-}
-
 interface VideosState {
-  list: VideoItem[];
+  list: VideoCache[];
 }
 
 const initialState: VideosState = {
   list: [],
 };
+
+function addVideo(
+  state: VideosState,
+  video: Video,
+  flags: Partial<VideoFlags>
+) {
+  const found = state.list.find(({ id }) => id === video.id);
+  if (found) {
+    found.flags = {
+      ...found.flags,
+      ...flags,
+    };
+  } else {
+    state.list.push({
+      id: video.id,
+      channelId: video.channelId,
+      publishedAt: video.publishedAt,
+      flags,
+    });
+  }
+}
+
+function removeVideoFlag(
+  state: VideosState,
+  video: Video,
+  flag: keyof VideoFlags
+) {
+  const found = state.list.find(({ id }) => id === video.id);
+  if (found) {
+    found.flags[flag] = false;
+  }
+}
 
 export const videosSlice = createSlice({
   name: 'videos',
@@ -33,45 +56,19 @@ export const videosSlice = createSlice({
     },
     addViewedVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.list.find(({ id }) => id === video.id);
-      if (found) {
-        found.isViewed = true;
-      } else {
-        state.list.push({
-          id: video.id,
-          channelId: video.channelId,
-          publishedAt: video.publishedAt,
-          isViewed: true,
-        });
-      }
+      addVideo(state, video, { viewed: true });
     },
     removeViewedVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.list.find(({ id }) => id === video.id);
-      if (found) {
-        found.isViewed = false;
-      }
+      removeVideoFlag(state, video, 'viewed');
     },
     addWatchLaterVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.list.find(({ id }) => id === video.id);
-      if (found) {
-        found.isToWatchLater = true;
-      } else {
-        state.list.push({
-          id: video.id,
-          channelId: video.channelId,
-          publishedAt: video.publishedAt,
-          isToWatchLater: true,
-        });
-      }
+      addVideo(state, video, { toWatchLater: true });
     },
     removeWatchLaterVideo: (state, action: PayloadAction<Video>) => {
       const video = action.payload;
-      const found = state.list.find(({ id }) => id === video.id);
-      if (found) {
-        found.isToWatchLater = false;
-      }
+      removeVideoFlag(state, video, 'toWatchLater');
       if (!isWebExtension) {
         // no need to for the webextension, since it will be done by the background page on each launch
         videosSlice.caseReducers.removeOutdatedVideos(state);
@@ -83,36 +80,29 @@ export const videosSlice = createSlice({
     ) => {
       const { viewedOnly } = action.payload || {};
       state.list = state.list.map((video) =>
-        video.isToWatchLater
+        video.flags.toWatchLater
           ? {
               ...video,
-              isToWatchLater: viewedOnly ? !video.isViewed : false,
+              flags: {
+                ...video.flags,
+                toWatchLater: viewedOnly ? !video.flags.viewed : false,
+              },
             }
           : video
       );
     },
-    addNotifiedVideos: (state, action: PayloadAction<Video[]>) => {
+    addCheckedVideos: (state, action: PayloadAction<Video[]>) => {
       const videos = action.payload;
       for (const video of videos) {
-        const found = state.list.find(({ id }) => id === video.id);
-        if (found) {
-          found.isNotified = true;
-        } else {
-          state.list.push({
-            id: video.id,
-            channelId: video.channelId,
-            publishedAt: video.publishedAt,
-            isNotified: true,
-          });
-        }
+        addVideo(state, video, { checked: true });
       }
     },
     removeOutdatedVideos: (state) => {
       state.list = state.list.filter(
-        ({ isViewed, isToWatchLater, isNotified, publishedAt }) =>
-          isViewed ||
-          isToWatchLater ||
-          (isNotified &&
+        ({ flags, publishedAt }) =>
+          flags.viewed ||
+          flags.toWatchLater ||
+          (flags.checked &&
             elapsedDays(publishedAt) <= channelCheckerDefaults.videosSeniority)
       );
     },
@@ -126,7 +116,7 @@ export const {
   addWatchLaterVideo,
   removeWatchLaterVideo,
   clearWatchLaterList,
-  addNotifiedVideos,
+  addCheckedVideos,
   removeOutdatedVideos,
 } = videosSlice.actions;
 
