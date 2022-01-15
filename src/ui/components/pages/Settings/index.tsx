@@ -8,7 +8,8 @@ import { selectSettings } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
 import Alerts from './Alerts';
 import { isWebExtension, sendMessage } from 'helpers/webext';
-import { TimeAgo } from 'helpers/utils';
+import { humanInterval, TimeAgo } from 'helpers/utils';
+import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
 interface SettingsProps {}
 
@@ -95,9 +96,10 @@ export function Settings(props: SettingsProps) {
         {isWebExtension ? (
           <Field
             label="Enable notifications"
-            description={`Checking for new videos is performed every 30 minutes${
-              lastCheckTime ? ` (Last check: ${lastCheckTime})` : ''
-            }`}
+            description={`Checking for new videos is performed every ${humanInterval(
+              channelCheckerDefaults.checkInterval,
+              'minute'
+            )}${lastCheckTime ? ` (Last check: ${lastCheckTime})` : ''}`}
             value={settings.enableNotifications}
             onChange={(enableNotifications: boolean) => {
               dispatch(setSettings({ enableNotifications }));

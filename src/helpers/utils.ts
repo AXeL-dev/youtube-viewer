@@ -373,3 +373,20 @@ export function noop<T>(event: React.MouseEvent<T>) {
   event.stopPropagation();
   event.preventDefault();
 }
+
+// -------------------------------------------------------------------
+
+/**
+ * Transforms an interval to a human readable format
+ *
+ * @param interval
+ * @param unity
+ * @param pluralize
+ */
+export function humanInterval(
+  interval: number,
+  unity: string,
+  pluralize: boolean = true
+) {
+  return `${interval} ${unity}${pluralize && interval > 1 ? 's' : ''}`;
+}
