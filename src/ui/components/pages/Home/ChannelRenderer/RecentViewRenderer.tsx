@@ -4,6 +4,7 @@ import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 import { selectChannelVideos } from 'store/selectors/videos';
+import { isWebExtension } from 'helpers/webext';
 
 export interface RecentViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
@@ -33,6 +34,7 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
     <DefaultRenderer
       publishedAfter={publishedAfter}
       excludedVideosIds={excludedVideosIds}
+      persistVideos={isWebExtension}
       {...props}
     />
   );

@@ -10,6 +10,7 @@ export interface DefaultRendererProps {
   view: HomeView;
   publishedAfter?: string;
   excludedVideosIds?: string[];
+  persistVideos?: boolean;
   onError?: (error: any) => void;
   onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
@@ -20,6 +21,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     channel,
     publishedAfter,
     excludedVideosIds = [],
+    persistVideos = false,
     onError,
     onChange,
     ...rest
@@ -32,6 +34,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       channel,
       publishedAfter,
       maxResults,
+      persistVideos,
     },
     {
       skip: itemsPerRow === 0,

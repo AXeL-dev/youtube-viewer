@@ -2,6 +2,7 @@ import { youtubeApi } from './api';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
 import { Channel, ChannelActivities, Response, Video } from 'types';
+import { addCheckedVideos } from 'store/reducers/videos';
 
 type FindChannelByNameArgs = {
   name: string;
@@ -35,7 +36,9 @@ type GetVideosByIdResponse = {
   total: number;
 };
 
-type GetChannelVideosArgs = GetChannelActivitiesArgs;
+type GetChannelVideosArgs = GetChannelActivitiesArgs & {
+  persistVideos?: boolean;
+};
 
 export type GetChannelVideosResponse = GetVideosByIdResponse;
 
@@ -205,6 +208,17 @@ const extendedApi = youtubeApi.injectEndpoints({
               },
             }
           : { error: result.error as FetchBaseQueryError };
+      },
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const { persistVideos } = arg;
+        try {
+          if (persistVideos) {
+            const { data } = await queryFulfilled;
+            dispatch(addCheckedVideos(data.items));
+          }
+        } catch (err) {
+          // proceed
+        }
       },
     }),
   }),
