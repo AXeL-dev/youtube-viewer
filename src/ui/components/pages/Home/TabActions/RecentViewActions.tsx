@@ -1,20 +1,46 @@
-import React from 'react';
-import { Fade, IconButton, Tooltip } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'store';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TimerOffIcon from '@mui/icons-material/TimerOff';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Check from '@mui/icons-material/Check';
 import { selectSettings } from 'store/selectors/settings';
 import { setRecentVideosDisplayOptions } from 'store/reducers/settings';
-import { selectActiveChannels } from 'store/selectors/channels';
+import { VideoDisplayOption, Nullable } from 'types';
 
 interface RecentViewActionsProps {}
 
 function RecentViewActions(props: RecentViewActionsProps) {
-  const channels = useAppSelector(selectActiveChannels);
   const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
+  const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
+  const open = Boolean(anchorEl);
   const { hideViewedVideos, hideWatchLaterVideos } =
     settings.recentVideosDisplayOptions;
+  const hasEnabledOptions = useMemo(() => {
+    const options = Object.keys(
+      settings.recentVideosDisplayOptions
+    ) as VideoDisplayOption[];
+    return options.reduce(
+      (acc, cur) => settings.recentVideosDisplayOptions[cur] || acc,
+      false
+    );
+  }, [settings.recentVideosDisplayOptions]);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleFilterViewedToggle = () => {
     dispatch(
@@ -22,6 +48,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
         hideViewedVideos: !hideViewedVideos,
       })
     );
+    handleClose();
   };
 
   const handleFilterWatchLaterToggle = () => {
@@ -30,32 +57,54 @@ function RecentViewActions(props: RecentViewActionsProps) {
         hideWatchLaterVideos: !hideWatchLaterVideos,
       })
     );
+    handleClose();
   };
 
   return (
     <>
-      <Fade in={channels.length > 0}>
-        <Tooltip title="Filter viewed videos" placement="left" arrow>
-          <IconButton
-            sx={hideViewedVideos ? { bgcolor: 'action.selected' } : {}}
-            aria-label="filter-viewed"
-            onClick={handleFilterViewedToggle}
-          >
-            <VisibilityOffIcon sx={{ fontSize: '1.3rem' }} />
-          </IconButton>
-        </Tooltip>
-      </Fade>
-      <Fade in={channels.length > 0}>
-        <Tooltip title="Filter watch later videos" placement="left" arrow>
-          <IconButton
-            sx={hideWatchLaterVideos ? { bgcolor: 'action.selected' } : {}}
-            aria-label="filter-watch-later"
-            onClick={handleFilterWatchLaterToggle}
-          >
-            <TimerOffIcon sx={{ fontSize: '1.3rem' }} />
-          </IconButton>
-        </Tooltip>
-      </Fade>
+      <IconButton
+        id="more-button"
+        aria-label="more"
+        aria-controls={open ? 'more-menu' : undefined}
+        aria-expanded={open ? 'true' : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="more-menu"
+        MenuListProps={{
+          'aria-labelledby': 'more-button',
+          dense: true,
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleFilterViewedToggle}>
+          <ListItemIcon>
+            {hideViewedVideos ? (
+              <Check />
+            ) : (
+              !hasEnabledOptions && <VisibilityOffIcon />
+            )}
+          </ListItemIcon>
+          <ListItemText>Filter viewed videos</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleFilterWatchLaterToggle}>
+          <ListItemIcon>
+            {hideWatchLaterVideos ? (
+              <Check />
+            ) : (
+              !hasEnabledOptions && <TimerOffIcon />
+            )}
+          </ListItemIcon>
+          <ListItemText>Filter watch later videos</ListItemText>
+        </MenuItem>
+      </Menu>
     </>
   );
 }

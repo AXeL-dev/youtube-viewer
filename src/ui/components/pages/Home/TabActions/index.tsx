@@ -2,6 +2,8 @@ import React from 'react';
 import { HomeView } from 'types';
 import WatchLaterViewActions from './WatchLaterViewActions';
 import RecentViewActions from './RecentViewActions';
+import { useAppSelector } from 'store';
+import { selectActiveChannelsCount } from 'store/selectors/channels';
 
 interface TabActionsProps {
   tab: HomeView;
@@ -10,14 +12,18 @@ interface TabActionsProps {
 
 function TabActions(props: TabActionsProps) {
   const { tab, recentVideosCount } = props;
+  const channelsCount = useAppSelector(selectActiveChannelsCount);
 
-  return tab === HomeView.Recent ? (
-    recentVideosCount > 0 ? (
-      <RecentViewActions />
-    ) : null
-  ) : tab === HomeView.WatchLater ? (
-    <WatchLaterViewActions />
-  ) : null;
+  switch (tab) {
+    case HomeView.Recent:
+      return channelsCount > 0 && recentVideosCount > 0 ? (
+        <RecentViewActions />
+      ) : null;
+    case HomeView.WatchLater:
+      return <WatchLaterViewActions />;
+    default:
+      return null;
+  }
 }
 
 export default React.memo(TabActions);

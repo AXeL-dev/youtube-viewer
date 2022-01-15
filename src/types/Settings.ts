@@ -25,6 +25,8 @@ export interface VideosDisplayOptions {
   hideWatchLaterVideos: boolean;
 }
 
+export type VideoDisplayOption = keyof VideosDisplayOptions;
+
 export enum SettingType {
   String,
   Secret,
