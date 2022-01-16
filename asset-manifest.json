@@ -1,29 +1,29 @@
 {
   "files": {
     "main.css": "/youtube-viewer/static/css/main.b33068ee.chunk.css",
-    "main.js": "/youtube-viewer/static/js/main.64e32961.chunk.js",
-    "main.js.map": "/youtube-viewer/static/js/main.64e32961.chunk.js.map",
-    "runtime-main.js": "/youtube-viewer/static/js/runtime-main.64e0e8af.js",
-    "runtime-main.js.map": "/youtube-viewer/static/js/runtime-main.64e0e8af.js.map",
+    "main.js": "/youtube-viewer/static/js/main.573b835a.chunk.js",
+    "main.js.map": "/youtube-viewer/static/js/main.573b835a.chunk.js.map",
+    "runtime-main.js": "/youtube-viewer/static/js/runtime-main.bd3a1f8e.js",
+    "runtime-main.js.map": "/youtube-viewer/static/js/runtime-main.bd3a1f8e.js.map",
     "static/css/2.fac75f98.chunk.css": "/youtube-viewer/static/css/2.fac75f98.chunk.css",
-    "static/js/2.71fc58bd.chunk.js": "/youtube-viewer/static/js/2.71fc58bd.chunk.js",
-    "static/js/2.71fc58bd.chunk.js.map": "/youtube-viewer/static/js/2.71fc58bd.chunk.js.map",
-    "static/js/3.81ddfe7e.chunk.js": "/youtube-viewer/static/js/3.81ddfe7e.chunk.js",
-    "static/js/3.81ddfe7e.chunk.js.map": "/youtube-viewer/static/js/3.81ddfe7e.chunk.js.map",
+    "static/js/2.01c3127f.chunk.js": "/youtube-viewer/static/js/2.01c3127f.chunk.js",
+    "static/js/2.01c3127f.chunk.js.map": "/youtube-viewer/static/js/2.01c3127f.chunk.js.map",
+    "static/js/3.afd4ac47.chunk.js": "/youtube-viewer/static/js/3.afd4ac47.chunk.js",
+    "static/js/3.afd4ac47.chunk.js.map": "/youtube-viewer/static/js/3.afd4ac47.chunk.js.map",
     "index.html": "/youtube-viewer/index.html",
     "static/css/2.fac75f98.chunk.css.map": "/youtube-viewer/static/css/2.fac75f98.chunk.css.map",
     "static/css/main.b33068ee.chunk.css.map": "/youtube-viewer/static/css/main.b33068ee.chunk.css.map",
-    "static/js/2.71fc58bd.chunk.js.LICENSE.txt": "/youtube-viewer/static/js/2.71fc58bd.chunk.js.LICENSE.txt",
+    "static/js/2.01c3127f.chunk.js.LICENSE.txt": "/youtube-viewer/static/js/2.01c3127f.chunk.js.LICENSE.txt",
     "static/media/300.css": "/youtube-viewer/static/media/roboto-vietnamese-300-normal.af9afdc1.woff2",
     "static/media/400.css": "/youtube-viewer/static/media/roboto-vietnamese-400-normal.c0bec65d.woff2",
     "static/media/500.css": "/youtube-viewer/static/media/roboto-vietnamese-500-normal.b8e494da.woff2",
     "static/media/700.css": "/youtube-viewer/static/media/roboto-vietnamese-700-normal.3096f18a.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.64e0e8af.js",
+    "static/js/runtime-main.bd3a1f8e.js",
     "static/css/2.fac75f98.chunk.css",
-    "static/js/2.71fc58bd.chunk.js",
+    "static/js/2.01c3127f.chunk.js",
     "static/css/main.b33068ee.chunk.css",
-    "static/js/main.64e32961.chunk.js"
+    "static/js/main.573b835a.chunk.js"
   ]
 }
