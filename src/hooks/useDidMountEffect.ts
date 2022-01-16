@@ -1,12 +1,15 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, EffectCallback, DependencyList } from 'react';
 
-export function useDidMountEffect(callback?: () => void, deps?: any) {
+export function useDidMountEffect(
+  effect: EffectCallback,
+  deps?: DependencyList
+) {
   const didMount = useRef(false);
 
   useEffect(() => {
     if (didMount.current) {
-      if (callback) {
-        callback();
+      if (effect) {
+        return effect();
       }
     } else {
       didMount.current = true;
