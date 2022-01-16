@@ -1,5 +1,10 @@
 import React from 'react';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import { Home, Channels, Settings, About } from 'ui/components/pages';
 import { Background } from 'ui/components/webext';
 import { ThemeProvider } from '@mui/material/styles';
@@ -22,6 +27,7 @@ function App() {
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/about" component={About} />
           <Route path="/background" component={Background} />
+          <Redirect to="/" />
         </Switch>
       </Router>
     </ThemeProvider>
