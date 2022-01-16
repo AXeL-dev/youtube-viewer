@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { elapsedDays } from 'helpers/utils';
 import { isWebExtension } from 'helpers/webext';
-import { VideoCache, Video, VideoFlags } from 'types';
+import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
 interface VideosState {
@@ -12,11 +12,7 @@ const initialState: VideosState = {
   list: [],
 };
 
-function addVideo(
-  state: VideosState,
-  video: Video,
-  flags: Partial<VideoFlags>
-) {
+function addVideo(state: VideosState, video: Video, flags: VideoFlags) {
   const found = state.list.find(({ id }) => id === video.id);
   if (found) {
     found.flags = {
@@ -33,11 +29,7 @@ function addVideo(
   }
 }
 
-function removeVideoFlag(
-  state: VideosState,
-  video: Video,
-  flag: keyof VideoFlags
-) {
+function removeVideoFlag(state: VideosState, video: Video, flag: VideoFlag) {
   const found = state.list.find(({ id }) => id === video.id);
   if (found) {
     found.flags[flag] = false;
@@ -91,10 +83,13 @@ export const videosSlice = createSlice({
           : video
       );
     },
-    addCheckedVideos: (state, action: PayloadAction<Video[]>) => {
-      const videos = action.payload;
+    saveVideos: (
+      state,
+      action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>
+    ) => {
+      const { videos, flags } = action.payload;
       for (const video of videos) {
-        addVideo(state, video, { checked: true });
+        addVideo(state, video, flags);
       }
     },
     removeOutdatedVideos: (state) => {
@@ -102,7 +97,7 @@ export const videosSlice = createSlice({
         ({ flags, publishedAt }) =>
           flags.viewed ||
           flags.toWatchLater ||
-          (flags.checked &&
+          ((flags.notified || flags.recent) &&
             elapsedDays(publishedAt) <= channelCheckerDefaults.videosSeniority)
       );
     },
@@ -116,7 +111,7 @@ export const {
   addWatchLaterVideo,
   removeWatchLaterVideo,
   clearWatchLaterList,
-  addCheckedVideos,
+  saveVideos,
   removeOutdatedVideos,
 } = videosSlice.actions;
 

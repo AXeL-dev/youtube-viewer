@@ -35,6 +35,7 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
       publishedAfter={publishedAfter}
       excludedVideosIds={excludedVideosIds}
       persistVideos={isWebExtension}
+      persistVideosFlags={{ recent: true }}
       {...props}
     />
   );

@@ -65,7 +65,7 @@ export const preloadState = async () => {
                 flags: {
                   viewed: isViewed || false,
                   toWatchLater: isToWatchLater || false,
-                  checked: isNotified || false,
+                  notified: isNotified || false,
                 },
               })
             ),

@@ -11,17 +11,20 @@ export interface Video {
   channelTitle: string;
 }
 
-export interface VideoFlags {
+export type VideoFlags = Partial<{
   viewed: boolean;
   toWatchLater: boolean;
-  checked: boolean;
-}
+  notified: boolean;
+  recent: boolean;
+}>;
+
+export type VideoFlag = keyof VideoFlags;
 
 export interface VideoCache {
   id: string;
   channelId: string;
   publishedAt: number;
-  flags: Partial<VideoFlags>;
+  flags: VideoFlags;
 }
 
 export type LegacyVideoCache = VideoCache &

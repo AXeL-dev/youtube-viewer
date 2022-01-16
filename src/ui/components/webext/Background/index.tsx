@@ -13,7 +13,7 @@ import { selectNotificationEnabledChannels } from 'store/selectors/channels';
 import { setSettings } from 'store/reducers/settings';
 import { setChannels } from 'store/reducers/channels';
 import {
-  addCheckedVideos,
+  saveVideos,
   removeOutdatedVideos,
   setVideos,
 } from 'store/reducers/videos';
@@ -177,7 +177,15 @@ export function Background(props: BackgroundProps) {
           []
         );
         log('Saving notified videos.', videos);
-        dispatch(addCheckedVideos(videos), true);
+        dispatch(
+          saveVideos({
+            videos,
+            flags: {
+              notified: true,
+            },
+          }),
+          true
+        );
       }
       // Reset the responses array
       responses.current = [];

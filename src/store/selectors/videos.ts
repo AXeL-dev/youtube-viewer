@@ -18,11 +18,11 @@ export const selectViewedVideos = (channel?: Channel) =>
     )
   );
 
-export const selectCheckedVideos = (channel?: Channel) =>
+export const selectNotifiedVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos.filter(
       ({ flags, channelId }) =>
-        flags.checked && (!channel || channel.id === channelId)
+        flags.notified && (!channel || channel.id === channelId)
     )
   );
 

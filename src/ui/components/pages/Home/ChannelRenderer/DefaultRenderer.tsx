@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Channel, HomeView, Video } from 'types';
+import { Channel, HomeView, Video, VideoFlags } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
@@ -11,6 +11,7 @@ export interface DefaultRendererProps {
   publishedAfter?: string;
   excludedVideosIds?: string[];
   persistVideos?: boolean;
+  persistVideosFlags?: VideoFlags;
   onError?: (error: any) => void;
   onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
@@ -22,6 +23,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     publishedAfter,
     excludedVideosIds = [],
     persistVideos = false,
+    persistVideosFlags,
     onError,
     onChange,
     ...rest
@@ -35,6 +37,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       publishedAfter,
       maxResults,
       persistVideos,
+      persistVideosFlags,
     },
     {
       skip: itemsPerRow === 0,

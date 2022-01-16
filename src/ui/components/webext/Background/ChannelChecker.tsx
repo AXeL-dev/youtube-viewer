@@ -56,7 +56,11 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       if (total > 0) {
         const checkedVideosIds = cachedVideos
           .filter(
-            ({ flags }) => flags.viewed || flags.toWatchLater || flags.checked
+            ({ flags }) =>
+              flags.viewed ||
+              flags.toWatchLater ||
+              flags.notified ||
+              flags.recent
           )
           .map(({ id }) => id);
         newVideos = videos.filter(
