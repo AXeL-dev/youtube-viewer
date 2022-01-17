@@ -8,7 +8,7 @@ import {
 import { StyledMenu } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import TimerOffIcon from '@mui/icons-material/TimerOff';
+import TimerOffOutlinedIcon from '@mui/icons-material/TimerOffOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Check from '@mui/icons-material/Check';
 import { selectSettings } from 'store/selectors/settings';
@@ -97,7 +97,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
             {hideWatchLaterVideos ? (
               <Check />
             ) : (
-              !hasEnabledOptions && <TimerOffIcon />
+              !hasEnabledOptions && <TimerOffOutlinedIcon />
             )}
           </ListItemIcon>
           <ListItemText>Filter watch later videos</ListItemText>
