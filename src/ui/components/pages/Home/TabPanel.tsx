@@ -27,7 +27,7 @@ function TabPanel(props: TabPanelProps) {
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Nullable<Video>>(null);
   const channels = useAppSelector(selectActiveChannels);
-  const channelsData = useRef<ChannelData[]>([]);
+  const channelsMap = useRef<Map<string, ChannelData>>(new Map());
 
   const handleVideoPlay = (video: Video) => {
     setActiveVideo(video);
@@ -43,9 +43,9 @@ function TabPanel(props: TabPanelProps) {
 
   const handleChange = (data: ChannelData) => {
     if (onCountChange) {
-      channelsData.current.push(data);
-      if (channelsData.current.length === channels.length) {
-        const count = channelsData.current.reduce(
+      channelsMap.current.set(data.channel.id, data);
+      if (channelsMap.current.size === channels.length) {
+        const count = Array.from(channelsMap.current.values()).reduce(
           (acc, cur) => ({
             displayed: acc.displayed + (cur.items?.length || 0),
             total: acc.total + (cur.total || 0),
@@ -53,7 +53,7 @@ function TabPanel(props: TabPanelProps) {
           { displayed: 0, total: 0 }
         );
         onCountChange(tab, count);
-        channelsData.current = [];
+        channelsMap.current.clear();
       }
     }
   };
