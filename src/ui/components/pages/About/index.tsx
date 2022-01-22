@@ -83,6 +83,26 @@ export function About(props: AboutProps) {
           <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
             <Link
               sx={{ textDecoration: 'none' }}
+              href="https://www.paypal.me/axeldev"
+              target="_blank"
+              rel="noopener"
+            >
+              <Button
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 400,
+                  textTransform: 'capitalize',
+                }}
+                size="small"
+                color="secondary"
+              >
+                Donate
+              </Button>
+            </Link>
+          </CardActions>
+          <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
+            <Link
+              sx={{ textDecoration: 'none' }}
               href="https://github.com/AXeL-dev/youtube-viewer/graphs/contributors"
               target="_blank"
               rel="noopener"
@@ -99,19 +119,6 @@ export function About(props: AboutProps) {
                 Contributors
               </Button>
             </Link>
-          </CardActions>
-          <CardActions sx={{ borderTop: 1, borderColor: 'divider', px: 1.5 }}>
-            <Button
-              sx={{
-                fontSize: '0.875rem',
-                fontWeight: 400,
-                textTransform: 'capitalize',
-              }}
-              size="small"
-              color="secondary"
-            >
-              Privacy policy
-            </Button>
           </CardActions>
         </Card>
       </Box>
