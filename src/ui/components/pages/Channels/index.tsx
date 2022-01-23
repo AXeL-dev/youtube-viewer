@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Layout, SearchInput } from 'ui/components/shared';
-import { Box, IconButton, Fade, Collapse, Tooltip } from '@mui/material';
-import DownloadIcon from '@mui/icons-material/Download';
+import { Box, IconButton, Collapse, Tooltip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import SwapVertIcon from '@mui/icons-material/SwapVert';
 import ChannelResults from './ChannelResults';
 import ChannelList from './ChannelList';
 import NoChannels from './NoChannels';
 import { useAppSelector } from 'store';
 import { selectChannels } from 'store/selectors/channels';
-import { downloadFile } from 'helpers/file';
+import ChannelListActions from './ChannelList/Actions';
 
 interface ChannelsProps {}
 
@@ -21,16 +19,6 @@ export function Channels(props: ChannelsProps) {
 
   const showList = () => {
     setSearch('');
-  };
-
-  const toggleDragHandles = () => {
-    setShowDragHandles(!showDragHandles);
-  };
-
-  const exportChannels = () => {
-    const data = JSON.stringify(channels, null, 4);
-    const file = new Blob([data], { type: 'text/json' });
-    downloadFile(file, 'channels.json');
   };
 
   return (
@@ -70,24 +58,13 @@ export function Channels(props: ChannelsProps) {
             clearable
           />
         </Box>
-        <Fade in={!isSearchActive && channels.length > 1}>
-          <Tooltip title="Toggle drag handles" placement="left" arrow>
-            <IconButton
-              sx={showDragHandles ? { bgcolor: 'action.selected' } : {}}
-              aria-label="toggle-drag-handles"
-              onClick={toggleDragHandles}
-            >
-              <SwapVertIcon />
-            </IconButton>
-          </Tooltip>
-        </Fade>
-        <Fade in={!isSearchActive && channels.length > 0}>
-          <Tooltip title="Export" placement="left" arrow>
-            <IconButton aria-label="export" onClick={exportChannels}>
-              <DownloadIcon />
-            </IconButton>
-          </Tooltip>
-        </Fade>
+        {!isSearchActive ? (
+          <ChannelListActions
+            channels={channels}
+            showDragHandles={showDragHandles}
+            onDragHandlesToggle={setShowDragHandles}
+          />
+        ) : null}
       </Box>
       {search ? (
         <ChannelResults search={search} />

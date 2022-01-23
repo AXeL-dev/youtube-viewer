@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Stack, Divider } from '@mui/material';
-import ChannelCard from './ChannelCard';
-import DraggableChannelCard from './ChannelCard/DraggableCard';
+import ChannelCard from '../ChannelCard';
+import DraggableChannelCard from '../ChannelCard/DraggableCard';
 import { useAppDispatch } from 'store';
 import {
   DndContext,
