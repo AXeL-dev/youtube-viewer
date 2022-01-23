@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView, SettingType, VideosSeniority } from 'types';
-import Field from './Field';
+import { ControlledField, CustomField } from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
@@ -42,7 +42,7 @@ export function Settings(props: SettingsProps) {
     <Layout>
       <Alerts settings={settings} />
       <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
-        <Field
+        <ControlledField
           label="Default view"
           value={settings.defaultView}
           onChange={(defaultView: HomeView) => {
@@ -64,7 +64,7 @@ export function Settings(props: SettingsProps) {
           ]}
           type={SettingType.List}
         />
-        <Field
+        <ControlledField
           label="Recent videos seniority"
           value={settings.recentVideosSeniority}
           onChange={(recentVideosSeniority: VideosSeniority) => {
@@ -86,7 +86,7 @@ export function Settings(props: SettingsProps) {
           ]}
           type={SettingType.List}
         />
-        <Field
+        <ControlledField
           label="Dark mode"
           value={settings.darkMode}
           onChange={(darkMode: boolean) => {
@@ -94,7 +94,7 @@ export function Settings(props: SettingsProps) {
           }}
           type={SettingType.Boolean}
         />
-        <Field
+        <ControlledField
           label="Auto play videos"
           value={settings.autoPlayVideos}
           onChange={(autoPlayVideos: boolean) => {
@@ -103,7 +103,7 @@ export function Settings(props: SettingsProps) {
           type={SettingType.Boolean}
         />
         {isWebExtension ? (
-          <Field
+          <ControlledField
             label="Enable notifications"
             description={`Checking for new videos is performed every ${humanInterval(
               channelCheckerDefaults.checkInterval,
@@ -116,7 +116,7 @@ export function Settings(props: SettingsProps) {
             type={SettingType.Boolean}
           />
         ) : null}
-        <Field
+        <ControlledField
           label="Youtube API key"
           description={
             <span>
@@ -138,10 +138,9 @@ export function Settings(props: SettingsProps) {
           type={SettingType.Secret}
         />
         {savedVideosSize > 0 ? (
-          <Field
+          <CustomField
             label="Saved videos data"
             description={`Estimated size: ${formatByteSize(savedVideosSize)}`}
-            type={SettingType.Custom}
             render={() => <ClearVideosData />}
           />
         ) : null}

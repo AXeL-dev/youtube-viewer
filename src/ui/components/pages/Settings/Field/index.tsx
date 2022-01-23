@@ -34,7 +34,7 @@ interface CustomFieldProps extends CommonFieldProps {
 
 type FieldProps = Either<ControlledFieldProps, CustomFieldProps>;
 
-export default function Field(props: FieldProps) {
+function Field(props: FieldProps) {
   const {
     label,
     description,
@@ -131,3 +131,11 @@ export default function Field(props: FieldProps) {
     </Box>
   );
 }
+
+export const ControlledField = (props: ControlledFieldProps) => (
+  <Field {...props} />
+);
+
+export const CustomField = (props: Omit<CustomFieldProps, 'type'>) => (
+  <Field {...props} type={SettingType.Custom} />
+);
