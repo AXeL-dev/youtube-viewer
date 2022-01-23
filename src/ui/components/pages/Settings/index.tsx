@@ -8,14 +8,23 @@ import { selectSettings } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
 import Alerts from './Alerts';
 import { isWebExtension, sendMessage } from 'helpers/webext';
-import { humanInterval, TimeAgo } from 'helpers/utils';
+import {
+  humanInterval,
+  TimeAgo,
+  memorySizeOf,
+  formatByteSize,
+} from 'helpers/utils';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
+import { selectVideos } from 'store/selectors/videos';
+import ClearVideosData from './ClearVideosData';
 
 interface SettingsProps {}
 
 export function Settings(props: SettingsProps) {
   const [lastCheckTime, setLastCheckTime] = useState(null);
   const settings = useAppSelector(selectSettings);
+  const videos = useAppSelector(selectVideos);
+  const savedVideosSize = memorySizeOf(videos);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -128,6 +137,14 @@ export function Settings(props: SettingsProps) {
           }}
           type={SettingType.Secret}
         />
+        {savedVideosSize > 0 ? (
+          <Field
+            label="Saved videos data"
+            description={`Estimated size: ${formatByteSize(savedVideosSize)}`}
+            type={SettingType.Custom}
+            render={() => <ClearVideosData />}
+          />
+        ) : null}
       </Stack>
     </Layout>
   );

@@ -33,4 +33,5 @@ export enum SettingType {
   Number,
   Boolean,
   List,
+  Custom,
 }

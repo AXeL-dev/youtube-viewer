@@ -7,3 +7,4 @@ export * from './SearchInput';
 export * from './ProgressBar';
 export * from './LoadingSpinner';
 export * from './StyledMenu';
+export * from './ConfirmationDialog';

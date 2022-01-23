@@ -5,7 +5,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import { StyledMenu } from 'ui/components/shared';
+import {
+  StyledMenu,
+  ConfirmationDialog,
+  ConfirmationDialogProps,
+} from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -16,9 +20,6 @@ import {
   selectWatchLaterVideos,
   selectViewedWatchLaterVideosCount,
 } from 'store/selectors/videos';
-import ConfirmationDialog, {
-  ConfirmationDialogProps,
-} from './ConfirmationDialog';
 import { Nullable } from 'types';
 import { downloadFile } from 'helpers/file';
 

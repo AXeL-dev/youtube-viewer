@@ -11,11 +11,11 @@ import {
 export interface ConfirmationDialogProps {
   open: boolean;
   title: string;
-  text: string;
+  text: string | React.ReactNode;
   onClose: (confirmed?: boolean) => void;
 }
 
-function ConfirmationDialog(props: ConfirmationDialogProps) {
+function ConfirmationDialogComponent(props: ConfirmationDialogProps) {
   const { open, title, text, onClose } = props;
 
   const handleConfirm = () => {
@@ -51,4 +51,7 @@ function propsAreEqual(
   return prevProps.open === nextProps.open;
 }
 
-export default React.memo(ConfirmationDialog, propsAreEqual);
+export const ConfirmationDialog = React.memo(
+  ConfirmationDialogComponent,
+  propsAreEqual
+);

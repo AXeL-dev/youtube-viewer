@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Box, Typography, SelectChangeEvent } from '@mui/material';
-import { SettingType } from 'types';
+import { SettingType, Either } from 'types';
 import Input from './Input';
 import Switch from './Switch';
 import Select from './Select';
@@ -14,15 +14,25 @@ type OptionType = {
   value: number | string;
 };
 
-interface FieldProps {
+interface CommonFieldProps {
   label: string;
   description?: string | React.ReactNode;
   placeholder?: string;
-  options?: OptionType[];
-  value: ValueType;
   type: SettingType;
+}
+
+interface ControlledFieldProps extends CommonFieldProps {
+  value: ValueType;
+  options?: OptionType[];
   onChange?: (value: any) => void;
 }
+
+interface CustomFieldProps extends CommonFieldProps {
+  type: SettingType.Custom;
+  render: () => React.ReactNode;
+}
+
+type FieldProps = Either<ControlledFieldProps, CustomFieldProps>;
 
 export default function Field(props: FieldProps) {
   const {
@@ -33,6 +43,7 @@ export default function Field(props: FieldProps) {
     value,
     type,
     onChange,
+    render,
   } = props;
 
   const handleChange = (
@@ -85,6 +96,8 @@ export default function Field(props: FieldProps) {
             ))}
           </Select>
         );
+      case SettingType.Custom:
+        return render!();
       default:
         return null;
     }
