@@ -22,7 +22,7 @@ import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
 import { MessageRequest, Video, Nullable } from 'types';
 import { selectApp } from 'store/selectors/app';
-import { dispatch } from 'store/persist';
+import { dispatch } from 'store';
 
 declare var browser: any;
 

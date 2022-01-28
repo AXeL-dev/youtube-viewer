@@ -6,7 +6,7 @@ import videosReducer from './reducers/videos';
 import appReducer from './reducers/app';
 import { debounce } from 'helpers/utils';
 import { youtubeApi } from './services/youtube';
-import { preloadState, persistState } from './persist';
+import { preloadState, persistState } from './utils';
 
 const store = configureStore({
   reducer: {
@@ -32,6 +32,6 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export { storageKey } from './persist';
+export { storageKey, dispatch } from './utils';
 
 export default store;

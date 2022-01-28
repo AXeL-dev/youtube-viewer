@@ -1,22 +1,10 @@
-import store, { RootState } from 'store';
 import storage from 'helpers/storage';
-import { setSettings } from './reducers/settings';
-import { setChannels } from './reducers/channels';
-import { setVideos } from './reducers/videos';
-import { setApp } from './reducers/app';
-import { AnyAction } from '@reduxjs/toolkit';
-import { log } from 'helpers/logger';
+import { setSettings } from '../reducers/settings';
+import { setChannels } from '../reducers/channels';
+import { setVideos } from '../reducers/videos';
+import { setApp } from '../reducers/app';
 import { LegacyVideoCache } from 'types';
-
-export const storageKey = 'APP_YOUTUBE_VIEWER';
-
-let canPersistState = true;
-let prevSerializedState = '';
-
-export const dispatch = (action: AnyAction, persist: boolean = false) => {
-  canPersistState = persist;
-  store.dispatch(action);
-};
+import { dispatch, storageKey } from './persist';
 
 export const preloadState = async () => {
   const state = await storage.get(storageKey);
@@ -77,31 +65,4 @@ export const preloadState = async () => {
     }
   }
   dispatch(setApp({ loaded: true }), shouldPersist);
-};
-
-export const persistState = (state: RootState, onlyIfChanged?: boolean) => {
-  log('Persist state:', {
-    canPersistState,
-    state,
-  });
-  if (!canPersistState) {
-    canPersistState = true;
-    return;
-  }
-  const { settings, channels, videos } = state;
-  if (onlyIfChanged) {
-    const serializedState = JSON.stringify({ settings, channels, videos });
-    if (prevSerializedState === serializedState) {
-      log('State did not change!');
-      return;
-    }
-    prevSerializedState = serializedState;
-  }
-  storage.save({
-    [storageKey]: {
-      settings,
-      channels,
-      videos,
-    },
-  });
 };
