@@ -26,10 +26,3 @@ export interface VideoCache {
   publishedAt: number;
   flags: VideoFlags;
 }
-
-export type LegacyVideoCache = VideoCache &
-  Partial<{
-    isViewed: boolean;
-    isToWatchLater: boolean;
-    isNotified: boolean;
-  }>;
