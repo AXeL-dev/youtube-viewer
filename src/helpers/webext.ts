@@ -1,17 +1,15 @@
 // import { browser } from "webextension-polyfill-ts";
-import { SendNotificationParams } from 'types';
+import { SendNotificationParams, BadgeColors, OpenTabOptions } from 'types';
 
 declare var browser: any;
 
-function isBrowserAPIAvailable(): boolean {
+export const isWebExtension: boolean = (() => {
   try {
     return !!browser;
   } catch (error) {
     return false;
   }
-}
-
-export const isWebExtension: boolean = isBrowserAPIAvailable();
+})();
 
 export function isPopup(): boolean {
   // have to be a function not a const, 'cause we need to check the window size multiple times not only once
@@ -31,6 +29,41 @@ export function createTab(url: string, isActive: boolean = true): Promise<any> {
     url,
     active: isActive,
   });
+}
+
+export function openPage(page: string, reloadIfExists: boolean = true) {
+  const pageUrl = `${indexUrl}#/${page?.replace(/^\//, '') || ''}`;
+  return tryOpenTab(pageUrl, {
+    reloadIfExists,
+    resolver: (tab) => tab.url.startsWith(indexUrl),
+  });
+}
+
+export async function tryOpenTab(url: string, options: OpenTabOptions = {}) {
+  options = {
+    resolver: (tab) => tab.url === url,
+    ...options,
+  };
+
+  if (!options.reloadIfExists) {
+    return createTab(url);
+  }
+
+  const tabs = await browser.tabs.query({});
+  if (tabs.length > 0) {
+    for (const tab of tabs) {
+      if (options.resolver!(tab)) {
+        await browser.tabs.update(tab.id, {
+          url,
+          active: true,
+        });
+        browser.tabs.reload(tab.id);
+        return tab;
+      }
+    }
+  }
+
+  return createTab(url);
 }
 
 export function getUrl(path: string): string {
@@ -77,10 +110,10 @@ export function setBadgeText(text: string | number): void {
   });
 }
 
-export function setBadgeColors(
-  backgroundColor: string,
-  textColor: string
-): void {
+export function setBadgeColors({
+  backgroundColor,
+  textColor,
+}: BadgeColors): void {
   if (isFirefox()) {
     browser.browserAction.setBadgeTextColor({ color: textColor });
   }

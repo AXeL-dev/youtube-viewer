@@ -24,3 +24,18 @@ export interface MessageRequest {
   message: string;
   params: any;
 }
+
+export interface BadgeColors {
+  backgroundColor: string;
+  textColor: string;
+}
+
+export interface Tab {
+  id: string;
+  url: string;
+}
+
+export interface OpenTabOptions {
+  reloadIfExists?: boolean;
+  resolver?: (tab: Tab) => boolean;
+}

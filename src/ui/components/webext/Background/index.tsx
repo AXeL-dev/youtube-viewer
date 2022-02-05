@@ -3,37 +3,38 @@ import {
   isWebExtension,
   setBadgeColors,
   setBadgeText,
-  createTab,
-  indexUrl,
   getBadgeText,
   sendNotification,
 } from 'helpers/webext';
-import { useAppSelector, storageKey } from 'store';
+import { useAppSelector } from 'store';
 import { selectNotificationEnabledChannels } from 'store/selectors/channels';
-import { setSettings } from 'store/reducers/settings';
-import { setChannels } from 'store/reducers/channels';
-import {
-  saveVideos,
-  removeOutdatedVideos,
-  setVideos,
-} from 'store/reducers/videos';
-import ChannelChecker, { CheckEndData } from './ChannelChecker';
+import { saveVideos, removeOutdatedVideos } from 'store/reducers/videos';
 import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
-import { MessageRequest, Video, Nullable } from 'types';
+import { Video } from 'types';
 import { selectApp } from 'store/selectors/app';
 import { dispatch } from 'store';
-
-declare var browser: any;
+import EventsHandler, { EventsHandlerRef } from './EventsHandler';
+import ChannelChecker, { CheckEndData } from './ChannelChecker';
 
 interface BackgroundProps {}
 
 export function Background(props: BackgroundProps) {
   const responses = useRef<CheckEndData[]>([]);
-  const lastCheckDate = useRef<Nullable<Date>>(null);
+  const eventsHandlerRef = useRef<EventsHandlerRef>(null);
   const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
   const app = useAppSelector(selectApp);
+
+  useEffect(() => {
+    if (!isWebExtension) {
+      return;
+    }
+    setBadgeColors({
+      backgroundColor: '#666',
+      textColor: '#fff',
+    });
+  }, []);
 
   useEffect(() => {
     if (settings.enableNotifications) {
@@ -41,81 +42,11 @@ export function Background(props: BackgroundProps) {
     }
   }, [settings.enableNotifications]);
 
-  const openHomePage = () => {
-    setBadgeText('');
-    createTab(indexUrl);
-  };
-
-  const handleMessage = (
-    request: MessageRequest,
-    sender: any,
-    sendResponse: any
-  ) => {
-    log('Handle message:', request);
-    let response: any = null;
-    return new Promise((resolve) => {
-      switch (request.message) {
-        // getLastCheckDate
-        case 'getLastCheckDate':
-          response = lastCheckDate.current;
-          break;
-        // default
-        default:
-          break;
-      }
-      log('response:', response);
-      resolve(response);
-    });
-  };
-
-  const init = () => {
-    setBadgeColors('#666', '#fff');
-    // Handle messages
-    browser.runtime.onMessage.addListener(handleMessage);
-    // Handle click on notifications
-    browser.notifications.onClicked.addListener((notificationId: string) => {
-      log('Notification clicked:', notificationId);
-      openHomePage();
-    });
-    browser.notifications.onButtonClicked.addListener(
-      (notificationId: string, buttonIndex: number) => {
-        log(`Notification button ${buttonIndex} clicked:`, notificationId);
-        log('channels', channels);
-        const [, channelId] = notificationId.split('::');
-        const url = channels.find((channel) => channel.id === channelId)?.url;
-        if (url?.length) {
-          createTab(url);
-        }
-      }
-    );
-    // Handle click on browser action
-    // only works if "browser_action" > "default_popup" is not set on manifest
-    browser.browserAction.onClicked.addListener((tab: any) => {
-      log('Browser action clicked:', tab);
-      openHomePage();
-    });
-    // Handle storage change
-    browser.storage.onChanged.addListener((changes: any, areaName: string) => {
-      log('Storage changed:', areaName, changes);
-      if (areaName === 'local') {
-        const { settings, channels, videos } = changes[storageKey].newValue;
-        dispatch(setSettings(settings));
-        dispatch(setChannels(channels));
-        dispatch(setVideos(videos));
-      }
-    });
-  };
-
   useEffect(() => {
-    if (isWebExtension) {
-      init();
-      log('Background page initialised.');
+    if (!isWebExtension) {
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (isWebExtension && app.loaded) {
+    if (app.loaded) {
       log('Removing outdated videos.');
       dispatch(removeOutdatedVideos(), true);
     }
@@ -136,7 +67,7 @@ export function Background(props: BackgroundProps) {
     // Once all channel checkers responded to us
     if (responses.current.length === channels.length) {
       // Save last check date
-      lastCheckDate.current = new Date();
+      eventsHandlerRef.current?.setLastCheckDate(new Date());
       // Get total count of new videos
       const count = responses.current.reduce(
         (acc, cur) => acc + cur.newVideos.length,
@@ -194,6 +125,7 @@ export function Background(props: BackgroundProps) {
 
   return isWebExtension ? (
     <>
+      <EventsHandler ref={eventsHandlerRef} channels={channels} />
       {app.loaded && settings.enableNotifications
         ? channels.map((channel, index) => (
             <ChannelChecker
