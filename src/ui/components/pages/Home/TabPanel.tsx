@@ -45,7 +45,8 @@ function TabPanel(props: TabPanelProps) {
     if (onCountChange) {
       channelsMap.current.set(data.channel.id, data);
       if (channelsMap.current.size === channels.length) {
-        const count = Array.from(channelsMap.current.values()).reduce(
+        const channelsData = Array.from(channelsMap.current.values());
+        const count = channelsData.reduce(
           (acc, cur) => ({
             displayed: acc.displayed + (cur.items?.length || 0),
             total: acc.total + (cur.total || 0),

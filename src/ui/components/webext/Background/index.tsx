@@ -20,7 +20,7 @@ import ChannelChecker, { CheckEndData } from './ChannelChecker';
 interface BackgroundProps {}
 
 export function Background(props: BackgroundProps) {
-  const responses = useRef<CheckEndData[]>([]);
+  const responsesMap = useRef<Map<string, CheckEndData>>(new Map());
   const eventsHandlerRef = useRef<EventsHandlerRef>(null);
   const channels = useAppSelector(selectNotificationEnabledChannels);
   const settings = useAppSelector(selectSettings);
@@ -38,7 +38,7 @@ export function Background(props: BackgroundProps) {
 
   useEffect(() => {
     if (settings.enableNotifications) {
-      responses.current = [];
+      responsesMap.current.clear();
     }
   }, [settings.enableNotifications]);
 
@@ -63,13 +63,14 @@ export function Background(props: BackgroundProps) {
   };
 
   const handleCheckEnd = (data: CheckEndData) => {
-    responses.current.push(data);
+    responsesMap.current.set(data.channel.id, data);
     // Once all channel checkers responded to us
-    if (responses.current.length === channels.length) {
+    if (responsesMap.current.size === channels.length) {
+      const responses = Array.from(responsesMap.current.values());
       // Save last check date
       eventsHandlerRef.current?.setLastCheckDate(new Date());
       // Get total count of new videos
-      const count = responses.current.reduce(
+      const count = responses.reduce(
         (acc, cur) => acc + cur.newVideos.length,
         0
       );
@@ -78,7 +79,7 @@ export function Background(props: BackgroundProps) {
       if (count > 0) {
         updateBadge(count);
         const maxChannelTitles = 5;
-        const fulfilledResponses = responses.current.filter(
+        const fulfilledResponses = responses.filter(
           ({ newVideos }) => newVideos.length > 0
         );
         const channelTitles = fulfilledResponses
@@ -119,7 +120,7 @@ export function Background(props: BackgroundProps) {
         );
       }
       // Reset the responses array
-      responses.current = [];
+      responsesMap.current.clear();
     }
   };
 
