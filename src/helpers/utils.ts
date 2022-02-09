@@ -390,3 +390,36 @@ export function humanInterval(
 ) {
   return `${interval} ${unity}${pluralize && interval > 1 ? 's' : ''}`;
 }
+
+// -------------------------------------------------------------------
+
+/**
+ * Returns video id from youtube video link
+ *
+ * @param videoLink
+ */
+export function getVideoId(videoLink: string) {
+  let videoId = null;
+  if (videoLink.indexOf('v=') !== -1) {
+    /**
+     * Example:
+     *    https://www.youtube.com/watch?v=aZ-dSpfdHok
+     *    https://www.youtube.com/watch?v=aZ-dSpfdHok&feature=feedrec_grec_index
+     */
+    videoId = videoLink.split('v=')[1];
+    const index = videoId.indexOf('&');
+    if (index !== -1) {
+      videoId = videoId.substring(0, index);
+    }
+  } else if (videoLink.indexOf('/') !== -1) {
+    /**
+     * Example:
+     *    https://youtu.be/aZ-dSpfdHok
+     *    https://youtu.be/PqkaBUmJpq8?list=PLmmPGQQTKzSZSPd3pa6q9UQ-PkeCx1fam
+     */
+    const link = videoLink.split('?')[0];
+    const params = link.split('/');
+    videoId = params[params.length - 1];
+  }
+  return videoId;
+}

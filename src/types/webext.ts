@@ -30,8 +30,21 @@ export interface BadgeColors {
   textColor: string;
 }
 
-export interface Tab {
+type Context = 'page' | 'link' | 'selection' | 'audio' | 'bookmark' | 'all';
+
+type ContextType = 'normal' | 'checkbox' | 'radio' | 'separator';
+
+export interface ContextMenu {
+  title: string;
   id: string;
+  type?: ContextType;
+  enabled?: boolean;
+  checked?: boolean;
+  contexts: Context[];
+}
+
+export interface Tab {
+  id: number;
   url: string;
 }
 

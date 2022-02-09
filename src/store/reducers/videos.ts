@@ -4,6 +4,9 @@ import { isWebExtension } from 'helpers/webext';
 import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
+type AddVideoPayload = Omit<VideoCache, 'flags'>;
+type RemoveVideoPayload = Pick<VideoCache, 'id'>;
+
 interface VideosState {
   list: VideoCache[];
 }
@@ -12,7 +15,11 @@ const initialState: VideosState = {
   list: [],
 };
 
-function addVideo(state: VideosState, video: Video, flags: VideoFlags) {
+function addVideo(
+  state: VideosState,
+  video: Video | AddVideoPayload,
+  flags: VideoFlags
+) {
   const found = state.list.find(({ id }) => id === video.id);
   if (found) {
     found.flags = {
@@ -29,7 +36,11 @@ function addVideo(state: VideosState, video: Video, flags: VideoFlags) {
   }
 }
 
-function removeVideoFlag(state: VideosState, video: Video, flag: VideoFlag) {
+function removeVideoFlag(
+  state: VideosState,
+  video: Video | RemoveVideoPayload,
+  flag: VideoFlag
+) {
   const found = state.list.find(({ id }) => id === video.id);
   if (found) {
     found.flags[flag] = false;
@@ -46,19 +57,28 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
-    addViewedVideo: (state, action: PayloadAction<Video>) => {
+    addViewedVideo: (state, action: PayloadAction<Video | AddVideoPayload>) => {
       const video = action.payload;
       addVideo(state, video, { viewed: true });
     },
-    removeViewedVideo: (state, action: PayloadAction<Video>) => {
+    removeViewedVideo: (
+      state,
+      action: PayloadAction<Video | RemoveVideoPayload>
+    ) => {
       const video = action.payload;
       removeVideoFlag(state, video, 'viewed');
     },
-    addWatchLaterVideo: (state, action: PayloadAction<Video>) => {
+    addWatchLaterVideo: (
+      state,
+      action: PayloadAction<Video | AddVideoPayload>
+    ) => {
       const video = action.payload;
       addVideo(state, video, { toWatchLater: true });
     },
-    removeWatchLaterVideo: (state, action: PayloadAction<Video>) => {
+    removeWatchLaterVideo: (
+      state,
+      action: PayloadAction<Video | RemoveVideoPayload>
+    ) => {
       const video = action.payload;
       removeVideoFlag(state, video, 'toWatchLater');
       if (!isWebExtension) {

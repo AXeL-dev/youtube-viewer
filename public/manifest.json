@@ -26,6 +26,13 @@
     "page": "index.html#background"
   },
 
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+
   "author": "AXeL-dev",
   "homepage_url": "https://github.com/AXeL-dev/youtube-viewer",
 
@@ -34,6 +41,7 @@
   "permissions": [
     "storage",
     "notifications",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ]
 }

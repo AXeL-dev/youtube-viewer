@@ -16,6 +16,7 @@ import { selectApp } from 'store/selectors/app';
 import { dispatch } from 'store';
 import EventsHandler, { EventsHandlerRef } from './EventsHandler';
 import ChannelChecker, { CheckEndData } from './ChannelChecker';
+import ContextMenus from './ContextMenus';
 
 interface BackgroundProps {}
 
@@ -119,13 +120,14 @@ export function Background(props: BackgroundProps) {
           true
         );
       }
-      // Reset the responses array
+      // Reset the responses map
       responsesMap.current.clear();
     }
   };
 
   return isWebExtension ? (
     <>
+      <ContextMenus />
       <EventsHandler ref={eventsHandlerRef} channels={channels} />
       {app.loaded && settings.enableNotifications
         ? channels.map((channel, index) => (
