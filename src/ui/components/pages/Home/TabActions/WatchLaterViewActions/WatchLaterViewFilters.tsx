@@ -8,31 +8,31 @@ import {
 import { StyledMenu } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import TimerOffOutlinedIcon from '@mui/icons-material/TimerOffOutlined';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Check from '@mui/icons-material/Check';
+import { Nullable, WatchLaterVideoDisplayOption } from 'types';
 import { selectSettings } from 'store/selectors/settings';
-import { setRecentVideosDisplayOptions } from 'store/reducers/settings';
-import { RecentVideoDisplayOption, Nullable } from 'types';
+import { setWatchLaterVideosDisplayOptions } from 'store/reducers/settings';
 
-interface RecentViewActionsProps {}
+interface WatchLaterViewFiltersProps {}
 
-function RecentViewActions(props: RecentViewActionsProps) {
+function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
   const settings = useAppSelector(selectSettings);
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
-  const { hideViewedVideos, hideWatchLaterVideos } =
-    settings.recentVideosDisplayOptions;
+  const { hideViewedVideos, hideArchivedVideos } =
+    settings.watchLaterVideosDisplayOptions;
   const hasEnabledFilters = useMemo(() => {
     const options = Object.keys(
-      settings.recentVideosDisplayOptions
-    ) as RecentVideoDisplayOption[];
+      settings.watchLaterVideosDisplayOptions
+    ) as WatchLaterVideoDisplayOption[];
     return options.reduce(
-      (acc, cur) => settings.recentVideosDisplayOptions[cur] || acc,
+      (acc, cur) => settings.watchLaterVideosDisplayOptions[cur] || acc,
       false
     );
-  }, [settings.recentVideosDisplayOptions]);
+  }, [settings.watchLaterVideosDisplayOptions]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,16 +44,16 @@ function RecentViewActions(props: RecentViewActionsProps) {
 
   const handleFilterViewedToggle = () => {
     dispatch(
-      setRecentVideosDisplayOptions({
+      setWatchLaterVideosDisplayOptions({
         hideViewedVideos: !hideViewedVideos,
       })
     );
   };
 
-  const handleFilterWatchLaterToggle = () => {
+  const handleFilterArchivedToggle = () => {
     dispatch(
-      setRecentVideosDisplayOptions({
-        hideWatchLaterVideos: !hideWatchLaterVideos,
+      setWatchLaterVideosDisplayOptions({
+        hideArchivedVideos: !hideArchivedVideos,
       })
     );
   };
@@ -92,19 +92,19 @@ function RecentViewActions(props: RecentViewActionsProps) {
           </ListItemIcon>
           <ListItemText>Filter viewed videos</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleFilterWatchLaterToggle}>
+        <MenuItem onClick={handleFilterArchivedToggle}>
           <ListItemIcon>
-            {hideWatchLaterVideos ? (
+            {hideArchivedVideos ? (
               <Check />
             ) : (
-              !hasEnabledFilters && <TimerOffOutlinedIcon />
+              !hasEnabledFilters && <ArchiveIcon />
             )}
           </ListItemIcon>
-          <ListItemText>Filter watch later videos</ListItemText>
+          <ListItemText>Filter archived videos</ListItemText>
         </MenuItem>
       </StyledMenu>
     </>
   );
 }
 
-export default RecentViewActions;
+export default WatchLaterViewFilters;

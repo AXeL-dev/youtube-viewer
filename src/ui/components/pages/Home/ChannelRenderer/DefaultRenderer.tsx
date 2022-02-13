@@ -43,8 +43,9 @@ function DefaultRenderer(props: DefaultRendererProps) {
       skip: itemsPerRow === 0,
     }
   );
-  const videos =
-    data?.items.filter((video) => !excludedVideosIds.includes(video.id)) || [];
+  const videos = (data?.items || []).filter(
+    (video) => !excludedVideosIds.includes(video.id)
+  );
   const total = data?.total || 0;
 
   const handleLoadMore = () => {

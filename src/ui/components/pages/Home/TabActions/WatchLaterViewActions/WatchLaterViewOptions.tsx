@@ -23,9 +23,9 @@ import {
 import { Nullable } from 'types';
 import { downloadFile } from 'helpers/file';
 
-interface WatchLaterViewActionsProps {}
+interface WatchLaterViewOptionsProps {}
 
-function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
+function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
   const viewedCount = useAppSelector(selectViewedWatchLaterVideosCount);
   const dispatch = useAppDispatch();
@@ -144,4 +144,4 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
   );
 }
 
-export default WatchLaterViewActions;
+export default WatchLaterViewOptions;

@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   HomeView,
   Settings,
-  VideosDisplayOptions,
+  RecentVideosDisplayOptions,
+  WatchLaterVideosDisplayOptions,
   VideosSeniority,
 } from 'types';
 
@@ -17,6 +18,10 @@ export const defaultSettings = {
   recentVideosDisplayOptions: {
     hideViewedVideos: false,
     hideWatchLaterVideos: false,
+  },
+  watchLaterVideosDisplayOptions: {
+    hideViewedVideos: false,
+    hideArchivedVideos: false,
   },
   enableNotifications: true,
 };
@@ -45,7 +50,7 @@ export const settingsSlice = createSlice({
     },
     setRecentVideosDisplayOptions: (
       state,
-      action: PayloadAction<Partial<VideosDisplayOptions>>
+      action: PayloadAction<Partial<RecentVideosDisplayOptions>>
     ) => {
       return {
         ...state,
@@ -55,10 +60,26 @@ export const settingsSlice = createSlice({
         },
       };
     },
+    setWatchLaterVideosDisplayOptions: (
+      state,
+      action: PayloadAction<Partial<WatchLaterVideosDisplayOptions>>
+    ) => {
+      return {
+        ...state,
+        watchLaterVideosDisplayOptions: {
+          ...state.watchLaterVideosDisplayOptions,
+          ...action.payload,
+        },
+      };
+    },
   },
 });
 
-export const { setSettings, resetSettings, setRecentVideosDisplayOptions } =
-  settingsSlice.actions;
+export const {
+  setSettings,
+  resetSettings,
+  setRecentVideosDisplayOptions,
+  setWatchLaterVideosDisplayOptions,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

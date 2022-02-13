@@ -2,6 +2,7 @@ import type { RootState } from 'store';
 import { createSelector } from '@reduxjs/toolkit';
 import { Channel, Video } from 'types';
 import { selectHiddenChannels } from './channels';
+import { selectSettings } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
@@ -38,12 +39,18 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
 
 export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
+  selectSettings,
   selectHiddenChannels,
-  (videos, hiddenChannels) => {
+  (videos, settings, hiddenChannels) => {
     const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
+    const { hideViewedVideos, hideArchivedVideos } =
+      settings.watchLaterVideosDisplayOptions;
     return videos.filter(
       ({ flags, channelId }) =>
-        flags.toWatchLater && !hiddenChannelsIds.includes(channelId)
+        flags.toWatchLater &&
+        !hiddenChannelsIds.includes(channelId) &&
+        (!hideViewedVideos || !flags.viewed) &&
+        (!hideArchivedVideos || !flags.archived)
     ).length;
   }
 );

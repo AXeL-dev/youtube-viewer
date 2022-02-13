@@ -4,7 +4,8 @@ export interface Settings {
   darkMode: boolean;
   autoPlayVideos: boolean;
   recentVideosSeniority: VideosSeniority;
-  recentVideosDisplayOptions: VideosDisplayOptions;
+  recentVideosDisplayOptions: RecentVideosDisplayOptions;
+  watchLaterVideosDisplayOptions: WatchLaterVideosDisplayOptions;
   enableNotifications: boolean;
 }
 
@@ -20,12 +21,19 @@ export enum VideosSeniority {
   SevenDays = 7,
 }
 
-export interface VideosDisplayOptions {
+export interface RecentVideosDisplayOptions {
   hideViewedVideos: boolean;
   hideWatchLaterVideos: boolean;
 }
 
-export type VideoDisplayOption = keyof VideosDisplayOptions;
+export type RecentVideoDisplayOption = keyof RecentVideosDisplayOptions;
+
+export interface WatchLaterVideosDisplayOptions {
+  hideViewedVideos: boolean;
+  hideArchivedVideos: boolean;
+}
+
+export type WatchLaterVideoDisplayOption = keyof WatchLaterVideosDisplayOptions;
 
 export enum SettingType {
   String,
