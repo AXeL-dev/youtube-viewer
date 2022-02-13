@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { HomeView, Video } from 'types';
 import WatchLaterAction from './WatchLaterAction';
 import ViewedAction from './ViewedAction';
+import ArchiveAction from './ArchiveAction';
 
 interface VideoTopActionsProps {
   video: Video;
@@ -24,6 +25,7 @@ function VideoTopActions(props: VideoTopActionsProps) {
       }}
     >
       <ViewedAction video={video} />
+      <ArchiveAction video={video} view={view} />
       <WatchLaterAction video={video} view={view} />
     </Box>
   );

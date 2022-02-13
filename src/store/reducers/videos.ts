@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { elapsedDays } from 'helpers/utils';
 import { isWebExtension } from 'helpers/webext';
-import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
+import { VideoCache, Video, VideoFlags } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
-type AddVideoPayload = Omit<VideoCache, 'flags'>;
-type RemoveVideoPayload = Pick<VideoCache, 'id'>;
+type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
+type RemoveVideoPayload = Video | Pick<VideoCache, 'id'>;
 
 interface VideosState {
   list: VideoCache[];
@@ -15,18 +15,19 @@ const initialState: VideosState = {
   list: [],
 };
 
-function addVideo(
-  state: VideosState,
-  video: Video | AddVideoPayload,
-  flags: VideoFlags
-) {
-  const found = state.list.find(({ id }) => id === video.id);
-  if (found) {
-    found.flags = {
-      ...found.flags,
-      ...flags,
-    };
-  } else {
+interface AddVideoParams {
+  state: VideosState;
+  video: AddVideoPayload;
+  flags: VideoFlags;
+}
+
+function addVideo({ state, video, flags }: AddVideoParams) {
+  const found = setVideoFlags({
+    state,
+    video,
+    flags,
+  });
+  if (!found) {
     state.list.push({
       id: video.id,
       channelId: video.channelId,
@@ -36,15 +37,27 @@ function addVideo(
   }
 }
 
-function removeVideoFlag(
-  state: VideosState,
-  video: Video | RemoveVideoPayload,
-  flag: VideoFlag
-) {
+interface SetVideoFlagsParams {
+  state: VideosState;
+  video: AddVideoPayload | RemoveVideoPayload;
+  flags: VideoFlags;
+  filter?: (video: VideoCache) => boolean;
+}
+
+function setVideoFlags({
+  state,
+  video,
+  flags,
+  filter = () => true,
+}: SetVideoFlagsParams) {
   const found = state.list.find(({ id }) => id === video.id);
-  if (found) {
-    found.flags[flag] = false;
+  if (found && filter(found)) {
+    found.flags = {
+      ...found.flags,
+      ...flags,
+    };
   }
+  return found;
 }
 
 export const videosSlice = createSlice({
@@ -57,30 +70,40 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
-    addViewedVideo: (state, action: PayloadAction<Video | AddVideoPayload>) => {
+    addViewedVideo: (state, action: PayloadAction<AddVideoPayload>) => {
       const video = action.payload;
-      addVideo(state, video, { viewed: true });
+      addVideo({
+        state,
+        video,
+        flags: { viewed: true },
+      });
     },
-    removeViewedVideo: (
-      state,
-      action: PayloadAction<Video | RemoveVideoPayload>
-    ) => {
+    removeViewedVideo: (state, action: PayloadAction<RemoveVideoPayload>) => {
       const video = action.payload;
-      removeVideoFlag(state, video, 'viewed');
+      setVideoFlags({
+        state,
+        video,
+        flags: { viewed: false },
+      });
     },
-    addWatchLaterVideo: (
-      state,
-      action: PayloadAction<Video | AddVideoPayload>
-    ) => {
+    addWatchLaterVideo: (state, action: PayloadAction<AddVideoPayload>) => {
       const video = action.payload;
-      addVideo(state, video, { toWatchLater: true });
+      addVideo({
+        state,
+        video,
+        flags: { toWatchLater: true },
+      });
     },
     removeWatchLaterVideo: (
       state,
-      action: PayloadAction<Video | RemoveVideoPayload>
+      action: PayloadAction<RemoveVideoPayload>
     ) => {
       const video = action.payload;
-      removeVideoFlag(state, video, 'toWatchLater');
+      setVideoFlags({
+        state,
+        video,
+        flags: { toWatchLater: false },
+      });
       if (!isWebExtension) {
         // no need to for the webextension, since it will be done by the background page on each launch
         videosSlice.caseReducers.removeOutdatedVideos(state);
@@ -103,13 +126,35 @@ export const videosSlice = createSlice({
           : video
       );
     },
+    archiveVideo: (state, action: PayloadAction<AddVideoPayload>) => {
+      const video = action.payload;
+      setVideoFlags({
+        state,
+        video,
+        flags: { archived: true },
+        filter: (video) => video.flags.toWatchLater === true,
+      });
+    },
+    unarchiveVideo: (state, action: PayloadAction<RemoveVideoPayload>) => {
+      const video = action.payload;
+      setVideoFlags({
+        state,
+        video,
+        flags: { archived: false },
+        filter: (video) => video.flags.toWatchLater === true,
+      });
+    },
     saveVideos: (
       state,
       action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>
     ) => {
       const { videos, flags } = action.payload;
       for (const video of videos) {
-        addVideo(state, video, flags);
+        addVideo({
+          state,
+          video,
+          flags,
+        });
       }
     },
     removeOutdatedVideos: (state) => {
@@ -131,6 +176,8 @@ export const {
   addWatchLaterVideo,
   removeWatchLaterVideo,
   clearWatchLaterList,
+  archiveVideo,
+  unarchiveVideo,
   saveVideos,
   removeOutdatedVideos,
 } = videosSlice.actions;

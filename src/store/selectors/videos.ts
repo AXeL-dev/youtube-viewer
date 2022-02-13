@@ -68,5 +68,6 @@ export const selectVideoMeta = (video: Video) =>
     return {
       isViewed: flags?.viewed || false,
       isToWatchLater: flags?.toWatchLater || false,
+      isArchived: flags?.archived || false,
     };
   });

@@ -24,6 +24,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
     <Tooltip title="Watch later" aria-label="watch-later">
       <IconButton
         sx={{
+          display: 'flex',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',
@@ -37,7 +38,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
           dispatch(addWatchLaterVideo(video));
         }}
       >
-        <WatchLaterOutlinedIcon sx={{ fontSize: '1.25rem' }} />
+        <WatchLaterOutlinedIcon sx={{ fontSize: '1.125rem' }} />
       </IconButton>
     </Tooltip>
   ) : view === HomeView.WatchLater ? (

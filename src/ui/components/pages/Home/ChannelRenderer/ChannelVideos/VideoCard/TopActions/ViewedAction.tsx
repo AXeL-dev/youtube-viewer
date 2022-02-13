@@ -40,6 +40,7 @@ function ViewedAction(props: ViewedActionProps) {
     <Tooltip title="Mark as unviewed" aria-label="mark-as-unviewed">
       <IconButton
         sx={{
+          display: 'flex',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',

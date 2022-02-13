@@ -6,7 +6,7 @@ import { HomeView, Video } from 'types';
 import { useAppDispatch } from 'store';
 import { addViewedVideo } from 'store/reducers/videos';
 import TopActions from './TopActions';
-import ViewedBadge from './ViewedBadge';
+import Badges from './Badges';
 import { createTab, isWebExtension } from 'helpers/webext';
 
 interface VideoCardProps {
@@ -124,7 +124,7 @@ function VideoCard(props: VideoCardProps) {
           </Box>
           <TopActions video={video} view={view} />
         </Box>
-        <ViewedBadge video={video} />
+        <Badges video={video} view={view} />
         <Typography
           sx={{
             position: 'absolute',
