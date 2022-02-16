@@ -17,12 +17,12 @@ function TabActions(props: TabActionsProps) {
 
   switch (tab) {
     case HomeView.Recent:
-      return channelsCount > 0 && recentVideosCount > 0 ? (
-        <RecentViewActions />
+      return channelsCount > 0 ? (
+        <RecentViewActions hasVideos={recentVideosCount > 0} />
       ) : null;
     case HomeView.WatchLater:
-      return channelsCount > 0 && watchLaterVideosCount > 0 ? (
-        <WatchLaterViewActions />
+      return channelsCount > 0 ? (
+        <WatchLaterViewActions hasVideos={watchLaterVideosCount > 0} />
       ) : null;
     default:
       return null;

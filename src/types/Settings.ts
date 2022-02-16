@@ -1,13 +1,31 @@
+import { Either } from './common';
+
 export interface Settings {
   defaultView: HomeView;
   apiKey: string;
   darkMode: boolean;
   autoPlayVideos: boolean;
   recentVideosSeniority: VideosSeniority;
-  recentVideosDisplayOptions: RecentVideosDisplayOptions;
-  watchLaterVideosDisplayOptions: WatchLaterVideosDisplayOptions;
+  recentViewFilters: RecentViewFilters;
+  watchLaterViewFilters: WatchLaterViewFilters;
   enableNotifications: boolean;
 }
+
+export interface RecentViewFilters {
+  any: boolean;
+  viewed: boolean;
+  watchLater: boolean;
+}
+
+export interface WatchLaterViewFilters {
+  any: boolean;
+  viewed: boolean;
+  archived: boolean;
+}
+
+export type ViewFilters = Either<RecentViewFilters, WatchLaterViewFilters>;
+
+export type ViewFilter = keyof ViewFilters;
 
 export enum HomeView {
   All = 'all',
@@ -20,20 +38,6 @@ export enum VideosSeniority {
   ThreeDays = 3,
   SevenDays = 7,
 }
-
-export interface RecentVideosDisplayOptions {
-  hideViewedVideos: boolean;
-  hideWatchLaterVideos: boolean;
-}
-
-export type RecentVideoDisplayOption = keyof RecentVideosDisplayOptions;
-
-export interface WatchLaterVideosDisplayOptions {
-  hideViewedVideos: boolean;
-  hideArchivedVideos: boolean;
-}
-
-export type WatchLaterVideoDisplayOption = keyof WatchLaterVideosDisplayOptions;
 
 export enum SettingType {
   String,

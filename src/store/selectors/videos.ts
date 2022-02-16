@@ -1,8 +1,16 @@
 import type { RootState } from 'store';
 import { createSelector } from '@reduxjs/toolkit';
-import { Channel, Video } from 'types';
+import {
+  Channel,
+  HomeView,
+  Video,
+  VideoFlag,
+  VideoFlags,
+  ViewFilter,
+  ViewFilters,
+} from 'types';
 import { selectHiddenChannels } from './channels';
-import { selectSettings } from './settings';
+import { selectViewFilters } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
@@ -27,30 +35,63 @@ export const selectNotifiedVideos = (channel?: Channel) =>
     )
   );
 
+const filter2Flag = (key: ViewFilter): VideoFlag => {
+  switch (key) {
+    case 'watchLater':
+      return 'toWatchLater';
+    default:
+      return key as VideoFlag;
+  }
+};
+
+export const filterVideoByFlags = (flags: VideoFlags, filters: ViewFilters) => {
+  const filterKeys = Object.keys(filters) as ViewFilter[];
+  return filterKeys.some((key) => {
+    switch (key) {
+      case 'any':
+        return (
+          filters.any &&
+          filterKeys
+            .filter((key) => key !== 'any')
+            .every((key) => {
+              const flag = filter2Flag(key);
+              return !flags[flag];
+            })
+        );
+      default: {
+        const flag = filter2Flag(key);
+        return filters[key] && flags[flag];
+      }
+    }
+  });
+};
+
 export const selectWatchLaterVideos = (channel?: Channel) =>
-  createSelector(selectVideos, (videos) =>
-    videos
-      .filter(
-        ({ flags, channelId }) =>
-          flags.toWatchLater && (!channel || channel.id === channelId)
-      )
-      .sort((a, b) => b.publishedAt - a.publishedAt)
+  createSelector(
+    selectVideos,
+    selectViewFilters(HomeView.WatchLater),
+    (videos, filters) =>
+      videos
+        .filter(
+          ({ flags, channelId }) =>
+            flags.toWatchLater &&
+            (!channel || channel.id === channelId) &&
+            filterVideoByFlags(flags, filters)
+        )
+        .sort((a, b) => b.publishedAt - a.publishedAt)
   );
 
 export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
-  selectSettings,
+  selectViewFilters(HomeView.WatchLater),
   selectHiddenChannels,
-  (videos, settings, hiddenChannels) => {
+  (videos, filters, hiddenChannels) => {
     const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
-    const { hideViewedVideos, hideArchivedVideos } =
-      settings.watchLaterVideosDisplayOptions;
     return videos.filter(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
         !hiddenChannelsIds.includes(channelId) &&
-        (!hideViewedVideos || !flags.viewed) &&
-        (!hideArchivedVideos || !flags.archived)
+        filterVideoByFlags(flags, filters)
     ).length;
   }
 );

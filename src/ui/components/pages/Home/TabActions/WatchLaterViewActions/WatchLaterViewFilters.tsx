@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   IconButton,
   MenuItem,
@@ -7,32 +7,19 @@ import {
 } from '@mui/material';
 import { StyledMenu } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Check from '@mui/icons-material/Check';
-import { Nullable, WatchLaterVideoDisplayOption } from 'types';
-import { selectSettings } from 'store/selectors/settings';
-import { setWatchLaterVideosDisplayOptions } from 'store/reducers/settings';
+import { HomeView, Nullable } from 'types';
+import { selectViewFilters } from 'store/selectors/settings';
+import { setViewFilters } from 'store/reducers/settings';
 
 interface WatchLaterViewFiltersProps {}
 
 function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
-  const settings = useAppSelector(selectSettings);
+  const filters = useAppSelector(selectViewFilters(HomeView.WatchLater));
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
-  const { hideViewedVideos, hideArchivedVideos } =
-    settings.watchLaterVideosDisplayOptions;
-  const hasEnabledFilters = useMemo(() => {
-    const options = Object.keys(
-      settings.watchLaterVideosDisplayOptions
-    ) as WatchLaterVideoDisplayOption[];
-    return options.reduce(
-      (acc, cur) => settings.watchLaterVideosDisplayOptions[cur] || acc,
-      false
-    );
-  }, [settings.watchLaterVideosDisplayOptions]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,18 +29,35 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
     setAnchorEl(null);
   };
 
-  const handleFilterViewedToggle = () => {
+  const handleAnyFilterToggle = () => {
     dispatch(
-      setWatchLaterVideosDisplayOptions({
-        hideViewedVideos: !hideViewedVideos,
+      setViewFilters({
+        view: HomeView.WatchLater,
+        filters: {
+          any: !filters.any,
+        },
       })
     );
   };
 
-  const handleFilterArchivedToggle = () => {
+  const handleViewedFilterToggle = () => {
     dispatch(
-      setWatchLaterVideosDisplayOptions({
-        hideArchivedVideos: !hideArchivedVideos,
+      setViewFilters({
+        view: HomeView.WatchLater,
+        filters: {
+          viewed: !filters.viewed,
+        },
+      })
+    );
+  };
+
+  const handleArchivedFilterToggle = () => {
+    dispatch(
+      setViewFilters({
+        view: HomeView.WatchLater,
+        filters: {
+          archived: !filters.archived,
+        },
       })
     );
   };
@@ -82,25 +86,17 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleFilterViewedToggle}>
-          <ListItemIcon>
-            {hideViewedVideos ? (
-              <Check />
-            ) : (
-              !hasEnabledFilters && <VisibilityOffIcon />
-            )}
-          </ListItemIcon>
-          <ListItemText>Filter viewed videos</ListItemText>
+        <MenuItem onClick={handleAnyFilterToggle}>
+          <ListItemIcon>{filters.any ? <Check /> : null}</ListItemIcon>
+          <ListItemText>Any</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleFilterArchivedToggle}>
-          <ListItemIcon>
-            {hideArchivedVideos ? (
-              <Check />
-            ) : (
-              !hasEnabledFilters && <ArchiveIcon />
-            )}
-          </ListItemIcon>
-          <ListItemText>Filter archived videos</ListItemText>
+        <MenuItem onClick={handleViewedFilterToggle}>
+          <ListItemIcon>{filters.viewed ? <Check /> : null}</ListItemIcon>
+          <ListItemText>Viewed</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleArchivedFilterToggle}>
+          <ListItemIcon>{filters.archived ? <Check /> : null}</ListItemIcon>
+          <ListItemText>Archived</ListItemText>
         </MenuItem>
       </StyledMenu>
     </>

@@ -1,10 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import { selectChannelVideos } from 'store/selectors/videos';
+import {
+  filterVideoByFlags,
+  selectChannelVideos,
+} from 'store/selectors/videos';
 import { isWebExtension } from 'helpers/webext';
+import { Video } from 'types';
 
 export interface RecentViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
@@ -13,18 +17,27 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   const { channel } = props;
   const settings = useAppSelector(selectSettings);
   const videos = useAppSelector(selectChannelVideos(channel));
-  const { hideViewedVideos, hideWatchLaterVideos } =
-    settings.recentVideosDisplayOptions;
-  const excludedVideosIds = useMemo(
-    () => [
-      ...(hideViewedVideos
-        ? videos.filter(({ flags }) => flags.viewed).map(({ id }) => id)
-        : []),
-      ...(hideWatchLaterVideos
-        ? videos.filter(({ flags }) => flags.toWatchLater).map(({ id }) => id)
-        : []),
-    ],
-    [videos, hideViewedVideos, hideWatchLaterVideos]
+  const filters = settings.recentViewFilters;
+  const { exclusionList, inclusionList } = useMemo(
+    () => ({
+      exclusionList: videos
+        .filter(({ flags }) => !filterVideoByFlags(flags, filters))
+        .map(({ id }) => id),
+      inclusionList: videos
+        .filter(({ flags }) => filterVideoByFlags(flags, filters))
+        .map(({ id }) => id),
+    }),
+    [videos, filters]
+  );
+  const filterCallback = useCallback(
+    (video: Video) => {
+      if (filters.any) {
+        return !exclusionList.includes(video.id);
+      } else {
+        return inclusionList.includes(video.id);
+      }
+    },
+    [filters.any, exclusionList, inclusionList]
   );
   const publishedAfter = getDateBefore(
     settings.recentVideosSeniority
@@ -33,9 +46,9 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   return (
     <DefaultRenderer
       publishedAfter={publishedAfter}
-      excludedVideosIds={excludedVideosIds}
       persistVideos={isWebExtension}
       persistVideosFlags={{ recent: true }}
+      filter={filterCallback}
       {...props}
     />
   );

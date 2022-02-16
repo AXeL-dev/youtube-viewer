@@ -6,7 +6,6 @@ import { selectWatchLaterVideos } from 'store/selectors/videos';
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
-import { selectSettings } from 'store/selectors/settings';
 
 export interface WatchLaterViewRendererProps {
   channel: Channel;
@@ -19,16 +18,7 @@ function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
-  const settings = useAppSelector(selectSettings);
-  const { hideViewedVideos, hideArchivedVideos } =
-    settings.watchLaterVideosDisplayOptions;
-  const ids = watchLaterVideos
-    .filter(
-      ({ flags }) =>
-        (!hideViewedVideos || !flags.viewed) &&
-        (!hideArchivedVideos || !flags.archived)
-    )
-    .map(({ id }) => id);
+  const ids = watchLaterVideos.map(({ id }) => id);
   const total = ids.length;
   const maxResults = Math.min(total, itemsPerRow * page);
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery(

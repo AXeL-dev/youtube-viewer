@@ -9,9 +9,9 @@ export interface DefaultRendererProps {
   channel: Channel;
   view: HomeView;
   publishedAfter?: string;
-  excludedVideosIds?: string[];
   persistVideos?: boolean;
   persistVideosFlags?: VideoFlags;
+  filter?: (video: Video) => boolean;
   onError?: (error: any) => void;
   onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
@@ -21,9 +21,9 @@ function DefaultRenderer(props: DefaultRendererProps) {
   const {
     channel,
     publishedAfter,
-    excludedVideosIds = [],
     persistVideos = false,
     persistVideosFlags,
+    filter = () => true,
     onError,
     onChange,
     ...rest
@@ -43,9 +43,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       skip: itemsPerRow === 0,
     }
   );
-  const videos = (data?.items || []).filter(
-    (video) => !excludedVideosIds.includes(video.id)
-  );
+  const videos = (data?.items || []).filter(filter);
   const total = data?.total || 0;
 
   const handleLoadMore = () => {

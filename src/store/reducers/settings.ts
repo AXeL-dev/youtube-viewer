@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  HomeView,
-  Settings,
-  RecentVideosDisplayOptions,
-  WatchLaterVideosDisplayOptions,
-  VideosSeniority,
-} from 'types';
+import { HomeView, Settings, VideosSeniority, ViewFilters } from 'types';
 
 const { REACT_APP_YOUTUBE_API_KEY } = process.env;
 
@@ -15,13 +9,15 @@ export const defaultSettings = {
   darkMode: false,
   autoPlayVideos: true,
   recentVideosSeniority: VideosSeniority.OneDay,
-  recentVideosDisplayOptions: {
-    hideViewedVideos: false,
-    hideWatchLaterVideos: false,
+  recentViewFilters: {
+    any: true,
+    viewed: true,
+    watchLater: true,
   },
-  watchLaterVideosDisplayOptions: {
-    hideViewedVideos: false,
-    hideArchivedVideos: false,
+  watchLaterViewFilters: {
+    any: true,
+    viewed: true,
+    archived: true,
   },
   enableNotifications: true,
 };
@@ -48,38 +44,39 @@ export const settingsSlice = createSlice({
         ...defaultSettings,
       };
     },
-    setRecentVideosDisplayOptions: (
+    setViewFilters: (
       state,
-      action: PayloadAction<Partial<RecentVideosDisplayOptions>>
+      action: PayloadAction<{
+        view: HomeView;
+        filters: Partial<ViewFilters>;
+      }>
     ) => {
-      return {
-        ...state,
-        recentVideosDisplayOptions: {
-          ...state.recentVideosDisplayOptions,
-          ...action.payload,
-        },
-      };
-    },
-    setWatchLaterVideosDisplayOptions: (
-      state,
-      action: PayloadAction<Partial<WatchLaterVideosDisplayOptions>>
-    ) => {
-      return {
-        ...state,
-        watchLaterVideosDisplayOptions: {
-          ...state.watchLaterVideosDisplayOptions,
-          ...action.payload,
-        },
-      };
+      const { view, filters } = action.payload;
+      switch (view) {
+        case HomeView.Recent:
+          return {
+            ...state,
+            recentViewFilters: {
+              ...state.recentViewFilters,
+              ...filters,
+            },
+          };
+        case HomeView.WatchLater:
+          return {
+            ...state,
+            watchLaterViewFilters: {
+              ...state.watchLaterViewFilters,
+              ...filters,
+            },
+          };
+        default:
+          return state;
+      }
     },
   },
 });
 
-export const {
-  setSettings,
-  resetSettings,
-  setRecentVideosDisplayOptions,
-  setWatchLaterVideosDisplayOptions,
-} = settingsSlice.actions;
+export const { setSettings, resetSettings, setViewFilters } =
+  settingsSlice.actions;
 
 export default settingsSlice.reducer;

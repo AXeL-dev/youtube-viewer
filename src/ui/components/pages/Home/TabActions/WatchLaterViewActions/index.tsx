@@ -3,9 +3,13 @@ import { Box } from '@mui/material';
 import WatchLaterViewFilters from './WatchLaterViewFilters';
 import WatchLaterViewOptions from './WatchLaterViewOptions';
 
-interface WatchLaterViewActionsProps {}
+interface WatchLaterViewActionsProps {
+  hasVideos: boolean;
+}
 
 function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
+  const { hasVideos } = props;
+
   return (
     <Box
       sx={{
@@ -15,7 +19,7 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
       }}
     >
       <WatchLaterViewFilters />
-      <WatchLaterViewOptions />
+      {hasVideos ? <WatchLaterViewOptions /> : null}
     </Box>
   );
 }
