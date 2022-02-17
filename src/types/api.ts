@@ -16,9 +16,22 @@ interface Thumbnail {
   height: number;
 }
 
+type SnippetType =
+  | 'channelItem'
+  | 'comment'
+  | 'favorite'
+  | 'like'
+  | 'playlistItem'
+  | 'promotedItem'
+  | 'recommendation'
+  | 'social'
+  | 'subscription'
+  | 'upload';
+
 interface Item {
   id: string;
   snippet: {
+    type: SnippetType;
     channelId: string;
     channelTitle: string;
     liveBroadcastContent?: string;

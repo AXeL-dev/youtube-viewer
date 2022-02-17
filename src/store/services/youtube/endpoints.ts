@@ -78,8 +78,8 @@ const queries = {
     }: GetChannelActivitiesArgs) => ({
       url: 'activities',
       params: {
-        part: 'contentDetails',
-        fields: 'pageInfo,items(contentDetails)',
+        part: 'snippet,contentDetails',
+        fields: 'pageInfo,items(snippet(type),contentDetails)',
         channelId: channel.id,
         ...(publishedAfter ? { publishedAfter } : {}),
         ...(publishedBefore ? { publishedBefore } : {}),
@@ -88,7 +88,7 @@ const queries = {
     }),
     transformResponse: (response: Response): GetChannelActivitiesResponse => ({
       items: response.items
-        .filter((item) => item.contentDetails.upload?.videoId)
+        .filter((item) => item.snippet.type === 'upload')
         .map((item) => ({
           videoId: item.contentDetails.upload.videoId,
         })),
