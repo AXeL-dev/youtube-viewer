@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import {
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import { StyledMenu } from 'ui/components/shared';
+import { IconButton } from '@mui/material';
+import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import Check from '@mui/icons-material/Check';
 import { HomeView, Nullable } from 'types';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
@@ -86,18 +80,24 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleAnyFilterToggle}>
-          <ListItemIcon>{filters.any ? <Check /> : null}</ListItemIcon>
-          <ListItemText>Any</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleViewedFilterToggle}>
-          <ListItemIcon>{filters.viewed ? <Check /> : null}</ListItemIcon>
-          <ListItemText>Viewed</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleArchivedFilterToggle}>
-          <ListItemIcon>{filters.archived ? <Check /> : null}</ListItemIcon>
-          <ListItemText>Archived</ListItemText>
-        </MenuItem>
+        <CheckableMenuItem
+          checked={filters.any}
+          onClick={handleAnyFilterToggle}
+        >
+          Any
+        </CheckableMenuItem>
+        <CheckableMenuItem
+          checked={filters.viewed}
+          onClick={handleViewedFilterToggle}
+        >
+          Viewed
+        </CheckableMenuItem>
+        <CheckableMenuItem
+          checked={filters.archived!}
+          onClick={handleArchivedFilterToggle}
+        >
+          Archived
+        </CheckableMenuItem>
       </StyledMenu>
     </>
   );

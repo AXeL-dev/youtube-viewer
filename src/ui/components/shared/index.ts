@@ -8,3 +8,4 @@ export * from './ProgressBar';
 export * from './LoadingSpinner';
 export * from './StyledMenu';
 export * from './ConfirmationDialog';
+export * from './CheckableMenuItem';
