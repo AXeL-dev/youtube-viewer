@@ -9,7 +9,7 @@
   },
 
   "name": "__MSG_extensionName__",
-  "version": "1.2.0",
+  "version": "1.2.1",
 
   "default_locale": "en",
   "description": "__MSG_extensionDesc__",
@@ -33,6 +33,13 @@
     "page": "index.html#background"
   },
 
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+
   "author": "AXeL-dev",
   "homepage_url": "https://github.com/AXeL-dev/youtube-viewer",
 
@@ -41,6 +48,7 @@
   "permissions": [
     "storage",
     "notifications",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ]
 }
