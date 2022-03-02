@@ -106,31 +106,43 @@ export default function ContextMenus(props: ContextMenusProps) {
     updateContextMenus(tabId);
   };
 
+  const parseUrl = (url: string) => {
+    const data: {
+      isYoutubeVideo: boolean;
+      videoId: string | null;
+    } = {
+      isYoutubeVideo: false,
+      videoId: null,
+    };
+    if (url?.includes('youtube.com/watch?v=')) {
+      data.isYoutubeVideo = true;
+      data.videoId = getVideoId(url);
+    }
+    return data;
+  };
+
   const updateContextMenus = (tabId: number) => {
     browser.tabs.get(tabId).then((tab: Tab) => {
-      const isYoutube = !!tab.url && tab.url.includes('youtube.com/watch?v=');
-      const videoId = tab.url ? getVideoId(tab.url) : null;
+      const { isYoutubeVideo, videoId } = parseUrl(tab.url);
       for (const menu of menus) {
         const options: ContextMenuUpdateOptions = {
-          enabled: isYoutube,
+          enabled: isYoutubeVideo,
         };
-        if (['mark_video_as_viewed'].includes(menu.id)) {
+        if (menu.type === 'checkbox') {
           options.checked = false;
         }
         if (options.enabled && videoId) {
           switch (menu.id) {
             case 'add_video_to_watch_later_list': {
-              const found = !!watchLaterVideos.find(
+              const found = watchLaterVideos.find(
                 (video) => video.id === videoId
               );
               options.enabled = !found;
               break;
             }
             case 'mark_video_as_viewed': {
-              const found = !!viewedVideos.find(
-                (video) => video.id === videoId
-              );
-              options.checked = found;
+              const found = viewedVideos.find((video) => video.id === videoId);
+              options.checked = !!found;
               break;
             }
           }
