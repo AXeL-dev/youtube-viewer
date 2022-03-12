@@ -18,8 +18,10 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 
 - Track multi channels all in one place
 - Get notifications about new posted videos (no need to have a google account)
+- Save videos to watch later
 - Auto play videos on click
 - Export/import channels list
+- Light/Dark mode
 - (Soon) Open videos in [PiP](https://support.mozilla.org/en-US/kb/about-picture-picture-firefox) mode
 
 ## Installation
