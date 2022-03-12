@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { elapsedDays } from 'helpers/utils';
 import { isWebExtension } from 'helpers/webext';
-import { VideoCache, Video, VideoFlags } from 'types';
+import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 
 type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
@@ -144,6 +144,23 @@ export const videosSlice = createSlice({
         filter: (video) => video.flags.toWatchLater === true,
       });
     },
+    archiveVideosByFlag: (
+      state,
+      action: PayloadAction<Exclude<VideoFlag, 'archived'>>
+    ) => {
+      const flag = action.payload;
+      state.list = state.list.map((video) =>
+        Object.keys(video.flags || {}).includes(flag)
+          ? {
+              ...video,
+              flags: {
+                ...video.flags,
+                archived: true,
+              },
+            }
+          : video
+      );
+    },
     saveVideos: (
       state,
       action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>
@@ -178,6 +195,7 @@ export const {
   clearWatchLaterList,
   archiveVideo,
   unarchiveVideo,
+  archiveVideosByFlag,
   saveVideos,
   removeOutdatedVideos,
 } = videosSlice.actions;

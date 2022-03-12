@@ -12,10 +12,14 @@ import {
 } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ArchiveIcon from '@mui/icons-material/Archive';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { clearWatchLaterList } from 'store/reducers/videos';
+import {
+  archiveVideosByFlag,
+  clearWatchLaterList,
+} from 'store/reducers/videos';
 import {
   selectWatchLaterVideos,
   selectViewedWatchLaterVideosCount,
@@ -45,6 +49,24 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleArchiveAll = () => {
+    setConfirmationDialogProps({
+      open: true,
+      title: 'Archive all videos',
+      text: 'Are you sure that you want to archive all the videos in the watch later list?',
+      onClose: (confirmed) => {
+        if (confirmed) {
+          dispatch(archiveVideosByFlag('toWatchLater'));
+        }
+        setConfirmationDialogProps((state) => ({
+          ...state,
+          open: false,
+        }));
+      },
+    });
+    handleClose();
   };
 
   const handleRemoveAll = () => {
@@ -118,6 +140,12 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        <MenuItem onClick={handleArchiveAll}>
+          <ListItemIcon>
+            <ArchiveIcon />
+          </ListItemIcon>
+          <ListItemText>Archive all videos</ListItemText>
+        </MenuItem>
         <MenuItem onClick={handleRemoveAll}>
           <ListItemIcon>
             <ClearAllIcon />
