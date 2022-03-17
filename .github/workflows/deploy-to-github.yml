@@ -20,11 +20,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-        #env:
-        #  YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           yarn install
-        #  echo "REACT_APP_YOUTUBE_API_KEY=$YOUTUBE_API_KEY" >> .env
           yarn build:github
           yarn build:chrome
 
