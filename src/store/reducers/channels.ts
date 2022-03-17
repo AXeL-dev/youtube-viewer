@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { arrayMove } from '@dnd-kit/sortable';
-import { Channel } from 'types';
+import { Channel, ChannelFilter } from 'types';
 
 interface ChannelsState {
   list: Channel[];
@@ -57,6 +57,22 @@ export const channelsSlice = createSlice({
         };
       }
     },
+    setChannelFilters: (
+      state,
+      action: PayloadAction<{
+        channel: Channel;
+        filters: ChannelFilter[];
+      }>
+    ) => {
+      const {
+        channel: { id },
+        filters,
+      } = action.payload;
+      const found = state.list.find((channel: Channel) => channel.id === id);
+      if (found) {
+        found.filters = filters;
+      }
+    },
   },
 });
 
@@ -67,6 +83,7 @@ export const {
   moveChannel,
   toggleChannel,
   toggleChannelNotifications,
+  setChannelFilters,
 } = channelsSlice.actions;
 
 export default channelsSlice.reducer;

@@ -12,6 +12,7 @@ import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOu
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { Channel, Nullable } from 'types';
 import ChannelDialogs from '../ChannelDialogs';
 
@@ -36,6 +37,11 @@ function ChannelActions(props: ChannelActionsProps) {
 
   const handleRemoveClick = () => {
     setOpenedDialog('remove-channel');
+    handleMenuClose();
+  };
+
+  const handleFiltersClick = () => {
+    setOpenedDialog('channel-filters');
     handleMenuClose();
   };
 
@@ -71,6 +77,10 @@ function ChannelActions(props: ChannelActionsProps) {
               Disable notifications
             </>
           )}
+        </MenuItem>
+        <MenuItem onClick={handleFiltersClick} disableRipple>
+          <FilterListIcon />
+          Filters
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem

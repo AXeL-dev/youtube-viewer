@@ -3,6 +3,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
 import { Channel, ChannelActivities, Response, Video, VideoFlags } from 'types';
 import { saveVideos } from 'store/reducers/videos';
+import { parseVideoField, evaluateField } from './utils';
 
 type FindChannelByNameArgs = {
   name: string;
@@ -154,13 +155,14 @@ const extendedApi = youtubeApi.injectEndpoints({
             maxResults,
           })
         );
-        return result.data
-          ? {
-              data: queries.getVideosById.transformResponse(
-                result.data as Response
-              ),
-            }
-          : { error: result.error as FetchBaseQueryError };
+        if (!result.data) {
+          return { error: result.error as FetchBaseQueryError };
+        }
+        return {
+          data: queries.getVideosById.transformResponse(
+            result.data as Response
+          ),
+        };
       },
     }),
     getChannelVideos: builder.query<
@@ -199,16 +201,26 @@ const extendedApi = youtubeApi.injectEndpoints({
             maxResults,
           })
         );
-        return result.data
-          ? {
-              data: {
-                ...queries.getVideosById.transformResponse(
-                  result.data as Response
-                ),
-                total,
-              },
-            }
-          : { error: result.error as FetchBaseQueryError };
+        if (!result.data) {
+          return { error: result.error as FetchBaseQueryError };
+        }
+        const videosData = queries.getVideosById.transformResponse(
+          result.data as Response
+        );
+        if (channel.filters && channel.filters.length > 0) {
+          videosData.items = videosData.items.filter((video) =>
+            channel.filters!.some((filter) => {
+              const videoField = parseVideoField(video, filter.field);
+              return evaluateField(videoField, filter.operator, filter.value);
+            })
+          );
+        }
+        return {
+          data: {
+            ...videosData,
+            total,
+          },
+        };
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         const { persistVideos, persistVideosFlags: flags = {} } = arg;

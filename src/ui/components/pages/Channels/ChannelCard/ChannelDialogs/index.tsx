@@ -1,8 +1,9 @@
 import React from 'react';
 import { Channel, Nullable } from 'types';
 import { useAppDispatch } from 'store';
-import { removeChannel } from 'store/reducers/channels';
+import { removeChannel, setChannelFilters } from 'store/reducers/channels';
 import RemoveChannelDialog from './RemoveChannelDialog';
+import ChannelFiltersDialog from './ChannelFiltersDialog';
 
 interface ChannelDialogsProps {
   channel: Channel;
@@ -15,16 +16,33 @@ function ChannelDialogs(props: ChannelDialogsProps) {
   const dispatch = useAppDispatch();
 
   return (
-    <RemoveChannelDialog
-      open={openedDialog === 'remove-channel'}
-      channel={channel}
-      onClose={(confirmed) => {
-        if (confirmed) {
-          dispatch(removeChannel(channel));
-        }
-        onClose();
-      }}
-    />
+    <>
+      <RemoveChannelDialog
+        open={openedDialog === 'remove-channel'}
+        channel={channel}
+        onClose={(confirmed) => {
+          if (confirmed) {
+            dispatch(removeChannel(channel));
+          }
+          onClose();
+        }}
+      />
+      <ChannelFiltersDialog
+        open={openedDialog === 'channel-filters'}
+        channel={channel}
+        onClose={(filters) => {
+          if (filters) {
+            dispatch(
+              setChannelFilters({
+                channel,
+                filters,
+              })
+            );
+          }
+          onClose();
+        }}
+      />
+    </>
   );
 }
 
