@@ -122,7 +122,7 @@ export function Settings(props: SettingsProps) {
             <span>
               Don't have an API key yet?{' '}
               <Link
-                href="https://www.slickremix.com/docs/get-api-key-for-youtube/"
+                href="https://github.com/AXeL-dev/youtube-viewer/wiki/How-to-Create-a-YouTube-API-Key"
                 target="_blank"
                 color="secondary"
                 rel="noopener"
