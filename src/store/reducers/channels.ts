@@ -73,6 +73,13 @@ export const channelsSlice = createSlice({
         found.filters = filters;
       }
     },
+    mergeChannels: (state, action: PayloadAction<Channel[]>) => {
+      const channelIds = state.list.map((channel) => channel.id);
+      state.list = [
+        ...state.list,
+        ...action.payload.filter((channel) => !channelIds.includes(channel.id)),
+      ];
+    },
   },
 });
 
@@ -84,6 +91,7 @@ export const {
   toggleChannel,
   toggleChannelNotifications,
   setChannelFilters,
+  mergeChannels,
 } = channelsSlice.actions;
 
 export default channelsSlice.reducer;
