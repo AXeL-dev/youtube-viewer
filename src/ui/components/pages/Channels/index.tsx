@@ -50,7 +50,7 @@ export function Channels(props: ChannelsProps) {
           <SearchInput
             width={400}
             placeholder="Search for a channel…"
-            debounceTime={700}
+            debounceTime={500}
             onChange={(value: string) => {
               setSearch(value);
             }}

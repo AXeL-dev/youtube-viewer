@@ -154,8 +154,9 @@ function VideoCard(props: VideoCardProps) {
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
+              marginBottom: '0.75rem',
+              minHeight: '2.5rem',
             }}
-            gutterBottom
             variant="body2"
           >
             {video.title}
