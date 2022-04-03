@@ -31,13 +31,13 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   );
   const filterCallback = useCallback(
     (video: Video) => {
-      if (filters.any) {
+      if (filters.uncategorised) {
         return !exclusionList.includes(video.id);
       } else {
         return inclusionList.includes(video.id);
       }
     },
-    [filters.any, exclusionList, inclusionList]
+    [filters.uncategorised, exclusionList, inclusionList]
   );
   const publishedAfter = getDateBefore(
     settings.recentVideosSeniority

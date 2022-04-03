@@ -12,13 +12,13 @@ export interface Settings {
 }
 
 export interface RecentViewFilters {
-  any: boolean;
+  uncategorised: boolean;
   viewed: boolean;
   watchLater: boolean;
 }
 
 export interface WatchLaterViewFilters {
-  any: boolean;
+  uncategorised: boolean;
   viewed: boolean;
   archived: boolean;
 }

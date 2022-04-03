@@ -25,12 +25,12 @@ function RecentViewActions(props: RecentViewActionsProps) {
     setAnchorEl(null);
   };
 
-  const handleAnyFilterToggle = () => {
+  const handleUncategorisedFilterToggle = () => {
     dispatch(
       setViewFilters({
         view: HomeView.Recent,
         filters: {
-          any: !filters.any,
+          uncategorised: !filters.uncategorised,
         },
       })
     );
@@ -83,10 +83,10 @@ function RecentViewActions(props: RecentViewActionsProps) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <CheckableMenuItem
-          checked={filters.any}
-          onClick={handleAnyFilterToggle}
+          checked={filters.uncategorised}
+          onClick={handleUncategorisedFilterToggle}
         >
-          Any
+          Uncategorised
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.viewed}

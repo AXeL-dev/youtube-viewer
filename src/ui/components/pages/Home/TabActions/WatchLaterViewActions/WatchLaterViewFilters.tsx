@@ -23,12 +23,12 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
     setAnchorEl(null);
   };
 
-  const handleAnyFilterToggle = () => {
+  const handleUncategorisedFilterToggle = () => {
     dispatch(
       setViewFilters({
         view: HomeView.WatchLater,
         filters: {
-          any: !filters.any,
+          uncategorised: !filters.uncategorised,
         },
       })
     );
@@ -81,10 +81,10 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <CheckableMenuItem
-          checked={filters.any}
-          onClick={handleAnyFilterToggle}
+          checked={filters.uncategorised}
+          onClick={handleUncategorisedFilterToggle}
         >
-          Any
+          Uncategorised
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.viewed}

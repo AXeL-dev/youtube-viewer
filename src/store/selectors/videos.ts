@@ -48,11 +48,11 @@ export const filterVideoByFlags = (flags: VideoFlags, filters: ViewFilters) => {
   const filterKeys = Object.keys(filters) as ViewFilter[];
   return filterKeys.some((key) => {
     switch (key) {
-      case 'any':
+      case 'uncategorised':
         return (
-          filters.any &&
+          filters.uncategorised &&
           filterKeys
-            .filter((key) => key !== 'any')
+            .filter((key) => key !== 'uncategorised')
             .every((key) => {
               const flag = filter2Flag(key);
               return !flags[flag];
