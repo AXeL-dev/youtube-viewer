@@ -26,7 +26,7 @@ This is a fun made project with one simple goal: Discover & practice [React](htt
 
 ## Installation
 
-[![Get it for Firefox!](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_1.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
+[![Get it for Firefox!](https://i.imgur.com/TMOLdK6.png)](https://addons.mozilla.org/firefox/addon/yt-viewer/?src=external-github-download)
 [![Get it for Edge!](https://i.imgur.com/n49Wiu2.png)](https://microsoftedge.microsoft.com/addons/detail/youtube-viewer/goajjkolaajaenalckacknjmadkfnngp)
 [![Get it for Chrome!](https://i.imgur.com/B0i5sn3.png)](https://chrome.google.com/webstore/detail/youtube-viewer/lmcpajkgakbmgbjfmgomhpmmpfaadpdp)
 
