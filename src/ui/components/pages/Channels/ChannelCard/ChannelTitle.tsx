@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from '@mui/material';
+import { Box, Link, Tooltip } from '@mui/material';
 import { Channel } from 'types';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
 
 interface ChannelTitleProps {
   channel: Channel;
@@ -10,17 +11,30 @@ function ChannelTitle(props: ChannelTitleProps) {
   const { channel } = props;
 
   return (
-    <Link
+    <Box
       sx={{
-        color: 'text.primary',
-        textDecoration: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
       }}
-      href={channel.url}
-      target="_blank"
-      rel="noopener"
     >
-      {channel.title}
-    </Link>
+      <Link
+        sx={{
+          color: 'text.primary',
+          textDecoration: 'none',
+        }}
+        href={channel.url}
+        target="_blank"
+        rel="noopener"
+      >
+        {channel.title}
+      </Link>
+      {channel.notifications?.isDisabled && (
+        <Tooltip title="Notifications disabled">
+          <NotificationsOffIcon color="disabled" fontSize="small" />
+        </Tooltip>
+      )}
+    </Box>
   );
 }
 
@@ -30,7 +44,9 @@ function propsAreEqual(
 ) {
   return (
     prevProps.channel.title === nextProps.channel.title &&
-    prevProps.channel.url === nextProps.channel.url
+    prevProps.channel.url === nextProps.channel.url &&
+    prevProps.channel.notifications?.isDisabled ===
+      nextProps.channel.notifications?.isDisabled
   );
 }
 
