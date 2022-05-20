@@ -19,3 +19,8 @@ export const selectViewFilters = (view: HomeView) =>
         return {} as ViewFilters;
     }
   });
+
+export const selectHomeDisplayOptions = createSelector(
+  selectSettings,
+  (settings) => settings.homeDisplayOptions
+);

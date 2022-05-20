@@ -90,6 +90,7 @@ export default function ChannelFiltersDialog(props: ChannelFiltersDialogProps) {
           {filters.map((filter, index) => (
             <Filter
               {...filter}
+              key={index}
               onChange={(changes: Partial<ChannelFilter>) =>
                 handleChange(changes, index)
               }

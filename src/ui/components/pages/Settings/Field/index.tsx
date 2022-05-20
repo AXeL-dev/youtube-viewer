@@ -7,7 +7,7 @@ import Select from './Select';
 import MenuItem from './MenuItem';
 import Secret from './Secret';
 
-type ValueType = string | number | boolean;
+type ValueType = string | number | boolean | null;
 
 type OptionType = {
   label: string;

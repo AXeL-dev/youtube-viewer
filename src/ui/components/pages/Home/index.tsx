@@ -21,6 +21,7 @@ export function Home(props: HomeProps) {
     }
   );
   const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
+  const { hiddenViews } = settings.homeDisplayOptions;
 
   useEffect(() => {
     if (activeTab !== settings.defaultView) {
@@ -57,17 +58,23 @@ export function Home(props: HomeProps) {
           onChange={handleTabChange}
           aria-label="tabs"
         >
-          <Tab label="All" value={HomeView.All} />
-          <Tab
-            label="Recent"
-            value={HomeView.Recent}
-            badge={recentVideosCount.displayed}
-          />
-          <Tab
-            label="Watch later"
-            value={HomeView.WatchLater}
-            badge={watchLaterVideosCount}
-          />
+          {!hiddenViews.includes(HomeView.All) && (
+            <Tab label="All" value={HomeView.All} />
+          )}
+          {!hiddenViews.includes(HomeView.Recent) && (
+            <Tab
+              label="Recent"
+              value={HomeView.Recent}
+              badge={recentVideosCount.displayed}
+            />
+          )}
+          {!hiddenViews.includes(HomeView.WatchLater) && (
+            <Tab
+              label="Watch later"
+              value={HomeView.WatchLater}
+              badge={watchLaterVideosCount}
+            />
+          )}
         </Tabs>
         <TabActions
           tab={activeTab}
@@ -75,7 +82,9 @@ export function Home(props: HomeProps) {
           watchLaterVideosCount={watchLaterVideosCount}
         />
       </Box>
-      <TabPanel tab={activeTab} onCountChange={handleCountChange} />
+      {activeTab && (
+        <TabPanel tab={activeTab} onCountChange={handleCountChange} />
+      )}
     </Layout>
   );
 }

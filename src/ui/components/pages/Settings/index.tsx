@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView, SettingType, VideosSeniority } from 'types';
@@ -20,12 +20,35 @@ import ClearVideosData from './ClearVideosData';
 
 interface SettingsProps {}
 
+const views = [
+  {
+    label: 'All',
+    value: HomeView.All,
+  },
+  {
+    label: 'Recent',
+    value: HomeView.Recent,
+  },
+  {
+    label: 'Watch later',
+    value: HomeView.WatchLater,
+  },
+];
+
 export function Settings(props: SettingsProps) {
   const [lastCheckTime, setLastCheckTime] = useState(null);
   const settings = useAppSelector(selectSettings);
   const videos = useAppSelector(selectVideos);
   const savedVideosSize = memorySizeOf(videos);
   const dispatch = useAppDispatch();
+
+  const activeViews = useMemo(
+    () =>
+      views.filter(
+        ({ value }) => !settings.homeDisplayOptions.hiddenViews.includes(value)
+      ),
+    [settings.homeDisplayOptions.hiddenViews]
+  );
 
   useEffect(() => {
     if (isWebExtension) {
@@ -48,20 +71,7 @@ export function Settings(props: SettingsProps) {
           onChange={(defaultView: HomeView) => {
             dispatch(setSettings({ defaultView }));
           }}
-          options={[
-            {
-              label: 'All',
-              value: HomeView.All,
-            },
-            {
-              label: 'Recent',
-              value: HomeView.Recent,
-            },
-            {
-              label: 'Watch later',
-              value: HomeView.WatchLater,
-            },
-          ]}
+          options={activeViews}
           type={SettingType.List}
         />
         <ControlledField

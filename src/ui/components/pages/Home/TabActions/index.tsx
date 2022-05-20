@@ -6,7 +6,7 @@ import { useAppSelector } from 'store';
 import { selectActiveChannelsCount } from 'store/selectors/channels';
 
 interface TabActionsProps {
-  tab: HomeView;
+  tab: HomeView | null;
   recentVideosCount: number;
   watchLaterVideosCount: number;
 }

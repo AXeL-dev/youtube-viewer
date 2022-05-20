@@ -1,14 +1,19 @@
 import { Either } from './common';
 
 export interface Settings {
-  defaultView: HomeView;
+  defaultView: HomeView | null;
   apiKey: string;
   darkMode: boolean;
   autoPlayVideos: boolean;
   recentVideosSeniority: VideosSeniority;
   recentViewFilters: RecentViewFilters;
   watchLaterViewFilters: WatchLaterViewFilters;
+  homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
+}
+
+export interface HomeDisplayOptions {
+  hiddenViews: HomeView[];
 }
 
 export interface RecentViewFilters {

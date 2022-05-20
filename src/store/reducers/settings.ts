@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { HomeView, Settings, VideosSeniority, ViewFilters } from 'types';
+import {
+  HomeDisplayOptions,
+  HomeView,
+  Settings,
+  VideosSeniority,
+  ViewFilters,
+} from 'types';
 
 const { REACT_APP_YOUTUBE_API_KEY } = process.env;
 
@@ -19,8 +25,13 @@ export const defaultSettings = {
     viewed: true,
     archived: true,
   },
+  homeDisplayOptions: {
+    hiddenViews: [],
+  },
   enableNotifications: true,
 };
+
+const views = Object.values(HomeView);
 
 interface SettingsState extends Settings {}
 
@@ -73,10 +84,31 @@ export const settingsSlice = createSlice({
           return state;
       }
     },
+    setHomeDisplayOptions: (
+      state,
+      action: PayloadAction<Partial<HomeDisplayOptions>>
+    ) => {
+      const { hiddenViews } = action.payload;
+      return {
+        ...state,
+        defaultView:
+          !state.defaultView || hiddenViews?.includes(state.defaultView)
+            ? views.find((view) => !hiddenViews?.includes(view)) || null
+            : state.defaultView,
+        homeDisplayOptions: {
+          ...state.homeDisplayOptions,
+          ...action.payload,
+        },
+      };
+    },
   },
 });
 
-export const { setSettings, resetSettings, setViewFilters } =
-  settingsSlice.actions;
+export const {
+  setSettings,
+  resetSettings,
+  setViewFilters,
+  setHomeDisplayOptions,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

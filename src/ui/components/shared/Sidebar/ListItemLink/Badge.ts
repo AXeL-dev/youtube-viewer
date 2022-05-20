@@ -10,7 +10,7 @@ const Badge = styled(MuiBadge)(({ theme }) => ({
     minWidth: 24,
     height: 24,
     fontSize: '0.75rem',
-    marginLeft: theme.spacing(3),
+    // marginLeft: theme.spacing(3),
     borderRadius: theme.spacing(1.5),
   },
 }));

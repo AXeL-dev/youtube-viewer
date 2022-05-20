@@ -1,16 +1,19 @@
-import React from 'react';
-import { Box, Typography, Link, List } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Link, List, IconButton } from '@mui/material';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { useAppSelector } from 'store';
 import { selectChannelsCount } from 'store/selectors/channels';
 import { selectSettings } from 'store/selectors/settings';
 import { selectApp } from 'store/selectors/app';
+import { Nullable } from 'types';
+import HomeDisplayOptionsDialog from 'ui/components/pages/Home/DisplayOptionsDialog';
 
 interface SidebarProps {}
 
@@ -18,6 +21,15 @@ export function Sidebar(props: SidebarProps) {
   const app = useAppSelector(selectApp);
   const channelsCount = useAppSelector(selectChannelsCount);
   const settings = useAppSelector(selectSettings);
+  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
+
+  const openDialog = (dialog: string) => {
+    setOpenedDialog(dialog);
+  };
+
+  const closeDialog = () => {
+    setOpenedDialog(null);
+  };
 
   return (
     <Box
@@ -52,7 +64,35 @@ export function Sidebar(props: SidebarProps) {
         </Box>
         <Box sx={{ flexGrow: 1, paddingLeft: 1, width: '100%' }}>
           <List component="nav" aria-label="main">
-            <ListItemLink icon={<ExploreIcon />} text="Home" to="/" />
+            <ListItemLink
+              icon={<ExploreIcon />}
+              text="Home"
+              to="/"
+              actions={(selected) =>
+                selected && (
+                  <>
+                    <IconButton
+                      aria-label="display-options"
+                      color="default"
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        right: 0,
+                        backgroundColor: (theme) => theme.palette.primary.dark,
+                        color: (theme) => theme.palette.common.white,
+                      }}
+                      onClick={() => openDialog('display-options')}
+                    >
+                      <DisplaySettingsIcon fontSize="small" />
+                    </IconButton>
+                    <HomeDisplayOptionsDialog
+                      open={openedDialog === 'display-options'}
+                      onClose={closeDialog}
+                    />
+                  </>
+                )
+              }
+            />
             <ListItemLink
               icon={<SubscriptionsIcon />}
               text="Channels"
