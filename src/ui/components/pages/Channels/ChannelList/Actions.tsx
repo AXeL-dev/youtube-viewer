@@ -99,34 +99,16 @@ function ChannelListActions(props: ChannelListActionsProps) {
             <ListItemText>Toggle drag handles</ListItemText>
           </MenuItem>
         ) : null}
-        <>
-          <MenuItem
-            onClick={() => {
-              fileInputRef.current?.click();
-            }}
-          >
-            <ListItemIcon>
-              <UploadIcon />
-            </ListItemIcon>
-            <ListItemText>Import</ListItemText>
-          </MenuItem>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{
-              display: 'none',
-              visibility: 'hidden',
-              overflow: 'hidden',
-              width: 0,
-              height: 0,
-            }}
-            accept=".json"
-            onClick={(event: MouseEvent<HTMLInputElement>) => {
-              event.currentTarget.value = '';
-            }}
-            onChange={importChannels}
-          />
-        </>
+        <MenuItem
+          onClick={() => {
+            fileInputRef.current?.click();
+          }}
+        >
+          <ListItemIcon>
+            <UploadIcon />
+          </ListItemIcon>
+          <ListItemText>Import</ListItemText>
+        </MenuItem>
         <MenuItem onClick={exportChannels}>
           <ListItemIcon>
             <DownloadIcon />
@@ -134,6 +116,22 @@ function ChannelListActions(props: ChannelListActionsProps) {
           <ListItemText>Export</ListItemText>
         </MenuItem>
       </StyledMenu>
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{
+          display: 'none',
+          visibility: 'hidden',
+          overflow: 'hidden',
+          width: 0,
+          height: 0,
+        }}
+        accept=".json"
+        onClick={(event: MouseEvent<HTMLInputElement>) => {
+          event.currentTarget.value = '';
+        }}
+        onChange={importChannels}
+      />
     </>
   ) : null;
 }
