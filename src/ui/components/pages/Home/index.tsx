@@ -15,7 +15,7 @@ interface HomeProps {}
 export function Home(props: HomeProps) {
   const app = useAppSelector(selectApp);
   const settings = useAppSelector(selectSettings);
-  const [activeTab, setActiveTab] = useState(settings.defaultView);
+  const [_activeTab, setActiveTab] = useState(settings.defaultView);
   const [recentVideosCount, setRecentVideosCount] = useState<RecentVideosCount>(
     {
       displayed: 0,
@@ -24,9 +24,34 @@ export function Home(props: HomeProps) {
   );
   const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
   const { hiddenViews } = settings.homeDisplayOptions;
+  const tabs = app.loaded
+    ? [
+        {
+          label: 'All',
+          value: HomeView.All,
+        },
+        {
+          label: 'Recent',
+          value: HomeView.Recent,
+          badge: recentVideosCount.displayed,
+        },
+        {
+          label: 'Watch later',
+          value: HomeView.WatchLater,
+          badge: watchLaterVideosCount,
+        },
+      ].filter((tab) => !hiddenViews.includes(tab.value))
+    : [];
+
+  const activeTab =
+    tabs.length > 0
+      ? _activeTab && !hiddenViews.includes(_activeTab)
+        ? _activeTab
+        : tabs[0].value
+      : null;
 
   useEffect(() => {
-    if (activeTab !== settings.defaultView) {
+    if (_activeTab !== settings.defaultView) {
       setActiveTab(settings.defaultView);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,52 +69,34 @@ export function Home(props: HomeProps) {
 
   return (
     <Layout>
-      {app.loaded && (
-        <>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              borderBottom: 1,
-              borderColor: 'divider',
-              gap: 2,
-              px: 3,
-            }}
-          >
-            <Tabs
-              sx={{ flexGrow: 1, pt: 1 }}
-              value={activeTab}
-              onChange={handleTabChange}
-              aria-label="tabs"
-            >
-              {!hiddenViews.includes(HomeView.All) && (
-                <Tab label="All" value={HomeView.All} />
-              )}
-              {!hiddenViews.includes(HomeView.Recent) && (
-                <Tab
-                  label="Recent"
-                  value={HomeView.Recent}
-                  badge={recentVideosCount.displayed}
-                />
-              )}
-              {!hiddenViews.includes(HomeView.WatchLater) && (
-                <Tab
-                  label="Watch later"
-                  value={HomeView.WatchLater}
-                  badge={watchLaterVideosCount}
-                />
-              )}
-            </Tabs>
-            <TabActions
-              tab={activeTab}
-              recentVideosCount={recentVideosCount.total}
-              watchLaterVideosCount={watchLaterVideosCount}
-            />
-          </Box>
-          {activeTab && (
-            <TabPanel tab={activeTab} onCountChange={handleCountChange} />
-          )}
-        </>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: 1,
+          borderColor: 'divider',
+          gap: 2,
+          px: 3,
+        }}
+      >
+        <Tabs
+          sx={{ flexGrow: 1, pt: 1 }}
+          value={activeTab || false}
+          onChange={handleTabChange}
+          aria-label="tabs"
+        >
+          {tabs.map((props, index) => (
+            <Tab key={index} {...props} />
+          ))}
+        </Tabs>
+        <TabActions
+          tab={activeTab}
+          recentVideosCount={recentVideosCount.total}
+          watchLaterVideosCount={watchLaterVideosCount}
+        />
+      </Box>
+      {activeTab && (
+        <TabPanel tab={activeTab} onCountChange={handleCountChange} />
       )}
     </Layout>
   );
