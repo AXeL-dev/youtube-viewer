@@ -29,10 +29,8 @@ export function Channels(props: ChannelsProps) {
           alignItems: 'center',
           borderBottom: 1,
           borderColor: 'divider',
+          padding: (theme) => theme.spacing(1.5, 3),
           gap: 2,
-          py: 1.5,
-          pr: 4,
-          pl: 3,
         }}
       >
         <Box sx={{ flexGrow: 1, display: 'flex' }}>
