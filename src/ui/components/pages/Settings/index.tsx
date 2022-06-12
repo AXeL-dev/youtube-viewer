@@ -93,6 +93,14 @@ export function Settings(props: SettingsProps) {
               label: '7 days',
               value: VideosSeniority.SevenDays,
             },
+            {
+              label: '2 weeks',
+              value: VideosSeniority.TwoWeeks,
+            },
+            {
+              label: '1 month',
+              value: VideosSeniority.OneMonth,
+            },
           ]}
           type={SettingType.List}
         />

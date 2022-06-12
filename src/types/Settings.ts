@@ -42,6 +42,8 @@ export enum VideosSeniority {
   OneDay = 1,
   ThreeDays = 3,
   SevenDays = 7,
+  TwoWeeks = 14,
+  OneMonth = 31,
 }
 
 export enum SettingType {
