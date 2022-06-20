@@ -1,3 +1,7 @@
+export enum FetchError {
+  TIMEOUT = 'timed out',
+}
+
 export interface Response {
   kind?: string;
   etag?: string;

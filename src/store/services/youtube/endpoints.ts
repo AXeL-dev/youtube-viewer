@@ -3,7 +3,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
 import { Channel, ChannelActivities, Response, Video, VideoFlags } from 'types';
 import { saveVideos } from 'store/reducers/videos';
-import { parseVideoField, evaluateField } from './utils';
+import { parseVideoField, evaluateField, isFetchTimeoutError } from './utils';
 
 type FindChannelByNameArgs = {
   name: string;
@@ -156,6 +156,15 @@ const extendedApi = youtubeApi.injectEndpoints({
           })
         );
         if (!result.data) {
+          if (isFetchTimeoutError(result.error)) {
+            console.error(result.error);
+            return {
+              data: {
+                items: [],
+                total: 0,
+              },
+            };
+          }
           return { error: result.error as FetchBaseQueryError };
         }
         return {
@@ -180,6 +189,15 @@ const extendedApi = youtubeApi.injectEndpoints({
           })
         );
         if (activities.error) {
+          if (isFetchTimeoutError(activities.error)) {
+            console.error(activities.error);
+            return {
+              data: {
+                items: [],
+                total: 0,
+              },
+            };
+          }
           return { error: activities.error as FetchBaseQueryError };
         }
         const { items, total } = queries.getChannelActivities.transformResponse(
