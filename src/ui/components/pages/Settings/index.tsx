@@ -16,7 +16,7 @@ import {
 } from 'helpers/utils';
 import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
 import { selectVideos } from 'store/selectors/videos';
-import ClearVideosData from './ClearVideosData';
+import SavedVideosOptions from './SavedVideosOptions';
 
 interface SettingsProps {}
 
@@ -159,7 +159,7 @@ export function Settings(props: SettingsProps) {
           <CustomField
             label="Saved videos data"
             description={`Estimated size: ${formatByteSize(savedVideosSize)}`}
-            render={() => <ClearVideosData />}
+            render={() => <SavedVideosOptions videos={videos} />}
           />
         ) : null}
       </Stack>

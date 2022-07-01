@@ -7,8 +7,14 @@ import {
 } from 'ui/components/shared';
 import { useAppDispatch } from 'store';
 import { setVideos } from 'store/reducers/videos';
+import { nanoid } from '@reduxjs/toolkit';
 
 interface IClearVideosDataProps {}
+
+export const id = nanoid();
+export const icon = <DeleteIcon />;
+export const label = 'Clear saved videos data';
+export const color = 'primary';
 
 function ClearVideosData(props: IClearVideosDataProps) {
   const [confirmationDialogProps, setConfirmationDialogProps] =
@@ -41,11 +47,11 @@ function ClearVideosData(props: IClearVideosDataProps) {
     <>
       <Button
         variant="contained"
-        startIcon={<DeleteIcon />}
+        startIcon={icon}
         sx={{ textTransform: 'none' }}
         onClick={handleClick}
       >
-        Clear saved videos data
+        {label}
       </Button>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>

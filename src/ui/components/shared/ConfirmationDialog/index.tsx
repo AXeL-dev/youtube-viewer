@@ -33,7 +33,7 @@ function ConfirmationDialogComponent(props: ConfirmationDialogProps) {
         <DialogContentText>{text}</DialogContentText>
       </DialogContent>
       <DialogActions sx={{ px: 2, pb: 2 }}>
-        <Button color="inherit" onClick={handleClose} autoFocus>
+        <Button variant="text" color="inherit" onClick={handleClose} autoFocus>
           Cancel
         </Button>
         <Button color="primary" variant="contained" onClick={handleConfirm}>
