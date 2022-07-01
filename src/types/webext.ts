@@ -48,7 +48,9 @@ export interface Tab {
   url: string;
 }
 
+export type TabResolver = (tab: Tab) => boolean;
+
 export interface OpenTabOptions {
   reloadIfExists?: boolean;
-  resolver?: (tab: Tab) => boolean;
+  resolver?: TabResolver;
 }

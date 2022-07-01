@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { isWebExtension } from 'helpers/webext';
+import { isWebExtension, closeTabs, indexUrl } from 'helpers/webext';
 import {
   addViewedVideo,
   addWatchLaterVideo,
@@ -46,11 +46,12 @@ export default function ContextMenus(props: ContextMenusProps) {
 
   const handleConnect = (p: any) => {
     ports.current[p.sender.tab.id] = p;
-    p.onMessage.addListener((message: any) => {
+    p.onMessage.addListener(async (message: any) => {
       const { menuItemId, checked } = message.request;
       const { videoId: id, channelId, datePublished } = message.response;
       switch (menuItemId) {
         case 'add_video_to_watch_later_list':
+          await closeTabs((tab) => tab.url.startsWith(indexUrl));
           dispatch(
             addWatchLaterVideo({
               id,
@@ -62,6 +63,7 @@ export default function ContextMenus(props: ContextMenusProps) {
           browser.contextMenus.update(menuItemId, { enabled: false });
           break;
         case 'mark_video_as_viewed': {
+          await closeTabs((tab) => tab.url.startsWith(indexUrl));
           if (checked) {
             dispatch(
               addViewedVideo({

@@ -1,5 +1,10 @@
 // import { browser } from "webextension-polyfill-ts";
-import { SendNotificationParams, BadgeColors, OpenTabOptions } from 'types';
+import {
+  SendNotificationParams,
+  BadgeColors,
+  OpenTabOptions,
+  TabResolver,
+} from 'types';
 
 declare var browser: any;
 
@@ -23,6 +28,8 @@ export function isFirefox(): boolean {
 export function isChrome(): boolean {
   return navigator.userAgent.indexOf('Chrome') !== -1;
 }
+
+export const indexUrl = isWebExtension ? getUrl('index.html') : '';
 
 export function createTab(url: string, isActive: boolean = true): Promise<any> {
   return browser.tabs.create({
@@ -66,11 +73,24 @@ export async function tryOpenTab(url: string, options: OpenTabOptions = {}) {
   return createTab(url);
 }
 
+export async function closeTabs(resolver: TabResolver) {
+  const closedTabs = [];
+  const tabs = await browser.tabs.query({});
+  if (tabs.length > 0) {
+    for (const tab of tabs) {
+      if (resolver(tab)) {
+        browser.tabs.remove(tab.id);
+        closedTabs.push(tab);
+      }
+    }
+  }
+
+  return closedTabs;
+}
+
 export function getUrl(path: string): string {
   return browser.runtime.getURL(path);
 }
-
-export const indexUrl = isWebExtension ? getUrl('index.html') : '';
 
 export function executeScript(tabId: number, code: string): void {
   browser.tabs.executeScript(tabId, {
