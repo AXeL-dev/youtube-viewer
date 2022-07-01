@@ -7,9 +7,7 @@ import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
 import { HomeView, Nullable } from 'types';
 
-interface RecentViewActionsProps {
-  hasVideos: boolean;
-}
+interface RecentViewActionsProps {}
 
 function RecentViewActions(props: RecentViewActionsProps) {
   const filters = useAppSelector(selectViewFilters(HomeView.Recent));

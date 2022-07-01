@@ -12,17 +12,15 @@ interface TabActionsProps {
 }
 
 function TabActions(props: TabActionsProps) {
-  const { tab, recentVideosCount, watchLaterVideosCount } = props;
+  const { tab, watchLaterVideosCount } = props;
   const channelsCount = useAppSelector(selectActiveChannelsCount);
 
   switch (tab) {
     case HomeView.Recent:
-      return channelsCount > 0 ? (
-        <RecentViewActions hasVideos={recentVideosCount > 0} />
-      ) : null;
+      return channelsCount > 0 ? <RecentViewActions /> : null;
     case HomeView.WatchLater:
       return channelsCount > 0 ? (
-        <WatchLaterViewActions hasVideos={watchLaterVideosCount > 0} />
+        <WatchLaterViewActions videosCount={watchLaterVideosCount} />
       ) : null;
     default:
       return null;

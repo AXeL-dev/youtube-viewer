@@ -4,11 +4,11 @@ import WatchLaterViewFilters from './WatchLaterViewFilters';
 import WatchLaterViewOptions from './WatchLaterViewOptions';
 
 interface WatchLaterViewActionsProps {
-  hasVideos: boolean;
+  videosCount: number;
 }
 
 function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
-  const { hasVideos } = props;
+  const { videosCount } = props;
 
   return (
     <Box
@@ -19,7 +19,9 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
       }}
     >
       <WatchLaterViewFilters />
-      {hasVideos ? <WatchLaterViewOptions /> : null}
+      {videosCount > 0 ? (
+        <WatchLaterViewOptions videosCount={videosCount} />
+      ) : null}
     </Box>
   );
 }

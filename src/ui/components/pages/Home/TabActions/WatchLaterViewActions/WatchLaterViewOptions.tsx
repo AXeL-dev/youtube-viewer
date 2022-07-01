@@ -27,9 +27,12 @@ import {
 import { Nullable } from 'types';
 import { downloadFile } from 'helpers/file';
 
-interface WatchLaterViewOptionsProps {}
+interface WatchLaterViewOptionsProps {
+  videosCount: number;
+}
 
 function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
+  const { videosCount } = props;
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
   const viewedCount = useAppSelector(selectViewedWatchLaterVideosCount);
   const dispatch = useAppDispatch();
@@ -72,7 +75,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
   const handleRemoveAll = () => {
     setConfirmationDialogProps({
       open: true,
-      title: 'Remove all videos',
+      title: `Remove all videos (${videosCount})`,
       text: 'Are you sure that you want to remove all the videos from the watch later list?',
       onClose: (confirmed) => {
         if (confirmed) {
@@ -90,7 +93,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
   const handleRemoveViewed = () => {
     setConfirmationDialogProps({
       open: true,
-      title: 'Remove viewed videos',
+      title: `Remove viewed videos (${viewedCount})`,
       text: 'Are you sure that you want to remove all viewed videos from the watch later list?',
       onClose: (confirmed) => {
         if (confirmed) {
