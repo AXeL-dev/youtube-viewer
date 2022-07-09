@@ -15,6 +15,16 @@ type FindChannelByNameResponse = {
   total: number;
 };
 
+type FindChannelByIdArgs = {
+  id: string;
+  maxResults?: number;
+};
+
+type FindChannelByIdResponse = {
+  items: Channel[];
+  total: number;
+};
+
 type GetChannelActivitiesArgs = {
   channel: Channel;
   publishedAfter?: string;
@@ -65,6 +75,28 @@ const queries = {
         description: item.snippet.description,
         thumbnail: item.snippet.thumbnails.medium.url,
         id: item.snippet.channelId,
+      })),
+      total: response.pageInfo.totalResults,
+    }),
+  },
+  // Channel find by id query
+  findChannelById: {
+    query: ({ id, maxResults = 10 }: FindChannelByIdArgs) => ({
+      url: 'channels',
+      params: {
+        part: 'snippet,id',
+        fields: 'pageInfo,items(snippet,id)',
+        maxResults,
+        id,
+      },
+    }),
+    transformResponse: (response: Response): FindChannelByIdResponse => ({
+      items: response.items.map((item) => ({
+        title: item.snippet.title,
+        url: `https://www.youtube.com/channel/${item.snippet.channelId}/videos`,
+        description: item.snippet.description,
+        thumbnail: item.snippet.thumbnails.medium.url,
+        id: item.id,
       })),
       total: response.pageInfo.totalResults,
     }),
@@ -128,12 +160,16 @@ const queries = {
   },
 };
 
-const extendedApi = youtubeApi.injectEndpoints({
+export const extendedApi = youtubeApi.injectEndpoints({
   endpoints: (builder) => ({
     findChannelByName: builder.query<
       FindChannelByNameResponse,
       FindChannelByNameArgs
     >(queries.findChannelByName),
+    findChannelById: builder.query<
+      FindChannelByIdResponse,
+      FindChannelByIdArgs
+    >(queries.findChannelById),
     getChannelActivities: builder.query<
       GetChannelActivitiesResponse,
       GetChannelActivitiesArgs
@@ -263,6 +299,7 @@ const extendedApi = youtubeApi.injectEndpoints({
 
 export const {
   useFindChannelByNameQuery,
+  useFindChannelByIdQuery,
   useGetChannelActivitiesQuery,
   useGetVideosByIdQuery,
   useGetChannelVideosQuery,

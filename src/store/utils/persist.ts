@@ -1,6 +1,5 @@
 import store, { RootState } from 'store';
 import storage from 'helpers/storage';
-import { AnyAction } from '@reduxjs/toolkit';
 import { log } from 'helpers/logger';
 
 export const storageKey = 'APP_YOUTUBE_VIEWER';
@@ -8,7 +7,12 @@ export const storageKey = 'APP_YOUTUBE_VIEWER';
 let canPersistState = true;
 let prevSerializedState = '';
 
-export const dispatch = (action: AnyAction, persist: boolean = false) => {
+type DispatchParams = Parameters<typeof store.dispatch>;
+
+export const dispatch = (
+  action: DispatchParams[0],
+  persist: boolean = false
+) => {
   canPersistState = persist;
   store.dispatch(action);
 };

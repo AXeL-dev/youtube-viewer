@@ -12,6 +12,7 @@ import {
   selectWatchLaterVideos,
 } from 'store/selectors/videos';
 import { getVideoId } from 'helpers/utils';
+import { fetchChannelById } from 'store/thunks';
 
 declare var browser: any;
 
@@ -60,6 +61,8 @@ export default function ContextMenus(props: ContextMenusProps) {
               }),
               true
             );
+            // ensure to add channel too (if it does not exist)
+            dispatch(fetchChannelById({ id: channelId }), true);
             browser.contextMenus.update(menuItemId, { enabled: false });
           });
           break;
@@ -74,6 +77,8 @@ export default function ContextMenus(props: ContextMenusProps) {
                 }),
                 true
               );
+              // ensure to add channel too (if it does not exist)
+              dispatch(fetchChannelById({ id: channelId }), true);
             } else {
               dispatch(removeViewedVideo({ id }), true);
             }
