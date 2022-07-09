@@ -46,36 +46,38 @@ export default function ContextMenus(props: ContextMenusProps) {
 
   const handleConnect = (p: any) => {
     ports.current[p.sender.tab.id] = p;
-    p.onMessage.addListener(async (message: any) => {
+    p.onMessage.addListener((message: any) => {
       const { menuItemId, checked } = message.request;
       const { videoId: id, channelId, datePublished } = message.response;
       switch (menuItemId) {
         case 'add_video_to_watch_later_list':
-          await closeTabs((tab) => tab.url.startsWith(indexUrl));
-          dispatch(
-            addWatchLaterVideo({
-              id,
-              channelId,
-              publishedAt: new Date(datePublished).getTime(),
-            }),
-            true
-          );
-          browser.contextMenus.update(menuItemId, { enabled: false });
-          break;
-        case 'mark_video_as_viewed': {
-          await closeTabs((tab) => tab.url.startsWith(indexUrl));
-          if (checked) {
+          closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
             dispatch(
-              addViewedVideo({
+              addWatchLaterVideo({
                 id,
                 channelId,
                 publishedAt: new Date(datePublished).getTime(),
               }),
               true
             );
-          } else {
-            dispatch(removeViewedVideo({ id }), true);
-          }
+            browser.contextMenus.update(menuItemId, { enabled: false });
+          });
+          break;
+        case 'mark_video_as_viewed': {
+          closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
+            if (checked) {
+              dispatch(
+                addViewedVideo({
+                  id,
+                  channelId,
+                  publishedAt: new Date(datePublished).getTime(),
+                }),
+                true
+              );
+            } else {
+              dispatch(removeViewedVideo({ id }), true);
+            }
+          });
           break;
         }
       }
