@@ -9,7 +9,7 @@ import {
   ViewFilter,
   ViewFilters,
 } from 'types';
-import { selectHiddenChannels } from './channels';
+import { selectChannels, selectHiddenChannels } from './channels';
 import { selectViewFilters } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
@@ -84,12 +84,16 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
 export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
   selectViewFilters(HomeView.WatchLater),
-  selectHiddenChannels,
-  (videos, filters, hiddenChannels) => {
-    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
+  selectChannels,
+  (videos, filters, channels) => {
+    const channelsIds = channels.map(({ id }) => id);
+    const hiddenChannelsIds = channels
+      .filter(({ isHidden }) => isHidden)
+      .map(({ id }) => id);
     return videos.filter(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
+        channelsIds.includes(channelId) &&
         !hiddenChannelsIds.includes(channelId) &&
         filterVideoByFlags(flags, filters)
     ).length;
