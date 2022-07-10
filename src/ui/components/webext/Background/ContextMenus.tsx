@@ -123,7 +123,7 @@ export default function ContextMenus(props: ContextMenusProps) {
       isYoutubeVideo: false,
       videoId: null,
     };
-    if (url?.includes('youtube.com/watch?v=')) {
+    if (url?.includes('youtube.com/watch?v=') || url?.includes('youtu.be/')) {
       data.isYoutubeVideo = true;
       data.videoId = getVideoId(url);
     }
