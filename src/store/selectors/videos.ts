@@ -9,7 +9,7 @@ import {
   ViewFilter,
   ViewFilters,
 } from 'types';
-import { selectChannels, selectHiddenChannels } from './channels';
+import { selectActiveChannels } from './channels';
 import { selectViewFilters } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
@@ -84,17 +84,13 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
 export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
   selectViewFilters(HomeView.WatchLater),
-  selectChannels,
-  (videos, filters, channels) => {
-    const channelsIds = channels.map(({ id }) => id);
-    const hiddenChannelsIds = channels
-      .filter(({ isHidden }) => isHidden)
-      .map(({ id }) => id);
+  selectActiveChannels,
+  (videos, filters, activeChannels) => {
+    const activeChannelsIds = activeChannels.map(({ id }) => id);
     return videos.filter(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
-        channelsIds.includes(channelId) &&
-        !hiddenChannelsIds.includes(channelId) &&
+        activeChannelsIds.includes(channelId) &&
         filterVideoByFlags(flags, filters)
     ).length;
   }
@@ -102,14 +98,14 @@ export const selectWatchLaterVideosCount = createSelector(
 
 export const selectViewedWatchLaterVideosCount = createSelector(
   selectVideos,
-  selectHiddenChannels,
-  (videos, hiddenChannels) => {
-    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
+  selectActiveChannels,
+  (videos, activeChannels) => {
+    const activeChannelsIds = activeChannels.map(({ id }) => id);
     return videos.filter(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
         flags.viewed &&
-        !hiddenChannelsIds.includes(channelId)
+        activeChannelsIds.includes(channelId)
     ).length;
   }
 );
