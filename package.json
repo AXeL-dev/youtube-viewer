@@ -1,6 +1,6 @@
 {
   "name": "youtube-viewer",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "dependencies": {
     "@dnd-kit/core": "^5.0.1",
