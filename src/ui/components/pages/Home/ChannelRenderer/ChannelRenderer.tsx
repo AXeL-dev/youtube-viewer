@@ -19,7 +19,8 @@ export interface ChannelRendererProps {
 function ChannelRenderer(props: ChannelRendererProps) {
   const { channel, videos, total, isLoading, maxResults, ...rest } = props;
   const hasVideos = isLoading || videos.length > 0;
-  const hasMore = videos.length > 0 && total > maxResults;
+  const hasMore =
+    videos.length > 0 && videos.length >= maxResults && total > maxResults;
 
   return hasVideos ? (
     <Box
