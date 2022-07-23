@@ -4,8 +4,8 @@ import {
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
 import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
-import { RootState } from 'store';
-import { FetchError } from 'types';
+import store, { RootState } from 'store';
+import { FetchError, Settings } from 'types';
 
 const defaultBaseQuery = fetchBaseQuery({
   baseUrl: 'https://www.googleapis.com/youtube/v3/',
@@ -25,15 +25,16 @@ const baseQuery = (
 ) =>
   Promise.race([
     defaultBaseQuery(args, api, extraOptions),
-    new Promise((resolve) =>
-      setTimeout(
+    new Promise((resolve) => {
+      const { queryTimeout = 10000 } = store.getState().settings as Settings;
+      return setTimeout(
         () =>
           resolve({
             error: { status: 'FETCH_ERROR', error: FetchError.TIMEOUT },
           }),
-        extraOptions.timeout ?? 10000
-      )
-    ) as ReturnType<typeof defaultBaseQuery>,
+        extraOptions.timeout ?? queryTimeout
+      );
+    }) as ReturnType<typeof defaultBaseQuery>,
   ]);
 
 export const youtubeApi = createApi({

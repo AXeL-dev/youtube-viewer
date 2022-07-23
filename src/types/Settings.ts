@@ -10,6 +10,7 @@ export interface Settings {
   watchLaterViewFilters: WatchLaterViewFilters;
   homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
+  queryTimeout: number;
 }
 
 export interface HomeDisplayOptions {
@@ -44,6 +45,14 @@ export enum VideosSeniority {
   SevenDays = 7,
   TwoWeeks = 14,
   OneMonth = 31,
+}
+
+export enum QueryTimeout {
+  TenSeconds = 10000,
+  FifteenSeconds = 15000,
+  TwentySeconds = 20000,
+  ThirtySeconds = 30000,
+  OneMinute = 60000,
 }
 
 export enum SettingType {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
-import { HomeView, SettingType, VideosSeniority } from 'types';
+import { HomeView, QueryTimeout, SettingType, VideosSeniority } from 'types';
 import { ControlledField, CustomField } from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
@@ -100,6 +100,36 @@ export function Settings(props: SettingsProps) {
             {
               label: '1 month',
               value: VideosSeniority.OneMonth,
+            },
+          ]}
+          type={SettingType.List}
+        />
+        <ControlledField
+          label="Queries timeout"
+          value={settings.queryTimeout}
+          onChange={(queryTimeout: QueryTimeout) => {
+            dispatch(setSettings({ queryTimeout }));
+          }}
+          options={[
+            {
+              label: '10 seconds',
+              value: QueryTimeout.TenSeconds,
+            },
+            {
+              label: '15 seconds',
+              value: QueryTimeout.FifteenSeconds,
+            },
+            {
+              label: '20 seconds',
+              value: QueryTimeout.TwentySeconds,
+            },
+            {
+              label: '30 seconds',
+              value: QueryTimeout.ThirtySeconds,
+            },
+            {
+              label: '1 minute',
+              value: QueryTimeout.OneMinute,
             },
           ]}
           type={SettingType.List}

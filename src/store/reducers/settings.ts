@@ -29,6 +29,7 @@ export const defaultSettings = {
     hiddenViews: [],
   },
   enableNotifications: true,
+  queryTimeout: 10000,
 };
 
 const views = Object.values(HomeView);
