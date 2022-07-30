@@ -22,7 +22,16 @@ export default function Tab(props: TabProps) {
       label={
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {label}
-          {badge && selected ? <Badge badgeContent={badge} /> : null}
+          {badge && selected ? (
+            <Badge
+              badgeContent={badge}
+              title={
+                ['number', 'string'].includes(typeof badge)
+                  ? (badge as string)
+                  : ''
+              }
+            />
+          ) : null}
         </Box>
       }
       disableRipple
