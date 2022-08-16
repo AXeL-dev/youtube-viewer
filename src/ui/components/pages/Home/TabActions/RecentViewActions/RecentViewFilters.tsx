@@ -7,9 +7,9 @@ import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
 import { HomeView, Nullable } from 'types';
 
-interface RecentViewActionsProps {}
+interface RecentViewFiltersProps {}
 
-function RecentViewActions(props: RecentViewActionsProps) {
+function RecentViewFilters(props: RecentViewFiltersProps) {
   const filters = useAppSelector(selectViewFilters(HomeView.Recent));
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
@@ -103,4 +103,4 @@ function RecentViewActions(props: RecentViewActionsProps) {
   );
 }
 
-export default RecentViewActions;
+export default RecentViewFilters;

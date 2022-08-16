@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Stack, Divider, Link } from '@mui/material';
 import { Layout } from 'ui/components/shared';
-import { HomeView, QueryTimeout, SettingType, VideosSeniority } from 'types';
+import { HomeView, QueryTimeout, SettingType } from 'types';
 import { ControlledField, CustomField } from './Field';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
@@ -14,7 +14,7 @@ import {
   memorySizeOf,
   formatByteSize,
 } from 'helpers/utils';
-import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
+import { config as channelCheckerConfig } from 'ui/components/webext/Background/ChannelChecker';
 import { selectVideos } from 'store/selectors/videos';
 import SavedVideosOptions from './SavedVideosOptions';
 
@@ -75,36 +75,6 @@ export function Settings(props: SettingsProps) {
           type={SettingType.List}
         />
         <ControlledField
-          label="Recent videos seniority"
-          value={settings.recentVideosSeniority}
-          onChange={(recentVideosSeniority: VideosSeniority) => {
-            dispatch(setSettings({ recentVideosSeniority }));
-          }}
-          options={[
-            {
-              label: '1 day',
-              value: VideosSeniority.OneDay,
-            },
-            {
-              label: '3 days',
-              value: VideosSeniority.ThreeDays,
-            },
-            {
-              label: '7 days',
-              value: VideosSeniority.SevenDays,
-            },
-            {
-              label: '2 weeks',
-              value: VideosSeniority.TwoWeeks,
-            },
-            {
-              label: '1 month',
-              value: VideosSeniority.OneMonth,
-            },
-          ]}
-          type={SettingType.List}
-        />
-        <ControlledField
           label="Queries timeout"
           value={settings.queryTimeout}
           onChange={(queryTimeout: QueryTimeout) => {
@@ -154,7 +124,7 @@ export function Settings(props: SettingsProps) {
           <ControlledField
             label="Enable notifications"
             description={`Checking for new videos is performed every ${humanInterval(
-              channelCheckerDefaults.checkInterval,
+              channelCheckerConfig.checkInterval,
               'minute'
             )}${lastCheckTime ? ` (Last check: ${lastCheckTime})` : ''}`}
             value={settings.enableNotifications}

@@ -24,3 +24,8 @@ export const selectHomeDisplayOptions = createSelector(
   selectSettings,
   (settings) => settings.homeDisplayOptions
 );
+
+export const selectRecentVideosSeniority = createSelector(
+  selectSettings,
+  (settings) => settings.recentVideosSeniority
+);

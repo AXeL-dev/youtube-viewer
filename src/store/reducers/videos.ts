@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { elapsedDays } from 'helpers/utils';
 import { isWebExtension } from 'helpers/webext';
 import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
-import { defaults as channelCheckerDefaults } from 'ui/components/webext/Background/ChannelChecker';
+import { config as channelCheckerConfig } from 'ui/components/webext/Background/ChannelChecker';
 
 type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
 type RemoveVideoPayload = Video | Pick<VideoCache, 'id'>;
@@ -180,7 +180,7 @@ export const videosSlice = createSlice({
           flags.viewed ||
           flags.toWatchLater ||
           ((flags.notified || flags.recent) &&
-            elapsedDays(publishedAt) <= channelCheckerDefaults.videosSeniority)
+            elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority)
       );
     },
   },

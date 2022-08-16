@@ -17,7 +17,7 @@ interface ChannelCheckerProps {
   onCheckEnd: (data: CheckEndData) => void;
 }
 
-export const defaults = {
+export const config = {
   checkInterval: 30, // minute(s)
   videosSeniority: 1, // day(s)
 };
@@ -26,8 +26,8 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
   const cachedVideos = useAppSelector(selectChannelVideos(channel));
-  const publishedAfter = getDateBefore(defaults.videosSeniority).toISOString();
-  const pollingInterval = defaults.checkInterval * 60000; // convert minutes to milliseconds
+  const publishedAfter = getDateBefore(config.videosSeniority).toISOString();
+  const pollingInterval = config.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
     {
       channel,
