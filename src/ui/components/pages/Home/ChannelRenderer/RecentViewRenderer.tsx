@@ -27,7 +27,7 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
         .filter(({ flags }) => filterVideoByFlags(flags, filters))
         .map(({ id }) => id),
     }),
-    [videos, filters]
+    [videos, filters],
   );
   const filterCallback = useCallback(
     (video: Video) => {
@@ -37,11 +37,12 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
         return inclusionList.includes(video.id);
       }
     },
-    [filters.uncategorised, exclusionList, inclusionList]
+    [filters.uncategorised, exclusionList, inclusionList],
   );
-  const publishedAfter = getDateBefore(
-    settings.recentVideosSeniority
-  ).toISOString();
+  const publishedAfter = useMemo(
+    () => getDateBefore(settings.recentVideosSeniority).toISOString(),
+    [settings.recentVideosSeniority],
+  );
 
   return (
     <DefaultRenderer
