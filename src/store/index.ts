@@ -23,7 +23,7 @@ const store = configureStore({
 store.subscribe(
   debounce(() => {
     persistState(store.getState());
-  }, 1000)
+  }, 1000),
 );
 
 (async () => await preloadState())();

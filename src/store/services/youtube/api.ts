@@ -21,7 +21,7 @@ const defaultBaseQuery = fetchBaseQuery({
 const baseQuery = (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: { timeout?: number } = {}
+  extraOptions: { timeout?: number } = {},
 ) =>
   Promise.race([
     defaultBaseQuery(args, api, extraOptions),
@@ -32,7 +32,7 @@ const baseQuery = (
           resolve({
             error: { status: 'FETCH_ERROR', error: FetchError.TIMEOUT },
           }),
-        extraOptions.timeout ?? queryTimeout
+        extraOptions.timeout ?? queryTimeout,
       );
     }) as ReturnType<typeof defaultBaseQuery>,
   ]);

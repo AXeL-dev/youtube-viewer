@@ -61,7 +61,7 @@ export const settingsSlice = createSlice({
       action: PayloadAction<{
         view: HomeView;
         filters: Partial<ViewFilters>;
-      }>
+      }>,
     ) => {
       const { view, filters } = action.payload;
       switch (view) {
@@ -87,7 +87,7 @@ export const settingsSlice = createSlice({
     },
     setHomeDisplayOptions: (
       state,
-      action: PayloadAction<Partial<HomeDisplayOptions>>
+      action: PayloadAction<Partial<HomeDisplayOptions>>,
     ) => {
       const { hiddenViews } = action.payload;
       return {

@@ -46,7 +46,7 @@ function ChannelTitle(props: ChannelTitleProps) {
 
 function propsAreEqual(
   prevProps: ChannelTitleProps,
-  nextProps: ChannelTitleProps
+  nextProps: ChannelTitleProps,
 ) {
   return (
     prevProps.channel.title === nextProps.channel.title &&

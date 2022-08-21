@@ -5,7 +5,7 @@ import React from 'react';
 export const StyledMenuList = styled(
   React.forwardRef((props: MenuListProps, ref: React.Ref<HTMLUListElement>) => (
     <MenuList dense {...props} ref={ref} />
-  ))
+  )),
 )(({ theme }) => ({
   borderRadius: 6,
   color:
@@ -16,12 +16,12 @@ export const StyledMenuList = styled(
     '&.Mui-selected': {
       backgroundColor: alpha(
         theme.palette.action.selected,
-        theme.palette.action.selectedOpacity
+        theme.palette.action.selectedOpacity,
       ),
       '&:hover': {
         backgroundColor: alpha(
           theme.palette.action.selected,
-          theme.palette.action.focusOpacity
+          theme.palette.action.focusOpacity,
         ),
       },
     },
@@ -35,7 +35,7 @@ export const StyledMenuList = styled(
     '&:active': {
       backgroundColor: alpha(
         theme.palette.action.selected,
-        theme.palette.action.selectedOpacity
+        theme.palette.action.selectedOpacity,
       ),
     },
   },

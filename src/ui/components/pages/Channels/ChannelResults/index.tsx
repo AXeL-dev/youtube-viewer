@@ -13,7 +13,7 @@ export default function ChannelResults(props: ChannelResultsProps) {
   const { search } = props;
   const { data, error, isLoading } = useFindChannelByNameQuery(
     { name: search },
-    { skip: search === '' }
+    { skip: search === '' },
   );
   const results = data?.items || [];
 

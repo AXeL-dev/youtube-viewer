@@ -36,7 +36,7 @@ function ChannelDialogs(props: ChannelDialogsProps) {
               setChannelFilters({
                 channel,
                 filters,
-              })
+              }),
             );
           }
           onClose();
@@ -48,7 +48,7 @@ function ChannelDialogs(props: ChannelDialogsProps) {
 
 function propsAreEqual(
   prevProps: ChannelDialogsProps,
-  nextProps: ChannelDialogsProps
+  nextProps: ChannelDialogsProps,
 ) {
   return (
     prevProps.openedDialog === nextProps.openedDialog &&

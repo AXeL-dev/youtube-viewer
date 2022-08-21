@@ -189,7 +189,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
           queries.getVideosById.query({
             ids,
             maxResults,
-          })
+          }),
         );
         if (!result.data) {
           if (isFetchTimeoutError(result.error)) {
@@ -205,7 +205,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
         }
         return {
           data: queries.getVideosById.transformResponse(
-            result.data as Response
+            result.data as Response,
           ),
         };
       },
@@ -222,7 +222,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
             channel,
             publishedAfter,
             maxResults,
-          })
+          }),
         );
         if (activities.error) {
           if (isFetchTimeoutError(activities.error)) {
@@ -237,7 +237,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
           return { error: activities.error as FetchBaseQueryError };
         }
         const { items, total } = queries.getChannelActivities.transformResponse(
-          activities.data as Response
+          activities.data as Response,
         );
         // Fetch channel videos
         const ids = items.map(({ videoId }) => videoId);
@@ -253,20 +253,20 @@ export const extendedApi = youtubeApi.injectEndpoints({
           queries.getVideosById.query({
             ids,
             maxResults,
-          })
+          }),
         );
         if (!result.data) {
           return { error: result.error as FetchBaseQueryError };
         }
         const videosData = queries.getVideosById.transformResponse(
-          result.data as Response
+          result.data as Response,
         );
         if (channel.filters && channel.filters.length > 0) {
           videosData.items = videosData.items.filter((video) =>
             channel.filters!.some((filter) => {
               const videoField = parseVideoField(video, filter.field);
               return evaluateField(videoField, filter.operator, filter.value);
-            })
+            }),
           );
         }
         return {
@@ -285,7 +285,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
               saveVideos({
                 videos: data.items,
                 flags,
-              })
+              }),
             );
           }
         } catch (err) {

@@ -11,7 +11,7 @@ type DispatchParams = Parameters<typeof store.dispatch>;
 
 export const dispatch = (
   action: DispatchParams[0],
-  persist: boolean = false
+  persist: boolean = false,
 ) => {
   canPersistState = persist;
   store.dispatch(action);

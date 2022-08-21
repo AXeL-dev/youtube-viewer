@@ -45,9 +45,9 @@ export function Settings(props: SettingsProps) {
   const activeViews = useMemo(
     () =>
       views.filter(
-        ({ value }) => !settings.homeDisplayOptions.hiddenViews.includes(value)
+        ({ value }) => !settings.homeDisplayOptions.hiddenViews.includes(value),
       ),
-    [settings.homeDisplayOptions.hiddenViews]
+    [settings.homeDisplayOptions.hiddenViews],
   );
 
   useEffect(() => {
@@ -125,7 +125,7 @@ export function Settings(props: SettingsProps) {
             label="Enable notifications"
             description={`Checking for new videos is performed every ${humanInterval(
               channelCheckerConfig.checkInterval,
-              'minute'
+              'minute',
             )}${lastCheckTime ? ` (Last check: ${lastCheckTime})` : ''}`}
             value={settings.enableNotifications}
             onChange={(enableNotifications: boolean) => {

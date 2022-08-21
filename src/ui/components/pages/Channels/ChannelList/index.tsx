@@ -80,7 +80,7 @@ function ChannelList(props: ChannelListProps) {
 
 function propsAreEqual(
   prevProps: ChannelListProps,
-  nextProps: ChannelListProps
+  nextProps: ChannelListProps,
 ) {
   return (
     prevProps.showDragHandles === nextProps.showDragHandles &&

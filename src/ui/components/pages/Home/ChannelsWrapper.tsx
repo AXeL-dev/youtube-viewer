@@ -55,7 +55,7 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
 
 function propsAreEqual(
   prevProps: ChannelsWrapperProps,
-  nextProps: ChannelsWrapperProps
+  nextProps: ChannelsWrapperProps,
 ) {
   return (
     prevProps.view === nextProps.view &&

@@ -33,7 +33,7 @@ function ChannelPicture(props: ChannelPictureProps) {
 
 function propsAreEqual(
   prevProps: ChannelPictureProps,
-  nextProps: ChannelPictureProps
+  nextProps: ChannelPictureProps,
 ) {
   return (
     prevProps.channel.title === nextProps.channel.title &&

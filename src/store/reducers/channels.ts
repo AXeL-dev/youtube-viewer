@@ -33,7 +33,7 @@ export const channelsSlice = createSlice({
     },
     moveChannel: (
       state,
-      action: PayloadAction<{ from: number; to: number }>
+      action: PayloadAction<{ from: number; to: number }>,
     ) => {
       const { from, to } = action.payload;
       state.list = arrayMove(state.list, from, to);
@@ -62,7 +62,7 @@ export const channelsSlice = createSlice({
       action: PayloadAction<{
         channel: Channel;
         filters: ChannelFilter[];
-      }>
+      }>,
     ) => {
       const {
         channel: { id },

@@ -59,7 +59,7 @@ export default function ContextMenus(props: ContextMenusProps) {
                 channelId,
                 publishedAt: new Date(datePublished).getTime(),
               }),
-              true
+              true,
             );
             // ensure to add channel too (if it does not exist)
             dispatch(fetchChannelById({ id: channelId }), true);
@@ -75,7 +75,7 @@ export default function ContextMenus(props: ContextMenusProps) {
                   channelId,
                   publishedAt: new Date(datePublished).getTime(),
                 }),
-                true
+                true,
               );
               // ensure to add channel too (if it does not exist)
               dispatch(fetchChannelById({ id: channelId }), true);
@@ -144,7 +144,7 @@ export default function ContextMenus(props: ContextMenusProps) {
           switch (menu.id) {
             case 'add_video_to_watch_later_list': {
               const found = watchLaterVideos.find(
-                (video) => video.id === videoId
+                (video) => video.id === videoId,
               );
               options.enabled = !found;
               break;

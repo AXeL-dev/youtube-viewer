@@ -63,7 +63,7 @@ function VideoPlayerDialog(props: VideoPlayerDialogProps) {
 
 function propsAreEqual(
   prevProps: VideoPlayerDialogProps,
-  nextProps: VideoPlayerDialogProps
+  nextProps: VideoPlayerDialogProps,
 ) {
   return (
     prevProps.open === nextProps.open &&

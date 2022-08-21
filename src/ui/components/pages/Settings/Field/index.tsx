@@ -49,7 +49,7 @@ function Field(props: FieldProps) {
   const handleChange = (
     event:
       | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | SelectChangeEvent
+      | SelectChangeEvent,
   ) => {
     if (onChange) {
       const value =

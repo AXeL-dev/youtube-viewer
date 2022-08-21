@@ -67,8 +67,8 @@ export default function DisplayOptionsDialog(props: DisplayOptionsDialogProps) {
               ...view,
               hidden: !view.hidden,
             }
-          : view
-      )
+          : view,
+      ),
     );
   };
 
@@ -78,7 +78,7 @@ export default function DisplayOptionsDialog(props: DisplayOptionsDialogProps) {
         hiddenViews: views
           .filter(({ hidden }) => hidden)
           .map(({ value }) => value),
-      })
+      }),
     );
     onClose();
   };

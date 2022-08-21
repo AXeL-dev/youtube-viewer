@@ -46,12 +46,12 @@ function ConfirmationDialogComponent(props: ConfirmationDialogProps) {
 
 function propsAreEqual(
   prevProps: ConfirmationDialogProps,
-  nextProps: ConfirmationDialogProps
+  nextProps: ConfirmationDialogProps,
 ) {
   return prevProps.open === nextProps.open;
 }
 
 export const ConfirmationDialog = React.memo(
   ConfirmationDialogComponent,
-  propsAreEqual
+  propsAreEqual,
 );

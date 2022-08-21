@@ -23,7 +23,7 @@ interface ChannelFiltersDialogProps {
 export default function ChannelFiltersDialog(props: ChannelFiltersDialogProps) {
   const { open, channel, onClose } = props;
   const [filters, setFilters] = useState<ChannelFilter[]>(
-    channel.filters || []
+    channel.filters || [],
   );
 
   useDidMountEffect(() => {
@@ -51,8 +51,8 @@ export default function ChannelFiltersDialog(props: ChannelFiltersDialogProps) {
               ...filter,
               ...changes,
             }
-          : filter
-      )
+          : filter,
+      ),
     );
   };
 

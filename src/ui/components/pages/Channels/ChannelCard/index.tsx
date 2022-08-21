@@ -53,7 +53,7 @@ const ChannelCard = React.forwardRef(
           />
         </Card>
       ),
-      [channel]
+      [channel],
     );
 
     return (
@@ -78,7 +78,7 @@ const ChannelCard = React.forwardRef(
         </Paper>
       </div>
     );
-  }
+  },
 );
 
 export default ChannelCard;

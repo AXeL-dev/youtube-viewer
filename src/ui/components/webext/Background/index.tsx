@@ -73,7 +73,7 @@ export function Background(props: BackgroundProps) {
       // Get total count of new videos
       const count = responses.reduce(
         (acc, cur) => acc + cur.newVideos.length,
-        0
+        0,
       );
       log('All channel checkers responded, new videos count:', count);
       // Update badge count & send notification
@@ -81,7 +81,7 @@ export function Background(props: BackgroundProps) {
         updateBadge(count);
         const maxChannelTitles = 5;
         const fulfilledResponses = responses.filter(
-          ({ newVideos }) => newVideos.length > 0
+          ({ newVideos }) => newVideos.length > 0,
         );
         const channelTitles = fulfilledResponses
           .slice(0, Math.min(maxChannelTitles, fulfilledResponses.length))
@@ -107,7 +107,7 @@ export function Background(props: BackgroundProps) {
         // Save notified videos
         const videos = fulfilledResponses.reduce(
           (acc: Video[], cur: CheckEndData) => [...acc, ...cur.newVideos],
-          []
+          [],
         );
         log('Saving notified videos.', videos);
         dispatch(
@@ -117,7 +117,7 @@ export function Background(props: BackgroundProps) {
               notified: true,
             },
           }),
-          true
+          true,
         );
       }
       // Reset the responses map

@@ -19,7 +19,7 @@ export const parseVideoField = (video: Video, field: string) => {
 export const evaluateField = (
   field: string | number,
   operator: ChannelFilterOperator,
-  value: string | number
+  value: string | number,
 ) => {
   switch (operator) {
     default:

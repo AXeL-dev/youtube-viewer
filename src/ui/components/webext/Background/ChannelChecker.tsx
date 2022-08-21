@@ -36,7 +36,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
     {
       skip: !ready,
       // pollingInterval,
-    }
+    },
   );
 
   useInterval(() => {
@@ -60,11 +60,11 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
               flags.viewed ||
               flags.toWatchLater ||
               flags.notified ||
-              flags.recent
+              flags.recent,
           )
           .map(({ id }) => id);
         newVideos = videos.filter(
-          (video) => !checkedVideosIds.includes(video.id)
+          (video) => !checkedVideosIds.includes(video.id),
         );
         if (newVideos.length > 0) {
           log(`New videos for channel ${channel.title}:`, newVideos);

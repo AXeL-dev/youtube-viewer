@@ -33,7 +33,7 @@ function VideoTopActions(props: VideoTopActionsProps) {
 
 function propsAreEqual(
   prevProps: VideoTopActionsProps,
-  nextProps: VideoTopActionsProps
+  nextProps: VideoTopActionsProps,
 ) {
   return (
     prevProps.view === nextProps.view &&

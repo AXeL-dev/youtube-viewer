@@ -2,7 +2,7 @@ import { useRef, useEffect, EffectCallback, DependencyList } from 'react';
 
 export function useDidMountEffect(
   effect: EffectCallback,
-  deps?: DependencyList
+  deps?: DependencyList,
 ) {
   const didMount = useRef(false);
 

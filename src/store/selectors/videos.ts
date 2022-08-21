@@ -16,23 +16,23 @@ export const selectVideos = (state: RootState) => state.videos.list;
 
 export const selectChannelVideos = (channel: Channel) =>
   createSelector(selectVideos, (videos) =>
-    videos.filter(({ channelId }) => channel.id === channelId)
+    videos.filter(({ channelId }) => channel.id === channelId),
   );
 
 export const selectViewedVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos.filter(
       ({ flags, channelId }) =>
-        flags.viewed && (!channel || channel.id === channelId)
-    )
+        flags.viewed && (!channel || channel.id === channelId),
+    ),
   );
 
 export const selectNotifiedVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos.filter(
       ({ flags, channelId }) =>
-        flags.notified && (!channel || channel.id === channelId)
-    )
+        flags.notified && (!channel || channel.id === channelId),
+    ),
   );
 
 const filter2Flag = (key: ViewFilter): VideoFlag => {
@@ -76,9 +76,9 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
           ({ flags, channelId }) =>
             flags.toWatchLater &&
             (!channel || channel.id === channelId) &&
-            filterVideoByFlags(flags, filters)
+            filterVideoByFlags(flags, filters),
         )
-        .sort((a, b) => b.publishedAt - a.publishedAt)
+        .sort((a, b) => b.publishedAt - a.publishedAt),
   );
 
 export const selectWatchLaterVideosCount = createSelector(
@@ -91,9 +91,9 @@ export const selectWatchLaterVideosCount = createSelector(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
         activeChannelsIds.includes(channelId) &&
-        filterVideoByFlags(flags, filters)
+        filterVideoByFlags(flags, filters),
     ).length;
-  }
+  },
 );
 
 export const selectViewedWatchLaterVideosCount = createSelector(
@@ -105,9 +105,9 @@ export const selectViewedWatchLaterVideosCount = createSelector(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
         flags.viewed &&
-        activeChannelsIds.includes(channelId)
+        activeChannelsIds.includes(channelId),
     ).length;
-  }
+  },
 );
 
 export const selectVideoMeta = (video: Video) =>

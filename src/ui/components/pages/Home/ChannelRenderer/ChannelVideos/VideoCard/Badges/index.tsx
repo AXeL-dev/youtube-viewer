@@ -31,7 +31,7 @@ function VideoBadges(props: VideoBadgesProps) {
 
 function propsAreEqual(
   prevProps: VideoBadgesProps,
-  nextProps: VideoBadgesProps
+  nextProps: VideoBadgesProps,
 ) {
   return (
     prevProps.view === nextProps.view &&

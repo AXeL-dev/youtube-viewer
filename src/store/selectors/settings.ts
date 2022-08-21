@@ -5,7 +5,7 @@ import { HomeView, ViewFilters } from 'types';
 export const selectSettings = (state: RootState) => state.settings;
 
 export const selectMode = createSelector(selectSettings, (settings) =>
-  settings.darkMode ? 'dark' : 'light'
+  settings.darkMode ? 'dark' : 'light',
 );
 
 export const selectViewFilters = (view: HomeView) =>
@@ -22,10 +22,10 @@ export const selectViewFilters = (view: HomeView) =>
 
 export const selectHomeDisplayOptions = createSelector(
   selectSettings,
-  (settings) => settings.homeDisplayOptions
+  (settings) => settings.homeDisplayOptions,
 );
 
 export const selectRecentVideosSeniority = createSelector(
   selectSettings,
-  (settings) => settings.recentVideosSeniority
+  (settings) => settings.recentVideosSeniority,
 );

@@ -20,7 +20,7 @@ export function Home(props: HomeProps) {
     {
       displayed: 0,
       total: 0,
-    }
+    },
   );
   const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
   const { hiddenViews } = settings.homeDisplayOptions;

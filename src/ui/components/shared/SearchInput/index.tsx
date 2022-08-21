@@ -48,7 +48,7 @@ export function SearchInput(props: SearchInputProps) {
         onChange(value);
       }, debounceTime),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   React.useEffect(() => {

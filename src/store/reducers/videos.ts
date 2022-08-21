@@ -96,7 +96,7 @@ export const videosSlice = createSlice({
     },
     removeWatchLaterVideo: (
       state,
-      action: PayloadAction<RemoveVideoPayload>
+      action: PayloadAction<RemoveVideoPayload>,
     ) => {
       const video = action.payload;
       setVideoFlags({
@@ -111,7 +111,7 @@ export const videosSlice = createSlice({
     },
     clearWatchLaterList: (
       state,
-      action: PayloadAction<{ viewedOnly: boolean } | undefined>
+      action: PayloadAction<{ viewedOnly: boolean } | undefined>,
     ) => {
       const { viewedOnly } = action.payload || {};
       state.list = state.list.map((video) =>
@@ -123,7 +123,7 @@ export const videosSlice = createSlice({
                 toWatchLater: viewedOnly ? !video.flags.viewed : false,
               },
             }
-          : video
+          : video,
       );
     },
     archiveVideo: (state, action: PayloadAction<AddVideoPayload>) => {
@@ -146,7 +146,7 @@ export const videosSlice = createSlice({
     },
     archiveVideosByFlag: (
       state,
-      action: PayloadAction<Exclude<VideoFlag, 'archived'>>
+      action: PayloadAction<Exclude<VideoFlag, 'archived'>>,
     ) => {
       const flag = action.payload;
       state.list = state.list.map((video) =>
@@ -158,12 +158,12 @@ export const videosSlice = createSlice({
                 archived: true,
               },
             }
-          : video
+          : video,
       );
     },
     saveVideos: (
       state,
-      action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>
+      action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>,
     ) => {
       const { videos, flags } = action.payload;
       for (const video of videos) {
@@ -180,7 +180,7 @@ export const videosSlice = createSlice({
           flags.viewed ||
           flags.toWatchLater ||
           ((flags.notified || flags.recent) &&
-            elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority)
+            elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority),
       );
     },
   },

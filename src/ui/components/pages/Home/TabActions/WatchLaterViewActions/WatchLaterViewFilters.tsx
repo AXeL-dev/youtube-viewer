@@ -30,7 +30,7 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         filters: {
           uncategorised: !filters.uncategorised,
         },
-      })
+      }),
     );
   };
 
@@ -41,7 +41,7 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         filters: {
           viewed: !filters.viewed,
         },
-      })
+      }),
     );
   };
 
@@ -52,7 +52,7 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         filters: {
           archived: !filters.archived,
         },
-      })
+      }),
     );
   };
 

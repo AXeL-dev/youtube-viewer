@@ -41,7 +41,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     },
     {
       skip: itemsPerRow === 0,
-    }
+    },
   );
   const videos = (data?.items || []).filter(filter);
   const total = data?.total || 0;

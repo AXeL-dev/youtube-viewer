@@ -43,7 +43,7 @@ function SavedVideosOptions(props: ISavedVideosOptionsProps) {
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
+    index: number,
   ) => {
     setSelectedIndex(index);
     setOpen(false);

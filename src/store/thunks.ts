@@ -18,7 +18,7 @@ export const fetchChannelById = createAsyncThunk<
 
   // fetch channel by id
   const result = dispatch(
-    extendedApi.endpoints.findChannelById.initiate({ id })
+    extendedApi.endpoints.findChannelById.initiate({ id }),
   );
   result.unsubscribe();
   const response = await result;

@@ -51,7 +51,7 @@ function TabPanel(props: TabPanelProps) {
             displayed: acc.displayed + (cur.items?.length || 0),
             total: acc.total + (cur.total || 0),
           }),
-          { displayed: 0, total: 0 }
+          { displayed: 0, total: 0 },
         );
         onCountChange(tab, count);
         channelsMap.current.clear();

@@ -35,7 +35,7 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
           lastCheckDate.current = date;
         },
       }),
-      []
+      [],
     );
 
     const openHomePage = () => {
@@ -46,7 +46,7 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
     const handleMessage = (
       request: MessageRequest,
       sender: any,
-      sendResponse: any
+      sendResponse: any,
     ) => {
       log('Handle message:', request);
       let response: any = null;
@@ -72,7 +72,7 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
 
     const handleNotificationButtonClick = (
       notificationId: string,
-      buttonIndex: number
+      buttonIndex: number,
     ) => {
       log(`Notification button ${buttonIndex} clicked:`, notificationId);
       log('channels', channels);
@@ -108,7 +108,7 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
       // Handle click on notifications
       browser.notifications.onClicked.addListener(handleNotificationClick);
       browser.notifications.onButtonClicked.addListener(
-        handleNotificationButtonClick
+        handleNotificationButtonClick,
       );
       // Handle click on browser action
       // only works if "browser_action" > "default_popup" is not set on manifest
@@ -120,10 +120,10 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
         browser.runtime.onMessage.removeListener(handleMessage);
         browser.notifications.onClicked.removeListener(handleNotificationClick);
         browser.notifications.onButtonClicked.removeListener(
-          handleNotificationButtonClick
+          handleNotificationButtonClick,
         );
         browser.browserAction.onClicked.removeListener(
-          handleBrowserActionClick
+          handleBrowserActionClick,
         );
         browser.storage.onChanged.removeListener(handleStorageChange);
       };
@@ -131,7 +131,7 @@ const EventsHandler = forwardRef<EventsHandlerRef, EventsHandlerProps>(
     }, []);
 
     return null;
-  }
+  },
 );
 
 export default EventsHandler;

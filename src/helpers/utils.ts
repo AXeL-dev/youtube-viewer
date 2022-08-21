@@ -313,7 +313,7 @@ export function throttle(callback: Function, timeFrame: number) {
 export function debounce(
   callback: Function,
   wait: number,
-  immediate?: boolean
+  immediate?: boolean,
 ) {
   let timeout: any = null;
   return function (this: any, ...args: any) {
@@ -353,7 +353,7 @@ export function generateGuid() {
 export function reorder<T>(
   list: T[],
   currentIndex: number,
-  newIndex: number
+  newIndex: number,
 ): T[] {
   const result = Array.from(list);
   const [removed] = result.splice(currentIndex, 1);
@@ -386,7 +386,7 @@ export function noop<T>(event: React.MouseEvent<T>) {
 export function humanInterval(
   interval: number,
   unity: string,
-  pluralize: boolean = true
+  pluralize: boolean = true,
 ) {
   return `${interval} ${unity}${pluralize && interval > 1 ? 's' : ''}`;
 }

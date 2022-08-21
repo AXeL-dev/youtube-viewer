@@ -28,7 +28,7 @@ function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
     },
     {
       skip: itemsPerRow === 0,
-    }
+    },
   );
   const videos = (data?.items || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
 

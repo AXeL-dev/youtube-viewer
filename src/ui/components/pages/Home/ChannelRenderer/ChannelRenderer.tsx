@@ -44,7 +44,7 @@ function ChannelRenderer(props: ChannelRendererProps) {
 
 function propsAreEqual(
   prevProps: ChannelRendererProps,
-  nextProps: ChannelRendererProps
+  nextProps: ChannelRendererProps,
 ) {
   return (
     prevProps.view === nextProps.view &&

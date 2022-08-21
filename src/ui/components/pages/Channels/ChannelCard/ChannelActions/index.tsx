@@ -119,12 +119,12 @@ const ChannelActions = React.forwardRef<HTMLButtonElement, ChannelActionsProps>(
         />
       </>
     );
-  }
+  },
 );
 
 function propsAreEqual(
   prevProps: ChannelActionsProps,
-  nextProps: ChannelActionsProps
+  nextProps: ChannelActionsProps,
 ) {
   return (
     JSON.stringify(prevProps.channel) === JSON.stringify(nextProps.channel)
