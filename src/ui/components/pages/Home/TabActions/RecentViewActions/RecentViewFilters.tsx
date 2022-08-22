@@ -59,12 +59,6 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <CheckableMenuItem
-          checked={filters.uncategorised}
-          onClick={() => handleFilterToggle('uncategorised')}
-        >
-          Uncategorised
-        </CheckableMenuItem>
-        <CheckableMenuItem
           checked={filters.viewed}
           onClick={() => handleFilterToggle('viewed')}
         >
@@ -75,6 +69,12 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
           onClick={() => handleFilterToggle('watchLater')}
         >
           Watch later
+        </CheckableMenuItem>
+        <CheckableMenuItem
+          checked={filters.others}
+          onClick={() => handleFilterToggle('others')}
+        >
+          Others
         </CheckableMenuItem>
       </StyledMenu>
     </>

@@ -73,11 +73,11 @@ const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
   };
   return filterKeys.some((key) => {
     switch (key) {
-      case 'uncategorised':
+      case 'others':
         return (
-          filters.uncategorised &&
+          filters.others &&
           filterKeys
-            .filter((key) => !['uncategorised'].includes(key))
+            .filter((key) => !['others'].includes(key))
             .every((key) => !hasFlag(key))
         );
       default:

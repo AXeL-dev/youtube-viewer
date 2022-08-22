@@ -59,12 +59,6 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <CheckableMenuItem
-          checked={filters.uncategorised}
-          onClick={() => handleFilterToggle('uncategorised')}
-        >
-          Uncategorised
-        </CheckableMenuItem>
-        <CheckableMenuItem
           checked={filters.viewed}
           onClick={() => handleFilterToggle('viewed')}
         >
@@ -75,6 +69,12 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
           onClick={() => handleFilterToggle('archived')}
         >
           Archived
+        </CheckableMenuItem>
+        <CheckableMenuItem
+          checked={filters.others}
+          onClick={() => handleFilterToggle('others')}
+        >
+          Others
         </CheckableMenuItem>
       </StyledMenu>
     </>

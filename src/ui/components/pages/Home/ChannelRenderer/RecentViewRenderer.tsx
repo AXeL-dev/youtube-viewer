@@ -16,13 +16,13 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   const videos = useAppSelector(selectRecentChannelVideos(channel));
   const filterCallback = useCallback(
     (video: Video) => {
-      if (settings.recentViewFilters.uncategorised) {
+      if (settings.recentViewFilters.others) {
         return !videos.excluded.includes(video.id);
       } else {
         return videos.included.includes(video.id);
       }
     },
-    [settings.recentViewFilters.uncategorised, videos],
+    [settings.recentViewFilters.others, videos],
   );
   const publishedAfter = useMemo(
     () => getDateBefore(settings.recentVideosSeniority).toISOString(),

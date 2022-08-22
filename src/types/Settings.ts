@@ -18,15 +18,15 @@ export interface HomeDisplayOptions {
 }
 
 export interface RecentViewFilters {
-  uncategorised: boolean;
   viewed: boolean;
   watchLater: boolean;
+  others: boolean;
 }
 
 export interface WatchLaterViewFilters {
-  uncategorised: boolean;
   viewed: boolean;
   archived: boolean;
+  others: boolean;
 }
 
 export type ViewFilters = Either<RecentViewFilters, WatchLaterViewFilters>;
