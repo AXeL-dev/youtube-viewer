@@ -24,7 +24,7 @@ export default function LoadMore(props: LoadMoreProps) {
     >
       {hasMore ? (
         <IconButton
-          sx={{ height: 224, borderRadius: 0 }}
+          sx={{ height: 220, borderRadius: 0 }}
           disabled={isLoading}
           size="small"
           onClick={onClick}
