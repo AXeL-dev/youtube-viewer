@@ -14,13 +14,30 @@ import { selectViewFilters } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
-export const selectChannelVideos = (channel: Channel, filters?: ViewFilters) =>
+export const selectChannelVideos = (channel: Channel) =>
   createSelector(selectVideos, (videos) =>
-    videos.filter(
-      (video) =>
-        channel.id === video.channelId &&
-        (!filters || filterVideoByFlags(video, filters)),
-    ),
+    videos.filter(({ channelId }) => channel.id === channelId),
+  );
+
+export const selectRecentChannelVideos = (channel: Channel) =>
+  createSelector(
+    selectVideos,
+    selectViewFilters(HomeView.Recent),
+    (videos, filters) =>
+      videos
+        .filter((video) => channel.id === video.channelId)
+        .reduce(
+          (acc, video) => {
+            const key = filterVideoByFlags(video, filters)
+              ? 'included'
+              : 'excluded';
+            return {
+              ...acc,
+              [key]: [...acc[key], video.id],
+            };
+          },
+          { excluded: [] as string[], included: [] as string[] },
+        ),
   );
 
 export const selectViewedVideos = (channel?: Channel) =>
@@ -48,7 +65,7 @@ const filter2Flag = (key: ViewFilter): VideoFlag => {
   }
 };
 
-export const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
+const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
   const filterKeys = Object.keys(filters) as ViewFilter[];
   const hasFlag = (key: ViewFilter) => {
     const flag = filter2Flag(key);

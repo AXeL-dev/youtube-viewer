@@ -3,7 +3,7 @@ import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import { selectChannelVideos } from 'store/selectors/videos';
+import { selectRecentChannelVideos } from 'store/selectors/videos';
 import { isWebExtension } from 'helpers/webext';
 import { Video } from 'types';
 
@@ -13,12 +13,16 @@ export interface RecentViewRendererProps
 function RecentViewRenderer(props: RecentViewRendererProps) {
   const { channel } = props;
   const settings = useAppSelector(selectSettings);
-  const videos = useAppSelector(
-    selectChannelVideos(channel, settings.recentViewFilters),
-  ).map(({ id }) => id);
+  const videos = useAppSelector(selectRecentChannelVideos(channel));
   const filterCallback = useCallback(
-    (video: Video) => videos.includes(video.id),
-    [videos],
+    (video: Video) => {
+      if (settings.recentViewFilters.uncategorised) {
+        return !videos.excluded.includes(video.id);
+      } else {
+        return videos.included.includes(video.id);
+      }
+    },
+    [settings.recentViewFilters.uncategorised, videos],
   );
   const publishedAfter = useMemo(
     () => getDateBefore(settings.recentVideosSeniority).toISOString(),
