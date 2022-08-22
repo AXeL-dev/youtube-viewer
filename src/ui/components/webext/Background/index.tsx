@@ -8,7 +8,7 @@ import {
 } from 'helpers/webext';
 import { useAppSelector } from 'store';
 import { selectNotificationEnabledChannels } from 'store/selectors/channels';
-import { saveVideos, removeOutdatedVideos } from 'store/reducers/videos';
+import { saveVideos } from 'store/reducers/videos';
 import { log } from 'helpers/logger';
 import { selectSettings } from 'store/selectors/settings';
 import { Video } from 'types';
@@ -42,17 +42,6 @@ export function Background(props: BackgroundProps) {
       responsesMap.current.clear();
     }
   }, [settings.enableNotifications]);
-
-  useEffect(() => {
-    if (!isWebExtension) {
-      return;
-    }
-    if (app.loaded) {
-      log('Removing outdated videos.');
-      dispatch(removeOutdatedVideos(), true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [app.loaded]);
 
   const updateBadge = async (count: number) => {
     const badgeText: string = await getBadgeText();

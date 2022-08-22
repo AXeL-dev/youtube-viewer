@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { elapsedDays } from 'helpers/utils';
-import { isWebExtension } from 'helpers/webext';
 import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
-import { config as channelCheckerConfig } from 'ui/components/webext/Background/ChannelChecker';
 
 type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
 type RemoveVideoPayload = Video | Pick<VideoCache, 'id'>;
@@ -104,10 +101,6 @@ export const videosSlice = createSlice({
         video,
         flags: { toWatchLater: false },
       });
-      if (!isWebExtension) {
-        // no need to for the webextension, since it will be done by the background page on each launch
-        videosSlice.caseReducers.removeOutdatedVideos(state);
-      }
     },
     clearWatchLaterList: (
       state,
@@ -163,7 +156,10 @@ export const videosSlice = createSlice({
     },
     saveVideos: (
       state,
-      action: PayloadAction<{ videos: Video[]; flags: VideoFlags }>,
+      action: PayloadAction<{
+        videos: Video[];
+        flags: VideoFlags;
+      }>,
     ) => {
       const { videos, flags } = action.payload;
       for (const video of videos) {
@@ -173,15 +169,6 @@ export const videosSlice = createSlice({
           flags,
         });
       }
-    },
-    removeOutdatedVideos: (state) => {
-      state.list = state.list.filter(
-        ({ flags, publishedAt }) =>
-          flags.viewed ||
-          flags.toWatchLater ||
-          ((flags.notified || flags.recent) &&
-            elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority),
-      );
     },
   },
 });
@@ -197,7 +184,6 @@ export const {
   unarchiveVideo,
   archiveVideosByFlag,
   saveVideos,
-  removeOutdatedVideos,
 } = videosSlice.actions;
 
 export default videosSlice.reducer;
