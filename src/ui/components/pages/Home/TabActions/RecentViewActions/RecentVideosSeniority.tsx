@@ -77,8 +77,9 @@ function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {options.map(({ label, value }) => (
+        {options.map(({ label, value }, index) => (
           <CheckableMenuItem
+            key={index}
             checked={seniority === value}
             onClick={() => handleChange(value)}
           >

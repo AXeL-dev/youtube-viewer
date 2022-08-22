@@ -48,9 +48,13 @@ type GetVideosByIdResponse = {
 };
 
 type GetChannelVideosArgs = GetChannelActivitiesArgs & {
-  persistVideos?: boolean;
-  persistVideosFlags?: VideoFlags;
+  persistVideosOptions?: PersistVideosOptions;
 };
+
+export interface PersistVideosOptions {
+  enable: boolean;
+  flags?: VideoFlags;
+}
 
 export type GetChannelVideosResponse = GetVideosByIdResponse;
 
@@ -277,9 +281,10 @@ export const extendedApi = youtubeApi.injectEndpoints({
         };
       },
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        const { persistVideos, persistVideosFlags: flags = {} } = arg;
+        const { persistVideosOptions } = arg;
         try {
-          if (persistVideos) {
+          if (persistVideosOptions?.enable) {
+            const { flags = {} } = persistVideosOptions;
             const { data } = await queryFulfilled;
             dispatch(
               saveVideos({

@@ -4,8 +4,8 @@ import {
   Channel,
   HomeView,
   Video,
+  VideoCache,
   VideoFlag,
-  VideoFlags,
   ViewFilter,
   ViewFilters,
 } from 'types';
@@ -14,9 +14,13 @@ import { selectViewFilters } from './settings';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
-export const selectChannelVideos = (channel: Channel) =>
+export const selectChannelVideos = (channel: Channel, filters?: ViewFilters) =>
   createSelector(selectVideos, (videos) =>
-    videos.filter(({ channelId }) => channel.id === channelId),
+    videos.filter(
+      (video) =>
+        channel.id === video.channelId &&
+        (!filters || filterVideoByFlags(video, filters)),
+    ),
   );
 
 export const selectViewedVideos = (channel?: Channel) =>
@@ -44,24 +48,23 @@ const filter2Flag = (key: ViewFilter): VideoFlag => {
   }
 };
 
-export const filterVideoByFlags = (flags: VideoFlags, filters: ViewFilters) => {
+export const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
   const filterKeys = Object.keys(filters) as ViewFilter[];
+  const hasFlag = (key: ViewFilter) => {
+    const flag = filter2Flag(key);
+    return video.flags[flag];
+  };
   return filterKeys.some((key) => {
     switch (key) {
       case 'uncategorised':
         return (
           filters.uncategorised &&
           filterKeys
-            .filter((key) => key !== 'uncategorised')
-            .every((key) => {
-              const flag = filter2Flag(key);
-              return !flags[flag];
-            })
+            .filter((key) => !['uncategorised'].includes(key))
+            .every((key) => !hasFlag(key))
         );
-      default: {
-        const flag = filter2Flag(key);
-        return filters[key] && flags[flag];
-      }
+      default:
+        return filters[key] && hasFlag(key);
     }
   });
 };
@@ -73,10 +76,10 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
     (videos, filters) =>
       videos
         .filter(
-          ({ flags, channelId }) =>
-            flags.toWatchLater &&
-            (!channel || channel.id === channelId) &&
-            filterVideoByFlags(flags, filters),
+          (video) =>
+            video.flags.toWatchLater &&
+            (!channel || channel.id === video.channelId) &&
+            filterVideoByFlags(video, filters),
         )
         .sort((a, b) => b.publishedAt - a.publishedAt),
   );
@@ -88,10 +91,10 @@ export const selectWatchLaterVideosCount = createSelector(
   (videos, filters, activeChannels) => {
     const activeChannelsIds = activeChannels.map(({ id }) => id);
     return videos.filter(
-      ({ flags, channelId }) =>
-        flags.toWatchLater &&
-        activeChannelsIds.includes(channelId) &&
-        filterVideoByFlags(flags, filters),
+      (video) =>
+        video.flags.toWatchLater &&
+        activeChannelsIds.includes(video.channelId) &&
+        filterVideoByFlags(video, filters),
     ).length;
   },
 );

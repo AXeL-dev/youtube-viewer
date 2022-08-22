@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
-import { HomeView, Nullable } from 'types';
+import { HomeView, Nullable, RecentViewFilters as Filters } from 'types';
 
 interface RecentViewFiltersProps {}
 
@@ -23,34 +23,12 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
     setAnchorEl(null);
   };
 
-  const handleUncategorisedFilterToggle = () => {
+  const handleFilterToggle = (key: keyof Filters) => {
     dispatch(
       setViewFilters({
         view: HomeView.Recent,
         filters: {
-          uncategorised: !filters.uncategorised,
-        },
-      }),
-    );
-  };
-
-  const handleViewedFilterToggle = () => {
-    dispatch(
-      setViewFilters({
-        view: HomeView.Recent,
-        filters: {
-          viewed: !filters.viewed,
-        },
-      }),
-    );
-  };
-
-  const handleWatchLaterFilterToggle = () => {
-    dispatch(
-      setViewFilters({
-        view: HomeView.Recent,
-        filters: {
-          watchLater: !filters.watchLater,
+          [key]: !filters[key],
         },
       }),
     );
@@ -82,19 +60,19 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
       >
         <CheckableMenuItem
           checked={filters.uncategorised}
-          onClick={handleUncategorisedFilterToggle}
+          onClick={() => handleFilterToggle('uncategorised')}
         >
           Uncategorised
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.viewed}
-          onClick={handleViewedFilterToggle}
+          onClick={() => handleFilterToggle('viewed')}
         >
           Viewed
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.watchLater!}
-          onClick={handleWatchLaterFilterToggle}
+          onClick={() => handleFilterToggle('watchLater')}
         >
           Watch later
         </CheckableMenuItem>

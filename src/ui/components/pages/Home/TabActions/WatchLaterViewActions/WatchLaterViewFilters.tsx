@@ -3,7 +3,7 @@ import { IconButton } from '@mui/material';
 import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { HomeView, Nullable } from 'types';
+import { HomeView, Nullable, WatchLaterViewFilters as Filters } from 'types';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
 
@@ -23,34 +23,12 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
     setAnchorEl(null);
   };
 
-  const handleUncategorisedFilterToggle = () => {
+  const handleFilterToggle = (key: keyof Filters) => {
     dispatch(
       setViewFilters({
         view: HomeView.WatchLater,
         filters: {
-          uncategorised: !filters.uncategorised,
-        },
-      }),
-    );
-  };
-
-  const handleViewedFilterToggle = () => {
-    dispatch(
-      setViewFilters({
-        view: HomeView.WatchLater,
-        filters: {
-          viewed: !filters.viewed,
-        },
-      }),
-    );
-  };
-
-  const handleArchivedFilterToggle = () => {
-    dispatch(
-      setViewFilters({
-        view: HomeView.WatchLater,
-        filters: {
-          archived: !filters.archived,
+          [key]: !filters[key],
         },
       }),
     );
@@ -82,19 +60,19 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
       >
         <CheckableMenuItem
           checked={filters.uncategorised}
-          onClick={handleUncategorisedFilterToggle}
+          onClick={() => handleFilterToggle('uncategorised')}
         >
           Uncategorised
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.viewed}
-          onClick={handleViewedFilterToggle}
+          onClick={() => handleFilterToggle('viewed')}
         >
           Viewed
         </CheckableMenuItem>
         <CheckableMenuItem
           checked={filters.archived!}
-          onClick={handleArchivedFilterToggle}
+          onClick={() => handleFilterToggle('archived')}
         >
           Archived
         </CheckableMenuItem>

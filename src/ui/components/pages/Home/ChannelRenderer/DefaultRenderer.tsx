@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Channel, HomeView, Video, VideoFlags } from 'types';
-import { useGetChannelVideosQuery } from 'store/services/youtube';
+import { Channel, HomeView, Video } from 'types';
+import {
+  PersistVideosOptions,
+  useGetChannelVideosQuery,
+} from 'store/services/youtube';
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
@@ -9,8 +12,7 @@ export interface DefaultRendererProps {
   channel: Channel;
   view: HomeView;
   publishedAfter?: string;
-  persistVideos?: boolean;
-  persistVideosFlags?: VideoFlags;
+  persistVideosOptions?: PersistVideosOptions;
   filter?: (video: Video) => boolean;
   onError?: (error: any) => void;
   onChange?: (data: any) => void;
@@ -21,8 +23,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
   const {
     channel,
     publishedAfter,
-    persistVideos = false,
-    persistVideosFlags,
+    persistVideosOptions,
     filter = () => true,
     onError,
     onChange,
@@ -36,8 +37,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       channel,
       publishedAfter,
       maxResults,
-      persistVideos,
-      persistVideosFlags,
+      persistVideosOptions,
     },
     {
       skip: itemsPerRow === 0,

@@ -3,10 +3,7 @@ import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import {
-  filterVideoByFlags,
-  selectChannelVideos,
-} from 'store/selectors/videos';
+import { selectChannelVideos } from 'store/selectors/videos';
 import { isWebExtension } from 'helpers/webext';
 import { Video } from 'types';
 
@@ -16,28 +13,12 @@ export interface RecentViewRendererProps
 function RecentViewRenderer(props: RecentViewRendererProps) {
   const { channel } = props;
   const settings = useAppSelector(selectSettings);
-  const videos = useAppSelector(selectChannelVideos(channel));
-  const filters = settings.recentViewFilters;
-  const { exclusionList, inclusionList } = useMemo(
-    () => ({
-      exclusionList: videos
-        .filter(({ flags }) => !filterVideoByFlags(flags, filters))
-        .map(({ id }) => id),
-      inclusionList: videos
-        .filter(({ flags }) => filterVideoByFlags(flags, filters))
-        .map(({ id }) => id),
-    }),
-    [videos, filters],
-  );
+  const videos = useAppSelector(
+    selectChannelVideos(channel, settings.recentViewFilters),
+  ).map(({ id }) => id);
   const filterCallback = useCallback(
-    (video: Video) => {
-      if (filters.uncategorised) {
-        return !exclusionList.includes(video.id);
-      } else {
-        return inclusionList.includes(video.id);
-      }
-    },
-    [filters.uncategorised, exclusionList, inclusionList],
+    (video: Video) => videos.includes(video.id),
+    [videos],
   );
   const publishedAfter = useMemo(
     () => getDateBefore(settings.recentVideosSeniority).toISOString(),
@@ -47,8 +28,10 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   return (
     <DefaultRenderer
       publishedAfter={publishedAfter}
-      persistVideos={isWebExtension}
-      persistVideosFlags={{ recent: true }}
+      persistVideosOptions={{
+        enable: isWebExtension,
+        flags: { recent: true },
+      }}
       filter={filterCallback}
       {...props}
     />
