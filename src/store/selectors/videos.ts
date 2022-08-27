@@ -21,23 +21,21 @@ export const selectChannelVideos = (channel: Channel) =>
 
 export const selectRecentChannelVideos = (channel: Channel) =>
   createSelector(
-    selectVideos,
+    selectChannelVideos(channel),
     selectViewFilters(HomeView.Recent),
     (videos, filters) =>
-      videos
-        .filter((video) => channel.id === video.channelId)
-        .reduce(
-          (acc, video) => {
-            const key = filterVideoByFlags(video, filters)
-              ? 'included'
-              : 'excluded';
-            return {
-              ...acc,
-              [key]: [...acc[key], video.id],
-            };
-          },
-          { excluded: [] as string[], included: [] as string[] },
-        ),
+      videos.reduce(
+        (acc, video) => {
+          const key = filterVideoByFlags(video, filters)
+            ? 'included'
+            : 'excluded';
+          return {
+            ...acc,
+            [key]: [...acc[key], video.id],
+          };
+        },
+        { excluded: [] as string[], included: [] as string[] },
+      ),
   );
 
 export const selectViewedVideos = (channel?: Channel) =>

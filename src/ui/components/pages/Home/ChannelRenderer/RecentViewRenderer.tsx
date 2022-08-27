@@ -15,13 +15,10 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   const settings = useAppSelector(selectSettings);
   const videos = useAppSelector(selectRecentChannelVideos(channel));
   const filterCallback = useCallback(
-    (video: Video) => {
-      if (settings.recentViewFilters.others) {
-        return !videos.excluded.includes(video.id);
-      } else {
-        return videos.included.includes(video.id);
-      }
-    },
+    (video: Video) =>
+      settings.recentViewFilters.others
+        ? !videos.excluded.includes(video.id)
+        : videos.included.includes(video.id),
     [settings.recentViewFilters.others, videos],
   );
   const publishedAfter = useMemo(
