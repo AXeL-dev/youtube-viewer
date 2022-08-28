@@ -4,7 +4,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
-import { addViewedVideo, removeViewedVideo } from 'store/reducers/videos';
+import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
 interface ViewedActionProps {
@@ -30,7 +30,12 @@ function ViewedAction(props: ViewedActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(addViewedVideo(video));
+          dispatch(
+            addVideoFlag({
+              video,
+              flag: 'viewed',
+            }),
+          );
         }}
       >
         <VisibilityIcon sx={{ fontSize: '1.125rem' }} />
@@ -51,7 +56,12 @@ function ViewedAction(props: ViewedActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(removeViewedVideo(video));
+          dispatch(
+            removeVideoFlag({
+              video,
+              flag: 'viewed',
+            }),
+          );
         }}
       >
         <VisibilityOffIcon sx={{ fontSize: '1.125rem' }} />

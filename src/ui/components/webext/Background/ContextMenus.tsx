@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { isWebExtension, closeTabs, indexUrl } from 'helpers/webext';
-import {
-  addViewedVideo,
-  addWatchLaterVideo,
-  removeViewedVideo,
-} from 'store/reducers/videos';
+import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { Tab, ContextMenu } from 'types';
 import { dispatch, useAppSelector } from 'store';
 import {
@@ -50,14 +46,18 @@ export default function ContextMenus(props: ContextMenusProps) {
     p.onMessage.addListener((message: any) => {
       const { menuItemId, checked } = message.request;
       const { videoId: id, channelId, datePublished } = message.response;
+      const video = {
+        id,
+        channelId,
+        publishedAt: new Date(datePublished).getTime(),
+      };
       switch (menuItemId) {
         case 'add_video_to_watch_later_list':
           closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
             dispatch(
-              addWatchLaterVideo({
-                id,
-                channelId,
-                publishedAt: new Date(datePublished).getTime(),
+              addVideoFlag({
+                video,
+                flag: 'toWatchLater',
               }),
               true,
             );
@@ -70,17 +70,22 @@ export default function ContextMenus(props: ContextMenusProps) {
           closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
             if (checked) {
               dispatch(
-                addViewedVideo({
-                  id,
-                  channelId,
-                  publishedAt: new Date(datePublished).getTime(),
+                addVideoFlag({
+                  video,
+                  flag: 'viewed',
                 }),
                 true,
               );
               // ensure to add channel too (if it does not exist)
               dispatch(fetchChannelById({ id: channelId }), true);
             } else {
-              dispatch(removeViewedVideo({ id }), true);
+              dispatch(
+                removeVideoFlag({
+                  video: { id },
+                  flag: 'viewed',
+                }),
+                true,
+              );
             }
           });
           break;

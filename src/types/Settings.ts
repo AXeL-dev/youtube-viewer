@@ -20,6 +20,7 @@ export interface HomeDisplayOptions {
 export interface RecentViewFilters {
   viewed: boolean;
   watchLater: boolean;
+  ignored: boolean;
   others: boolean;
 }
 

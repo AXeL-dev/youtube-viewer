@@ -38,7 +38,7 @@ const removeOutdatedVideos = (videos: VideoCache[], settings: Settings) => {
     ({ flags, publishedAt }) =>
       flags.viewed ||
       flags.toWatchLater ||
-      (flags.recent &&
+      ((flags.recent || flags.ignored) &&
         elapsedDays(publishedAt) <= settings.recentVideosSeniority) ||
       (flags.notified &&
         elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority),

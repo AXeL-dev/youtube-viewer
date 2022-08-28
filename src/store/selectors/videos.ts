@@ -38,6 +38,18 @@ export const selectRecentChannelVideos = (channel: Channel) =>
       ),
   );
 
+export const selectRecentOnlyVideos = (channel?: Channel) =>
+  createSelector(selectVideos, (videos) =>
+    videos.filter(
+      ({ flags = {}, channelId }) =>
+        Object.keys(flags).every(
+          (key) =>
+            ['recent', 'notified'].includes(key) || !flags[key as VideoFlag],
+        ) &&
+        (!channel || channel.id === channelId),
+    ),
+  );
+
 export const selectViewedVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos.filter(
@@ -135,5 +147,6 @@ export const selectVideoMeta = (video: Video) =>
       isViewed: flags?.viewed || false,
       isToWatchLater: flags?.toWatchLater || false,
       isArchived: flags?.archived || false,
+      isIgnored: flags?.ignored || false,
     };
   });

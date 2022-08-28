@@ -2,10 +2,15 @@ import React from 'react';
 import { Box } from '@mui/material';
 import RecentViewFilters from './RecentViewFilters';
 import RecentVideosSeniority from './RecentVideosSeniority';
+import RecentViewOptions from './RecentViewOptions';
 
-interface RecentViewActionsProps {}
+interface RecentViewActionsProps {
+  videosCount: number;
+}
 
 function RecentViewActions(props: RecentViewActionsProps) {
+  const { videosCount } = props;
+
   return (
     <Box
       sx={{
@@ -16,6 +21,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
     >
       <RecentViewFilters />
       <RecentVideosSeniority />
+      {videosCount > 0 ? <RecentViewOptions /> : null}
     </Box>
   );
 }

@@ -4,7 +4,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { HomeView, Video } from 'types';
 import { useAppDispatch } from 'store';
-import { addViewedVideo } from 'store/reducers/videos';
+import { addVideoFlag } from 'store/reducers/videos';
 import TopActions from './TopActions';
 import Badges from './Badges';
 import { createTab, isWebExtension } from 'helpers/webext';
@@ -100,7 +100,12 @@ function VideoCard(props: VideoCardProps) {
                   event.preventDefault();
                   createTab(video.url, false);
                 }
-                dispatch(addViewedVideo(video));
+                dispatch(
+                  addVideoFlag({
+                    video,
+                    flag: 'viewed',
+                  }),
+                );
               }}
             >
               <IconButton sx={{ color: '#fff', margin: 0.5 }} size="small">
@@ -114,7 +119,12 @@ function VideoCard(props: VideoCardProps) {
               size="small"
               onClick={() => {
                 onVideoPlay(video);
-                dispatch(addViewedVideo(video));
+                dispatch(
+                  addVideoFlag({
+                    video,
+                    flag: 'viewed',
+                  }),
+                );
               }}
             >
               <Tooltip title="Watch" aria-label="watch">

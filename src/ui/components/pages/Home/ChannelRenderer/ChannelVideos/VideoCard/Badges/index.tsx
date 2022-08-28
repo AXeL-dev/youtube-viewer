@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { HomeView, Video } from 'types';
 import ViewedBadge from './ViewedBadge';
 import ArchivedBadge from './ArchivedBadge';
+import IgnoredBadge from './IgnoredBadge';
 
 interface VideoBadgesProps {
   video: Video;
@@ -24,6 +25,7 @@ function VideoBadges(props: VideoBadgesProps) {
       }}
     >
       <ViewedBadge video={video} />
+      <IgnoredBadge video={video} view={view} />
       <ArchivedBadge video={video} view={view} />
     </Box>
   );

@@ -16,6 +16,7 @@ export type VideoFlags = Partial<{
   toWatchLater: boolean;
   notified: boolean;
   archived: boolean;
+  ignored: boolean;
   recent: boolean;
 }>;
 

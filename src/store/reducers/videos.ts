@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
 
+type VideoWithId = Pick<VideoCache, 'id'>;
 type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
-type RemoveVideoPayload = Video | Pick<VideoCache, 'id'>;
+type RemoveVideoPayload = Video | VideoWithId;
 
 interface VideosState {
   list: VideoCache[];
@@ -67,39 +68,32 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
-    addViewedVideo: (state, action: PayloadAction<AddVideoPayload>) => {
-      const video = action.payload;
-      addVideo({
-        state,
-        video,
-        flags: { viewed: true },
-      });
-    },
-    removeViewedVideo: (state, action: PayloadAction<RemoveVideoPayload>) => {
-      const video = action.payload;
-      setVideoFlags({
-        state,
-        video,
-        flags: { viewed: false },
-      });
-    },
-    addWatchLaterVideo: (state, action: PayloadAction<AddVideoPayload>) => {
-      const video = action.payload;
-      addVideo({
-        state,
-        video,
-        flags: { toWatchLater: true },
-      });
-    },
-    removeWatchLaterVideo: (
+    addVideoFlag: (
       state,
-      action: PayloadAction<RemoveVideoPayload>,
+      action: PayloadAction<{
+        video: AddVideoPayload;
+        flag: VideoFlag;
+      }>,
     ) => {
-      const video = action.payload;
+      const { video, flag } = action.payload;
+      addVideo({
+        state,
+        video,
+        flags: { [flag]: true },
+      });
+    },
+    removeVideoFlag: (
+      state,
+      action: PayloadAction<{
+        video: RemoveVideoPayload;
+        flag: VideoFlag;
+      }>,
+    ) => {
+      const { video, flag } = action.payload;
       setVideoFlags({
         state,
         video,
-        flags: { toWatchLater: false },
+        flags: { [flag]: false },
       });
     },
     clearWatchLaterList: (
@@ -154,6 +148,28 @@ export const videosSlice = createSlice({
           : video,
       );
     },
+    setVideosFlag: (
+      state,
+      action: PayloadAction<{
+        videos: VideoWithId[];
+        flag: VideoFlag;
+        value?: boolean;
+      }>,
+    ) => {
+      const { videos, flag, value = true } = action.payload;
+      const targetIds = videos.map(({ id }) => id);
+      state.list = state.list.map((video) =>
+        targetIds.includes(video.id)
+          ? {
+              ...video,
+              flags: {
+                ...video.flags,
+                [flag]: value,
+              },
+            }
+          : video,
+      );
+    },
     saveVideos: (
       state,
       action: PayloadAction<{
@@ -175,14 +191,13 @@ export const videosSlice = createSlice({
 
 export const {
   setVideos,
-  addViewedVideo,
-  removeViewedVideo,
-  addWatchLaterVideo,
-  removeWatchLaterVideo,
+  addVideoFlag,
+  removeVideoFlag,
   clearWatchLaterList,
   archiveVideo,
   unarchiveVideo,
   archiveVideosByFlag,
+  setVideosFlag,
   saveVideos,
 } = videosSlice.actions;
 

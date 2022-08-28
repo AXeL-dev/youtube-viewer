@@ -18,6 +18,7 @@ export const defaultSettings = {
   recentViewFilters: {
     viewed: true,
     watchLater: true,
+    ignored: false,
     others: true,
   },
   watchLaterViewFilters: {

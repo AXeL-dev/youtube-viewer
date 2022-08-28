@@ -4,7 +4,6 @@ import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 import { selectRecentChannelVideos } from 'store/selectors/videos';
-import { isWebExtension } from 'helpers/webext';
 import { Video } from 'types';
 
 export interface RecentViewRendererProps
@@ -30,7 +29,7 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
     <DefaultRenderer
       publishedAfter={publishedAfter}
       persistVideosOptions={{
-        enable: isWebExtension,
+        enable: true,
         flags: { recent: true },
       }}
       filter={filterCallback}

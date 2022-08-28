@@ -1,6 +1,12 @@
 import type { RootState } from 'store';
 import { createSelector } from 'reselect';
-import { HomeView, ViewFilters } from 'types';
+import {
+  HomeView,
+  ViewFilters,
+  RecentViewFilters,
+  WatchLaterViewFilters,
+} from 'types';
+import { defaultSettings } from 'store/reducers/settings';
 
 export const selectSettings = (state: RootState) => state.settings;
 
@@ -12,9 +18,15 @@ export const selectViewFilters = (view: HomeView) =>
   createSelector(selectSettings, (settings): ViewFilters => {
     switch (view) {
       case HomeView.Recent:
-        return settings.recentViewFilters;
+        return {
+          ...defaultSettings.recentViewFilters,
+          ...settings.recentViewFilters,
+        } as RecentViewFilters;
       case HomeView.WatchLater:
-        return settings.watchLaterViewFilters;
+        return {
+          ...defaultSettings.watchLaterViewFilters,
+          ...settings.watchLaterViewFilters,
+        } as WatchLaterViewFilters;
       default:
         return {} as ViewFilters;
     }

@@ -71,6 +71,12 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
           Watch later
         </CheckableMenuItem>
         <CheckableMenuItem
+          checked={filters.ignored!}
+          onClick={() => handleFilterToggle('ignored')}
+        >
+          Ignored
+        </CheckableMenuItem>
+        <CheckableMenuItem
           checked={filters.others}
           onClick={() => handleFilterToggle('others')}
         >

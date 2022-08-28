@@ -4,10 +4,7 @@ import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { HomeView, Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
-import {
-  addWatchLaterVideo,
-  removeWatchLaterVideo,
-} from 'store/reducers/videos';
+import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
 interface WatchLaterActionProps {
@@ -35,7 +32,12 @@ function WatchLaterAction(props: WatchLaterActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(addWatchLaterVideo(video));
+          dispatch(
+            addVideoFlag({
+              video,
+              flag: 'toWatchLater',
+            }),
+          );
         }}
       >
         <WatchLaterOutlinedIcon sx={{ fontSize: '1.125rem' }} />
@@ -55,7 +57,12 @@ function WatchLaterAction(props: WatchLaterActionProps) {
         }}
         size="small"
         onClick={() => {
-          dispatch(removeWatchLaterVideo(video));
+          dispatch(
+            removeVideoFlag({
+              video,
+              flag: 'toWatchLater',
+            }),
+          );
         }}
       >
         <CloseIcon sx={{ fontSize: '1.125rem' }} />

@@ -91,7 +91,7 @@ export function Home(props: HomeProps) {
         </Tabs>
         <TabActions
           tab={activeTab}
-          recentVideosCount={recentVideosCount.total}
+          recentVideosCount={recentVideosCount.displayed}
           watchLaterVideosCount={watchLaterVideosCount}
         />
       </Box>
