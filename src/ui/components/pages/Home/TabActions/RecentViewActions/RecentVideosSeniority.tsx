@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, ListSubheader } from '@mui/material';
 import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import HistoryIcon from '@mui/icons-material/History';
 import { selectRecentVideosSeniority } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
 import { Nullable, VideosSeniority } from 'types';
-
-interface RecentVideosSeniorityProps {}
 
 const options = [
   {
@@ -31,6 +29,8 @@ const options = [
     value: VideosSeniority.OneMonth,
   },
 ];
+
+interface RecentVideosSeniorityProps {}
 
 function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
   const seniority = useAppSelector(selectRecentVideosSeniority);
@@ -70,6 +70,9 @@ function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
         MenuListProps={{
           'aria-labelledby': 'seniority-button',
           dense: true,
+          subheader: (
+            <ListSubheader component="div">Videos seniority</ListSubheader>
+          ),
         }}
         anchorEl={anchorEl}
         open={open}

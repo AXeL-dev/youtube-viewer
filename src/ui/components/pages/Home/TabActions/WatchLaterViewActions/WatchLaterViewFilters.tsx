@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { IconButton, ListSubheader } from '@mui/material';
 import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { HomeView, Nullable, WatchLaterViewFilters as Filters } from 'types';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
+
+const options: {
+  label: string;
+  value: keyof Filters;
+}[] = [
+  {
+    label: 'Viewed',
+    value: 'viewed',
+  },
+  {
+    label: 'Archived',
+    value: 'archived',
+  },
+  {
+    label: 'Others',
+    value: 'others',
+  },
+];
 
 interface WatchLaterViewFiltersProps {}
 
@@ -14,6 +32,10 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
+  const activeFiltersCount = useMemo(
+    () => options.filter(({ value }) => filters[value]).length,
+    [filters],
+  );
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -51,6 +73,11 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         MenuListProps={{
           'aria-labelledby': 'filter-button',
           dense: true,
+          subheader: (
+            <ListSubheader component="div">
+              Filters ({activeFiltersCount})
+            </ListSubheader>
+          ),
         }}
         anchorEl={anchorEl}
         open={open}
@@ -58,24 +85,15 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <CheckableMenuItem
-          checked={filters.viewed}
-          onClick={() => handleFilterToggle('viewed')}
-        >
-          Viewed
-        </CheckableMenuItem>
-        <CheckableMenuItem
-          checked={filters.archived!}
-          onClick={() => handleFilterToggle('archived')}
-        >
-          Archived
-        </CheckableMenuItem>
-        <CheckableMenuItem
-          checked={filters.others}
-          onClick={() => handleFilterToggle('others')}
-        >
-          Others
-        </CheckableMenuItem>
+        {options.map(({ label, value }, index) => (
+          <CheckableMenuItem
+            key={index}
+            checked={!!filters[value]}
+            onClick={() => handleFilterToggle(value)}
+          >
+            {label}
+          </CheckableMenuItem>
+        ))}
       </StyledMenu>
     </>
   );
