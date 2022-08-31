@@ -7,12 +7,12 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
-interface IgnoredActionProps {
+interface IgnoreActionProps {
   video: Video;
   view: HomeView;
 }
 
-function IgnoredAction(props: IgnoredActionProps) {
+function IgnoreAction(props: IgnoreActionProps) {
   const { video, view } = props;
   const { isIgnored } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
@@ -73,4 +73,4 @@ function IgnoredAction(props: IgnoredActionProps) {
   ) : null;
 }
 
-export default IgnoredAction;
+export default IgnoreAction;

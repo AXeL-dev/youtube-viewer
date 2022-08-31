@@ -4,7 +4,7 @@ import { HomeView, Video } from 'types';
 import WatchLaterAction from './WatchLaterAction';
 import ViewedAction from './ViewedAction';
 import ArchiveAction from './ArchiveAction';
-import IgnoredAction from './IgnoredAction';
+import IgnoreAction from './IgnoreAction';
 
 interface VideoTopActionsProps {
   video: Video;
@@ -25,7 +25,7 @@ function VideoTopActions(props: VideoTopActionsProps) {
         gap: '4px',
       }}
     >
-      <IgnoredAction video={video} view={view} />
+      <IgnoreAction video={video} view={view} />
       <ViewedAction video={video} />
       <ArchiveAction video={video} view={view} />
       <WatchLaterAction video={video} view={view} />
