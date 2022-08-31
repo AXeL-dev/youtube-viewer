@@ -5,16 +5,16 @@ import { Video } from 'types';
 import { useAppSelector } from 'store';
 import { selectVideoMeta } from 'store/selectors/videos';
 
-interface ViewedBadgeProps {
+interface SeenBadgeProps {
   video: Video;
 }
 
-function ViewedBadge(props: ViewedBadgeProps) {
+function SeenBadge(props: SeenBadgeProps) {
   const { video } = props;
-  const { isViewed } = useAppSelector(selectVideoMeta(video));
+  const { isSeen } = useAppSelector(selectVideoMeta(video));
 
-  return isViewed ? (
-    <Tooltip title="Viewed" aria-label="viewed">
+  return isSeen ? (
+    <Tooltip title="Seen" aria-label="seen">
       <Box
         sx={{
           display: 'flex',
@@ -33,4 +33,4 @@ function ViewedBadge(props: ViewedBadgeProps) {
   ) : null;
 }
 
-export default ViewedBadge;
+export default SeenBadge;

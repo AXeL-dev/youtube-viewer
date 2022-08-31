@@ -50,11 +50,11 @@ export const selectRecentOnlyVideos = (channel?: Channel) =>
     ),
   );
 
-export const selectViewedVideos = (channel?: Channel) =>
+export const selectSeenVideos = (channel?: Channel) =>
   createSelector(selectVideos, (videos) =>
     videos.filter(
       ({ flags, channelId }) =>
-        flags.viewed && (!channel || channel.id === channelId),
+        flags.seen && (!channel || channel.id === channelId),
     ),
   );
 
@@ -126,7 +126,7 @@ export const selectWatchLaterVideosCount = createSelector(
   },
 );
 
-export const selectViewedWatchLaterVideosCount = createSelector(
+export const selectSeenWatchLaterVideosCount = createSelector(
   selectVideos,
   selectActiveChannels,
   (videos, activeChannels) => {
@@ -134,7 +134,7 @@ export const selectViewedWatchLaterVideosCount = createSelector(
     return videos.filter(
       ({ flags, channelId }) =>
         flags.toWatchLater &&
-        flags.viewed &&
+        flags.seen &&
         activeChannelsIds.includes(channelId),
     ).length;
   },
@@ -144,7 +144,7 @@ export const selectVideoMeta = (video: Video) =>
   createSelector(selectVideos, (videos) => {
     const { flags } = videos.find(({ id }) => id === video.id) || {};
     return {
-      isViewed: flags?.viewed || false,
+      isSeen: flags?.seen || false,
       isToWatchLater: flags?.toWatchLater || false,
       isArchived: flags?.archived || false,
       isIgnored: flags?.ignored || false,

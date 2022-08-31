@@ -7,17 +7,17 @@ import { useAppDispatch, useAppSelector } from 'store';
 import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { selectVideoMeta } from 'store/selectors/videos';
 
-interface ViewedActionProps {
+interface SeenActionProps {
   video: Video;
 }
 
-function ViewedAction(props: ViewedActionProps) {
+function SeenAction(props: SeenActionProps) {
   const { video } = props;
-  const { isViewed } = useAppSelector(selectVideoMeta(video));
+  const { isSeen } = useAppSelector(selectVideoMeta(video));
   const dispatch = useAppDispatch();
 
-  return !isViewed ? (
-    <Tooltip title="Mark as viewed" aria-label="mark-as-viewed">
+  return !isSeen ? (
+    <Tooltip title="Mark as seen" aria-label="mark-as-seen">
       <IconButton
         sx={{
           color: '#eee',
@@ -33,7 +33,7 @@ function ViewedAction(props: ViewedActionProps) {
           dispatch(
             addVideoFlag({
               video,
-              flag: 'viewed',
+              flag: 'seen',
             }),
           );
         }}
@@ -42,7 +42,7 @@ function ViewedAction(props: ViewedActionProps) {
       </IconButton>
     </Tooltip>
   ) : (
-    <Tooltip title="Mark as unviewed" aria-label="mark-as-unviewed">
+    <Tooltip title="Mark as unseen" aria-label="mark-as-unseen">
       <IconButton
         sx={{
           display: 'flex',
@@ -59,7 +59,7 @@ function ViewedAction(props: ViewedActionProps) {
           dispatch(
             removeVideoFlag({
               video,
-              flag: 'viewed',
+              flag: 'seen',
             }),
           );
         }}
@@ -70,4 +70,4 @@ function ViewedAction(props: ViewedActionProps) {
   );
 }
 
-export default ViewedAction;
+export default SeenAction;

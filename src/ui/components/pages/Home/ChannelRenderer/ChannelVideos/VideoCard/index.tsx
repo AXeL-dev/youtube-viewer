@@ -103,7 +103,7 @@ function VideoCard(props: VideoCardProps) {
                 dispatch(
                   addVideoFlag({
                     video,
-                    flag: 'viewed',
+                    flag: 'seen',
                   }),
                 );
               }}
@@ -122,7 +122,7 @@ function VideoCard(props: VideoCardProps) {
                 dispatch(
                   addVideoFlag({
                     video,
-                    flag: 'viewed',
+                    flag: 'seen',
                   }),
                 );
               }}

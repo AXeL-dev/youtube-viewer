@@ -18,14 +18,14 @@ export interface HomeDisplayOptions {
 }
 
 export interface RecentViewFilters {
-  viewed: boolean;
+  seen: boolean;
   watchLater: boolean;
   ignored: boolean;
   others: boolean;
 }
 
 export interface WatchLaterViewFilters {
-  viewed: boolean;
+  seen: boolean;
   archived: boolean;
   others: boolean;
 }

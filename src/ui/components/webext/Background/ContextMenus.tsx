@@ -4,7 +4,7 @@ import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { Tab, ContextMenu } from 'types';
 import { dispatch, useAppSelector } from 'store';
 import {
-  selectViewedVideos,
+  selectSeenVideos,
   selectWatchLaterVideos,
 } from 'store/selectors/videos';
 import { getVideoId } from 'helpers/utils';
@@ -27,8 +27,8 @@ const menus: ContextMenu[] = [
     contexts: ['page'],
   },
   {
-    title: 'Mark video as viewed',
-    id: 'mark_video_as_viewed',
+    title: 'Mark video as seen',
+    id: 'mark_video_as_seen',
     type: 'checkbox',
     enabled: false,
     checked: false,
@@ -38,7 +38,7 @@ const menus: ContextMenu[] = [
 
 export default function ContextMenus(props: ContextMenusProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
-  const viewedVideos = useAppSelector(selectViewedVideos());
+  const seenVideos = useAppSelector(selectSeenVideos());
   const ports = useRef<any[]>([]);
 
   const handleConnect = (p: any) => {
@@ -66,13 +66,13 @@ export default function ContextMenus(props: ContextMenusProps) {
             browser.contextMenus.update(menuItemId, { enabled: false });
           });
           break;
-        case 'mark_video_as_viewed': {
+        case 'mark_video_as_seen': {
           closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
             if (checked) {
               dispatch(
                 addVideoFlag({
                   video,
-                  flag: 'viewed',
+                  flag: 'seen',
                 }),
                 true,
               );
@@ -82,7 +82,7 @@ export default function ContextMenus(props: ContextMenusProps) {
               dispatch(
                 removeVideoFlag({
                   video: { id },
-                  flag: 'viewed',
+                  flag: 'seen',
                 }),
                 true,
               );
@@ -97,7 +97,7 @@ export default function ContextMenus(props: ContextMenusProps) {
   const handleContextMenusClick = (info: any, tab: Tab) => {
     switch (info.menuItemId) {
       case 'add_video_to_watch_later_list':
-      case 'mark_video_as_viewed': {
+      case 'mark_video_as_seen': {
         const port = ports.current[tab.id];
         if (port) {
           port.postMessage({
@@ -154,8 +154,8 @@ export default function ContextMenus(props: ContextMenusProps) {
               options.enabled = !found;
               break;
             }
-            case 'mark_video_as_viewed': {
-              const found = viewedVideos.find((video) => video.id === videoId);
+            case 'mark_video_as_seen': {
+              const found = seenVideos.find((video) => video.id === videoId);
               options.checked = !!found;
               break;
             }
@@ -202,7 +202,7 @@ export default function ContextMenus(props: ContextMenusProps) {
       browser.tabs.onUpdated.removeListener(handleTabUpdate);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchLaterVideos, viewedVideos]);
+  }, [watchLaterVideos, seenVideos]);
 
   return null;
 }

@@ -12,7 +12,7 @@ export interface Video {
 }
 
 export type VideoFlags = Partial<{
-  viewed: boolean;
+  seen: boolean;
   toWatchLater: boolean;
   notified: boolean;
   archived: boolean;

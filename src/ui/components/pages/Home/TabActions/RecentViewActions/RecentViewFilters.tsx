@@ -12,8 +12,8 @@ const options: {
   value: keyof Filters;
 }[] = [
   {
-    label: 'Viewed',
-    value: 'viewed',
+    label: 'Seen',
+    value: 'seen',
   },
   {
     label: 'Watch later',

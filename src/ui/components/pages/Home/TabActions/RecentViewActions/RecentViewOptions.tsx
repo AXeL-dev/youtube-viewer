@@ -41,17 +41,17 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
     setAnchorEl(null);
   };
 
-  const handleMarkVideosAsViewed = () => {
+  const handleMarkVideosAsSeen = () => {
     setConfirmationDialogProps({
       open: true,
-      title: `Mark unflagged videos as viewed (${videos.length})`,
-      text: 'Are you sure that you want to mark all the unflagged videos as viewed?',
+      title: `Mark unflagged videos as seen (${videos.length})`,
+      text: 'Are you sure that you want to mark all the unflagged videos as seen?',
       onClose: (confirmed) => {
         if (confirmed) {
           dispatch(
             setVideosFlag({
               videos,
-              flag: 'viewed',
+              flag: 'seen',
             }),
           );
         }
@@ -111,11 +111,11 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleMarkVideosAsViewed}>
+        <MenuItem onClick={handleMarkVideosAsSeen}>
           <ListItemIcon>
             <VisibilityIcon />
           </ListItemIcon>
-          <ListItemText>Mark unflagged videos as viewed</ListItemText>
+          <ListItemText>Mark unflagged videos as seen</ListItemText>
         </MenuItem>
         <MenuItem onClick={handleMarkVideosAsIgnored}>
           <ListItemIcon>

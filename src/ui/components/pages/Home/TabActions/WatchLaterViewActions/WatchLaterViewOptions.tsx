@@ -22,7 +22,7 @@ import {
 } from 'store/reducers/videos';
 import {
   selectWatchLaterVideos,
-  selectViewedWatchLaterVideosCount,
+  selectSeenWatchLaterVideosCount,
 } from 'store/selectors/videos';
 import { Nullable } from 'types';
 import { downloadFile } from 'helpers/file';
@@ -34,7 +34,7 @@ interface WatchLaterViewOptionsProps {
 function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
   const { videosCount } = props;
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
-  const viewedCount = useAppSelector(selectViewedWatchLaterVideosCount);
+  const seenCount = useAppSelector(selectSeenWatchLaterVideosCount);
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
@@ -90,14 +90,14 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
     handleClose();
   };
 
-  const handleRemoveViewed = () => {
+  const handleRemoveSeen = () => {
     setConfirmationDialogProps({
       open: true,
-      title: `Remove viewed videos (${viewedCount})`,
-      text: 'Are you sure that you want to remove all viewed videos from the watch later list?',
+      title: `Remove seen videos (${seenCount})`,
+      text: 'Are you sure that you want to remove all seen videos from the watch later list?',
       onClose: (confirmed) => {
         if (confirmed) {
-          dispatch(clearWatchLaterList({ viewedOnly: true }));
+          dispatch(clearWatchLaterList({ seenOnly: true }));
         }
         setConfirmationDialogProps((state) => ({
           ...state,
@@ -155,12 +155,12 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
           </ListItemIcon>
           <ListItemText>Remove all videos</ListItemText>
         </MenuItem>
-        {viewedCount > 0 ? (
-          <MenuItem onClick={handleRemoveViewed}>
+        {seenCount > 0 ? (
+          <MenuItem onClick={handleRemoveSeen}>
             <ListItemIcon>
               <VisibilityOffIcon />
             </ListItemIcon>
-            <ListItemText>Remove viewed videos</ListItemText>
+            <ListItemText>Remove seen videos</ListItemText>
           </MenuItem>
         ) : null}
         <MenuItem onClick={handleExport}>

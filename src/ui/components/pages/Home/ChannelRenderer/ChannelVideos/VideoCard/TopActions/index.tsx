@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { HomeView, Video } from 'types';
 import WatchLaterAction from './WatchLaterAction';
-import ViewedAction from './ViewedAction';
+import SeenAction from './SeenAction';
 import ArchiveAction from './ArchiveAction';
 import IgnoreAction from './IgnoreAction';
 
@@ -26,7 +26,7 @@ function VideoTopActions(props: VideoTopActionsProps) {
       }}
     >
       <IgnoreAction video={video} view={view} />
-      <ViewedAction video={video} />
+      <SeenAction video={video} />
       <ArchiveAction video={video} view={view} />
       <WatchLaterAction video={video} view={view} />
     </Box>

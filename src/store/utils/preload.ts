@@ -36,7 +36,7 @@ const removeOutdatedVideos = (videos: VideoCache[], settings: Settings) => {
   log('Removing outdated videos.');
   return videos.filter(
     ({ flags, publishedAt }) =>
-      flags.viewed ||
+      flags.seen ||
       flags.toWatchLater ||
       ((flags.recent || flags.ignored) &&
         elapsedDays(publishedAt) <= settings.recentVideosSeniority) ||

@@ -98,16 +98,16 @@ export const videosSlice = createSlice({
     },
     clearWatchLaterList: (
       state,
-      action: PayloadAction<{ viewedOnly: boolean } | undefined>,
+      action: PayloadAction<{ seenOnly: boolean } | undefined>,
     ) => {
-      const { viewedOnly } = action.payload || {};
+      const { seenOnly } = action.payload || {};
       state.list = state.list.map((video) =>
         video.flags.toWatchLater
           ? {
               ...video,
               flags: {
                 ...video.flags,
-                toWatchLater: viewedOnly ? !video.flags.viewed : false,
+                toWatchLater: seenOnly ? !video.flags.seen : false,
               },
             }
           : video,

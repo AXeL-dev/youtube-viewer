@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { HomeView, Video } from 'types';
-import ViewedBadge from './ViewedBadge';
+import SeenBadge from './SeenBadge';
 import ArchivedBadge from './ArchivedBadge';
 import IgnoredBadge from './IgnoredBadge';
 
@@ -24,7 +24,7 @@ function VideoBadges(props: VideoBadgesProps) {
         gap: '4px',
       }}
     >
-      <ViewedBadge video={video} />
+      <SeenBadge video={video} />
       <IgnoredBadge video={video} view={view} />
       <ArchivedBadge video={video} view={view} />
     </Box>

@@ -16,13 +16,13 @@ export const defaultSettings = {
   autoPlayVideos: true,
   recentVideosSeniority: VideosSeniority.OneDay,
   recentViewFilters: {
-    viewed: true,
+    seen: true,
     watchLater: true,
     ignored: false,
     others: true,
   },
   watchLaterViewFilters: {
-    viewed: true,
+    seen: true,
     archived: true,
     others: true,
   },
