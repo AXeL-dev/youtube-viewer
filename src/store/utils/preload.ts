@@ -24,12 +24,31 @@ export const preloadState = async () => {
     if (videos) {
       dispatch(
         setVideos({
-          list: removeOutdatedVideos(videos.list, settings),
+          list: removeOutdatedVideos(
+            replaceViewedFlagWithSeen(videos.list),
+            settings,
+          ),
         }),
       );
     }
   }
   dispatch(setApp({ loaded: true }), shouldPersist);
+};
+
+const replaceViewedFlagWithSeen = (videos: VideoCache[]) => {
+  return videos.map((video) => {
+    const { viewed, ...flags } =
+      (video.flags as typeof video.flags & { viewed: boolean }) || {};
+    return {
+      ...video,
+      flags: viewed
+        ? {
+            ...flags,
+            seen: viewed,
+          }
+        : flags,
+    };
+  });
 };
 
 const removeOutdatedVideos = (videos: VideoCache[], settings: Settings) => {
