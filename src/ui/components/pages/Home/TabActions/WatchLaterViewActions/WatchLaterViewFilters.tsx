@@ -3,6 +3,7 @@ import { IconButton, ListSubheader } from '@mui/material';
 import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterListOffIcon from '@mui/icons-material/FilterListOff';
 import { HomeView, Nullable, WatchLaterViewFilters as Filters } from 'types';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
@@ -66,7 +67,7 @@ function WatchLaterViewFilters(props: WatchLaterViewFiltersProps) {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <FilterListIcon />
+        {activeFiltersCount > 0 ? <FilterListIcon /> : <FilterListOffIcon />}
       </IconButton>
       <StyledMenu
         id="filter-menu"

@@ -3,6 +3,7 @@ import { IconButton, ListSubheader } from '@mui/material';
 import { StyledMenu, CheckableMenuItem } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterListOffIcon from '@mui/icons-material/FilterListOff';
 import { selectViewFilters } from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
 import { HomeView, Nullable, RecentViewFilters as Filters } from 'types';
@@ -70,7 +71,7 @@ function RecentViewFilters(props: RecentViewFiltersProps) {
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <FilterListIcon />
+        {activeFiltersCount > 0 ? <FilterListIcon /> : <FilterListOffIcon />}
       </IconButton>
       <StyledMenu
         id="filter-menu"
