@@ -11,7 +11,7 @@ interface IExportVideosDataProps {
 
 export const id = nanoid();
 export const icon = <FileDownloadIcon />;
-export const label = 'Export saved videos data';
+export const label = 'Export videos data';
 export const color = 'secondary';
 
 function ExportVideosData(props: IExportVideosDataProps) {

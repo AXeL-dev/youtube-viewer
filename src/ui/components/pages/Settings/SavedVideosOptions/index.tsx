@@ -12,6 +12,7 @@ import {
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ClearVideosData, * as clearVideosOption from './ClearVideosData';
 import ExportVideosData, * as exportVideosOption from './ExportVideosData';
+import ImportVideosData, * as importVideosOption from './ImportVideosData';
 import { StyledMenuList } from 'ui/components/shared/StyledMenu/StyledMenuList';
 import { VideoCache } from 'types';
 
@@ -25,6 +26,12 @@ const options = [
     icon: exportVideosOption.icon,
     label: exportVideosOption.label,
     color: exportVideosOption.color,
+  },
+  {
+    id: importVideosOption.id,
+    icon: importVideosOption.icon,
+    label: importVideosOption.label,
+    color: importVideosOption.color,
   },
   {
     id: clearVideosOption.id,
@@ -70,6 +77,8 @@ function SavedVideosOptions(props: ISavedVideosOptionsProps) {
         return <ClearVideosData />;
       case exportVideosOption.id:
         return <ExportVideosData videos={videos} />;
+      case importVideosOption.id:
+        return <ImportVideosData />;
       default:
         return null;
     }

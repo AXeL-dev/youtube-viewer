@@ -155,13 +155,11 @@ export function Settings(props: SettingsProps) {
           }}
           type={SettingType.Secret}
         />
-        {savedVideosSize > 0 ? (
-          <CustomField
-            label="Saved videos data"
-            description={`Estimated size: ${formatByteSize(savedVideosSize)}`}
-            render={() => <SavedVideosOptions videos={videos} />}
-          />
-        ) : null}
+        <CustomField
+          label="Saved videos data"
+          description={`Estimated size: ${formatByteSize(savedVideosSize)}`}
+          render={() => <SavedVideosOptions videos={videos} />}
+        />
       </Stack>
     </Layout>
   );

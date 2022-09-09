@@ -17,6 +17,7 @@ export function Layout(props: LayoutProps) {
       <Box
         sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', ...sx }}
       >
+        <div id="layout-content-portal"></div>
         {children}
       </Box>
     </Box>
