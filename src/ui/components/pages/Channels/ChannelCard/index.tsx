@@ -32,6 +32,7 @@ const ChannelCard = React.forwardRef(
                 mb: 0.25,
               },
               '& .MuiCardHeader-action': {
+                alignSelf: 'center',
                 ml: 2,
               },
               ...(channel.isHidden
