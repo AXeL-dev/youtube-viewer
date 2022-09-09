@@ -12,6 +12,19 @@ interface FilterProps extends ChannelFilter {
   onRemove: () => void;
 }
 
+function field2Placeholder(field: string) {
+  switch (field) {
+    case 'title':
+      return 'text';
+    case 'duration':
+      return 'duration in minutes';
+    case 'publishedAt':
+      return 'date as timestamp';
+    default:
+      return 'value';
+  }
+}
+
 export default function Filter(props: FilterProps) {
   const { field, operator, value, onChange, onRemove } = props;
   const settings = settingsByField[field || fields[0]];
@@ -72,7 +85,7 @@ export default function Filter(props: FilterProps) {
       <Input
         value={value}
         type={settings.type}
-        placeholder="value"
+        placeholder={field2Placeholder(field)}
         onChange={handleValueChange}
       />
       <IconButton aria-label="remove" size="small" onClick={onRemove}>
