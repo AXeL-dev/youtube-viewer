@@ -62,6 +62,7 @@ function ImportVideosData(props: IImportVideosDataProps) {
         }}
         accept=".json"
         onClick={(event: MouseEvent<HTMLInputElement>) => {
+          event.stopPropagation();
           event.currentTarget.value = '';
         }}
         onChange={importVideos}

@@ -73,6 +73,7 @@ export default function NoChannels(props: NoChannelsProps) {
         }}
         accept=".json"
         onClick={(event: MouseEvent<HTMLInputElement>) => {
+          event.stopPropagation();
           event.currentTarget.value = '';
         }}
         onChange={importChannels}

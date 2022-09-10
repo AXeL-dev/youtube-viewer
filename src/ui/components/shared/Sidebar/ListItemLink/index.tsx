@@ -2,7 +2,6 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { Link, LinkProps, useLocation } from 'react-router-dom';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ListItem from './ListItem';
 import ListItemText from './ListItemText';
 import Badge from './Badge';
@@ -12,12 +11,11 @@ interface ListItemLinkProps {
   text: string;
   badge?: React.ReactNode;
   actions?: (selected: boolean) => React.ReactNode;
-  hasWarning?: boolean;
   to: string;
 }
 
 export default function ListItemLink(props: ListItemLinkProps) {
-  const { icon, text, badge, actions, hasWarning, to } = props;
+  const { icon, text, badge, actions, to } = props;
   const location = useLocation();
   const selected = location.pathname === to;
 
@@ -47,9 +45,6 @@ export default function ListItemLink(props: ListItemLinkProps) {
             {text}
             {badge && selected ? <Badge badgeContent={badge} /> : null}
             {actions && actions(selected)}
-            {hasWarning && !selected ? (
-              <ErrorOutlineIcon sx={{ ml: 3 }} color="warning" />
-            ) : null}
           </Box>
         }
       />

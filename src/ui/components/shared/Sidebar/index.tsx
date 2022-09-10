@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { Box, Typography, Link, List, IconButton } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Link, List } from '@mui/material';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
-import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { useAppSelector } from 'store';
 import { selectChannelsCount } from 'store/selectors/channels';
 import { selectSettings } from 'store/selectors/settings';
 import { selectApp } from 'store/selectors/app';
-import { Nullable } from 'types';
-import HomeDisplayOptionsDialog from 'ui/components/pages/Home/DisplayOptionsDialog';
+import { HomeActions, SettingsActions } from './Actions';
 
 interface SidebarProps {}
 
@@ -21,15 +20,6 @@ export function Sidebar(props: SidebarProps) {
   const app = useAppSelector(selectApp);
   const channelsCount = useAppSelector(selectChannelsCount);
   const settings = useAppSelector(selectSettings);
-  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
-
-  const openDialog = (dialog: string) => {
-    setOpenedDialog(dialog);
-  };
-
-  const closeDialog = () => {
-    setOpenedDialog(null);
-  };
 
   return (
     <Box
@@ -68,30 +58,7 @@ export function Sidebar(props: SidebarProps) {
               icon={<ExploreIcon />}
               text="Home"
               to="/"
-              actions={(selected) =>
-                selected && (
-                  <>
-                    <IconButton
-                      aria-label="display-options"
-                      color="default"
-                      size="small"
-                      sx={{
-                        position: 'absolute',
-                        right: 0,
-                        backgroundColor: (theme) => theme.palette.primary.dark,
-                        color: (theme) => theme.palette.common.white,
-                      }}
-                      onClick={() => openDialog('display-options')}
-                    >
-                      <DisplaySettingsIcon fontSize="small" />
-                    </IconButton>
-                    <HomeDisplayOptionsDialog
-                      open={openedDialog === 'display-options'}
-                      onClose={closeDialog}
-                    />
-                  </>
-                )
-              }
+              actions={(selected) => selected && <HomeActions />}
             />
             <ListItemLink
               icon={<SubscriptionsIcon />}
@@ -103,7 +70,13 @@ export function Sidebar(props: SidebarProps) {
               icon={<SettingsIcon />}
               text="Settings"
               to="/settings"
-              hasWarning={app.loaded && !settings.apiKey}
+              actions={(selected) =>
+                selected ? (
+                  <SettingsActions />
+                ) : app.loaded && !settings.apiKey ? (
+                  <ErrorOutlineIcon sx={{ ml: 3 }} color="warning" />
+                ) : null
+              }
             />
             <ListItemLink
               icon={<InfoOutlinedIcon />}

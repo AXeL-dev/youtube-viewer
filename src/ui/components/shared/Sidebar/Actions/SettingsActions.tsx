@@ -1,4 +1,5 @@
-import React, { useState, useRef, MouseEvent, ChangeEvent } from 'react';
+import React, { useState, useRef, ChangeEvent, MouseEvent } from 'react';
+import { Nullable } from 'types';
 import {
   IconButton,
   MenuItem,
@@ -7,26 +8,21 @@ import {
 } from '@mui/material';
 import { StyledMenu } from 'ui/components/shared';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import { Channel, Nullable } from 'types';
-import { useAppDispatch } from 'store';
-import { mergeChannels } from 'store/reducers/channels';
-import { readFile, downloadFile } from 'helpers/file';
+import UploadIcon from '@mui/icons-material/Upload';
+import { useAppSelector, useAppDispatch } from 'store';
+import { selectSettings } from 'store/selectors/settings';
+import { downloadFile, readFile } from 'helpers/file';
+import { setSettings } from 'store/reducers/settings';
 
-interface ChannelListActionsProps {
-  channels: Channel[];
-  showDragHandles: boolean;
-  onDragHandlesToggle: (value: boolean) => void;
-}
+interface SettingsActionsProps {}
 
-function ChannelListActions(props: ChannelListActionsProps) {
-  const { channels, showDragHandles, onDragHandlesToggle } = props;
+export function SettingsActions(props: SettingsActionsProps) {
+  const settings = useAppSelector(selectSettings);
+  const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const fileInputRef = useRef<Nullable<HTMLInputElement>>(null);
   const open = Boolean(anchorEl);
-  const dispatch = useAppDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -36,12 +32,7 @@ function ChannelListActions(props: ChannelListActionsProps) {
     setAnchorEl(null);
   };
 
-  const toggleDragHandles = () => {
-    onDragHandlesToggle(!showDragHandles);
-    handleClose();
-  };
-
-  const importChannels = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleImport = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) {
       return;
@@ -49,8 +40,8 @@ function ChannelListActions(props: ChannelListActionsProps) {
     try {
       readFile(file)
         .then((content) => {
-          const channels = JSON.parse(content as string);
-          dispatch(mergeChannels(channels));
+          const data = JSON.parse(content as string);
+          dispatch(setSettings(data));
         })
         .finally(() => {
           handleClose();
@@ -60,29 +51,37 @@ function ChannelListActions(props: ChannelListActionsProps) {
     }
   };
 
-  const exportChannels = () => {
-    const data = JSON.stringify(channels, null, 4);
+  const handleExport = () => {
+    const data = JSON.stringify(settings, null, 4);
     const file = new Blob([data], { type: 'text/json' });
-    downloadFile(file, 'channels.json');
+    downloadFile(file, 'settings.json');
     handleClose();
   };
 
-  return channels.length > 0 ? (
+  return (
     <>
       <IconButton
-        id="more-button"
-        aria-label="more"
-        aria-controls={open ? 'more-menu' : undefined}
+        id="settings-actions-button"
+        aria-label="settings-actions"
+        aria-controls={open ? 'settings-actions-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
+        color="default"
+        size="small"
+        sx={{
+          position: 'absolute',
+          right: 0,
+          backgroundColor: (theme) => theme.palette.primary.dark,
+          color: (theme) => theme.palette.common.white,
+        }}
         onClick={handleClick}
       >
-        <MoreVertIcon />
+        <MoreVertIcon fontSize="small" />
       </IconButton>
       <StyledMenu
-        id="more-menu"
+        id="settings-actions-menu"
         MenuListProps={{
-          'aria-labelledby': 'more-button',
+          'aria-labelledby': 'settings-actions-button',
           dense: true,
         }}
         anchorEl={anchorEl}
@@ -91,14 +90,12 @@ function ChannelListActions(props: ChannelListActionsProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {channels.length > 1 ? (
-          <MenuItem onClick={toggleDragHandles}>
-            <ListItemIcon>
-              <DragIndicatorIcon />
-            </ListItemIcon>
-            <ListItemText>Toggle drag handles</ListItemText>
-          </MenuItem>
-        ) : null}
+        <MenuItem onClick={handleExport}>
+          <ListItemIcon>
+            <DownloadIcon />
+          </ListItemIcon>
+          <ListItemText>Export</ListItemText>
+        </MenuItem>
         <MenuItem
           onClick={() => {
             fileInputRef.current?.click();
@@ -108,12 +105,6 @@ function ChannelListActions(props: ChannelListActionsProps) {
             <UploadIcon />
           </ListItemIcon>
           <ListItemText>Import</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={exportChannels}>
-          <ListItemIcon>
-            <DownloadIcon />
-          </ListItemIcon>
-          <ListItemText>Export</ListItemText>
         </MenuItem>
       </StyledMenu>
       <input
@@ -131,10 +122,8 @@ function ChannelListActions(props: ChannelListActionsProps) {
           event.stopPropagation();
           event.currentTarget.value = '';
         }}
-        onChange={importChannels}
+        onChange={handleImport}
       />
     </>
-  ) : null;
+  );
 }
-
-export default ChannelListActions;
