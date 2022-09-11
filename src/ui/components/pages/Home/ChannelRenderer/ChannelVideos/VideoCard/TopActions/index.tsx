@@ -5,6 +5,7 @@ import WatchLaterAction from './WatchLaterAction';
 import SeenAction from './SeenAction';
 import ArchiveAction from './ArchiveAction';
 import IgnoreAction from './IgnoreAction';
+import CopyLinkAction from './CopyLinkAction';
 
 interface VideoTopActionsProps {
   video: Video;
@@ -25,6 +26,7 @@ function VideoTopActions(props: VideoTopActionsProps) {
         gap: '4px',
       }}
     >
+      <CopyLinkAction video={video} />
       <IgnoreAction video={video} view={view} />
       <SeenAction video={video} />
       <ArchiveAction video={video} view={view} />
