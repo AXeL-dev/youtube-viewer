@@ -72,6 +72,6 @@
     "gh-pages": "^3.2.3",
     "release-it": "^15.4.1",
     "sign-addon": "^3.11.0",
-    "web-ext": "^6.6.0"
+    "web-ext": "^7.2.0"
   }
 }
