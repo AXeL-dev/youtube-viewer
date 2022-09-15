@@ -40,6 +40,9 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   );
 
   useInterval(() => {
+    if (!navigator.onLine) {
+      return;
+    }
     if (!ready) {
       setReady(true);
     } else {
