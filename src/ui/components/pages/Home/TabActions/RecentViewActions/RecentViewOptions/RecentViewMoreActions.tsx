@@ -1,30 +1,28 @@
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
+import { useForwardedRef } from 'hooks';
 import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'store';
+import { setVideosFlag } from 'store/reducers/videos';
+import { selectRecentOnlyVideos } from 'store/selectors/videos';
+import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import {
-  StyledMenu,
   ConfirmationDialog,
   ConfirmationDialogProps,
 } from 'ui/components/shared';
-import { useAppDispatch, useAppSelector } from 'store';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
-import { setVideosFlag } from 'store/reducers/videos';
-import { selectRecentOnlyVideos } from 'store/selectors/videos';
-import { Nullable } from 'types';
+import NestedMenu, {
+  NestedMenuRef,
+} from 'ui/components/shared/StyledMenu/NestedMenu';
 
-interface RecentViewOptionsProps {}
+interface RecentViewMoreActionsProps {}
 
-function RecentViewOptions(props: RecentViewOptionsProps) {
+const RecentViewMoreActions = React.forwardRef<
+  NestedMenuRef,
+  RecentViewMoreActionsProps
+>((props, ref) => {
+  const menuRef = useForwardedRef<NestedMenuRef>(ref);
   const videos = useAppSelector(selectRecentOnlyVideos());
   const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
-  const open = Boolean(anchorEl);
   const [confirmationDialogProps, setConfirmationDialogProps] =
     useState<ConfirmationDialogProps>({
       open: false,
@@ -33,12 +31,8 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
       onClose: () => {},
     });
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const closeMenu = () => {
+    menuRef.current?.close();
   };
 
   const handleMarkVideosAsSeen = () => {
@@ -61,7 +55,7 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
         }));
       },
     });
-    handleClose();
+    closeMenu();
   };
 
   const handleMarkVideosAsIgnored = () => {
@@ -84,49 +78,40 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
         }));
       },
     });
-    handleClose();
+    closeMenu();
   };
 
-  return videos.length ? (
+  return (
     <>
-      <IconButton
-        id="more-button"
-        aria-label="more"
-        aria-controls={open ? 'more-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <StyledMenu
-        id="more-menu"
-        MenuListProps={{
-          'aria-labelledby': 'more-button',
-          dense: true,
+      <NestedMenu
+        id="more-actions-menu"
+        ref={menuRef}
+        style={{
+          minWidth: 160,
         }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleMarkVideosAsSeen}>
+        <MenuItem
+          onClick={handleMarkVideosAsSeen}
+          disabled={videos.length === 0}
+        >
           <ListItemIcon>
             <VisibilityIcon />
           </ListItemIcon>
           <ListItemText>Mark unflagged videos as seen</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleMarkVideosAsIgnored}>
+        <MenuItem
+          onClick={handleMarkVideosAsIgnored}
+          disabled={videos.length === 0}
+        >
           <ListItemIcon>
             <DoDisturbOnIcon />
           </ListItemIcon>
           <ListItemText>Mark unflagged videos as ignored</ListItemText>
         </MenuItem>
-      </StyledMenu>
+      </NestedMenu>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>
-  ) : null;
-}
+  );
+});
 
-export default RecentViewOptions;
+export default RecentViewMoreActions;

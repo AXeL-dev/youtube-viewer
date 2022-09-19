@@ -4,3 +4,4 @@ export * from './useGrid';
 export * from './useDidMountEffect';
 export * from './useTimeout';
 export * from './useInterval';
+export * from './useForwardedRef';

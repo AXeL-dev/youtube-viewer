@@ -83,13 +83,10 @@ function ChannelListActions(props: ChannelListActionsProps) {
         id="more-menu"
         MenuListProps={{
           'aria-labelledby': 'more-button',
-          dense: true,
         }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         {channels.length > 1 ? (
           <MenuItem onClick={toggleDragHandles}>

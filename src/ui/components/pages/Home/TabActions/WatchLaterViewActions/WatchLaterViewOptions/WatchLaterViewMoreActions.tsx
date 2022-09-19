@@ -1,43 +1,41 @@
 import React, { useState } from 'react';
-import {
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import {
-  StyledMenu,
-  ConfirmationDialog,
-  ConfirmationDialogProps,
-} from 'ui/components/shared';
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
+import { downloadFile } from 'helpers/file';
+import { useForwardedRef } from 'hooks';
 import { useAppDispatch, useAppSelector } from 'store';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
   archiveVideosByFlag,
   clearWatchLaterList,
 } from 'store/reducers/videos';
 import {
-  selectWatchLaterVideos,
   selectSeenWatchLaterVideosCount,
+  selectWatchLaterVideos,
 } from 'store/selectors/videos';
-import { Nullable } from 'types';
-import { downloadFile } from 'helpers/file';
+import {
+  ConfirmationDialog,
+  ConfirmationDialogProps,
+} from 'ui/components/shared';
+import NestedMenu, {
+  NestedMenuRef,
+} from 'ui/components/shared/StyledMenu/NestedMenu';
 
-interface WatchLaterViewOptionsProps {
+interface WatchLaterViewMoreActionsProps {
   videosCount: number;
 }
 
-function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
+const WatchLaterViewMoreActions = React.forwardRef<
+  NestedMenuRef,
+  WatchLaterViewMoreActionsProps
+>((props, ref) => {
   const { videosCount } = props;
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
   const seenCount = useAppSelector(selectSeenWatchLaterVideosCount);
+  const menuRef = useForwardedRef<NestedMenuRef>(ref);
   const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
-  const open = Boolean(anchorEl);
   const [confirmationDialogProps, setConfirmationDialogProps] =
     useState<ConfirmationDialogProps>({
       open: false,
@@ -46,12 +44,8 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
       onClose: () => {},
     });
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const closeMenu = () => {
+    menuRef.current?.close();
   };
 
   const handleArchiveAll = () => {
@@ -69,7 +63,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         }));
       },
     });
-    handleClose();
+    closeMenu();
   };
 
   const handleRemoveAll = () => {
@@ -87,7 +81,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         }));
       },
     });
-    handleClose();
+    closeMenu();
   };
 
   const handleRemoveSeen = () => {
@@ -105,7 +99,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         }));
       },
     });
-    handleClose();
+    closeMenu();
   };
 
   const handleExport = () => {
@@ -116,32 +110,17 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
     const data = JSON.stringify(videos, null, 4);
     const file = new Blob([data], { type: 'text/json' });
     downloadFile(file, 'watch_later_videos.json');
-    handleClose();
+    closeMenu();
   };
 
   return (
     <>
-      <IconButton
-        id="more-button"
-        aria-label="more"
-        aria-controls={open ? 'more-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      >
-        <MoreVertIcon />
-      </IconButton>
-      <StyledMenu
-        id="more-menu"
-        MenuListProps={{
-          'aria-labelledby': 'more-button',
-          dense: true,
+      <NestedMenu
+        id="more-actions-menu"
+        ref={menuRef}
+        style={{
+          minWidth: 160,
         }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleArchiveAll}>
           <ListItemIcon>
@@ -169,10 +148,10 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
           </ListItemIcon>
           <ListItemText>Export</ListItemText>
         </MenuItem>
-      </StyledMenu>
+      </NestedMenu>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>
   );
-}
+});
 
-export default WatchLaterViewOptions;
+export default WatchLaterViewMoreActions;

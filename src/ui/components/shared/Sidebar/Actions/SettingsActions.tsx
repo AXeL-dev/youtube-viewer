@@ -82,13 +82,10 @@ export function SettingsActions(props: SettingsActionsProps) {
         id="settings-actions-menu"
         MenuListProps={{
           'aria-labelledby': 'settings-actions-button',
-          dense: true,
         }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleExport}>
           <ListItemIcon>

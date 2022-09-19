@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
-import { Box, Tabs } from '@mui/material';
+import { Box } from '@mui/material';
 import { Layout } from 'ui/components/shared';
 import { HomeView } from 'types';
 import Tab from './Tab';
@@ -8,6 +8,7 @@ import { useAppSelector } from 'store';
 import { selectApp } from 'store/selectors/app';
 import { selectSettings } from 'store/selectors/settings';
 import { selectWatchLaterVideosCount } from 'store/selectors/videos';
+import Tabs from './StyledTabs';
 import TabActions from './TabActions';
 
 interface HomeProps {}
@@ -80,7 +81,6 @@ export function Home(props: HomeProps) {
         }}
       >
         <Tabs
-          sx={{ flexGrow: 1, pt: 1 }}
           value={activeTab || false}
           onChange={handleTabChange}
           aria-label="tabs"

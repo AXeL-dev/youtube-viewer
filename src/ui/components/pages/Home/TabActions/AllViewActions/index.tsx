@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { HomeView } from 'types';
-import ViewSorting from '../ViewSorting';
+import AllViewOptions from './AllViewOptions';
 
 interface AllViewActionsProps {}
 
@@ -14,7 +13,7 @@ function AllViewActions(props: AllViewActionsProps) {
         gap: 2,
       }}
     >
-      <ViewSorting view={HomeView.All} />
+      <AllViewOptions />
     </Box>
   );
 }

@@ -24,7 +24,6 @@ const ChannelCard = React.forwardRef(
         <Card elevation={0} sx={{ flexGrow: 1, bgcolor: 'transparent' }}>
           <CardHeader
             sx={{
-              pt: 2.5,
               pl: 0,
               pr: 1,
               '& .MuiCardHeader-title': {

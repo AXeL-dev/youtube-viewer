@@ -1,26 +1,34 @@
 import { styled, alpha } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
+import { Theme } from '@mui/system';
+
+const parseValue = (value: any, theme: Theme) => {
+  switch (typeof value) {
+    case 'number':
+      return theme.spacing(value);
+    case 'string':
+      return value;
+    default:
+      return 0;
+  }
+};
 
 export const StyledMenu = styled((props: MenuProps) => (
   <Menu
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'right',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'right',
-    }}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+    {...props}
     MenuListProps={{
       dense: true,
+      ...props.MenuListProps,
     }}
-    {...props}
   />
 ))(({ theme, style }) => ({
   '& .MuiPaper-root': {
     borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: style?.minWidth || 180,
+    marginTop: parseValue(style?.marginTop, theme) ?? theme.spacing(1),
+    marginLeft: parseValue(style?.marginLeft, theme) ?? 0,
+    minWidth: style?.minWidth ?? 180,
     color:
       theme.palette.mode === 'light'
         ? 'rgb(55, 65, 81)'

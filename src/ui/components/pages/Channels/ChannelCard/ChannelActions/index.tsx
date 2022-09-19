@@ -12,7 +12,7 @@ import NotificationsOffOutlinedIcon from '@mui/icons-material/NotificationsOffOu
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Channel, Nullable } from 'types';
 import ChannelDialogs from '../ChannelDialogs';
 
@@ -80,7 +80,7 @@ const ChannelActions = React.forwardRef<HTMLButtonElement, ChannelActionsProps>(
             )}
           </MenuItem>
           <MenuItem onClick={handleFiltersClick} disableRipple>
-            <FilterListIcon />
+            <FilterAltIcon />
             Filters
           </MenuItem>
           <Divider sx={{ my: 0.5 }} />

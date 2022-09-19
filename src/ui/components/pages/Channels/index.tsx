@@ -29,7 +29,7 @@ export function Channels(props: ChannelsProps) {
           alignItems: 'center',
           borderBottom: 1,
           borderColor: 'divider',
-          padding: (theme) => theme.spacing(1.5, 3),
+          padding: (theme) => theme.spacing(1.25, 3),
           gap: 2,
         }}
       >
