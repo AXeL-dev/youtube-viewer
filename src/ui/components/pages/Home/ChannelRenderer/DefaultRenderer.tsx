@@ -61,7 +61,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       onChange({ channel, items: videos, total });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, onChange, videos]);
+  }, [isFetching, data, filter]);
 
   return (
     <ChannelRenderer
