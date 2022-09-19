@@ -5,6 +5,7 @@ import {
   Settings,
   VideosSeniority,
   ViewFilters,
+  ViewSorting,
 } from 'types';
 
 const { REACT_APP_YOUTUBE_API_KEY } = process.env;
@@ -25,6 +26,15 @@ export const defaultSettings = {
     seen: true,
     archived: true,
     others: true,
+  },
+  allViewSorting: {
+    publishDate: false,
+  },
+  recentViewSorting: {
+    publishDate: true,
+  },
+  watchLaterViewSorting: {
+    publishDate: false,
   },
   homeDisplayOptions: {
     hiddenViews: [],
@@ -86,6 +96,43 @@ export const settingsSlice = createSlice({
           return state;
       }
     },
+    setViewSorting: (
+      state,
+      action: PayloadAction<{
+        view: HomeView;
+        sorting: Partial<ViewSorting>;
+      }>,
+    ) => {
+      const { view, sorting } = action.payload;
+      switch (view) {
+        case HomeView.All:
+          return {
+            ...state,
+            allViewSorting: {
+              ...state.allViewSorting,
+              ...sorting,
+            },
+          };
+        case HomeView.Recent:
+          return {
+            ...state,
+            recentViewSorting: {
+              ...state.recentViewSorting,
+              ...sorting,
+            },
+          };
+        case HomeView.WatchLater:
+          return {
+            ...state,
+            watchLaterViewSorting: {
+              ...state.watchLaterViewSorting,
+              ...sorting,
+            },
+          };
+        default:
+          return state;
+      }
+    },
     setHomeDisplayOptions: (
       state,
       action: PayloadAction<Partial<HomeDisplayOptions>>,
@@ -110,6 +157,7 @@ export const {
   setSettings,
   resetSettings,
   setViewFilters,
+  setViewSorting,
   setHomeDisplayOptions,
 } = settingsSlice.actions;
 

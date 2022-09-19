@@ -2,7 +2,6 @@ import React from 'react';
 import { Stack, Divider } from '@mui/material';
 import { Alert, ProgressBar } from 'ui/components/shared';
 import { useFindChannelByNameQuery } from 'store/services/youtube';
-import { Channel } from 'types';
 import PickChannelCard from './PickChannelCard';
 
 interface ChannelResultsProps {
@@ -23,7 +22,7 @@ export default function ChannelResults(props: ChannelResultsProps) {
     <ProgressBar variant="indeterminate" />
   ) : (
     <Stack sx={{ px: 3, overflow: 'auto' }} divider={<Divider />}>
-      {results.map((channel: Channel, index: number) => (
+      {results.map((channel, index) => (
         <PickChannelCard key={index} channel={channel} />
       ))}
     </Stack>

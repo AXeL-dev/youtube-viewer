@@ -89,7 +89,7 @@ function Field(props: FieldProps) {
       case SettingType.List:
         return (
           <Select value={value as string} size="small" onChange={handleChange}>
-            {options.map((option: OptionType, index: number) => (
+            {options.map((option, index) => (
               <MenuItem key={index} value={option.value}>
                 {option.label}
               </MenuItem>

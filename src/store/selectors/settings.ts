@@ -32,6 +32,28 @@ export const selectViewFilters = (view: HomeView) =>
     }
   });
 
+export const selectViewSorting = (view: HomeView) =>
+  createSelector(selectSettings, (settings) => {
+    switch (view) {
+      case HomeView.Recent:
+        return {
+          ...defaultSettings.recentViewSorting,
+          ...settings.recentViewSorting,
+        };
+      case HomeView.WatchLater:
+        return {
+          ...defaultSettings.watchLaterViewSorting,
+          ...settings.watchLaterViewSorting,
+        };
+      case HomeView.All:
+      default:
+        return {
+          ...defaultSettings.allViewSorting,
+          ...settings.allViewSorting,
+        };
+    }
+  });
+
 export const selectHomeDisplayOptions = createSelector(
   selectSettings,
   (settings) => settings.homeDisplayOptions,

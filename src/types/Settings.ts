@@ -8,6 +8,9 @@ export interface Settings {
   recentVideosSeniority: VideosSeniority;
   recentViewFilters: RecentViewFilters;
   watchLaterViewFilters: WatchLaterViewFilters;
+  allViewSorting: ViewSorting;
+  recentViewSorting: ViewSorting;
+  watchLaterViewSorting: ViewSorting;
   homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
   queryTimeout: number;
@@ -15,6 +18,10 @@ export interface Settings {
 
 export interface HomeDisplayOptions {
   hiddenViews: HomeView[];
+}
+
+export interface ViewSorting {
+  publishDate: boolean;
 }
 
 export interface RecentViewFilters {

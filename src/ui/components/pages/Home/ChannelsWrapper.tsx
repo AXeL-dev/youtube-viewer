@@ -39,7 +39,7 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
         pt: 3,
       }}
     >
-      {channels.map((channel: Channel, index: number) => (
+      {channels.map((channel, index) => (
         <ChannelRenderer
           key={index}
           view={view}
