@@ -2,7 +2,8 @@ import React from 'react';
 import { Box } from '@mui/material';
 import WatchLaterViewFilters from './WatchLaterViewFilters';
 import WatchLaterViewOptions from './WatchLaterViewOptions';
-import WatchLaterViewSorting from './WatchLaterViewSorting';
+import ViewSorting from '../ViewSorting';
+import { HomeView } from 'types';
 
 interface WatchLaterViewActionsProps {
   videosCount: number;
@@ -19,7 +20,7 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
         gap: 2,
       }}
     >
-      <WatchLaterViewSorting />
+      <ViewSorting view={HomeView.WatchLater} />
       <WatchLaterViewFilters />
       {videosCount > 0 ? (
         <WatchLaterViewOptions videosCount={videosCount} />

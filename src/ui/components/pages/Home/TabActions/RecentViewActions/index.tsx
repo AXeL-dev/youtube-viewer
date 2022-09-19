@@ -3,7 +3,8 @@ import { Box } from '@mui/material';
 import RecentViewFilters from './RecentViewFilters';
 import RecentVideosSeniority from './RecentVideosSeniority';
 import RecentViewOptions from './RecentViewOptions';
-import RecentViewSorting from './RecentViewSorting';
+import ViewSorting from '../ViewSorting';
+import { HomeView } from 'types';
 
 interface RecentViewActionsProps {
   videosCount: number;
@@ -20,7 +21,7 @@ function RecentViewActions(props: RecentViewActionsProps) {
         gap: 2,
       }}
     >
-      <RecentViewSorting />
+      <ViewSorting view={HomeView.Recent} />
       <RecentViewFilters />
       <RecentVideosSeniority />
       {videosCount > 0 ? <RecentViewOptions /> : null}

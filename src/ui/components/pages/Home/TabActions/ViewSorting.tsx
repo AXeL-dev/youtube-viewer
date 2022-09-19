@@ -17,10 +17,13 @@ const options: {
   },
 ];
 
-interface AllViewSortingProps {}
+interface DefaultViewSortingProps {
+  view: HomeView;
+}
 
-function AllViewSorting(props: AllViewSortingProps) {
-  const sorting = useAppSelector(selectViewSorting(HomeView.All));
+function DefaultViewSorting(props: DefaultViewSortingProps) {
+  const { view } = props;
+  const sorting = useAppSelector(selectViewSorting(view));
   const dispatch = useAppDispatch();
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
@@ -36,7 +39,7 @@ function AllViewSorting(props: AllViewSortingProps) {
   const handleSortToggle = (key: keyof ViewSorting) => {
     dispatch(
       setViewSorting({
-        view: HomeView.All,
+        view,
         sorting: {
           [key]: !sorting[key],
         },
@@ -83,4 +86,4 @@ function AllViewSorting(props: AllViewSortingProps) {
   );
 }
 
-export default AllViewSorting;
+export default DefaultViewSorting;
