@@ -10,7 +10,8 @@ import {
   ViewFilters,
 } from 'types';
 import { selectActiveChannels } from './channels';
-import { selectViewFilters } from './settings';
+import { selectSettings, selectViewFilters } from './settings';
+import { elapsedDays } from 'helpers/utils';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
@@ -39,14 +40,15 @@ export const selectRecentChannelVideos = (channel: Channel) =>
   );
 
 export const selectRecentOnlyVideos = (channel?: Channel) =>
-  createSelector(selectVideos, (videos) =>
+  createSelector(selectVideos, selectSettings, (videos, settings) =>
     videos.filter(
-      ({ flags = {}, channelId }) =>
+      ({ flags = {}, channelId, publishedAt }) =>
         Object.keys(flags).every(
           (key) =>
             ['recent', 'notified'].includes(key) || !flags[key as VideoFlag],
         ) &&
-        (!channel || channel.id === channelId),
+        (!channel || channel.id === channelId) &&
+        elapsedDays(publishedAt) <= settings.recentVideosSeniority,
     ),
   );
 
