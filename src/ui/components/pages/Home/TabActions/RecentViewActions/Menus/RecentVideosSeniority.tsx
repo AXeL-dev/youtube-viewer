@@ -1,12 +1,15 @@
 import React from 'react';
-import { CheckableMenuItem } from 'ui/components/shared';
+import { ListItemIcon, ListItemText } from '@mui/material';
+import {
+  CheckableMenuItem,
+  NestedMenuItem,
+  NestedMenuItemProps,
+} from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
 import { selectRecentVideosSeniority } from 'store/selectors/settings';
 import { setSettings } from 'store/reducers/settings';
 import { VideosSeniority } from 'types';
-import NestedMenu, {
-  NestedMenuRef,
-} from 'ui/components/shared/StyledMenu/NestedMenu';
+import HistoryIcon from '@mui/icons-material/History';
 
 const options = [
   {
@@ -31,12 +34,10 @@ const options = [
   },
 ];
 
-interface RecentVideosSeniorityProps {}
+interface RecentVideosSeniorityProps
+  extends Omit<NestedMenuItemProps, 'label'> {}
 
-const RecentVideosSeniority = React.forwardRef<
-  NestedMenuRef,
-  RecentVideosSeniorityProps
->((props, ref) => {
+function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
   const seniority = useAppSelector(selectRecentVideosSeniority);
   const dispatch = useAppDispatch();
 
@@ -45,12 +46,21 @@ const RecentVideosSeniority = React.forwardRef<
   };
 
   return (
-    <NestedMenu
-      id="seniority-menu"
-      ref={ref}
-      style={{
-        minWidth: 160,
+    <NestedMenuItem
+      label={
+        <>
+          <ListItemIcon>
+            <HistoryIcon />
+          </ListItemIcon>
+          <ListItemText>Videos seniority</ListItemText>
+        </>
+      }
+      MenuProps={{
+        style: {
+          minWidth: 160,
+        },
       }}
+      {...props}
     >
       {options.map(({ label, value }, index) => (
         <CheckableMenuItem
@@ -61,8 +71,8 @@ const RecentVideosSeniority = React.forwardRef<
           {label}
         </CheckableMenuItem>
       ))}
-    </NestedMenu>
+    </NestedMenuItem>
   );
-});
+}
 
 export default RecentVideosSeniority;

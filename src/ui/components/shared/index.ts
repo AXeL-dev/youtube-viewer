@@ -9,3 +9,4 @@ export * from './LoadingSpinner';
 export * from './StyledMenu';
 export * from './ConfirmationDialog';
 export * from './CheckableMenuItem';
+export * from './NestedMenuItem';

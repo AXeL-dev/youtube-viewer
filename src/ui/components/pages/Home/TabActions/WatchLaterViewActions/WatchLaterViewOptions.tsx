@@ -1,13 +1,33 @@
 import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Divider } from '@mui/material';
 import { StyledMenu } from 'ui/components/shared';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HomeView, Nullable } from 'types';
 import ViewSorting from '../CommonMenus/ViewSorting';
+import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
+import WatchLaterViewMoreActions from './Menus/WatchLaterViewMoreActions';
 
-interface AllViewOptionsProps {}
+const options: ViewFilterOption[] = [
+  {
+    label: 'Seen',
+    value: 'seen',
+  },
+  {
+    label: 'Archived',
+    value: 'archived',
+  },
+  {
+    label: 'Others',
+    value: 'others',
+  },
+];
 
-function AllViewOptions(props: AllViewOptionsProps) {
+interface WatchLaterViewOptionsProps {
+  videosCount: number;
+}
+
+function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
+  const { videosCount } = props;
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
 
@@ -40,10 +60,20 @@ function AllViewOptions(props: AllViewOptionsProps) {
         open={open}
         onClose={handleClose}
       >
-        <ViewSorting view={HomeView.All} parentMenuOpen={open} />
+        <ViewSorting view={HomeView.WatchLater} parentMenuOpen={open} />
+        <ViewFilters
+          view={HomeView.WatchLater}
+          parentMenuOpen={open}
+          options={options}
+        />
+        <Divider sx={{ my: 0.5 }} />
+        <WatchLaterViewMoreActions
+          parentMenuOpen={open}
+          videosCount={videosCount}
+        />
       </StyledMenu>
     </>
   );
 }
 
-export default AllViewOptions;
+export default WatchLaterViewOptions;

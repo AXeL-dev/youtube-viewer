@@ -1,26 +1,24 @@
+import React, { useState, useRef } from 'react';
 import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
-import { useForwardedRef } from 'hooks';
-import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from 'store';
 import { setVideosFlag } from 'store/reducers/videos';
 import { selectRecentOnlyVideos } from 'store/selectors/videos';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   ConfirmationDialog,
   ConfirmationDialogProps,
+  NestedMenuItem,
+  NestedMenuItemProps,
+  NestedMenuItemRef,
 } from 'ui/components/shared';
-import NestedMenu, {
-  NestedMenuRef,
-} from 'ui/components/shared/StyledMenu/NestedMenu';
 
-interface RecentViewMoreActionsProps {}
+interface RecentViewMoreActionsProps
+  extends Omit<NestedMenuItemProps, 'label'> {}
 
-const RecentViewMoreActions = React.forwardRef<
-  NestedMenuRef,
-  RecentViewMoreActionsProps
->((props, ref) => {
-  const menuRef = useForwardedRef<NestedMenuRef>(ref);
+function RecentViewMoreActions(props: RecentViewMoreActionsProps) {
+  const ref = useRef<NestedMenuItemRef>(null);
   const videos = useAppSelector(selectRecentOnlyVideos());
   const dispatch = useAppDispatch();
   const [confirmationDialogProps, setConfirmationDialogProps] =
@@ -31,8 +29,8 @@ const RecentViewMoreActions = React.forwardRef<
       onClose: () => {},
     });
 
-  const closeMenu = () => {
-    menuRef.current?.close();
+  const handleMenuClose = () => {
+    ref.current?.closeMenu();
   };
 
   const handleMarkVideosAsSeen = () => {
@@ -55,7 +53,7 @@ const RecentViewMoreActions = React.forwardRef<
         }));
       },
     });
-    closeMenu();
+    handleMenuClose();
   };
 
   const handleMarkVideosAsIgnored = () => {
@@ -78,17 +76,22 @@ const RecentViewMoreActions = React.forwardRef<
         }));
       },
     });
-    closeMenu();
+    handleMenuClose();
   };
 
   return (
     <>
-      <NestedMenu
-        id="more-actions-menu"
-        ref={menuRef}
-        style={{
-          minWidth: 160,
-        }}
+      <NestedMenuItem
+        ref={ref}
+        label={
+          <>
+            <ListItemIcon>
+              <MoreHorizIcon />
+            </ListItemIcon>
+            <ListItemText>More</ListItemText>
+          </>
+        }
+        {...props}
       >
         <MenuItem
           onClick={handleMarkVideosAsSeen}
@@ -108,10 +111,10 @@ const RecentViewMoreActions = React.forwardRef<
           </ListItemIcon>
           <ListItemText>Mark unflagged videos as ignored</ListItemText>
         </MenuItem>
-      </NestedMenu>
+      </NestedMenuItem>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>
   );
-});
+}
 
 export default RecentViewMoreActions;

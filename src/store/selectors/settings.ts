@@ -32,6 +32,12 @@ export const selectViewFilters = (view: HomeView) =>
     }
   });
 
+export const selectActiveViewFiltersCount = (view: HomeView) =>
+  createSelector(
+    selectViewFilters(view),
+    (filters) => Object.values(filters).filter(Boolean).length,
+  );
+
 export const selectViewSorting = (view: HomeView) =>
   createSelector(selectSettings, (settings) => {
     switch (view) {

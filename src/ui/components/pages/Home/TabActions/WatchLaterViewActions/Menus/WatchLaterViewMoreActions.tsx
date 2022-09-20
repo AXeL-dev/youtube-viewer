@@ -18,23 +18,22 @@ import {
 import {
   ConfirmationDialog,
   ConfirmationDialogProps,
+  NestedMenuItem,
+  NestedMenuItemProps,
+  NestedMenuItemRef,
 } from 'ui/components/shared';
-import NestedMenu, {
-  NestedMenuRef,
-} from 'ui/components/shared/StyledMenu/NestedMenu';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
-interface WatchLaterViewMoreActionsProps {
+interface WatchLaterViewMoreActionsProps
+  extends Omit<NestedMenuItemProps, 'label'> {
   videosCount: number;
 }
 
-const WatchLaterViewMoreActions = React.forwardRef<
-  NestedMenuRef,
-  WatchLaterViewMoreActionsProps
->((props, ref) => {
-  const { videosCount } = props;
+function WatchLaterViewMoreActions(props: WatchLaterViewMoreActionsProps) {
+  const { videosCount, ...rest } = props;
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
   const seenCount = useAppSelector(selectSeenWatchLaterVideosCount);
-  const menuRef = useForwardedRef<NestedMenuRef>(ref);
+  const ref = useForwardedRef<NestedMenuItemRef>(null);
   const dispatch = useAppDispatch();
   const [confirmationDialogProps, setConfirmationDialogProps] =
     useState<ConfirmationDialogProps>({
@@ -44,8 +43,8 @@ const WatchLaterViewMoreActions = React.forwardRef<
       onClose: () => {},
     });
 
-  const closeMenu = () => {
-    menuRef.current?.close();
+  const handleCloseMenu = () => {
+    ref.current?.closeMenu();
   };
 
   const handleArchiveAll = () => {
@@ -63,7 +62,7 @@ const WatchLaterViewMoreActions = React.forwardRef<
         }));
       },
     });
-    closeMenu();
+    handleCloseMenu();
   };
 
   const handleRemoveAll = () => {
@@ -81,7 +80,7 @@ const WatchLaterViewMoreActions = React.forwardRef<
         }));
       },
     });
-    closeMenu();
+    handleCloseMenu();
   };
 
   const handleRemoveSeen = () => {
@@ -99,7 +98,7 @@ const WatchLaterViewMoreActions = React.forwardRef<
         }));
       },
     });
-    closeMenu();
+    handleCloseMenu();
   };
 
   const handleExport = () => {
@@ -110,25 +109,30 @@ const WatchLaterViewMoreActions = React.forwardRef<
     const data = JSON.stringify(videos, null, 4);
     const file = new Blob([data], { type: 'text/json' });
     downloadFile(file, 'watch_later_videos.json');
-    closeMenu();
+    handleCloseMenu();
   };
 
   return (
     <>
-      <NestedMenu
-        id="more-actions-menu"
-        ref={menuRef}
-        style={{
-          minWidth: 160,
-        }}
+      <NestedMenuItem
+        ref={ref}
+        label={
+          <>
+            <ListItemIcon>
+              <MoreHorizIcon />
+            </ListItemIcon>
+            <ListItemText>More</ListItemText>
+          </>
+        }
+        {...rest}
       >
-        <MenuItem onClick={handleArchiveAll}>
+        <MenuItem onClick={handleArchiveAll} disabled={videosCount === 0}>
           <ListItemIcon>
             <ArchiveIcon />
           </ListItemIcon>
           <ListItemText>Archive all videos</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleRemoveAll}>
+        <MenuItem onClick={handleRemoveAll} disabled={videosCount === 0}>
           <ListItemIcon>
             <ClearAllIcon />
           </ListItemIcon>
@@ -142,16 +146,16 @@ const WatchLaterViewMoreActions = React.forwardRef<
             <ListItemText>Remove seen videos</ListItemText>
           </MenuItem>
         ) : null}
-        <MenuItem onClick={handleExport}>
+        <MenuItem onClick={handleExport} disabled={videosCount === 0}>
           <ListItemIcon>
             <FileDownloadIcon />
           </ListItemIcon>
           <ListItemText>Export</ListItemText>
         </MenuItem>
-      </NestedMenu>
+      </NestedMenuItem>
       <ConfirmationDialog {...confirmationDialogProps} />
     </>
   );
-});
+}
 
 export default WatchLaterViewMoreActions;
