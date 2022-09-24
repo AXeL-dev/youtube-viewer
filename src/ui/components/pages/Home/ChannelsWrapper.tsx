@@ -11,12 +11,11 @@ interface ChannelsWrapperProps {
   view: HomeView;
   channels: Channel[];
   onError?: (error: any) => void;
-  onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
 function ChannelsWrapper(props: ChannelsWrapperProps) {
-  const { view, channels, onError, onChange, onVideoPlay } = props;
+  const { view, channels, onError, onVideoPlay } = props;
   const ChannelRenderer = useMemo(() => {
     switch (view) {
       case HomeView.WatchLater:
@@ -45,7 +44,6 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
           view={view}
           channel={channel}
           onError={onError}
-          onChange={onChange}
           onVideoPlay={onVideoPlay}
         />
       ))}

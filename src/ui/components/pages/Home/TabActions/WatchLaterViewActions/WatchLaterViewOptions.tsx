@@ -7,7 +7,7 @@ import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
 import WatchLaterViewMoreActions from './Menus/WatchLaterViewMoreActions';
 
-const options: ViewFilterOption[] = [
+const filterOptions: ViewFilterOption[] = [
   {
     label: 'Seen',
     value: 'seen',
@@ -64,7 +64,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         <ViewFilters
           view={HomeView.WatchLater}
           parentMenuOpen={open}
-          options={options}
+          options={filterOptions}
         />
         <Divider sx={{ my: 0.5 }} />
         <WatchLaterViewMoreActions

@@ -1,13 +1,13 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import { useAppSelector } from 'store';
+import { selectWatchLaterVideosCount } from 'store/selectors/videos';
 import WatchLaterViewOptions from './WatchLaterViewOptions';
 
-interface WatchLaterViewActionsProps {
-  videosCount: number;
-}
+interface WatchLaterViewActionsProps {}
 
 function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
-  const { videosCount } = props;
+  const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
 
   return (
     <Box
@@ -17,7 +17,7 @@ function WatchLaterViewActions(props: WatchLaterViewActionsProps) {
         gap: 2,
       }}
     >
-      <WatchLaterViewOptions videosCount={videosCount} />
+      <WatchLaterViewOptions videosCount={watchLaterVideosCount} />
     </Box>
   );
 }

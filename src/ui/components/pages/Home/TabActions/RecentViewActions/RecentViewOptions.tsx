@@ -8,7 +8,7 @@ import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
 import RecentVideosSeniority from './Menus/RecentVideosSeniority';
 import RecentViewMoreActions from './Menus/RecentViewMoreActions';
 
-const options: ViewFilterOption[] = [
+const filterOptions: ViewFilterOption[] = [
   {
     label: 'Seen',
     value: 'seen',
@@ -66,7 +66,7 @@ function RecentViewOptions(props: RecentViewOptionsProps) {
         <ViewFilters
           view={HomeView.Recent}
           parentMenuOpen={open}
-          options={options}
+          options={filterOptions}
         />
         <RecentVideosSeniority parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />

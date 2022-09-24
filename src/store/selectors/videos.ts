@@ -20,7 +20,7 @@ export const selectChannelVideos = (channel: Channel) =>
     videos.filter(({ channelId }) => channel.id === channelId),
   );
 
-export const selectRecentChannelVideos = (channel: Channel) =>
+export const selectClassifiedRecentChannelVideos = (channel: Channel) =>
   createSelector(
     selectChannelVideos(channel),
     selectViewFilters(HomeView.Recent),

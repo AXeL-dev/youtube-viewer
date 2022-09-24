@@ -7,30 +7,34 @@ import {
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
+import { useChannelVideos } from 'providers';
 
 export interface DefaultRendererProps {
-  channel: Channel;
   view: HomeView;
+  channel: Channel;
   publishedAfter?: string;
   persistVideosOptions?: PersistVideosOptions;
   filter?: (video: Video) => boolean;
   onError?: (error: any) => void;
-  onChange?: (data: any) => void;
   onVideoPlay: (video: Video) => void;
 }
 
+// should be instanciated outside the component to avoid multi-rendering
+const defaultFilter = () => true;
+
 function DefaultRenderer(props: DefaultRendererProps) {
   const {
+    view,
     channel,
     publishedAfter,
     persistVideosOptions,
-    filter = () => true,
+    filter = defaultFilter,
     onError,
-    onChange,
     ...rest
   } = props;
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
+  const { setChannelData } = useChannelVideos(view);
   const maxResults = itemsPerRow * page;
   const { data, error, isLoading, isFetching } = useGetChannelVideosQuery(
     {
@@ -57,14 +61,15 @@ function DefaultRenderer(props: DefaultRendererProps) {
   }, [error, onError]);
 
   useEffect(() => {
-    if (!isFetching && data && onChange) {
-      onChange({ channel, items: videos, total });
+    if (!isFetching && data) {
+      setChannelData({ channel, items: videos, total });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching, data, filter]);
 
   return (
     <ChannelRenderer
+      view={view}
       channel={channel}
       videos={videos}
       total={total}

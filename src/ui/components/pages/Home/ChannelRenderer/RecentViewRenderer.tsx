@@ -3,7 +3,7 @@ import { useAppSelector } from 'store';
 import { selectSettings } from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import { selectRecentChannelVideos } from 'store/selectors/videos';
+import { selectClassifiedRecentChannelVideos } from 'store/selectors/videos';
 import { Video } from 'types';
 
 export interface RecentViewRendererProps
@@ -12,7 +12,10 @@ export interface RecentViewRendererProps
 function RecentViewRenderer(props: RecentViewRendererProps) {
   const { channel } = props;
   const settings = useAppSelector(selectSettings);
-  const videos = useAppSelector(selectRecentChannelVideos(channel));
+  const videos = useAppSelector(
+    selectClassifiedRecentChannelVideos(channel),
+    (left, right) => JSON.stringify(left) === JSON.stringify(right),
+  );
   const filterCallback = useCallback(
     (video: Video) =>
       settings.recentViewFilters.others

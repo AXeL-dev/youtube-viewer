@@ -8,25 +8,23 @@ import { selectActiveChannelsCount } from 'store/selectors/channels';
 
 interface TabActionsProps {
   tab: HomeView | null;
-  recentVideosCount: number;
-  watchLaterVideosCount: number;
 }
 
 function TabActions(props: TabActionsProps) {
-  const { tab, recentVideosCount, watchLaterVideosCount } = props;
+  const { tab } = props;
   const channelsCount = useAppSelector(selectActiveChannelsCount);
+
+  if (channelsCount === 0) {
+    return null;
+  }
 
   switch (tab) {
     case HomeView.All:
       return <AllViewActions />;
     case HomeView.Recent:
-      return channelsCount > 0 ? (
-        <RecentViewActions videosCount={recentVideosCount} />
-      ) : null;
+      return <RecentViewActions />;
     case HomeView.WatchLater:
-      return channelsCount > 0 ? (
-        <WatchLaterViewActions videosCount={watchLaterVideosCount} />
-      ) : null;
+      return <WatchLaterViewActions />;
     default:
       return null;
   }

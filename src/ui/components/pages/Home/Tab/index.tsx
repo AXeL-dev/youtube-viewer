@@ -2,14 +2,30 @@ import React from 'react';
 import { Box } from '@mui/material';
 import MuiTab, { TabProps as MuiTabProps } from '@mui/material/Tab';
 import Badge from './Badge';
+import { HomeView } from 'types';
+import { useAppSelector } from 'store';
+import { useChannelVideos } from 'providers';
+import { selectWatchLaterVideosCount } from 'store/selectors/videos';
 
 interface TabProps extends MuiTabProps {
-  badge?: React.ReactNode;
+  value: HomeView;
   selected?: boolean;
 }
 
 export default function Tab(props: TabProps) {
-  const { label, badge, selected, ...rest } = props;
+  const { label, value: view, selected, ...rest } = props;
+  const { videosCount } = useChannelVideos(view);
+  const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
+  const badgeContent: string | number = (() => {
+    switch (view) {
+      case HomeView.Recent:
+        return videosCount.displayed;
+      case HomeView.WatchLater:
+        return watchLaterVideosCount;
+      default:
+        return '';
+    }
+  })();
 
   return (
     <MuiTab
@@ -22,18 +38,19 @@ export default function Tab(props: TabProps) {
       label={
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           {label}
-          {badge && selected ? (
+          {selected && badgeContent ? (
             <Badge
-              badgeContent={badge}
+              badgeContent={badgeContent}
               title={
-                ['number', 'string'].includes(typeof badge)
-                  ? (badge as string)
+                ['number', 'string'].includes(typeof badgeContent)
+                  ? `${badgeContent}`
                   : ''
               }
             />
           ) : null}
         </Box>
       }
+      value={view}
       disableRipple
       {...rest}
     />

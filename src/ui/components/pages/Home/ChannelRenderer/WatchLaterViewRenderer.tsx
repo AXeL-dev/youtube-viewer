@@ -6,6 +6,7 @@ import { selectWatchLaterVideos } from 'store/selectors/videos';
 import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
+import { useChannelVideos } from 'providers';
 
 export interface WatchLaterViewRendererProps {
   channel: Channel;
@@ -17,6 +18,7 @@ function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
   const { channel, onError, onVideoPlay } = props;
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
+  const { setChannelData } = useChannelVideos(HomeView.WatchLater);
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos(channel));
   const ids = watchLaterVideos.map(({ id }) => id);
   const total = ids.length;
@@ -41,6 +43,13 @@ function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
       onError(error);
     }
   }, [error, onError]);
+
+  useEffect(() => {
+    if (!isFetching && data) {
+      setChannelData({ channel, items: videos, total });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFetching, data]);
 
   return (
     <ChannelRenderer

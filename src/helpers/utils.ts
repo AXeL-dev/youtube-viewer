@@ -289,15 +289,18 @@ export function formatByteSize(bytes: number) {
  * @param callback
  * @param timeFrame
  */
-export function throttle(callback: Function, timeFrame: number) {
+export function throttle<F extends Function>(
+  callback: F,
+  timeFrame: number,
+): F {
   let lastTime = 0;
-  return (...args: any) => {
+  return ((...args: any) => {
     let now = new Date().getTime();
     if (now - lastTime >= timeFrame) {
       callback(...args);
       lastTime = now;
     }
-  };
+  }) as any;
 }
 
 // -------------------------------------------------------------------
@@ -310,11 +313,11 @@ export function throttle(callback: Function, timeFrame: number) {
  * @param wait
  * @param immediate
  */
-export function debounce(
-  callback: Function,
+export function debounce<F extends Function>(
+  callback: F,
   wait: number,
   immediate?: boolean,
-) {
+): F {
   let timeout: any = null;
   return function (this: any, ...args: any) {
     const context = this;
@@ -324,7 +327,7 @@ export function debounce(
       if (!immediate) callback.apply(context, args);
     }, wait);
     if (immediate && !timeout) callback.apply(context, args);
-  };
+  } as any;
 }
 
 // -------------------------------------------------------------------
