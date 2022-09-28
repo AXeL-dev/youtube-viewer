@@ -32,7 +32,7 @@ type ChannelVideosContextType = {
   ) => Video | undefined;
 };
 
-const ALL_VIEWS = [HomeView.All, HomeView.Recent, HomeView.WatchLater];
+const ALL_VIEWS = Object.values(HomeView);
 
 const INITIAL_COUNT = ALL_VIEWS.reduce(
   (acc, view) => ({
@@ -45,6 +45,11 @@ const INITIAL_COUNT = ALL_VIEWS.reduce(
   {},
 );
 
+const INITIAL_MAP = ALL_VIEWS.reduce(
+  (acc, view) => ({ ...acc, [view]: new Map() }),
+  {},
+);
+
 const ChannelVideosContext = createContext<
   ChannelVideosContextType | undefined
 >(undefined);
@@ -53,7 +58,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   const [videosCount, setVideosCount] =
     useState<ChannelVideosContextType['videosCount']>(INITIAL_COUNT);
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
-    ALL_VIEWS.reduce((acc, view) => ({ ...acc, [view]: new Map() }), {}),
+    INITIAL_MAP,
   );
 
   const updateCount = useCallback(
