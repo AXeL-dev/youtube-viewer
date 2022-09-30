@@ -88,6 +88,10 @@ export async function closeTabs(resolver: TabResolver) {
   return closedTabs;
 }
 
+export function closeExtensionTabs() {
+  return closeTabs((tab) => tab.url.startsWith(indexUrl));
+}
+
 export function getUrl(path: string): string {
   return browser.runtime.getURL(path);
 }

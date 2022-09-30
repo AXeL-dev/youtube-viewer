@@ -1,14 +1,14 @@
-import { useEffect, useRef } from 'react';
-import { isWebExtension, closeTabs, indexUrl } from 'helpers/webext';
-import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
-import { Tab, ContextMenu } from 'types';
+import { useEffect } from 'react';
+import { isWebExtension, closeExtensionTabs } from 'helpers/webext';
+import { removeVideoFlag } from 'store/reducers/videos';
+import { Tab, ContextMenu, ContextMenuInfo } from 'types';
 import { dispatch, useAppSelector } from 'store';
 import {
   selectSeenVideos,
   selectWatchLaterVideos,
 } from 'store/selectors/videos';
 import { getVideoId } from 'helpers/utils';
-import { fetchChannelById } from 'store/thunks';
+import { addVideoById } from 'store/thunks/videos';
 
 declare var browser: any;
 
@@ -39,74 +39,49 @@ const menus: ContextMenu[] = [
 export default function ContextMenus(props: ContextMenusProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
   const seenVideos = useAppSelector(selectSeenVideos());
-  const ports = useRef<any[]>([]);
 
-  const handleConnect = (p: any) => {
-    ports.current[p.sender.tab.id] = p;
-    p.onMessage.addListener((message: any) => {
-      const { menuItemId, checked } = message.request;
-      const { videoId: id, channelId, datePublished } = message.response;
-      const video = {
-        id,
-        channelId,
-        publishedAt: new Date(datePublished).getTime(),
-      };
-      switch (menuItemId) {
-        case 'add_video_to_watch_later_list':
-          closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
+  const handleContextMenusClick = (info: ContextMenuInfo, tab: Tab) => {
+    const { videoId: id } = parseUrl(tab.url);
+    if (!id) {
+      return;
+    }
+    switch (info.menuItemId) {
+      case 'add_video_to_watch_later_list':
+        closeExtensionTabs().then(() => {
+          dispatch(
+            addVideoById({
+              id,
+              flags: {
+                toWatchLater: true,
+              },
+            }),
+            true,
+          );
+          browser.contextMenus.update(info.menuItemId, { enabled: false });
+        });
+        break;
+      case 'mark_video_as_seen': {
+        closeExtensionTabs().then(() => {
+          if (info.checked) {
             dispatch(
-              addVideoFlag({
-                video,
-                flag: 'toWatchLater',
+              addVideoById({
+                id,
+                flags: {
+                  seen: true,
+                },
               }),
               true,
             );
-            // ensure to add channel too (if it does not exist)
-            dispatch(fetchChannelById({ id: channelId }), true);
-            browser.contextMenus.update(menuItemId, { enabled: false });
-          });
-          break;
-        case 'mark_video_as_seen': {
-          closeTabs((tab) => tab.url.startsWith(indexUrl)).then(() => {
-            if (checked) {
-              dispatch(
-                addVideoFlag({
-                  video,
-                  flag: 'seen',
-                }),
-                true,
-              );
-              // ensure to add channel too (if it does not exist)
-              dispatch(fetchChannelById({ id: channelId }), true);
-            } else {
-              dispatch(
-                removeVideoFlag({
-                  video: { id },
-                  flag: 'seen',
-                }),
-                true,
-              );
-            }
-          });
-          break;
-        }
-      }
-    });
-  };
-
-  const handleContextMenusClick = (info: any, tab: Tab) => {
-    switch (info.menuItemId) {
-      case 'add_video_to_watch_later_list':
-      case 'mark_video_as_seen': {
-        const port = ports.current[tab.id];
-        if (port) {
-          port.postMessage({
-            message: 'getVideoInfos',
-            menuItemId: info.menuItemId,
-            checked: info.checked,
-            // url: info.pageUrl,
-          });
-        }
+          } else {
+            dispatch(
+              removeVideoFlag({
+                video: { id },
+                flag: 'seen',
+              }),
+              true,
+            );
+          }
+        });
         break;
       }
     }
@@ -179,12 +154,9 @@ export default function ContextMenus(props: ContextMenusProps) {
     createContextMenus();
     // Handle context menu click
     browser.contextMenus.onClicked.addListener(handleContextMenusClick);
-    // Handle content script connection
-    browser.runtime.onConnect.addListener(handleConnect);
 
     return () => {
       browser.contextMenus.onClicked.removeListener(handleContextMenusClick);
-      browser.runtime.onConnect.removeListener(handleConnect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

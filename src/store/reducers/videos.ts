@@ -13,13 +13,13 @@ const initialState: VideosState = {
   list: [],
 };
 
-interface AddVideoParams {
+interface PersistVideoParams {
   state: VideosState;
   video: AddVideoPayload;
   flags: VideoFlags;
 }
 
-function addVideo({ state, video, flags }: AddVideoParams) {
+function persistVideo({ state, video, flags }: PersistVideoParams) {
   const found = setVideoFlags({
     state,
     video,
@@ -68,6 +68,20 @@ export const videosSlice = createSlice({
         ...action.payload,
       };
     },
+    addVideo: (
+      state,
+      action: PayloadAction<{
+        video: AddVideoPayload;
+        flags?: VideoFlags;
+      }>,
+    ) => {
+      const { video, flags = {} } = action.payload;
+      persistVideo({
+        state,
+        video,
+        flags,
+      });
+    },
     addVideoFlag: (
       state,
       action: PayloadAction<{
@@ -76,7 +90,7 @@ export const videosSlice = createSlice({
       }>,
     ) => {
       const { video, flag } = action.payload;
-      addVideo({
+      persistVideo({
         state,
         video,
         flags: { [flag]: true },
@@ -179,7 +193,7 @@ export const videosSlice = createSlice({
     ) => {
       const { videos, flags } = action.payload;
       for (const video of videos) {
-        addVideo({
+        persistVideo({
           state,
           video,
           flags,
@@ -191,6 +205,7 @@ export const videosSlice = createSlice({
 
 export const {
   setVideos,
+  addVideo,
   addVideoFlag,
   removeVideoFlag,
   clearWatchLaterList,

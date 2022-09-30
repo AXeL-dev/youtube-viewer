@@ -37,7 +37,7 @@ type GetChannelActivitiesResponse = {
   total: number;
 };
 
-type GetVideosByIdArgs = {
+export type GetVideosByIdArgs = {
   ids: string[];
   maxResults?: number;
 };

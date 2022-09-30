@@ -43,6 +43,11 @@ export interface ContextMenu {
   contexts: Context[];
 }
 
+export interface ContextMenuInfo {
+  menuItemId: string;
+  checked: boolean;
+}
+
 export interface Tab {
   id: number;
   url: string;
