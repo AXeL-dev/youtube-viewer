@@ -42,9 +42,13 @@ export const NestedMenuItem = React.forwardRef<
   const containerRef = useRef<HTMLDivElement>(null);
   const menuContainerRef = useRef<HTMLDivElement>(null);
 
-  useImperativeHandle(ref, () => ({
-    closeMenu: handleClose,
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      closeMenu: handleClose,
+    }),
+    [],
+  );
 
   useImperativeHandle(containerRefProp, () => containerRef.current);
 

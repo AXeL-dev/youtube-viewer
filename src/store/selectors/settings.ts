@@ -5,6 +5,7 @@ import {
   ViewFilters,
   RecentViewFilters,
   WatchLaterViewFilters,
+  ExtraVideoAction,
 } from 'types';
 import { defaultSettings } from 'store/reducers/settings';
 
@@ -62,8 +63,26 @@ export const selectViewSorting = (view: HomeView) =>
 
 export const selectHomeDisplayOptions = createSelector(
   selectSettings,
-  (settings) => settings.homeDisplayOptions,
+  (settings) => ({
+    ...defaultSettings.homeDisplayOptions,
+    ...settings.homeDisplayOptions,
+  }),
 );
+
+export const selectHiddenViews = createSelector(
+  selectHomeDisplayOptions,
+  (options) => options.hiddenViews,
+);
+
+export const selectExtraVideoActions = createSelector(
+  selectHomeDisplayOptions,
+  (options) => options.extraVideoActions,
+);
+
+export const selectHasExtraVideoAction = (action: ExtraVideoAction) =>
+  createSelector(selectHomeDisplayOptions, (options) =>
+    options.extraVideoActions.includes(action),
+  );
 
 export const selectRecentVideosSeniority = createSelector(
   selectSettings,

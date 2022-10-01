@@ -38,6 +38,7 @@ export const defaultSettings = {
   },
   homeDisplayOptions: {
     hiddenViews: [],
+    extraVideoActions: [],
   },
   enableNotifications: true,
   queryTimeout: 10000,

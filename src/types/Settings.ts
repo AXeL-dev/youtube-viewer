@@ -16,8 +16,13 @@ export interface Settings {
   queryTimeout: number;
 }
 
+export enum ExtraVideoAction {
+  CopyLink = 'copy-link',
+}
+
 export interface HomeDisplayOptions {
   hiddenViews: HomeView[];
+  extraVideoActions: ExtraVideoAction[];
 }
 
 export interface ViewSorting {

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Grow, IconButton, Tooltip } from '@mui/material';
-import { Video } from 'types';
+import { ExtraVideoAction, Video } from 'types';
 import LinkIcon from '@mui/icons-material/Link';
 import CheckIcon from '@mui/icons-material/Check';
 import copy from 'copy-to-clipboard';
+import { useAppSelector } from 'store';
+import { selectHasExtraVideoAction } from 'store/selectors/settings';
 
 interface CopyLinkActionProps {
   video: Video;
@@ -13,6 +15,9 @@ function CopyLinkAction(props: CopyLinkActionProps) {
   const { video } = props;
   const [isShown, setIsShown] = useState(true);
   const [copied, setCopied] = useState(false);
+  const enabled = useAppSelector(
+    selectHasExtraVideoAction(ExtraVideoAction.CopyLink),
+  );
 
   const handleClick = () => {
     if (copied) return;
@@ -23,7 +28,7 @@ function CopyLinkAction(props: CopyLinkActionProps) {
     }, 1000);
   };
 
-  return (
+  return enabled ? (
     <Grow in={isShown}>
       <Tooltip
         title={copied ? 'Copied!' : 'Copy link to clipboard'}
@@ -50,7 +55,7 @@ function CopyLinkAction(props: CopyLinkActionProps) {
         </IconButton>
       </Tooltip>
     </Grow>
-  );
+  ) : null;
 }
 
 export default CopyLinkAction;
