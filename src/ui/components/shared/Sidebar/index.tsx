@@ -5,7 +5,7 @@ import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import WarningIcon from './WarningIcon';
 import ListItemLink from './ListItemLink';
 import Header from './Header';
 import { useAppSelector } from 'store';
@@ -74,7 +74,7 @@ export function Sidebar(props: SidebarProps) {
                 selected ? (
                   <SettingsActions />
                 ) : app.loaded && !settings.apiKey ? (
-                  <ErrorOutlineIcon sx={{ ml: 3 }} color="warning" />
+                  <WarningIcon />
                 ) : null
               }
             />
