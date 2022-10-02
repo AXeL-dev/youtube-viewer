@@ -1,16 +1,16 @@
 import React from 'react';
 import { useAppSelector } from 'store';
-import { selectWatchLaterVideos } from 'store/selectors/videos';
+import { selectBookmarkedVideos } from 'store/selectors/videos';
 import StaticRenderer, { StaticRendererProps } from './StaticRenderer';
 
-export interface WatchLaterViewRendererProps
+export interface BookmarksViewRendererProps
   extends Omit<StaticRendererProps, 'videos'> {}
 
-function WatchLaterViewRenderer(props: WatchLaterViewRendererProps) {
+function BookmarksViewRenderer(props: BookmarksViewRendererProps) {
   const { channel, ...rest } = props;
-  const videos = useAppSelector(selectWatchLaterVideos(channel));
+  const videos = useAppSelector(selectBookmarkedVideos(channel));
 
   return <StaticRenderer channel={channel} videos={videos} {...rest} />;
 }
 
-export default WatchLaterViewRenderer;
+export default BookmarksViewRenderer;

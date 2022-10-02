@@ -5,7 +5,10 @@ import Badge from './Badge';
 import { HomeView } from 'types';
 import { useAppSelector } from 'store';
 import { useChannelVideos } from 'providers';
-import { selectWatchLaterVideosCount } from 'store/selectors/videos';
+import {
+  selectBookmarkedVideosCount,
+  selectWatchLaterVideosCount,
+} from 'store/selectors/videos';
 
 interface TabProps extends MuiTabProps {
   value: HomeView;
@@ -16,12 +19,15 @@ export default function Tab(props: TabProps) {
   const { label, value: view, selected, ...rest } = props;
   const { videosCount } = useChannelVideos(view);
   const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
+  const bookmarkedVideosCount = useAppSelector(selectBookmarkedVideosCount);
   const badgeContent: string | number = (() => {
     switch (view) {
       case HomeView.Recent:
         return videosCount.displayed;
       case HomeView.WatchLater:
         return watchLaterVideosCount;
+      case HomeView.Bookmarks:
+        return bookmarkedVideosCount;
       default:
         return '';
     }

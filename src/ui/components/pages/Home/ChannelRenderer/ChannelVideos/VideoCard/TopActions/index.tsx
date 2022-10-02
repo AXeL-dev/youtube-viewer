@@ -6,6 +6,7 @@ import SeenAction from './SeenAction';
 import ArchiveAction from './ArchiveAction';
 import IgnoreAction from './IgnoreAction';
 import CopyLinkAction from './CopyLinkAction';
+import BookmarkAction from './BookmarkAction';
 
 interface VideoTopActionsProps {
   video: Video;
@@ -30,7 +31,17 @@ function VideoTopActions(props: VideoTopActionsProps) {
       <IgnoreAction video={video} view={view} />
       <SeenAction video={video} />
       <ArchiveAction video={video} view={view} />
-      <WatchLaterAction video={video} view={view} />
+      {view === HomeView.Bookmarks ? (
+        <>
+          <WatchLaterAction video={video} view={view} />
+          <BookmarkAction video={video} view={view} />
+        </>
+      ) : (
+        <>
+          <BookmarkAction video={video} view={view} />
+          <WatchLaterAction video={video} view={view} />
+        </>
+      )}
     </Box>
   );
 }

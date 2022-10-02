@@ -1,5 +1,3 @@
-import { Either } from './common';
-
 export interface Settings {
   defaultView: HomeView | null;
   apiKey: string;
@@ -8,9 +6,11 @@ export interface Settings {
   recentVideosSeniority: VideosSeniority;
   recentViewFilters: RecentViewFilters;
   watchLaterViewFilters: WatchLaterViewFilters;
+  bookmarksViewFilters: BookmarksViewFilters;
   allViewSorting: ViewSorting;
   recentViewSorting: ViewSorting;
   watchLaterViewSorting: ViewSorting;
+  bookmarksViewSorting: ViewSorting;
   homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
   queryTimeout: number;
@@ -32,17 +32,28 @@ export interface ViewSorting {
 export interface RecentViewFilters {
   seen: boolean;
   watchLater: boolean;
+  bookmarked: boolean;
   ignored: boolean;
   others: boolean;
 }
 
 export interface WatchLaterViewFilters {
   seen: boolean;
+  bookmarked: boolean;
   archived: boolean;
   others: boolean;
 }
 
-export type ViewFilters = Either<RecentViewFilters, WatchLaterViewFilters>;
+export interface BookmarksViewFilters {
+  seen: boolean;
+  watchLater: boolean;
+  others: boolean;
+}
+
+export interface ViewFilters
+  extends RecentViewFilters,
+    WatchLaterViewFilters,
+    BookmarksViewFilters {}
 
 export type ViewFilter = keyof ViewFilters;
 
@@ -50,6 +61,7 @@ export enum HomeView {
   All = 'all',
   Recent = 'recent',
   WatchLater = 'watch-later',
+  Bookmarks = 'bookmarks',
 }
 
 export enum VideosSeniority {

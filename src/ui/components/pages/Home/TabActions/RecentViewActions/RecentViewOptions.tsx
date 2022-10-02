@@ -18,6 +18,10 @@ const filterOptions: ViewFilterOption[] = [
     value: 'watchLater',
   },
   {
+    label: 'Bookmarked',
+    value: 'bookmarked',
+  },
+  {
     label: 'Ignored',
     value: 'ignored',
   },

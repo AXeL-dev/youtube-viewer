@@ -62,6 +62,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
             ({ flags }) =>
               flags.seen ||
               flags.toWatchLater ||
+              flags.bookmarked ||
               flags.notified ||
               flags.recent,
           )

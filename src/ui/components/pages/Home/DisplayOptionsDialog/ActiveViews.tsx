@@ -43,6 +43,11 @@ const ActiveViews = forwardRef<ActiveViewsRef, ActiveViewsProps>(
         value: HomeView.WatchLater,
         hidden: hiddenViews.includes(HomeView.WatchLater),
       },
+      {
+        label: 'Bookmarks',
+        value: HomeView.Bookmarks,
+        hidden: hiddenViews.includes(HomeView.Bookmarks),
+      },
     ];
     const [views, setViews] = useState(initialViews);
 

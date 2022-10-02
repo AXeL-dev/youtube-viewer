@@ -3,7 +3,7 @@ import { Box, Tooltip } from '@mui/material';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import { HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
-import { selectVideoMeta } from 'store/selectors/videos';
+import { selectVideoFlag } from 'store/selectors/videos';
 
 interface IgnoredBadgeProps {
   video: Video;
@@ -12,7 +12,7 @@ interface IgnoredBadgeProps {
 
 function IgnoredBadge(props: IgnoredBadgeProps) {
   const { video, view } = props;
-  const { isIgnored } = useAppSelector(selectVideoMeta(video));
+  const isIgnored = useAppSelector(selectVideoFlag(video, 'ignored'));
 
   return view === HomeView.Recent && isIgnored ? (
     <Tooltip title="Ignored" aria-label="ignored">

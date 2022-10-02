@@ -5,7 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HomeView, Nullable } from 'types';
 import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
-import WatchLaterViewMoreActions from './Menus/WatchLaterViewMoreActions';
+import BookmarksViewMoreActions from './Menus/BookmarksViewMoreActions';
 
 const filterOptions: ViewFilterOption[] = [
   {
@@ -13,12 +13,8 @@ const filterOptions: ViewFilterOption[] = [
     value: 'seen',
   },
   {
-    label: 'Bookmarked',
-    value: 'bookmarked',
-  },
-  {
-    label: 'Archived',
-    value: 'archived',
+    label: 'Watch later',
+    value: 'watchLater',
   },
   {
     label: 'Others',
@@ -26,11 +22,11 @@ const filterOptions: ViewFilterOption[] = [
   },
 ];
 
-interface WatchLaterViewOptionsProps {
+interface BookmarksViewOptionsProps {
   videosCount: number;
 }
 
-function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
+function BookmarksViewOptions(props: BookmarksViewOptionsProps) {
   const { videosCount } = props;
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
   const open = Boolean(anchorEl);
@@ -64,14 +60,14 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
         open={open}
         onClose={handleClose}
       >
-        <ViewSorting view={HomeView.WatchLater} parentMenuOpen={open} />
+        <ViewSorting view={HomeView.Bookmarks} parentMenuOpen={open} />
         <ViewFilters
-          view={HomeView.WatchLater}
+          view={HomeView.Bookmarks}
           parentMenuOpen={open}
           options={filterOptions}
         />
         <Divider sx={{ my: 0.5 }} />
-        <WatchLaterViewMoreActions
+        <BookmarksViewMoreActions
           parentMenuOpen={open}
           videosCount={videosCount}
         />
@@ -80,4 +76,4 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
   );
 }
 
-export default WatchLaterViewOptions;
+export default BookmarksViewOptions;

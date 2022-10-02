@@ -127,6 +127,19 @@ export const videosSlice = createSlice({
           : video,
       );
     },
+    clearBookmarksList: (state) => {
+      state.list = state.list.map((video) =>
+        video.flags.bookmarked
+          ? {
+              ...video,
+              flags: {
+                ...video.flags,
+                bookmarked: false,
+              },
+            }
+          : video,
+      );
+    },
     archiveVideo: (state, action: PayloadAction<AddVideoPayload>) => {
       const video = action.payload;
       setVideoFlags({
@@ -209,6 +222,7 @@ export const {
   addVideoFlag,
   removeVideoFlag,
   clearWatchLaterList,
+  clearBookmarksList,
   archiveVideo,
   unarchiveVideo,
   archiveVideosByFlag,

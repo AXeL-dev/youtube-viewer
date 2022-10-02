@@ -19,12 +19,19 @@ export const defaultSettings = {
   recentViewFilters: {
     seen: true,
     watchLater: true,
+    bookmarked: true,
     ignored: false,
     others: true,
   },
   watchLaterViewFilters: {
     seen: true,
+    bookmarked: true,
     archived: true,
+    others: true,
+  },
+  bookmarksViewFilters: {
+    seen: true,
+    watchLater: true,
     others: true,
   },
   allViewSorting: {
@@ -36,8 +43,11 @@ export const defaultSettings = {
   watchLaterViewSorting: {
     publishDate: false,
   },
+  bookmarksViewSorting: {
+    publishDate: false,
+  },
   homeDisplayOptions: {
-    hiddenViews: [],
+    hiddenViews: [HomeView.Bookmarks],
     extraVideoActions: [],
   },
   enableNotifications: true,
@@ -93,6 +103,14 @@ export const settingsSlice = createSlice({
               ...filters,
             },
           };
+        case HomeView.Bookmarks:
+          return {
+            ...state,
+            bookmarksViewFilters: {
+              ...state.bookmarksViewFilters,
+              ...filters,
+            },
+          };
         default:
           return state;
       }
@@ -127,6 +145,14 @@ export const settingsSlice = createSlice({
             ...state,
             watchLaterViewSorting: {
               ...state.watchLaterViewSorting,
+              ...sorting,
+            },
+          };
+        case HomeView.Bookmarks:
+          return {
+            ...state,
+            bookmarksViewSorting: {
+              ...state.bookmarksViewSorting,
               ...sorting,
             },
           };

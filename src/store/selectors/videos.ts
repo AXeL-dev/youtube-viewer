@@ -113,6 +113,36 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
         .sort((a, b) => b.publishedAt - a.publishedAt),
   );
 
+export const selectBookmarkedVideos = (channel?: Channel) =>
+  createSelector(
+    selectVideos,
+    selectViewFilters(HomeView.Bookmarks),
+    (videos, filters) =>
+      videos
+        .filter(
+          (video) =>
+            video.flags.bookmarked &&
+            (!channel || channel.id === video.channelId) &&
+            filterVideoByFlags(video, filters),
+        )
+        .sort((a, b) => b.publishedAt - a.publishedAt),
+  );
+
+export const selectBookmarkedVideosCount = createSelector(
+  selectVideos,
+  selectViewFilters(HomeView.Bookmarks),
+  selectActiveChannels,
+  (videos, filters, activeChannels) => {
+    const activeChannelsIds = activeChannels.map(({ id }) => id);
+    return videos.filter(
+      (video) =>
+        video.flags.bookmarked &&
+        activeChannelsIds.includes(video.channelId) &&
+        filterVideoByFlags(video, filters),
+    ).length;
+  },
+);
+
 export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
   selectViewFilters(HomeView.WatchLater),
@@ -142,13 +172,8 @@ export const selectSeenWatchLaterVideosCount = createSelector(
   },
 );
 
-export const selectVideoMeta = (video: Video) =>
+export const selectVideoFlag = (video: Video, flag: VideoFlag) =>
   createSelector(selectVideos, (videos) => {
     const { flags } = videos.find(({ id }) => id === video.id) || {};
-    return {
-      isSeen: flags?.seen || false,
-      isToWatchLater: flags?.toWatchLater || false,
-      isArchived: flags?.archived || false,
-      isIgnored: flags?.ignored || false,
-    };
+    return flags?.[flag] || false;
   });

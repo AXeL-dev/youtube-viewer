@@ -3,7 +3,7 @@ import { Box, Tooltip } from '@mui/material';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import { HomeView, Video } from 'types';
 import { useAppSelector } from 'store';
-import { selectVideoMeta } from 'store/selectors/videos';
+import { selectVideoFlag } from 'store/selectors/videos';
 
 interface ArchivedBadgeProps {
   video: Video;
@@ -12,7 +12,7 @@ interface ArchivedBadgeProps {
 
 function ArchivedBadge(props: ArchivedBadgeProps) {
   const { video, view } = props;
-  const { isArchived } = useAppSelector(selectVideoMeta(video));
+  const isArchived = useAppSelector(selectVideoFlag(video, 'archived'));
 
   return view === HomeView.WatchLater && isArchived ? (
     <Tooltip title="Archived" aria-label="archived">

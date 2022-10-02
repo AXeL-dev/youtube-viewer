@@ -1,12 +1,6 @@
 import type { RootState } from 'store';
 import { createSelector } from 'reselect';
-import {
-  HomeView,
-  ViewFilters,
-  RecentViewFilters,
-  WatchLaterViewFilters,
-  ExtraVideoAction,
-} from 'types';
+import { HomeView, ViewFilters, ExtraVideoAction } from 'types';
 import { defaultSettings } from 'store/reducers/settings';
 
 export const selectSettings = (state: RootState) => state.settings;
@@ -22,12 +16,17 @@ export const selectViewFilters = (view: HomeView) =>
         return {
           ...defaultSettings.recentViewFilters,
           ...settings.recentViewFilters,
-        } as RecentViewFilters;
+        } as ViewFilters;
       case HomeView.WatchLater:
         return {
           ...defaultSettings.watchLaterViewFilters,
           ...settings.watchLaterViewFilters,
-        } as WatchLaterViewFilters;
+        } as ViewFilters;
+      case HomeView.Bookmarks:
+        return {
+          ...defaultSettings.bookmarksViewFilters,
+          ...settings.bookmarksViewFilters,
+        } as ViewFilters;
       default:
         return {} as ViewFilters;
     }
@@ -52,6 +51,11 @@ export const selectViewSorting = (view: HomeView) =>
           ...defaultSettings.watchLaterViewSorting,
           ...settings.watchLaterViewSorting,
         };
+      case HomeView.Bookmarks:
+        return {
+          ...defaultSettings.bookmarksViewSorting,
+          ...settings.bookmarksViewSorting,
+        };
       case HomeView.All:
       default:
         return {
@@ -74,14 +78,19 @@ export const selectHiddenViews = createSelector(
   (options) => options.hiddenViews,
 );
 
+export const selectHasHiddenView = (view: HomeView) =>
+  createSelector(selectHiddenViews, (hiddenViews) =>
+    hiddenViews.includes(view),
+  );
+
 export const selectExtraVideoActions = createSelector(
   selectHomeDisplayOptions,
   (options) => options.extraVideoActions,
 );
 
 export const selectHasExtraVideoAction = (action: ExtraVideoAction) =>
-  createSelector(selectHomeDisplayOptions, (options) =>
-    options.extraVideoActions.includes(action),
+  createSelector(selectExtraVideoActions, (extraVideoActions) =>
+    extraVideoActions.includes(action),
   );
 
 export const selectRecentVideosSeniority = createSelector(

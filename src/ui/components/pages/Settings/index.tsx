@@ -33,6 +33,10 @@ const views = [
     label: 'Watch later',
     value: HomeView.WatchLater,
   },
+  {
+    label: 'Bookmarks',
+    value: HomeView.Bookmarks,
+  },
 ];
 
 export function Settings(props: SettingsProps) {

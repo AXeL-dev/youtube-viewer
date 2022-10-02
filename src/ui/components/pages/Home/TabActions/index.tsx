@@ -5,6 +5,7 @@ import RecentViewActions from './RecentViewActions';
 import AllViewActions from './AllViewActions';
 import { useAppSelector } from 'store';
 import { selectActiveChannelsCount } from 'store/selectors/channels';
+import BookmarksViewActions from './BookmarksViewActions';
 
 interface TabActionsProps {
   tab: HomeView | null;
@@ -25,6 +26,8 @@ function TabActions(props: TabActionsProps) {
       return <RecentViewActions />;
     case HomeView.WatchLater:
       return <WatchLaterViewActions />;
+    case HomeView.Bookmarks:
+      return <BookmarksViewActions />;
     default:
       return null;
   }

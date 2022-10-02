@@ -31,6 +31,10 @@ export function Home(props: HomeProps) {
           label: 'Watch later',
           value: HomeView.WatchLater,
         },
+        {
+          label: 'Bookmarks',
+          value: HomeView.Bookmarks,
+        },
       ].filter((tab) => !hiddenViews.includes(tab.value))
     : [];
 

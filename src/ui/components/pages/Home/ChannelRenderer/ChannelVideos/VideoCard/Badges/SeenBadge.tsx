@@ -3,7 +3,7 @@ import { Box, Tooltip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Video } from 'types';
 import { useAppSelector } from 'store';
-import { selectVideoMeta } from 'store/selectors/videos';
+import { selectVideoFlag } from 'store/selectors/videos';
 
 interface SeenBadgeProps {
   video: Video;
@@ -11,7 +11,7 @@ interface SeenBadgeProps {
 
 function SeenBadge(props: SeenBadgeProps) {
   const { video } = props;
-  const { isSeen } = useAppSelector(selectVideoMeta(video));
+  const isSeen = useAppSelector(selectVideoFlag(video, 'seen'));
 
   return isSeen ? (
     <Tooltip title="Seen" aria-label="seen">

@@ -1,27 +1,37 @@
 import React from 'react';
 import { IconButton, Tooltip } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { Video } from 'types';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import CloseIcon from '@mui/icons-material/Close';
+import { HomeView, Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
 import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
 import { selectVideoFlag } from 'store/selectors/videos';
+import { selectHasHiddenView } from 'store/selectors/settings';
 
-interface SeenActionProps {
+interface BookmarkActionProps {
   video: Video;
+  view: HomeView;
 }
 
-const flag = 'seen';
+const flag = 'bookmarked';
 
-function SeenAction(props: SeenActionProps) {
-  const { video } = props;
-  const isSeen = useAppSelector(selectVideoFlag(video, flag));
+function BookmarkAction(props: BookmarkActionProps) {
+  const { video, view } = props;
+  const isBookmarked = useAppSelector(selectVideoFlag(video, flag));
+  const isBookmarksViewHidden = useAppSelector(
+    selectHasHiddenView(HomeView.Bookmarks),
+  );
   const dispatch = useAppDispatch();
 
-  return !isSeen ? (
-    <Tooltip title="Mark as seen" aria-label="mark-as-seen">
+  if (isBookmarksViewHidden) {
+    return null;
+  }
+
+  return !isBookmarked ? (
+    <Tooltip title="Bookmark" aria-label="bookmark">
       <IconButton
         sx={{
+          display: 'flex',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',
@@ -40,14 +50,13 @@ function SeenAction(props: SeenActionProps) {
           );
         }}
       >
-        <VisibilityIcon sx={{ fontSize: '1.125rem' }} />
+        <BookmarkIcon sx={{ fontSize: '1.125rem' }} />
       </IconButton>
     </Tooltip>
-  ) : (
-    <Tooltip title="Mark as unseen" aria-label="mark-as-unseen">
+  ) : view === HomeView.Bookmarks ? (
+    <Tooltip title="Remove" aria-label="remove-from-bookmarks">
       <IconButton
         sx={{
-          display: 'flex',
           color: '#eee',
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           padding: '4px',
@@ -66,10 +75,10 @@ function SeenAction(props: SeenActionProps) {
           );
         }}
       >
-        <VisibilityOffIcon sx={{ fontSize: '1.125rem' }} />
+        <CloseIcon sx={{ fontSize: '1.125rem' }} />
       </IconButton>
     </Tooltip>
-  );
+  ) : null;
 }
 
-export default SeenAction;
+export default BookmarkAction;

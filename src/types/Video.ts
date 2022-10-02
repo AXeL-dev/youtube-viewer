@@ -18,6 +18,7 @@ export type VideoFlags = Partial<{
   archived: boolean;
   ignored: boolean;
   recent: boolean;
+  bookmarked: boolean;
 }>;
 
 export type VideoFlag = keyof VideoFlags;

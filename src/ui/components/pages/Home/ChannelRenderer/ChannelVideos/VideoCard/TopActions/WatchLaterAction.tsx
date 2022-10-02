@@ -5,17 +5,27 @@ import CloseIcon from '@mui/icons-material/Close';
 import { HomeView, Video } from 'types';
 import { useAppDispatch, useAppSelector } from 'store';
 import { addVideoFlag, removeVideoFlag } from 'store/reducers/videos';
-import { selectVideoMeta } from 'store/selectors/videos';
+import { selectVideoFlag } from 'store/selectors/videos';
+import { selectHasHiddenView } from 'store/selectors/settings';
 
 interface WatchLaterActionProps {
   video: Video;
   view: HomeView;
 }
 
+const flag = 'toWatchLater';
+
 function WatchLaterAction(props: WatchLaterActionProps) {
   const { video, view } = props;
-  const { isToWatchLater } = useAppSelector(selectVideoMeta(video));
+  const isToWatchLater = useAppSelector(selectVideoFlag(video, flag));
+  const isWatchLaterViewHidden = useAppSelector(
+    selectHasHiddenView(HomeView.WatchLater),
+  );
   const dispatch = useAppDispatch();
+
+  if (isWatchLaterViewHidden) {
+    return null;
+  }
 
   return !isToWatchLater ? (
     <Tooltip title="Watch later" aria-label="watch-later">
@@ -35,7 +45,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
           dispatch(
             addVideoFlag({
               video,
-              flag: 'toWatchLater',
+              flag,
             }),
           );
         }}
@@ -60,7 +70,7 @@ function WatchLaterAction(props: WatchLaterActionProps) {
           dispatch(
             removeVideoFlag({
               video,
-              flag: 'toWatchLater',
+              flag,
             }),
           );
         }}
