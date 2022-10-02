@@ -4,6 +4,7 @@ import { removeVideoFlag } from 'store/reducers/videos';
 import { Tab, ContextMenu, ContextMenuInfo } from 'types';
 import { dispatch, useAppSelector } from 'store';
 import {
+  selectBookmarkedVideos,
   selectSeenVideos,
   selectWatchLaterVideos,
 } from 'store/selectors/videos';
@@ -27,6 +28,12 @@ const menus: ContextMenu[] = [
     contexts: ['page'],
   },
   {
+    title: 'Add video to bookmarks list',
+    id: 'add_video_to_bookmarks_list',
+    enabled: false,
+    contexts: ['page'],
+  },
+  {
     title: 'Mark video as seen',
     id: 'mark_video_as_seen',
     type: 'checkbox',
@@ -38,6 +45,7 @@ const menus: ContextMenu[] = [
 
 export default function ContextMenus(props: ContextMenusProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
+  const bookmarkedVideos = useAppSelector(selectBookmarkedVideos());
   const seenVideos = useAppSelector(selectSeenVideos());
 
   const handleContextMenusClick = (info: ContextMenuInfo, tab: Tab) => {
@@ -48,6 +56,7 @@ export default function ContextMenus(props: ContextMenusProps) {
     switch (info.menuItemId) {
       case 'add_video_to_watch_later_list':
         closeExtensionTabs().then(() => {
+          browser.contextMenus.update(info.menuItemId, { enabled: false });
           dispatch(
             addVideoById({
               id,
@@ -57,7 +66,20 @@ export default function ContextMenus(props: ContextMenusProps) {
             }),
             true,
           );
+        });
+        break;
+      case 'add_video_to_bookmarks_list':
+        closeExtensionTabs().then(() => {
           browser.contextMenus.update(info.menuItemId, { enabled: false });
+          dispatch(
+            addVideoById({
+              id,
+              flags: {
+                bookmarked: true,
+              },
+            }),
+            true,
+          );
         });
         break;
       case 'mark_video_as_seen': {
@@ -124,6 +146,13 @@ export default function ContextMenus(props: ContextMenusProps) {
           switch (menu.id) {
             case 'add_video_to_watch_later_list': {
               const found = watchLaterVideos.find(
+                (video) => video.id === videoId,
+              );
+              options.enabled = !found;
+              break;
+            }
+            case 'add_video_to_bookmarks_list': {
+              const found = bookmarkedVideos.find(
                 (video) => video.id === videoId,
               );
               options.enabled = !found;
