@@ -32,10 +32,17 @@ export const selectViewFilters = (view: HomeView) =>
     }
   });
 
+const legacyViewFilterKeys = ['uncategorised', 'viewed'];
+
+export const getActiveViewFilters = (filters: ViewFilters) =>
+  Object.entries(filters).filter(
+    ([key, value]) => !legacyViewFilterKeys.includes(key) && value,
+  );
+
 export const selectActiveViewFiltersCount = (view: HomeView) =>
   createSelector(
     selectViewFilters(view),
-    (filters) => Object.values(filters).filter(Boolean).length,
+    (filters) => getActiveViewFilters(filters).length,
   );
 
 export const selectViewSorting = (view: HomeView) =>

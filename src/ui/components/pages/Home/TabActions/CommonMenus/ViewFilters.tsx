@@ -6,7 +6,10 @@ import {
   NestedMenuItemProps,
 } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
-import { selectViewFilters } from 'store/selectors/settings';
+import {
+  selectViewFilters,
+  getActiveViewFilters,
+} from 'store/selectors/settings';
 import { setViewFilters } from 'store/reducers/settings';
 import { HomeView, ViewFilters as Filters } from 'types';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -26,7 +29,7 @@ function ViewFilters(props: ViewFiltersProps) {
   const filters = useAppSelector(selectViewFilters(view));
   const dispatch = useAppDispatch();
   const activeFiltersCount = useMemo(
-    () => Object.values(filters).filter(Boolean).length,
+    () => getActiveViewFilters(filters).length,
     [filters],
   );
 
