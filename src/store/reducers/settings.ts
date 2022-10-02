@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   HomeDisplayOptions,
   HomeView,
+  QueryTimeout,
   Settings,
   VideosSeniority,
   ViewFilters,
@@ -15,7 +16,9 @@ export const defaultSettings = {
   apiKey: REACT_APP_YOUTUBE_API_KEY || '',
   darkMode: false,
   autoPlayVideos: true,
+  enableNotifications: true,
   recentVideosSeniority: VideosSeniority.OneDay,
+  queryTimeout: QueryTimeout.ThirtySeconds,
   recentViewFilters: {
     seen: true,
     watchLater: true,
@@ -50,8 +53,6 @@ export const defaultSettings = {
     hiddenViews: [HomeView.Bookmarks],
     extraVideoActions: [],
   },
-  enableNotifications: true,
-  queryTimeout: 10000,
 };
 
 const views = Object.values(HomeView);
