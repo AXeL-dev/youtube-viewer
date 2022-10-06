@@ -18,7 +18,7 @@ function StaticRenderer(props: StaticRendererProps) {
   const { view, channel, videos: initialVideos, onError, onVideoPlay } = props;
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
-  const { setChannelData } = useChannelVideos(HomeView.Bookmarks);
+  const { setChannelData } = useChannelVideos(view);
   const ids = initialVideos.map(({ id }) => id);
   const total = ids.length;
   const maxResults = Math.min(total, itemsPerRow * page);
