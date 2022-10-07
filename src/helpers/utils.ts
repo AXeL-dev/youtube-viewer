@@ -426,3 +426,32 @@ export function getVideoId(url: string) {
   }
   return videoId;
 }
+
+// -------------------------------------------------------------------
+
+/**
+ * Returns channel id from youtube channel link
+ *
+ * @param url
+ */
+export function getChannelId(url: string) {
+  let channelId = null;
+  if (url.indexOf('/channel/') !== -1 || url.indexOf('/c/') !== -1) {
+    /**
+     * Example:
+     *    https://youtube.com/c/channelId
+     *    https://youtube.com/channel/channelId/videos
+     *    https://youtube.com/channel/channelId?param=value
+     */
+    const link = url.split('?')[0];
+    let parts = link.split('/c/');
+    if (parts.length === 1) {
+      parts = link.split('/channel/');
+    }
+    if (parts.length === 2) {
+      const params = parts[1].split('/');
+      channelId = params[0];
+    }
+  }
+  return channelId;
+}
