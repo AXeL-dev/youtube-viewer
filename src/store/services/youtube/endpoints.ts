@@ -97,7 +97,7 @@ const queries = {
     transformResponse: (response: Response): FindChannelByIdResponse => ({
       items: response.items.map((item) => ({
         title: item.snippet.title,
-        url: `https://www.youtube.com/channel/${item.snippet.channelId}/videos`,
+        url: `https://www.youtube.com/channel/${item.id}/videos`,
         description: item.snippet.description,
         thumbnail: item.snippet.thumbnails.medium.url,
         id: item.id,
