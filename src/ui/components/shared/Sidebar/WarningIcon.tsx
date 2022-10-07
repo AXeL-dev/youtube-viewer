@@ -1,5 +1,5 @@
 import { styled, keyframes } from '@mui/material/styles';
-import WarningIcon from '@mui/icons-material/Warning';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 const blink = keyframes`
   0%, 50%, 100% {
@@ -10,7 +10,7 @@ const blink = keyframes`
   }
 `;
 
-const Icon = styled(WarningIcon)`
+const Icon = styled(WarningAmberIcon)`
   animation: ${blink} 2s infinite both;
 `;
 

@@ -10,3 +10,4 @@ export * from './StyledMenu';
 export * from './ConfirmationDialog';
 export * from './CheckableMenuItem';
 export * from './NestedMenuItem';
+export * from './ErrorAlert';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack, Divider } from '@mui/material';
-import { Alert, ProgressBar } from 'ui/components/shared';
+import { ErrorAlert, ProgressBar } from 'ui/components/shared';
 import { useFindChannelByNameQuery } from 'store/services/youtube';
 import PickChannelCard from './PickChannelCard';
 
@@ -17,7 +17,7 @@ export default function ChannelResults(props: ChannelResultsProps) {
   const results = data?.items || [];
 
   return error ? (
-    <Alert error={error} closable />
+    <ErrorAlert error={error} closable />
   ) : isLoading ? (
     <ProgressBar variant="indeterminate" />
   ) : (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert } from 'ui/components/shared';
+import { ErrorAlert } from 'ui/components/shared';
 import { Channel, HomeView, Video, Nullable } from 'types';
 import { useAppSelector } from 'store';
 import { selectActiveChannels } from 'store/selectors/channels';
@@ -45,7 +45,7 @@ function TabPanel(props: TabPanelProps) {
     : channels;
 
   return error ? (
-    <Alert error={error} closable />
+    <ErrorAlert error={error} closable />
   ) : (
     <>
       {channels.length > 0 ? (

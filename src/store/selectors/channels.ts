@@ -1,5 +1,5 @@
-import { createSelector } from '@reduxjs/toolkit';
 import type { RootState } from 'store';
+import { createSelector } from '@reduxjs/toolkit';
 import { Channel } from 'types';
 
 export const selectChannels = (state: RootState) => state.channels.list;

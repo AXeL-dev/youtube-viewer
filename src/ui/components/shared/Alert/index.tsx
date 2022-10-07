@@ -3,7 +3,7 @@ import MuiAlert, { AlertColor } from '@mui/material/Alert';
 import { IconButton, Collapse } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-interface AlertProps {
+export interface AlertProps {
   open?: boolean;
   children?: React.ReactNode;
   error?: any;
