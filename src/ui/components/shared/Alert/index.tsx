@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close';
 export interface AlertProps {
   open?: boolean;
   children?: React.ReactNode;
-  error?: any;
   severity?: AlertColor;
   closable?: boolean;
   syncOpen?: boolean;
@@ -16,13 +15,12 @@ export interface AlertProps {
 export function Alert(props: AlertProps) {
   const {
     open: openProp = true,
-    error,
+    children,
     severity = 'error',
     closable,
     syncOpen,
     onClose,
   } = props;
-  const children = props.children || error?.data?.error.message || error?.error;
   const [open, setOpen] = useState(openProp);
 
   useEffect(() => {

@@ -8,7 +8,9 @@ enum Error {
   INVALID_API_KEY = 'API key not valid. Please pass a valid API key.',
 }
 
-interface ErrorAlertProps extends AlertProps {}
+interface ErrorAlertProps extends AlertProps {
+  error?: any;
+}
 
 export function ErrorAlert(props: ErrorAlertProps) {
   const { error, ...rest } = props;
