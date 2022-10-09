@@ -30,7 +30,21 @@ export default function Alerts(props: AlertsProps) {
         closable
         syncOpen
       >
-        In order to use this app you need a Youtube API key!
+        In order to use this app you need a
+        {
+          <>
+            {' '}
+            <Link
+              href="https://github.com/AXeL-dev/youtube-viewer/wiki/How-to-Create-a-YouTube-API-Key"
+              target="_blank"
+              color="secondary"
+              rel="noopener"
+            >
+              Youtube API key
+            </Link>
+            .
+          </>
+        }
         {defaultApiKey ? (
           <>
             {' '}
