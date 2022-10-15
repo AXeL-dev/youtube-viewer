@@ -14,7 +14,7 @@ const { REACT_APP_YOUTUBE_API_KEY } = process.env;
 export const defaultSettings = {
   defaultView: HomeView.All,
   apiKey: REACT_APP_YOUTUBE_API_KEY || '',
-  darkMode: false,
+  darkMode: true,
   autoPlayVideos: true,
   enableNotifications: true,
   queryTimeout: QueryTimeout.ThirtySeconds,
