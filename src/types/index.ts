@@ -4,3 +4,4 @@ export * from './Settings';
 export * from './api';
 export * from './webext';
 export * from './common';
+export * from './legacy';
