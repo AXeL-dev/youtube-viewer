@@ -48,6 +48,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     },
   );
   const videos = (data?.items || []).filter(filter);
+  const count = data?.count || 0;
   const total = data?.total || 0;
 
   const handleLoadMore = () => {
@@ -72,6 +73,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       view={view}
       channel={channel}
       videos={videos}
+      count={count}
       total={total}
       isLoading={isLoading || isFetching}
       itemsPerRow={itemsPerRow}

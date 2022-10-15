@@ -8,6 +8,7 @@ export interface ChannelRendererProps {
   view: HomeView;
   channel: Channel;
   videos: Video[];
+  count?: number;
   total: number;
   isLoading: boolean;
   itemsPerRow: number;
@@ -17,10 +18,12 @@ export interface ChannelRendererProps {
 }
 
 function ChannelRenderer(props: ChannelRendererProps) {
-  const { channel, videos, total, isLoading, maxResults, ...rest } = props;
+  const { channel, videos, count, total, isLoading, maxResults, ...rest } =
+    props;
+  const videosCount = count || videos.length;
   const hasVideos = isLoading || videos.length > 0;
   const hasMore =
-    videos.length > 0 && videos.length >= maxResults && total > maxResults;
+    videosCount > 0 && videosCount >= maxResults && total > maxResults;
 
   return hasVideos ? (
     <Box

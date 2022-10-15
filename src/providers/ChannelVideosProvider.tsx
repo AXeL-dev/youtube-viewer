@@ -13,7 +13,7 @@ import {
 import { GetChannelVideosResponse } from 'store/services/youtube';
 import { Channel, Video, HomeView } from 'types';
 
-export interface ChannelData extends GetChannelVideosResponse {
+export interface ChannelData extends Omit<GetChannelVideosResponse, 'count'> {
   channel: Channel;
 }
 

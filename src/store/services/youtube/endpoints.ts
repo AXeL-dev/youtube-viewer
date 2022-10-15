@@ -34,6 +34,7 @@ type GetChannelActivitiesArgs = {
 
 type GetChannelActivitiesResponse = {
   items: ChannelActivities[];
+  count: number;
   total: number;
 };
 
@@ -56,7 +57,9 @@ export interface PersistVideosOptions {
   flags?: VideoFlags;
 }
 
-export type GetChannelVideosResponse = GetVideosByIdResponse;
+export type GetChannelVideosResponse = GetVideosByIdResponse & {
+  count: number;
+};
 
 const queries = {
   // Channel search query
@@ -129,6 +132,7 @@ const queries = {
         .map((item) => ({
           videoId: item.contentDetails.upload.videoId,
         })),
+      count: response.items.length,
       total: response.pageInfo.totalResults,
     }),
   },
@@ -234,21 +238,24 @@ export const extendedApi = youtubeApi.injectEndpoints({
             return {
               data: {
                 items: [],
+                count: 0,
                 total: 0,
               },
             };
           }
           return { error: activities.error as FetchBaseQueryError };
         }
-        const { items, total } = queries.getChannelActivities.transformResponse(
-          activities.data as Response,
-        );
+        const { items, count, total } =
+          queries.getChannelActivities.transformResponse(
+            activities.data as Response,
+          );
         // Fetch channel videos
         const ids = items.map(({ videoId }) => videoId);
         if (ids.length === 0) {
           return {
             data: {
               items: [],
+              count: 0,
               total: 0,
             },
           };
@@ -276,6 +283,7 @@ export const extendedApi = youtubeApi.injectEndpoints({
         return {
           data: {
             ...videosData,
+            count,
             total,
           },
         };
