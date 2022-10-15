@@ -67,7 +67,9 @@ export const selectHasExtraVideoAction = (action: ExtraVideoAction) =>
   );
 
 export const selectVideosSeniority = (view: HomeView) =>
-  createSelector(
-    selectSettings,
-    (settings) => settings.viewOptions[view].videosSeniority,
-  );
+  createSelector(selectSettings, (settings) => {
+    if (settings.viewOptions[view].videosSeniority === undefined) {
+      return defaultSettings.viewOptions[view].videosSeniority;
+    }
+    return settings.viewOptions[view].videosSeniority;
+  });

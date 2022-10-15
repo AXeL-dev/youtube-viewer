@@ -16,7 +16,7 @@ import {
   selectVideosSeniority,
   selectViewFilters,
 } from './settings';
-import { elapsedDays, getDateBefore } from 'helpers/utils';
+import { elapsedDays } from 'helpers/utils';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 
@@ -120,7 +120,7 @@ export const selectWatchLaterVideos = (channel?: Channel) =>
             (!channel || channel.id === video.channelId) &&
             filterVideoByFlags(video, filters) &&
             (videosSeniority === VideosSeniority.Any ||
-              video.publishedAt >= getDateBefore(videosSeniority).getTime()),
+              elapsedDays(video.publishedAt) <= videosSeniority),
         )
         .sort((a, b) => b.publishedAt - a.publishedAt),
   );
@@ -138,7 +138,7 @@ export const selectBookmarkedVideos = (channel?: Channel) =>
             (!channel || channel.id === video.channelId) &&
             filterVideoByFlags(video, filters) &&
             (videosSeniority === VideosSeniority.Any ||
-              video.publishedAt >= getDateBefore(videosSeniority).getTime()),
+              elapsedDays(video.publishedAt) <= videosSeniority),
         )
         .sort((a, b) => b.publishedAt - a.publishedAt),
   );
@@ -156,7 +156,7 @@ export const selectBookmarkedVideosCount = createSelector(
         activeChannelsIds.includes(video.channelId) &&
         filterVideoByFlags(video, filters) &&
         (videosSeniority === VideosSeniority.Any ||
-          video.publishedAt >= getDateBefore(videosSeniority).getTime()),
+          elapsedDays(video.publishedAt) <= videosSeniority),
     ).length;
   },
 );
@@ -174,7 +174,7 @@ export const selectWatchLaterVideosCount = createSelector(
         activeChannelsIds.includes(video.channelId) &&
         filterVideoByFlags(video, filters) &&
         (videosSeniority === VideosSeniority.Any ||
-          video.publishedAt >= getDateBefore(videosSeniority).getTime()),
+          elapsedDays(video.publishedAt) <= videosSeniority),
     ).length;
   },
 );
