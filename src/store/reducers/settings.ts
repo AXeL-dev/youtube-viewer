@@ -30,7 +30,7 @@ export const defaultSettings = {
         ignored: false,
         others: true,
       },
-      videosSeniority: VideosSeniority.ThreeDays,
+      videosSeniority: VideosSeniority.Any,
     },
     [HomeView.WatchLater]: {
       sorting: {
