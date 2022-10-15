@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { VideoCache, Video, VideoFlags, VideoFlag } from 'types';
+import { VideoCache, Video, VideoFlags, VideoFlag, Channel } from 'types';
 
 type VideoWithId = Pick<VideoCache, 'id'>;
 type AddVideoPayload = Video | Omit<VideoCache, 'flags'>;
@@ -213,6 +213,10 @@ export const videosSlice = createSlice({
         });
       }
     },
+    removeChannelVideos: (state, action: PayloadAction<Channel>) => {
+      const { id: channelId } = action.payload;
+      state.list = state.list.filter((video) => video.channelId !== channelId);
+    },
   },
 });
 
@@ -228,6 +232,7 @@ export const {
   archiveVideosByFlag,
   setVideosFlag,
   saveVideos,
+  removeChannelVideos,
 } = videosSlice.actions;
 
 export default videosSlice.reducer;

@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControlLabel,
+  FormGroup,
 } from '@mui/material';
 import { Channel } from 'types';
 import ChannelPicture from '../ChannelPicture';
@@ -14,18 +17,23 @@ import ChannelPicture from '../ChannelPicture';
 interface RemoveChannelDialogProps {
   open: boolean;
   channel: Channel;
-  onClose: (confirmed?: boolean) => void;
+  onClose: (confirmed?: boolean, shouldRemoveVideos?: boolean) => void;
 }
 
 export default function RemoveChannelDialog(props: RemoveChannelDialogProps) {
   const { open, channel, onClose } = props;
+  const [shouldRemoveVideos, setShouldRemoveVideos] = useState(false);
 
   const handleConfirm = () => {
-    onClose(true);
+    onClose(true, shouldRemoveVideos);
   };
 
   const handleClose = () => {
     onClose(false);
+  };
+
+  const handleRemoveVideosToggle = () => {
+    setShouldRemoveVideos(!shouldRemoveVideos);
   };
 
   return (
@@ -47,6 +55,18 @@ export default function RemoveChannelDialog(props: RemoveChannelDialogProps) {
             <DialogContentText>
               Are you sure that you want to remove this channel?
             </DialogContentText>
+            <FormGroup sx={{ pt: 1 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={shouldRemoveVideos}
+                    size="small"
+                    onClick={handleRemoveVideosToggle}
+                  />
+                }
+                label="Remove the channel videos as well?"
+              />
+            </FormGroup>
           </Box>
         </Box>
       </DialogContent>

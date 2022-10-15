@@ -4,6 +4,7 @@ import { useAppDispatch } from 'store';
 import { removeChannel, setChannelFilters } from 'store/reducers/channels';
 import RemoveChannelDialog from './RemoveChannelDialog';
 import ChannelFiltersDialog from './ChannelFiltersDialog';
+import { removeChannelVideos } from 'store/reducers/videos';
 
 interface ChannelDialogsProps {
   channel: Channel;
@@ -20,9 +21,12 @@ function ChannelDialogs(props: ChannelDialogsProps) {
       <RemoveChannelDialog
         open={openedDialog === 'remove-channel'}
         channel={channel}
-        onClose={(confirmed) => {
+        onClose={(confirmed, shouldRemoveVideos) => {
           if (confirmed) {
             dispatch(removeChannel(channel));
+            if (shouldRemoveVideos) {
+              dispatch(removeChannelVideos(channel));
+            }
           }
           onClose();
         }}
