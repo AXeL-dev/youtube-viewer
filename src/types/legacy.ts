@@ -17,6 +17,10 @@ export interface LegacySettings extends Omit<Settings, 'viewOptions'> {
   recentViewSorting: ViewSorting;
   watchLaterViewSorting: ViewSorting;
   bookmarksViewSorting: ViewSorting;
+  recentVideosDisplayOptions?: {
+    hideViewedVideos: boolean;
+    hideWatchLaterVideos: boolean;
+  };
 }
 
 export type LegacyVideoFlags = VideoFlags & {

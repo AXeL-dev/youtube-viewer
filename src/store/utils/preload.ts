@@ -63,6 +63,7 @@ const replaceLegacySettings = (
     bookmarksViewSorting,
     defaultView,
     homeDisplayOptions,
+    recentVideosDisplayOptions,
     ...rest
   } = settings as LegacySettings;
   return {
