@@ -1,11 +1,11 @@
 import DefaultRenderer from './DefaultRenderer';
-import RecentViewRenderer from './RecentViewRenderer';
+import AllViewRenderer from './AllViewRenderer';
 import WatchLaterViewRenderer from './WatchLaterViewRenderer';
 import BookmarksViewRenderer from './BookmarksViewRenderer';
 
 export {
   DefaultRenderer,
-  RecentViewRenderer,
+  AllViewRenderer,
   WatchLaterViewRenderer,
   BookmarksViewRenderer,
 };

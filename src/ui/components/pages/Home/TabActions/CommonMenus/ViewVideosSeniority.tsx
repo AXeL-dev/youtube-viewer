@@ -6,9 +6,9 @@ import {
   NestedMenuItemProps,
 } from 'ui/components/shared';
 import { useAppDispatch, useAppSelector } from 'store';
-import { selectRecentVideosSeniority } from 'store/selectors/settings';
-import { setSettings } from 'store/reducers/settings';
-import { VideosSeniority } from 'types';
+import { selectVideosSeniority } from 'store/selectors/settings';
+import { setVideosSeniority } from 'store/reducers/settings';
+import { HomeView, VideosSeniority } from 'types';
 import HistoryIcon from '@mui/icons-material/History';
 
 const options = [
@@ -32,17 +32,23 @@ const options = [
     label: '1 month',
     value: VideosSeniority.OneMonth,
   },
+  {
+    label: 'any',
+    value: VideosSeniority.Any,
+  },
 ];
 
-interface RecentVideosSeniorityProps
-  extends Omit<NestedMenuItemProps, 'label'> {}
+interface ViewVideosSeniorityProps extends Omit<NestedMenuItemProps, 'label'> {
+  view: HomeView;
+}
 
-function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
-  const seniority = useAppSelector(selectRecentVideosSeniority);
+function ViewVideosSeniority(props: ViewVideosSeniorityProps) {
+  const { view, ...rest } = props;
+  const seniority = useAppSelector(selectVideosSeniority(view));
   const dispatch = useAppDispatch();
 
-  const handleChange = (recentVideosSeniority: VideosSeniority) => {
-    dispatch(setSettings({ recentVideosSeniority }));
+  const handleChange = (seniority: VideosSeniority) => {
+    dispatch(setVideosSeniority({ view, seniority }));
   };
 
   return (
@@ -60,7 +66,7 @@ function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
           minWidth: 160,
         },
       }}
-      {...props}
+      {...rest}
     >
       {options.map(({ label, value }, index) => (
         <CheckableMenuItem
@@ -75,4 +81,4 @@ function RecentVideosSeniority(props: RecentVideosSeniorityProps) {
   );
 }
 
-export default RecentVideosSeniority;
+export default ViewVideosSeniority;

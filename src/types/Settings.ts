@@ -1,23 +1,38 @@
+export enum HomeView {
+  All = 'all',
+  WatchLater = 'watchLater',
+  Bookmarks = 'bookmarks',
+}
+
 export interface Settings {
   defaultView: HomeView | null;
   apiKey: string;
   darkMode: boolean;
   autoPlayVideos: boolean;
-  recentVideosSeniority: VideosSeniority;
-  recentViewFilters: RecentViewFilters;
-  watchLaterViewFilters: WatchLaterViewFilters;
-  bookmarksViewFilters: BookmarksViewFilters;
-  allViewSorting: ViewSorting;
-  recentViewSorting: ViewSorting;
-  watchLaterViewSorting: ViewSorting;
-  bookmarksViewSorting: ViewSorting;
+  viewOptions: {
+    [HomeView.All]: {
+      sorting: ViewSorting;
+      filters: AllViewFilters;
+      videosSeniority: VideosSeniority;
+    };
+    [HomeView.WatchLater]: {
+      sorting: ViewSorting;
+      filters: WatchLaterViewFilters;
+      videosSeniority: VideosSeniority;
+    };
+    [HomeView.Bookmarks]: {
+      sorting: ViewSorting;
+      filters: BookmarksViewFilters;
+      videosSeniority: VideosSeniority;
+    };
+  };
   homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
   queryTimeout: number;
 }
 
 export enum ExtraVideoAction {
-  CopyLink = 'copy-link',
+  CopyLink = 'copyLink',
 }
 
 export interface HomeDisplayOptions {
@@ -29,7 +44,7 @@ export interface ViewSorting {
   publishDate: boolean;
 }
 
-export interface RecentViewFilters {
+export interface AllViewFilters {
   seen: boolean;
   watchLater: boolean;
   bookmarked: boolean;
@@ -51,20 +66,14 @@ export interface BookmarksViewFilters {
 }
 
 export interface ViewFilters
-  extends RecentViewFilters,
+  extends AllViewFilters,
     WatchLaterViewFilters,
     BookmarksViewFilters {}
 
 export type ViewFilter = keyof ViewFilters;
 
-export enum HomeView {
-  All = 'all',
-  Recent = 'recent',
-  WatchLater = 'watch-later',
-  Bookmarks = 'bookmarks',
-}
-
 export enum VideosSeniority {
+  Any = 0,
   OneDay = 1,
   ThreeDays = 3,
   SevenDays = 7,

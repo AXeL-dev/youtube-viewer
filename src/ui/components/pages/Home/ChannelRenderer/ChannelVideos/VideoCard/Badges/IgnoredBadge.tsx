@@ -14,7 +14,7 @@ function IgnoredBadge(props: IgnoredBadgeProps) {
   const { video, view } = props;
   const isIgnored = useAppSelector(selectVideoFlag(video, 'ignored'));
 
-  return view === HomeView.Recent && isIgnored ? (
+  return view === HomeView.All && isIgnored ? (
     <Tooltip title="Ignored" aria-label="ignored">
       <Box
         sx={{

@@ -17,40 +17,47 @@ export const defaultSettings = {
   darkMode: false,
   autoPlayVideos: true,
   enableNotifications: true,
-  recentVideosSeniority: VideosSeniority.OneDay,
   queryTimeout: QueryTimeout.ThirtySeconds,
-  recentViewFilters: {
-    seen: true,
-    watchLater: true,
-    bookmarked: true,
-    ignored: false,
-    others: true,
-  },
-  watchLaterViewFilters: {
-    seen: true,
-    bookmarked: true,
-    archived: true,
-    others: true,
-  },
-  bookmarksViewFilters: {
-    seen: true,
-    watchLater: true,
-    others: true,
-  },
-  allViewSorting: {
-    publishDate: false,
-  },
-  recentViewSorting: {
-    publishDate: true,
-  },
-  watchLaterViewSorting: {
-    publishDate: false,
-  },
-  bookmarksViewSorting: {
-    publishDate: false,
+  viewOptions: {
+    [HomeView.All]: {
+      sorting: {
+        publishDate: false,
+      },
+      filters: {
+        seen: true,
+        watchLater: true,
+        bookmarked: true,
+        ignored: false,
+        others: true,
+      },
+      videosSeniority: VideosSeniority.ThreeDays,
+    },
+    [HomeView.WatchLater]: {
+      sorting: {
+        publishDate: false,
+      },
+      filters: {
+        seen: true,
+        bookmarked: true,
+        archived: true,
+        others: true,
+      },
+      videosSeniority: VideosSeniority.Any,
+    },
+    [HomeView.Bookmarks]: {
+      sorting: {
+        publishDate: false,
+      },
+      filters: {
+        seen: true,
+        watchLater: true,
+        others: true,
+      },
+      videosSeniority: VideosSeniority.Any,
+    },
   },
   homeDisplayOptions: {
-    hiddenViews: [HomeView.Bookmarks],
+    hiddenViews: [],
     extraVideoActions: [],
   },
 };
@@ -87,33 +94,11 @@ export const settingsSlice = createSlice({
       }>,
     ) => {
       const { view, filters } = action.payload;
-      switch (view) {
-        case HomeView.Recent:
-          return {
-            ...state,
-            recentViewFilters: {
-              ...state.recentViewFilters,
-              ...filters,
-            },
-          };
-        case HomeView.WatchLater:
-          return {
-            ...state,
-            watchLaterViewFilters: {
-              ...state.watchLaterViewFilters,
-              ...filters,
-            },
-          };
-        case HomeView.Bookmarks:
-          return {
-            ...state,
-            bookmarksViewFilters: {
-              ...state.bookmarksViewFilters,
-              ...filters,
-            },
-          };
-        default:
-          return state;
+      if (state.viewOptions[view]) {
+        state.viewOptions[view].filters = {
+          ...state.viewOptions[view].filters,
+          ...filters,
+        };
       }
     },
     setViewSorting: (
@@ -124,41 +109,23 @@ export const settingsSlice = createSlice({
       }>,
     ) => {
       const { view, sorting } = action.payload;
-      switch (view) {
-        case HomeView.All:
-          return {
-            ...state,
-            allViewSorting: {
-              ...state.allViewSorting,
-              ...sorting,
-            },
-          };
-        case HomeView.Recent:
-          return {
-            ...state,
-            recentViewSorting: {
-              ...state.recentViewSorting,
-              ...sorting,
-            },
-          };
-        case HomeView.WatchLater:
-          return {
-            ...state,
-            watchLaterViewSorting: {
-              ...state.watchLaterViewSorting,
-              ...sorting,
-            },
-          };
-        case HomeView.Bookmarks:
-          return {
-            ...state,
-            bookmarksViewSorting: {
-              ...state.bookmarksViewSorting,
-              ...sorting,
-            },
-          };
-        default:
-          return state;
+      if (state.viewOptions[view]) {
+        state.viewOptions[view].sorting = {
+          ...state.viewOptions[view].sorting,
+          ...sorting,
+        };
+      }
+    },
+    setVideosSeniority: (
+      state,
+      action: PayloadAction<{
+        view: HomeView;
+        seniority: VideosSeniority;
+      }>,
+    ) => {
+      const { view, seniority } = action.payload;
+      if (state.viewOptions[view]) {
+        state.viewOptions[view].videosSeniority = seniority;
       }
     },
     setHomeDisplayOptions: (
@@ -186,6 +153,7 @@ export const {
   resetSettings,
   setViewFilters,
   setViewSorting,
+  setVideosSeniority,
   setHomeDisplayOptions,
 } = settingsSlice.actions;
 

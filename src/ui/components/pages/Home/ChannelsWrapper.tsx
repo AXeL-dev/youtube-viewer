@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { Box } from '@mui/material';
 import { Channel, HomeView, Video } from 'types';
 import {
+  AllViewRenderer,
   BookmarksViewRenderer,
   DefaultRenderer,
-  RecentViewRenderer,
   WatchLaterViewRenderer,
 } from './ChannelRenderer';
 
@@ -19,8 +19,8 @@ function ChannelsWrapper(props: ChannelsWrapperProps) {
   const { view, channels, onError, onVideoPlay } = props;
   const ChannelRenderer = useMemo(() => {
     switch (view) {
-      case HomeView.Recent:
-        return RecentViewRenderer;
+      case HomeView.All:
+        return AllViewRenderer;
       case HomeView.WatchLater:
         return WatchLaterViewRenderer;
       case HomeView.Bookmarks:

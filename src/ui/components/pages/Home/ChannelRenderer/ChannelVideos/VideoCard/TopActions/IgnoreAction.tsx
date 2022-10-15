@@ -19,7 +19,7 @@ function IgnoreAction(props: IgnoreActionProps) {
   const isIgnored = useAppSelector(selectVideoFlag(video, flag));
   const dispatch = useAppDispatch();
 
-  if (view !== HomeView.Recent) {
+  if (view !== HomeView.All) {
     return null;
   }
 

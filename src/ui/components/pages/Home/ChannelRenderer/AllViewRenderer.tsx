@@ -1,31 +1,38 @@
 import React, { useMemo, useCallback } from 'react';
 import { useAppSelector } from 'store';
-import { selectSettings } from 'store/selectors/settings';
+import {
+  selectVideosSeniority,
+  selectViewFilters,
+} from 'store/selectors/settings';
 import { getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
-import { selectClassifiedRecentChannelVideos } from 'store/selectors/videos';
-import { Video } from 'types';
+import { selectClassifiedChannelVideos } from 'store/selectors/videos';
+import { HomeView, Video, VideosSeniority } from 'types';
 
-export interface RecentViewRendererProps
+export interface AllViewRendererProps
   extends Omit<DefaultRendererProps, 'publishedAfter'> {}
 
-function RecentViewRenderer(props: RecentViewRendererProps) {
+function AllViewRenderer(props: AllViewRendererProps) {
   const { channel } = props;
-  const settings = useAppSelector(selectSettings);
+  const filters = useAppSelector(selectViewFilters(HomeView.All));
+  const videosSeniority = useAppSelector(selectVideosSeniority(HomeView.All));
   const videos = useAppSelector(
-    selectClassifiedRecentChannelVideos(channel),
+    selectClassifiedChannelVideos(channel, HomeView.All),
     (left, right) => JSON.stringify(left) === JSON.stringify(right),
   );
   const filterCallback = useCallback(
     (video: Video) =>
-      settings.recentViewFilters.others
+      filters.others
         ? !videos.excluded.includes(video.id)
         : videos.included.includes(video.id),
-    [settings.recentViewFilters.others, videos],
+    [filters.others, videos],
   );
   const publishedAfter = useMemo(
-    () => getDateBefore(settings.recentVideosSeniority).toISOString(),
-    [settings.recentVideosSeniority],
+    () =>
+      videosSeniority === VideosSeniority.Any
+        ? undefined
+        : getDateBefore(videosSeniority).toISOString(),
+    [videosSeniority],
   );
 
   return (
@@ -41,4 +48,4 @@ function RecentViewRenderer(props: RecentViewRendererProps) {
   );
 }
 
-export default RecentViewRenderer;
+export default AllViewRenderer;

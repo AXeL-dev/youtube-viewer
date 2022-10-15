@@ -6,7 +6,7 @@ import { setApp } from '../reducers/app';
 import { dispatch, storageKey } from './persist';
 import { elapsedDays } from 'helpers/utils';
 import { config as channelCheckerConfig } from 'ui/components/webext/Background/ChannelChecker';
-import { VideoCache, Settings, VideosSeniority } from 'types';
+import { VideoCache, Settings, VideosSeniority, HomeView } from 'types';
 import { log } from 'helpers/logger';
 
 export const preloadState = async () => {
@@ -60,7 +60,8 @@ const removeOutdatedVideos = (videos: VideoCache[], settings: Settings) => {
       ((flags.seen || flags.ignored) &&
         elapsedDays(publishedAt) <= VideosSeniority.OneMonth) ||
       (flags.recent &&
-        elapsedDays(publishedAt) <= settings.recentVideosSeniority) ||
+        elapsedDays(publishedAt) <=
+          settings.viewOptions[HomeView.All].videosSeniority) ||
       (flags.notified &&
         elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority),
   );

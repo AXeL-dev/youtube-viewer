@@ -26,10 +26,6 @@ const views = [
     value: HomeView.All,
   },
   {
-    label: 'Recent',
-    value: HomeView.Recent,
-  },
-  {
     label: 'Watch later',
     value: HomeView.WatchLater,
   },

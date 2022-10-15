@@ -22,7 +22,7 @@ export default function Tab(props: TabProps) {
   const bookmarkedVideosCount = useAppSelector(selectBookmarkedVideosCount);
   const badgeContent: string | number = (() => {
     switch (view) {
-      case HomeView.Recent:
+      case HomeView.All:
         return videosCount.displayed;
       case HomeView.WatchLater:
         return watchLaterVideosCount;

@@ -5,6 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HomeView, Nullable } from 'types';
 import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
+import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
 import WatchLaterViewMoreActions from './Menus/WatchLaterViewMoreActions';
 
 const filterOptions: ViewFilterOption[] = [
@@ -70,6 +71,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
           parentMenuOpen={open}
           options={filterOptions}
         />
+        <ViewVideosSeniority view={HomeView.WatchLater} parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />
         <WatchLaterViewMoreActions
           parentMenuOpen={open}

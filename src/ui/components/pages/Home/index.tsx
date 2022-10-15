@@ -24,10 +24,6 @@ export function Home(props: HomeProps) {
           value: HomeView.All,
         },
         {
-          label: 'Recent',
-          value: HomeView.Recent,
-        },
-        {
           label: 'Watch later',
           value: HomeView.WatchLater,
         },

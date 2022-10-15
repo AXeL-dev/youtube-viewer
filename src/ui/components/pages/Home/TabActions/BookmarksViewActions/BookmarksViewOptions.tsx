@@ -5,6 +5,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HomeView, Nullable } from 'types';
 import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
+import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
 import BookmarksViewMoreActions from './Menus/BookmarksViewMoreActions';
 
 const filterOptions: ViewFilterOption[] = [
@@ -66,6 +67,7 @@ function BookmarksViewOptions(props: BookmarksViewOptionsProps) {
           parentMenuOpen={open}
           options={filterOptions}
         />
+        <ViewVideosSeniority view={HomeView.Bookmarks} parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />
         <BookmarksViewMoreActions
           parentMenuOpen={open}

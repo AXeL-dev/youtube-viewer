@@ -11,25 +11,10 @@ export const selectMode = createSelector(selectSettings, (settings) =>
 
 export const selectViewFilters = (view: HomeView) =>
   createSelector(selectSettings, (settings): ViewFilters => {
-    switch (view) {
-      case HomeView.Recent:
-        return {
-          ...defaultSettings.recentViewFilters,
-          ...settings.recentViewFilters,
-        } as ViewFilters;
-      case HomeView.WatchLater:
-        return {
-          ...defaultSettings.watchLaterViewFilters,
-          ...settings.watchLaterViewFilters,
-        } as ViewFilters;
-      case HomeView.Bookmarks:
-        return {
-          ...defaultSettings.bookmarksViewFilters,
-          ...settings.bookmarksViewFilters,
-        } as ViewFilters;
-      default:
-        return {} as ViewFilters;
-    }
+    return {
+      ...defaultSettings.viewOptions[view].filters,
+      ...settings.viewOptions[view].filters,
+    } as ViewFilters;
   });
 
 const legacyViewFilterKeys = ['uncategorised', 'viewed'];
@@ -47,29 +32,10 @@ export const selectActiveViewFiltersCount = (view: HomeView) =>
 
 export const selectViewSorting = (view: HomeView) =>
   createSelector(selectSettings, (settings) => {
-    switch (view) {
-      case HomeView.Recent:
-        return {
-          ...defaultSettings.recentViewSorting,
-          ...settings.recentViewSorting,
-        };
-      case HomeView.WatchLater:
-        return {
-          ...defaultSettings.watchLaterViewSorting,
-          ...settings.watchLaterViewSorting,
-        };
-      case HomeView.Bookmarks:
-        return {
-          ...defaultSettings.bookmarksViewSorting,
-          ...settings.bookmarksViewSorting,
-        };
-      case HomeView.All:
-      default:
-        return {
-          ...defaultSettings.allViewSorting,
-          ...settings.allViewSorting,
-        };
-    }
+    return {
+      ...defaultSettings.viewOptions[view].sorting,
+      ...settings.viewOptions[view].sorting,
+    };
   });
 
 export const selectHomeDisplayOptions = createSelector(
@@ -100,7 +66,8 @@ export const selectHasExtraVideoAction = (action: ExtraVideoAction) =>
     extraVideoActions.includes(action),
   );
 
-export const selectRecentVideosSeniority = createSelector(
-  selectSettings,
-  (settings) => settings.recentVideosSeniority,
-);
+export const selectVideosSeniority = (view: HomeView) =>
+  createSelector(
+    selectSettings,
+    (settings) => settings.viewOptions[view].videosSeniority,
+  );

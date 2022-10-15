@@ -1,9 +1,35 @@
 import React, { useState } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Divider } from '@mui/material';
 import { StyledMenu } from 'ui/components/shared';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HomeView, Nullable } from 'types';
 import ViewSorting from '../CommonMenus/ViewSorting';
+import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
+import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
+import AllViewMoreActions from '../AllViewActions/Menus/AllViewMoreActions';
+
+const filterOptions: ViewFilterOption[] = [
+  {
+    label: 'Seen',
+    value: 'seen',
+  },
+  {
+    label: 'Watch later',
+    value: 'watchLater',
+  },
+  {
+    label: 'Bookmarked',
+    value: 'bookmarked',
+  },
+  {
+    label: 'Ignored',
+    value: 'ignored',
+  },
+  {
+    label: 'Others',
+    value: 'others',
+  },
+];
 
 interface AllViewOptionsProps {}
 
@@ -41,6 +67,14 @@ function AllViewOptions(props: AllViewOptionsProps) {
         onClose={handleClose}
       >
         <ViewSorting view={HomeView.All} parentMenuOpen={open} />
+        <ViewFilters
+          view={HomeView.All}
+          parentMenuOpen={open}
+          options={filterOptions}
+        />
+        <ViewVideosSeniority view={HomeView.All} parentMenuOpen={open} />
+        <Divider sx={{ my: 0.5 }} />
+        <AllViewMoreActions parentMenuOpen={open} />
       </StyledMenu>
     </>
   );

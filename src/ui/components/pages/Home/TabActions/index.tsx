@@ -1,7 +1,6 @@
 import React from 'react';
 import { HomeView } from 'types';
 import WatchLaterViewActions from './WatchLaterViewActions';
-import RecentViewActions from './RecentViewActions';
 import AllViewActions from './AllViewActions';
 import { useAppSelector } from 'store';
 import { selectActiveChannelsCount } from 'store/selectors/channels';
@@ -22,8 +21,6 @@ function TabActions(props: TabActionsProps) {
   switch (tab) {
     case HomeView.All:
       return <AllViewActions />;
-    case HomeView.Recent:
-      return <RecentViewActions />;
     case HomeView.WatchLater:
       return <WatchLaterViewActions />;
     case HomeView.Bookmarks:

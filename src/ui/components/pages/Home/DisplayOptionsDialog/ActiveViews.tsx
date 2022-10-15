@@ -34,11 +34,6 @@ const ActiveViews = forwardRef<ActiveViewsRef, ActiveViewsProps>(
         hidden: hiddenViews.includes(HomeView.All),
       },
       {
-        label: 'Recent',
-        value: HomeView.Recent,
-        hidden: hiddenViews.includes(HomeView.Recent),
-      },
-      {
         label: 'Watch Later',
         value: HomeView.WatchLater,
         hidden: hiddenViews.includes(HomeView.WatchLater),

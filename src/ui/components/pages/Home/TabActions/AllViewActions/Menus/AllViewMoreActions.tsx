@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'store';
 import { setVideosFlag } from 'store/reducers/videos';
-import { selectRecentOnlyVideos } from 'store/selectors/videos';
+import { selectUnflaggedVideos } from 'store/selectors/videos';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -14,12 +14,11 @@ import {
   NestedMenuItemRef,
 } from 'ui/components/shared';
 
-interface RecentViewMoreActionsProps
-  extends Omit<NestedMenuItemProps, 'label'> {}
+interface AllViewMoreActionsProps extends Omit<NestedMenuItemProps, 'label'> {}
 
-function RecentViewMoreActions(props: RecentViewMoreActionsProps) {
+function AllViewMoreActions(props: AllViewMoreActionsProps) {
   const ref = useRef<NestedMenuItemRef>(null);
-  const videos = useAppSelector(selectRecentOnlyVideos());
+  const videos = useAppSelector(selectUnflaggedVideos());
   const dispatch = useAppDispatch();
   const [confirmationDialogProps, setConfirmationDialogProps] =
     useState<ConfirmationDialogProps>({
@@ -117,4 +116,4 @@ function RecentViewMoreActions(props: RecentViewMoreActionsProps) {
   );
 }
 
-export default RecentViewMoreActions;
+export default AllViewMoreActions;
