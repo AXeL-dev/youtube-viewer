@@ -22,7 +22,8 @@ export function ErrorAlert(props: ErrorAlertProps) {
   };
 
   const renderError = () => {
-    const errorMessage = error?.data?.error.message || error?.error;
+    const errorMessage =
+      error?.data?.error.message || error?.error || error?.message;
     switch (errorMessage) {
       case Error.MISSING_API_KEY:
       case Error.INVALID_API_KEY:
