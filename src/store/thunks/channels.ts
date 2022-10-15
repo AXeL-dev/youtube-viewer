@@ -21,9 +21,9 @@ export const fetchChannelById = createAsyncThunk<
 
 export const addChannelById = createAsyncThunk<
   void,
-  { id: string },
+  { id: string; hide?: boolean },
   { state: RootState }
->('channels/addChannelById', async ({ id }, { getState, dispatch }) => {
+>('channels/addChannelById', async ({ id, hide }, { getState, dispatch }) => {
   // check if channel exists
   const { channels } = getState();
   const found = channels.list.find((channel: Channel) => channel.id === id);
@@ -36,6 +36,11 @@ export const addChannelById = createAsyncThunk<
 
   // save to channels list
   if (channel) {
-    dispatch(addChannel(channel));
+    dispatch(
+      addChannel({
+        ...channel,
+        isHidden: !!hide,
+      }),
+    );
   }
 });

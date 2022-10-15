@@ -58,7 +58,7 @@ export function Sidebar(props: SidebarProps) {
               icon={<ExploreIcon />}
               text="Home"
               to="/"
-              actions={(selected) => selected && <HomeActions />}
+              actions={(selected) => (selected ? <HomeActions /> : null)}
             />
             <ListItemLink
               icon={<SubscriptionsIcon />}

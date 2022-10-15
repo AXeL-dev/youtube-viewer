@@ -10,7 +10,7 @@ import {
   ViewFilter,
   ViewFilters,
 } from 'types';
-import { selectActiveChannels } from './channels';
+import { selectChannelsByView } from './channels';
 import {
   selectSettings,
   selectVideosSeniority,
@@ -147,13 +147,13 @@ export const selectBookmarkedVideosCount = createSelector(
   selectVideos,
   selectViewFilters(HomeView.Bookmarks),
   selectVideosSeniority(HomeView.Bookmarks),
-  selectActiveChannels,
-  (videos, filters, videosSeniority, activeChannels) => {
-    const activeChannelsIds = activeChannels.map(({ id }) => id);
+  selectChannelsByView(HomeView.Bookmarks),
+  (videos, filters, videosSeniority, channels) => {
+    const channelsIds = channels.map(({ id }) => id);
     return videos.filter(
       (video) =>
         video.flags.bookmarked &&
-        activeChannelsIds.includes(video.channelId) &&
+        channelsIds.includes(video.channelId) &&
         filterVideoByFlags(video, filters) &&
         (videosSeniority === VideosSeniority.Any ||
           elapsedDays(video.publishedAt) <= videosSeniority),
@@ -165,13 +165,13 @@ export const selectWatchLaterVideosCount = createSelector(
   selectVideos,
   selectViewFilters(HomeView.WatchLater),
   selectVideosSeniority(HomeView.WatchLater),
-  selectActiveChannels,
-  (videos, filters, videosSeniority, activeChannels) => {
-    const activeChannelsIds = activeChannels.map(({ id }) => id);
+  selectChannelsByView(HomeView.WatchLater),
+  (videos, filters, videosSeniority, channels) => {
+    const channelsIds = channels.map(({ id }) => id);
     return videos.filter(
       (video) =>
         video.flags.toWatchLater &&
-        activeChannelsIds.includes(video.channelId) &&
+        channelsIds.includes(video.channelId) &&
         filterVideoByFlags(video, filters) &&
         (videosSeniority === VideosSeniority.Any ||
           elapsedDays(video.publishedAt) <= videosSeniority),
@@ -181,14 +181,12 @@ export const selectWatchLaterVideosCount = createSelector(
 
 export const selectSeenWatchLaterVideosCount = createSelector(
   selectVideos,
-  selectActiveChannels,
-  (videos, activeChannels) => {
-    const activeChannelsIds = activeChannels.map(({ id }) => id);
+  selectChannelsByView(HomeView.WatchLater),
+  (videos, channels) => {
+    const channelsIds = channels.map(({ id }) => id);
     return videos.filter(
       ({ flags, channelId }) =>
-        flags.toWatchLater &&
-        flags.seen &&
-        activeChannelsIds.includes(channelId),
+        flags.toWatchLater && flags.seen && channelsIds.includes(channelId),
     ).length;
   },
 );

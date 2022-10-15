@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Divider, MenuItem } from '@mui/material';
+import { IconButton, Divider, MenuItem, Tooltip } from '@mui/material';
 import { useAppDispatch } from 'store';
 import {
   toggleChannel,
@@ -84,25 +84,33 @@ const ChannelActions = React.forwardRef<HTMLButtonElement, ChannelActionsProps>(
             Filters
           </MenuItem>
           <Divider sx={{ my: 0.5 }} />
-          <MenuItem
-            onClick={() => {
-              dispatch(toggleChannel(channel));
-              handleMenuClose();
-            }}
-            disableRipple
+          <Tooltip
+            title={`${
+              channel.isHidden ? 'Unhide' : 'Hide'
+            } the channel from the 'All' view`}
+            placement="left"
+            arrow
           >
-            {channel.isHidden ? (
-              <>
-                <VisibilityOutlinedIcon />
-                Unhide
-              </>
-            ) : (
-              <>
-                <VisibilityOffOutlinedIcon />
-                Hide
-              </>
-            )}
-          </MenuItem>
+            <MenuItem
+              onClick={() => {
+                dispatch(toggleChannel(channel));
+                handleMenuClose();
+              }}
+              disableRipple
+            >
+              {channel.isHidden ? (
+                <>
+                  <VisibilityOutlinedIcon />
+                  Unhide
+                </>
+              ) : (
+                <>
+                  <VisibilityOffOutlinedIcon />
+                  Hide
+                </>
+              )}
+            </MenuItem>
+          </Tooltip>
           <MenuItem
             sx={{ color: 'primary.main' }}
             onClick={handleRemoveClick}

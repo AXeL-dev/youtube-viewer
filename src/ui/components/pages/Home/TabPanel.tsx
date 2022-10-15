@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ErrorAlert } from 'ui/components/shared';
 import { Channel, HomeView, Video, Nullable } from 'types';
 import { useAppSelector } from 'store';
-import { selectActiveChannels } from 'store/selectors/channels';
+import { selectChannelsByView } from 'store/selectors/channels';
 import VideoPlayerDialog from './VideoPlayerDialog';
 import ChannelsWrapper from './ChannelsWrapper';
 import NoChannels from './NoChannels';
@@ -18,7 +18,7 @@ function TabPanel(props: TabPanelProps) {
   const [error, setError] = useState(null);
   const [activeVideo, setActiveVideo] = useState<Nullable<Video>>(null);
   const { getLatestChannelVideo } = useChannelVideos(tab);
-  const channels = useAppSelector(selectActiveChannels);
+  const channels = useAppSelector(selectChannelsByView(tab));
   const sorting = useAppSelector(selectViewSorting(tab));
 
   const handleVideoPlay = (video: Video) => {

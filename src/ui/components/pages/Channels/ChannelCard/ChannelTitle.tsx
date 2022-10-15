@@ -30,16 +30,16 @@ function ChannelTitle(props: ChannelTitleProps) {
       >
         {channel.title}
       </Link>
-      {channel.notifications?.isDisabled && (
+      {channel.notifications?.isDisabled ? (
         <Tooltip title="Notifications disabled">
           <NotificationsOffIcon color="disabled" fontSize="small" />
         </Tooltip>
-      )}
-      {!!channel.filters?.length && (
+      ) : null}
+      {!!channel.filters?.length ? (
         <Tooltip title="Has filters">
           <FilterAltIcon color="disabled" fontSize="small" />
         </Tooltip>
-      )}
+      ) : null}
     </Box>
   );
 }

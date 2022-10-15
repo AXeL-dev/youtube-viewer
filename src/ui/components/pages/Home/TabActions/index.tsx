@@ -3,16 +3,16 @@ import { HomeView } from 'types';
 import WatchLaterViewActions from './WatchLaterViewActions';
 import AllViewActions from './AllViewActions';
 import { useAppSelector } from 'store';
-import { selectActiveChannelsCount } from 'store/selectors/channels';
+import { selectChannelsCountByView } from 'store/selectors/channels';
 import BookmarksViewActions from './BookmarksViewActions';
 
 interface TabActionsProps {
-  tab: HomeView | null;
+  tab: HomeView;
 }
 
 function TabActions(props: TabActionsProps) {
   const { tab } = props;
-  const channelsCount = useAppSelector(selectActiveChannelsCount);
+  const channelsCount = useAppSelector(selectChannelsCountByView(tab));
 
   if (channelsCount === 0) {
     return null;

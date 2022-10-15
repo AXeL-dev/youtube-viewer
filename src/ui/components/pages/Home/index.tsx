@@ -73,9 +73,9 @@ export function Home(props: HomeProps) {
             <Tab key={index} {...props} />
           ))}
         </Tabs>
-        <TabActions tab={activeTab} />
+        {activeTab ? <TabActions tab={activeTab} /> : null}
       </Box>
-      {activeTab && <TabPanel tab={activeTab} />}
+      {activeTab ? <TabPanel tab={activeTab} /> : null}
     </Layout>
   );
 }

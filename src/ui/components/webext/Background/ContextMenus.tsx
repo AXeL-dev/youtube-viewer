@@ -80,6 +80,7 @@ export default function ContextMenus(props: ContextMenusProps) {
               addVideoById({
                 id: videoId,
                 flags: { bookmarked: true },
+                hideChannel: true,
               }),
               true,
             );
