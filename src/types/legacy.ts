@@ -6,6 +6,7 @@ import {
   ViewSorting,
   WatchLaterViewFilters,
 } from './Settings';
+import { VideoFlags } from './Video';
 
 export interface LegacySettings extends Omit<Settings, 'viewOptions'> {
   recentVideosSeniority: VideosSeniority;
@@ -17,3 +18,7 @@ export interface LegacySettings extends Omit<Settings, 'viewOptions'> {
   watchLaterViewSorting: ViewSorting;
   bookmarksViewSorting: ViewSorting;
 }
+
+export type LegacyVideoFlags = VideoFlags & {
+  viewed: boolean;
+};

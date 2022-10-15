@@ -12,6 +12,7 @@ import {
   VideosSeniority,
   HomeView,
   LegacySettings,
+  LegacyVideoFlags,
 } from 'types';
 import { log } from 'helpers/logger';
 
@@ -96,8 +97,7 @@ const replaceLegacySettings = (
 
 const replaceViewedFlagWithSeen = (videos: VideoCache[]) => {
   return videos.map((video) => {
-    const { viewed, ...flags } =
-      (video.flags as typeof video.flags & { viewed: boolean }) || {};
+    const { viewed, ...flags } = (video.flags as LegacyVideoFlags) || {};
     return {
       ...video,
       flags: viewed
