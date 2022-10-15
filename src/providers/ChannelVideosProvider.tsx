@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { views } from 'store/reducers/settings';
 import { GetChannelVideosResponse } from 'store/services/youtube';
 import { Channel, Video, HomeView } from 'types';
 
@@ -32,9 +33,7 @@ type ChannelVideosContextType = {
   ) => Video | undefined;
 };
 
-const ALL_VIEWS = Object.values(HomeView);
-
-const INITIAL_COUNT = ALL_VIEWS.reduce(
+const initialVideosCount = views.reduce(
   (acc, view) => ({
     ...acc,
     [view]: {
@@ -45,7 +44,7 @@ const INITIAL_COUNT = ALL_VIEWS.reduce(
   {},
 );
 
-const INITIAL_MAP = ALL_VIEWS.reduce(
+const initialChannelsMap = views.reduce(
   (acc, view) => ({ ...acc, [view]: new Map() }),
   {},
 );
@@ -56,9 +55,9 @@ const ChannelVideosContext = createContext<
 
 export const ChannelVideosProvider: FC = memo(({ children }) => {
   const [videosCount, setVideosCount] =
-    useState<ChannelVideosContextType['videosCount']>(INITIAL_COUNT);
+    useState<ChannelVideosContextType['videosCount']>(initialVideosCount);
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
-    INITIAL_MAP,
+    initialChannelsMap,
   );
 
   const updateCount = useCallback(

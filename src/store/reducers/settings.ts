@@ -62,7 +62,7 @@ export const defaultSettings = {
   },
 };
 
-const views = Object.values(HomeView);
+export const views = Object.values(HomeView);
 
 interface SettingsState extends Settings {}
 
