@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import ChannelCard from '../ChannelCard';
 import DraggableChannelCard from '../ChannelCard/DraggableCard';
@@ -20,7 +20,7 @@ import {
 } from '@dnd-kit/modifiers';
 import { moveChannel } from 'store/reducers/channels';
 import { Channel, Nullable } from 'types';
-import { FixedSizeList } from 'react-window';
+import VirtualList from 'react-tiny-virtual-list';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 interface ChannelListProps {
@@ -63,14 +63,22 @@ function ChannelList(props: ChannelListProps) {
           <Box sx={{ flex: 1 }}>
             <AutoSizer>
               {({ width, height }) => (
-                <FixedSizeList
+                <VirtualList
                   width={width}
                   height={height}
-                  itemSize={98}
                   itemCount={channels.length}
+                  itemSize={98}
                   overscanCount={5}
-                >
-                  {({ index, style, isScrolling }) => (
+                  stickyIndices={
+                    draggedChannel
+                      ? [
+                          channels.findIndex(
+                            (channel) => channel.id === draggedChannel.id,
+                          ),
+                        ]
+                      : undefined
+                  }
+                  renderItem={({ index, style }) => (
                     <DraggableChannelCard
                       key={index}
                       style={style}
@@ -80,7 +88,7 @@ function ChannelList(props: ChannelListProps) {
                       //enablePictureTransition={!isScrolling}
                     />
                   )}
-                </FixedSizeList>
+                />
               )}
             </AutoSizer>
           </Box>

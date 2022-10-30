@@ -4,13 +4,25 @@ import { Channel } from 'types';
 
 interface ChannelPictureProps {
   channel: Channel;
+  enableTransition?: boolean;
+}
+
+interface TransitionProps {
+  children: JSX.Element;
+  enable?: boolean;
+}
+
+function Transition(props: TransitionProps) {
+  const { enable = true, children } = props;
+
+  return enable ? <Fade in={true}>{children}</Fade> : children;
 }
 
 function ChannelPicture(props: ChannelPictureProps) {
-  const { channel } = props;
+  const { channel, enableTransition } = props;
 
   return (
-    <Fade in={true}>
+    <Transition enable={enableTransition}>
       <Link
         sx={{ textDecoration: 'none' }}
         href={channel.url}
@@ -27,7 +39,7 @@ function ChannelPicture(props: ChannelPictureProps) {
           aria-label="channel"
         />
       </Link>
-    </Fade>
+    </Transition>
   );
 }
 

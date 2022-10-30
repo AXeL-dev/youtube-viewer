@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper, Card, CardHeader, Collapse } from '@mui/material';
+import { Box, Paper, Card, CardHeader, Collapse, Divider } from '@mui/material';
 import { Channel } from 'types';
 import ChannelPicture from './ChannelPicture';
 import ChannelTitle from './ChannelTitle';
@@ -13,11 +13,21 @@ export interface ChannelCardProps {
   isOverlay?: boolean;
   showDragHandle?: boolean;
   listeners?: DraggableSyntheticListeners;
+  hasDivider?: boolean;
+  enablePictureTransition?: boolean;
 }
 
 const ChannelCard = React.forwardRef(
-  (props: ChannelCardProps, ref: React.LegacyRef<HTMLDivElement>) => {
-    const { channel, isOverlay, showDragHandle, listeners, ...rest } = props;
+  (props: ChannelCardProps, ref: React.ForwardedRef<HTMLElement>) => {
+    const {
+      channel,
+      isOverlay,
+      showDragHandle,
+      listeners,
+      hasDivider = true,
+      enablePictureTransition = true,
+      ...rest
+    } = props;
 
     const renderCard = React.useMemo(
       () => (
@@ -46,18 +56,23 @@ const ChannelCard = React.forwardRef(
                   }
                 : {}),
             }}
-            avatar={<ChannelPicture channel={channel} />}
+            avatar={
+              <ChannelPicture
+                channel={channel}
+                enableTransition={enablePictureTransition}
+              />
+            }
             action={<ChannelActions channel={channel} />}
             title={<ChannelTitle channel={channel} />}
             subheader={channel.description}
           />
         </Card>
       ),
-      [channel],
+      [channel, enablePictureTransition],
     );
 
     return (
-      <div ref={ref} {...rest}>
+      <Box sx={{ px: 3 }} ref={ref} {...rest}>
         <Paper elevation={isOverlay ? 1 : 0}>
           <Box
             sx={{
@@ -76,7 +91,8 @@ const ChannelCard = React.forwardRef(
             {renderCard}
           </Box>
         </Paper>
-      </div>
+        {hasDivider ? <Divider /> : null}
+      </Box>
     );
   },
 );
