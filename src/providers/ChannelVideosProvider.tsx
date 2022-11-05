@@ -104,7 +104,12 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
 
   const getChannelVideosCount = (view: HomeView, channelId: string) => {
     const channelData = channelsMap.current[view].get(channelId);
-    return channelData?.total || 0;
+    switch (view) {
+      case HomeView.All:
+        return channelData?.items.length || 0;
+      default:
+        return channelData?.total || 0;
+    }
   };
 
   const value = useMemo(
