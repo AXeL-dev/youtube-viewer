@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Channel, Video } from 'types';
 import { useGetChannelVideosQuery } from 'store/services/youtube';
-import { getDateBefore } from 'helpers/utils';
+import { date2ISO, getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectChannelVideos } from 'store/selectors/videos';
 import { useInterval, useStateRef } from 'hooks';
@@ -27,7 +27,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const [ready, setReady] = useState(false);
   const cachedVideos = useAppSelector(selectChannelVideos(channel));
   const cachedVideosRef = useStateRef(cachedVideos);
-  const publishedAfter = getDateBefore(config.videosSeniority).toISOString();
+  const publishedAfter = date2ISO(getDateBefore(config.videosSeniority));
   const pollingInterval = config.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
     {

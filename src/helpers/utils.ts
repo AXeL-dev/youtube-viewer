@@ -150,6 +150,21 @@ export function getDateBefore(before: number = 0): Date {
 // -------------------------------------------------------------------
 
 /**
+ * Convert the given date to ISO format
+ *
+ * @param date {Date}
+ */
+export function date2ISO(date: Date): string {
+  // const year = date.getFullYear();
+  // const month = date.getMonth() + 1;
+  // const day = String(date.getDate()).padStart(2, '0');
+  // return `${year}-${month}-${day}T00:00:00Z`;
+  return date.toISOString();
+}
+
+// -------------------------------------------------------------------
+
+/**
  * Check if the given timestamp is in today's date
  * Stolen from: https://stackoverflow.com/a/40628566
  *

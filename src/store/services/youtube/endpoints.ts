@@ -126,15 +126,21 @@ const queries = {
         maxResults,
       },
     }),
-    transformResponse: (response: Response): GetChannelActivitiesResponse => ({
-      items: response.items
+    transformResponse: (response: Response): GetChannelActivitiesResponse => {
+      const items = response.items
         .filter((item) => item.snippet.type === 'upload')
         .map((item) => ({
           videoId: item.contentDetails.upload.videoId,
-        })),
-      count: response.items.length,
-      total: response.pageInfo.totalResults,
-    }),
+        }));
+      const count = items.length;
+      const total =
+        response.pageInfo.totalResults - (response.items.length - count);
+      return {
+        items,
+        count,
+        total,
+      };
+    },
   },
   // Videos informations query
   getVideosById: {
@@ -245,12 +251,17 @@ export const extendedApi = youtubeApi.injectEndpoints({
           }
           return { error: activities.error as FetchBaseQueryError };
         }
-        const { items, count, total } =
-          queries.getChannelActivities.transformResponse(
-            activities.data as Response,
-          );
+        const activitiesData = queries.getChannelActivities.transformResponse(
+          activities.data as Response,
+        );
+        let count = activitiesData.items.length;
+        let total = activitiesData.total;
+        // Fix: wrong total count (ex: maxResults = 6, total = 2, count = 1)
+        if (maxResults && maxResults >= total && count < total) {
+          total = count;
+        }
         // Fetch channel videos
-        const ids = items.map(({ videoId }) => videoId);
+        const ids = activitiesData.items.map(({ videoId }) => videoId);
         if (ids.length === 0) {
           return {
             data: {
@@ -272,6 +283,20 @@ export const extendedApi = youtubeApi.injectEndpoints({
         const videosData = queries.getVideosById.transformResponse(
           result.data as Response,
         );
+        // Fix: force filter by publish date (since we may receive wrong activities data from the youtube API sometimes)
+        if (publishedAfter) {
+          videosData.items = videosData.items.filter(
+            (video) => video.publishedAt >= new Date(publishedAfter).getTime(),
+          );
+          const newCount = videosData.items.length;
+          if (newCount < count && maxResults && newCount < maxResults) {
+            total = newCount;
+          } else {
+            total = total - (count - newCount);
+          }
+          count = newCount;
+        }
+        // Apply custom user filters
         if (channel.filters && channel.filters.length > 0) {
           videosData.items = videosData.items.filter((video) =>
             channel.filters!.some((filter) => {
@@ -279,6 +304,10 @@ export const extendedApi = youtubeApi.injectEndpoints({
               return evaluateField(videoField, filter.operator, filter.value);
             }),
           );
+          // Recalculate total & count
+          const newCount = videosData.items.length;
+          total = total - (count - newCount);
+          count = newCount;
         }
         return {
           data: {

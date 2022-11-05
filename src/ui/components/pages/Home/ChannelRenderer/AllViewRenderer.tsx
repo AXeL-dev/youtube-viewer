@@ -4,7 +4,7 @@ import {
   selectVideosSeniority,
   selectViewFilters,
 } from 'store/selectors/settings';
-import { getDateBefore } from 'helpers/utils';
+import { date2ISO, getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 import { selectClassifiedChannelVideos } from 'store/selectors/videos';
 import { HomeView, Video, VideosSeniority } from 'types';
@@ -31,7 +31,7 @@ function AllViewRenderer(props: AllViewRendererProps) {
     () =>
       videosSeniority === VideosSeniority.Any
         ? undefined
-        : getDateBefore(videosSeniority).toISOString(),
+        : date2ISO(getDateBefore(videosSeniority)),
     [videosSeniority],
   );
 
