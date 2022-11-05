@@ -5,3 +5,4 @@ export * from './useDidMountEffect';
 export * from './useTimeout';
 export * from './useInterval';
 export * from './useForwardedRef';
+export * from './useStateRef';

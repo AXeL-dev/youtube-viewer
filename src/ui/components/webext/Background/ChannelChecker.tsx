@@ -4,7 +4,7 @@ import { useGetChannelVideosQuery } from 'store/services/youtube';
 import { getDateBefore } from 'helpers/utils';
 import { useAppSelector } from 'store';
 import { selectChannelVideos } from 'store/selectors/videos';
-import { useInterval } from 'hooks';
+import { useInterval, useStateRef } from 'hooks';
 import { log } from 'helpers/logger';
 
 export interface CheckEndData {
@@ -26,6 +26,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
   const { channel, onCheckEnd } = props;
   const [ready, setReady] = useState(false);
   const cachedVideos = useAppSelector(selectChannelVideos(channel));
+  const cachedVideosRef = useStateRef(cachedVideos);
   const publishedAfter = getDateBefore(config.videosSeniority).toISOString();
   const pollingInterval = config.checkInterval * 60000; // convert minutes to milliseconds
   const { data, isFetching, refetch } = useGetChannelVideosQuery(
@@ -57,7 +58,7 @@ export default function ChannelChecker(props: ChannelCheckerProps) {
       const total = data?.total || 0;
       log('Fetch ended:', total, data);
       if (total > 0) {
-        const checkedVideosIds = cachedVideos
+        const checkedVideosIds = cachedVideosRef.current
           .filter(
             ({ flags }) =>
               flags.seen ||
