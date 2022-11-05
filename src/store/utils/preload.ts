@@ -22,9 +22,8 @@ export const preloadState = async () => {
   if (state) {
     // Load stored data
     const { settings, channels, videos } = state;
-    const newSettings = replaceLegacySettings(settings);
     if (settings) {
-      dispatch(setSettings(newSettings));
+      dispatch(setSettings(replaceLegacySettings(settings)));
     }
     if (channels) {
       dispatch(setChannels(channels));
@@ -32,10 +31,7 @@ export const preloadState = async () => {
     if (videos) {
       dispatch(
         setVideos({
-          list: removeOutdatedVideos(
-            replaceViewedFlagWithSeen(videos.list),
-            newSettings,
-          ),
+          list: removeOutdatedVideos(replaceViewedFlagWithSeen(videos.list)),
         }),
       );
     }
@@ -111,17 +107,14 @@ const replaceViewedFlagWithSeen = (videos: VideoCache[]) => {
   });
 };
 
-const removeOutdatedVideos = (videos: VideoCache[], settings: Settings) => {
+const removeOutdatedVideos = (videos: VideoCache[]) => {
   log('Removing outdated videos.');
   return videos.filter(
     ({ flags, publishedAt }) =>
       flags.toWatchLater ||
       flags.bookmarked ||
-      ((flags.seen || flags.ignored) &&
+      ((flags.recent || flags.seen || flags.ignored) &&
         elapsedDays(publishedAt) <= VideosSeniority.OneMonth) ||
-      (flags.recent &&
-        elapsedDays(publishedAt) <=
-          settings.viewOptions[HomeView.All].videosSeniority) ||
       (flags.notified &&
         elapsedDays(publishedAt) <= channelCheckerConfig.videosSeniority),
   );
