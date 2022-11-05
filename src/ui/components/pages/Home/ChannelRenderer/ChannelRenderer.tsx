@@ -75,6 +75,7 @@ function propsAreEqual(
   return (
     prevProps.view === nextProps.view &&
     prevProps.channel.id === nextProps.channel.id &&
+    prevProps.count === nextProps.count &&
     prevProps.total === nextProps.total &&
     prevProps.isLoading === nextProps.isLoading &&
     prevProps.itemsPerRow === nextProps.itemsPerRow &&

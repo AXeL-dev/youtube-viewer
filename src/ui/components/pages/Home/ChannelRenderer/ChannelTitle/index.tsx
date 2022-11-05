@@ -39,7 +39,10 @@ function propsAreEqual(
   prevProps: ChannelTitleProps,
   nextProps: ChannelTitleProps,
 ) {
-  return prevProps.channel.id === nextProps.channel.id;
+  return (
+    prevProps.view === nextProps.view &&
+    prevProps.channel.id === nextProps.channel.id
+  );
 }
 
 export default React.memo(ChannelTitle, propsAreEqual);
