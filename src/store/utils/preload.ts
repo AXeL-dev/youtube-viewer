@@ -66,16 +66,19 @@ const replaceLegacySettings = (
     ...rest,
     viewOptions: {
       [HomeView.All]: {
+        ...defaultSettings.viewOptions[HomeView.All],
         sorting: recentViewSorting,
         filters: recentViewFilters,
         videosSeniority: recentVideosSeniority,
       },
       [HomeView.WatchLater]: {
+        ...defaultSettings.viewOptions[HomeView.WatchLater],
         sorting: watchLaterViewSorting,
         filters: watchLaterViewFilters,
         videosSeniority: VideosSeniority.Any,
       },
       [HomeView.Bookmarks]: {
+        ...defaultSettings.viewOptions[HomeView.Bookmarks],
         sorting: bookmarksViewSorting,
         filters: bookmarksViewFilters,
         videosSeniority: VideosSeniority.Any,

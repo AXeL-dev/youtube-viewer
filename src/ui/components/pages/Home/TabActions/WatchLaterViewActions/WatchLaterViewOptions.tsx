@@ -7,6 +7,7 @@ import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
 import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
 import WatchLaterViewMoreActions from './Menus/WatchLaterViewMoreActions';
+import ViewChannelOptions from '../CommonMenus/ViewChannelOptions';
 
 const filterOptions: ViewFilterOption[] = [
   {
@@ -71,6 +72,7 @@ function WatchLaterViewOptions(props: WatchLaterViewOptionsProps) {
           parentMenuOpen={open}
           options={filterOptions}
         />
+        <ViewChannelOptions view={HomeView.WatchLater} parentMenuOpen={open} />
         <ViewVideosSeniority view={HomeView.WatchLater} parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />
         <WatchLaterViewMoreActions

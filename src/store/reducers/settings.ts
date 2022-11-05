@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
+  ChannelOptions,
   HomeDisplayOptions,
   HomeView,
   QueryTimeout,
@@ -30,6 +31,10 @@ export const defaultSettings = {
         ignored: false,
         others: true,
       },
+      channels: {
+        collapseByDefault: false,
+        displayVideosCount: false,
+      },
       videosSeniority: VideosSeniority.Any,
     },
     [HomeView.WatchLater]: {
@@ -42,6 +47,10 @@ export const defaultSettings = {
         archived: true,
         others: true,
       },
+      channels: {
+        collapseByDefault: false,
+        displayVideosCount: false,
+      },
       videosSeniority: VideosSeniority.Any,
     },
     [HomeView.Bookmarks]: {
@@ -52,6 +61,10 @@ export const defaultSettings = {
         seen: true,
         watchLater: true,
         others: true,
+      },
+      channels: {
+        collapseByDefault: false,
+        displayVideosCount: false,
       },
       videosSeniority: VideosSeniority.Any,
     },
@@ -98,6 +111,21 @@ export const settingsSlice = createSlice({
         state.viewOptions[view].filters = {
           ...state.viewOptions[view].filters,
           ...filters,
+        };
+      }
+    },
+    setViewChannelOptions: (
+      state,
+      action: PayloadAction<{
+        view: HomeView;
+        options: Partial<ChannelOptions>;
+      }>,
+    ) => {
+      const { view, options } = action.payload;
+      if (state.viewOptions[view]) {
+        state.viewOptions[view].channels = {
+          ...state.viewOptions[view].channels,
+          ...options,
         };
       }
     },
@@ -154,6 +182,7 @@ export const {
   setViewFilters,
   setViewSorting,
   setVideosSeniority,
+  setViewChannelOptions,
   setHomeDisplayOptions,
 } = settingsSlice.actions;
 

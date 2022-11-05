@@ -1,6 +1,6 @@
 import type { RootState } from 'store';
 import { createSelector } from 'reselect';
-import { HomeView, ViewFilters, ExtraVideoAction } from 'types';
+import { HomeView, ViewFilters, ExtraVideoAction, ChannelOptions } from 'types';
 import { defaultSettings } from 'store/reducers/settings';
 
 export const selectSettings = (state: RootState) => state.settings;
@@ -16,6 +16,20 @@ export const selectViewFilters = (view: HomeView) =>
       ...settings.viewOptions[view].filters,
     } as ViewFilters;
   });
+
+export const selectViewChannelOptions = (view: HomeView) =>
+  createSelector(selectSettings, (settings): ChannelOptions => {
+    return {
+      ...defaultSettings.viewOptions[view].channels,
+      ...settings.viewOptions[view].channels,
+    } as ChannelOptions;
+  });
+
+export const selectViewChannelOption = (
+  view: HomeView,
+  option: keyof ChannelOptions,
+) =>
+  createSelector(selectViewChannelOptions(view), (options) => options[option]);
 
 const legacyViewFilterKeys = ['uncategorised', 'viewed'];
 

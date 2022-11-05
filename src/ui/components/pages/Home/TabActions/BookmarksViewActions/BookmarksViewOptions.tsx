@@ -7,6 +7,7 @@ import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
 import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
 import BookmarksViewMoreActions from './Menus/BookmarksViewMoreActions';
+import ViewChannelOptions from '../CommonMenus/ViewChannelOptions';
 
 const filterOptions: ViewFilterOption[] = [
   {
@@ -67,6 +68,7 @@ function BookmarksViewOptions(props: BookmarksViewOptionsProps) {
           parentMenuOpen={open}
           options={filterOptions}
         />
+        <ViewChannelOptions view={HomeView.Bookmarks} parentMenuOpen={open} />
         <ViewVideosSeniority view={HomeView.Bookmarks} parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />
         <BookmarksViewMoreActions

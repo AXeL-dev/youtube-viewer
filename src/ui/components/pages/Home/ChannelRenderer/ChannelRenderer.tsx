@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { Channel, HomeView, Video } from 'types';
 import ChannelTitle from './ChannelTitle';
 import ChannelVideos from './ChannelVideos';
+import { ChannelOptionsProvider, useChannelOptions } from 'providers';
 
 export interface ChannelRendererProps {
   view: HomeView;
@@ -18,12 +19,21 @@ export interface ChannelRendererProps {
 }
 
 function ChannelRenderer(props: ChannelRendererProps) {
-  const { channel, videos, count, total, isLoading, maxResults, ...rest } =
-    props;
+  const {
+    view,
+    channel,
+    videos,
+    count,
+    total,
+    isLoading,
+    maxResults,
+    ...rest
+  } = props;
   const videosCount = count || videos.length;
   const hasVideos = isLoading || videos.length > 0;
   const hasMore =
     videosCount > 0 && videosCount >= maxResults && total > maxResults;
+  const { collapsed } = useChannelOptions();
 
   return hasVideos ? (
     <Box
@@ -33,16 +43,29 @@ function ChannelRenderer(props: ChannelRendererProps) {
         pb: 3,
       }}
     >
-      <ChannelTitle channel={channel} />
-      <ChannelVideos
-        videos={videos}
-        isLoading={isLoading}
-        maxResults={maxResults}
-        hasMore={hasMore}
-        {...rest}
-      />
+      <ChannelTitle view={view} channel={channel} />
+      {!collapsed ? (
+        <ChannelVideos
+          view={view}
+          videos={videos}
+          isLoading={isLoading}
+          maxResults={maxResults}
+          hasMore={hasMore}
+          {...rest}
+        />
+      ) : null}
     </Box>
   ) : null;
+}
+
+function ChannelRendererWrapper(props: ChannelRendererProps) {
+  const { view } = props;
+
+  return (
+    <ChannelOptionsProvider view={view}>
+      <ChannelRenderer {...props} />
+    </ChannelOptionsProvider>
+  );
 }
 
 function propsAreEqual(
@@ -61,4 +84,4 @@ function propsAreEqual(
   );
 }
 
-export default React.memo(ChannelRenderer, propsAreEqual);
+export default React.memo(ChannelRendererWrapper, propsAreEqual);

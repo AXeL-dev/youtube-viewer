@@ -47,11 +47,7 @@ export default function Tab(props: TabProps) {
           {selected && badgeContent ? (
             <Badge
               badgeContent={badgeContent}
-              title={
-                ['number', 'string'].includes(typeof badgeContent)
-                  ? `${badgeContent}`
-                  : ''
-              }
+              title={`${badgeContent || ''}`}
             />
           ) : null}
         </Box>

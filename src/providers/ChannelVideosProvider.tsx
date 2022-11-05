@@ -31,6 +31,7 @@ type ChannelVideosContextType = {
     view: HomeView,
     channelId: string,
   ) => Video | undefined;
+  getChannelVideosCount: (view: HomeView, channelId: string) => number;
 };
 
 const initialVideosCount = views.reduce(
@@ -97,7 +98,13 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   };
 
   const getLatestChannelVideo = (view: HomeView, channelId: string) => {
-    return channelsMap.current[view].get(channelId)?.items[0];
+    const channelData = channelsMap.current[view].get(channelId);
+    return channelData?.items[0];
+  };
+
+  const getChannelVideosCount = (view: HomeView, channelId: string) => {
+    const channelData = channelsMap.current[view].get(channelId);
+    return channelData?.total || 0;
   };
 
   const value = useMemo(
@@ -106,6 +113,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
       setChannelData,
       clearChannelsData,
       getLatestChannelVideo,
+      getChannelVideosCount,
     }),
     [videosCount],
   );
@@ -122,6 +130,7 @@ type ChannelVideosHookType = {
   setChannelData: (data: ChannelData) => void;
   clearChannelsData: () => void;
   getLatestChannelVideo: (channelId: string) => Video | undefined;
+  getChannelVideosCount: (channelId: string) => number;
 };
 
 export function useChannelVideos(view: HomeView): ChannelVideosHookType {
@@ -138,6 +147,7 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
     setChannelData,
     clearChannelsData,
     getLatestChannelVideo,
+    getChannelVideosCount,
   } = context;
 
   return {
@@ -146,5 +156,7 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
     clearChannelsData: () => clearChannelsData(view),
     getLatestChannelVideo: (channelId) =>
       getLatestChannelVideo(view, channelId),
+    getChannelVideosCount: (channelId) =>
+      getChannelVideosCount(view, channelId),
   };
 }

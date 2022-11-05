@@ -7,6 +7,7 @@ import ViewSorting from '../CommonMenus/ViewSorting';
 import ViewFilters, { ViewFilterOption } from '../CommonMenus/ViewFilters';
 import ViewVideosSeniority from '../CommonMenus/ViewVideosSeniority';
 import AllViewMoreActions from '../AllViewActions/Menus/AllViewMoreActions';
+import ViewChannelOptions from '../CommonMenus/ViewChannelOptions';
 
 const filterOptions: ViewFilterOption[] = [
   {
@@ -72,6 +73,7 @@ function AllViewOptions(props: AllViewOptionsProps) {
           parentMenuOpen={open}
           options={filterOptions}
         />
+        <ViewChannelOptions view={HomeView.All} parentMenuOpen={open} />
         <ViewVideosSeniority view={HomeView.All} parentMenuOpen={open} />
         <Divider sx={{ my: 0.5 }} />
         <AllViewMoreActions parentMenuOpen={open} />

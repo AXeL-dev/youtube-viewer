@@ -13,22 +13,30 @@ export interface Settings {
     [HomeView.All]: {
       sorting: ViewSorting;
       filters: AllViewFilters;
+      channels: ChannelOptions;
       videosSeniority: VideosSeniority;
     };
     [HomeView.WatchLater]: {
       sorting: ViewSorting;
       filters: WatchLaterViewFilters;
+      channels: ChannelOptions;
       videosSeniority: VideosSeniority;
     };
     [HomeView.Bookmarks]: {
       sorting: ViewSorting;
       filters: BookmarksViewFilters;
+      channels: ChannelOptions;
       videosSeniority: VideosSeniority;
     };
   };
   homeDisplayOptions: HomeDisplayOptions;
   enableNotifications: boolean;
   queryTimeout: number;
+}
+
+export interface ChannelOptions {
+  collapseByDefault: boolean;
+  displayVideosCount: boolean;
 }
 
 export enum ExtraVideoAction {
