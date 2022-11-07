@@ -185,6 +185,6 @@ export const selectSeenWatchLaterVideosCount = createSelector(
 
 export const selectVideoFlag = (video: Video, flag: VideoFlag) =>
   createSelector(selectVideos, (videos) => {
-    const { flags } = videos.find(({ id }) => id === video.id) || {};
-    return flags?.[flag] || false;
+    const { flags = {} } = videos.find(({ id }) => id === video.id) || {};
+    return flags[flag] || false;
   });
