@@ -34,6 +34,7 @@ export const defaultSettings = {
       channels: {
         collapseByDefault: false,
         displayVideosCount: false,
+        openChannelOnNameClick: false,
       },
       videosSeniority: VideosSeniority.Any,
     },
@@ -50,6 +51,7 @@ export const defaultSettings = {
       channels: {
         collapseByDefault: false,
         displayVideosCount: false,
+        openChannelOnNameClick: false,
       },
       videosSeniority: VideosSeniority.Any,
     },
@@ -65,6 +67,7 @@ export const defaultSettings = {
       channels: {
         collapseByDefault: false,
         displayVideosCount: false,
+        openChannelOnNameClick: false,
       },
       videosSeniority: VideosSeniority.Any,
     },

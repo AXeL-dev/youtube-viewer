@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { Channel, HomeView } from 'types';
 import ChannelLink from './ChannelLink';
 import ChannelAvatar from './ChannelAvatar';
+import ChannelName from './ChannelName';
 import ChannelExpandToggle from './ChannelExpandToggle';
 
 interface ChannelTitleProps {
@@ -25,11 +26,7 @@ function ChannelTitle(props: ChannelTitleProps) {
       <ChannelLink channel={channel}>
         <ChannelAvatar view={view} channel={channel} />
       </ChannelLink>
-      <ChannelLink channel={channel}>
-        <Typography variant="subtitle1" color="text.primary">
-          {channel.title}
-        </Typography>
-      </ChannelLink>
+      <ChannelName view={view} channel={channel} />
       <ChannelExpandToggle />
     </Box>
   );

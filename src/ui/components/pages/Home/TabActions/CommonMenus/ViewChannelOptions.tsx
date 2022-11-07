@@ -25,6 +25,10 @@ const options: ViewChannelOption[] = [
     label: 'Display videos count per channel',
     value: 'displayVideosCount',
   },
+  {
+    label: 'Open channel on name click',
+    value: 'openChannelOnNameClick',
+  },
 ];
 
 interface ViewChannelOptionsProps extends Omit<NestedMenuItemProps, 'label'> {

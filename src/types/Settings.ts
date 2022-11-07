@@ -37,6 +37,7 @@ export interface Settings {
 export interface ChannelOptions {
   collapseByDefault: boolean;
   displayVideosCount: boolean;
+  openChannelOnNameClick: boolean;
 }
 
 export enum ExtraVideoAction {
