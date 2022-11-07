@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { debounce } from 'helpers/utils';
+import { useDidMountEffect } from 'hooks';
 import {
   createContext,
   FC,
@@ -10,7 +11,9 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useAppSelector } from 'store';
 import { views } from 'store/reducers/settings';
+import { selectHiddenChannels } from 'store/selectors/channels';
 import { GetChannelVideosResponse } from 'store/services/youtube';
 import { Channel, Video, HomeView } from 'types';
 
@@ -61,6 +64,9 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
     initialChannelsMap,
   );
+  const hiddenChannels = useAppSelector(selectHiddenChannels).map(
+    ({ id }) => id,
+  );
 
   const updateCount = useCallback(
     debounce((view: HomeView, count: ChannelVideosCount) => {
@@ -72,18 +78,31 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     [],
   );
 
+  const getCount = (view: HomeView) => {
+    const channelsData = Array.from(channelsMap.current[view].values());
+    const count = channelsData
+      .filter(({ channel }) => !hiddenChannels.includes(channel.id))
+      .reduce(
+        (acc, data) => ({
+          current: acc.current + (data.items?.length || 0),
+          total: acc.total + (data.total || 0),
+        }),
+        { current: 0, total: 0 },
+      );
+    return count;
+  };
+
+  useDidMountEffect(() => {
+    // update videos count for the all view (since it is the only view where we hide channels)
+    const count = getCount(HomeView.All);
+    updateCount(HomeView.All, count);
+  }, [hiddenChannels]);
+
   const setChannelData = (view: HomeView, data: ChannelData) => {
     // save channel data per view
     channelsMap.current[view].set(data.channel.id, data);
     // update videos count per view
-    const channelsData = Array.from(channelsMap.current[view].values());
-    const count = channelsData.reduce(
-      (acc, data) => ({
-        current: acc.current + (data.items?.length || 0),
-        total: acc.total + (data.total || 0),
-      }),
-      { current: 0, total: 0 },
-    );
+    const count = getCount(view);
     updateCount(view, count);
   };
 
