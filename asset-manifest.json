@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/youtube-viewer/static/css/main.51a7d2a2.css",
-    "main.js": "/youtube-viewer/static/js/main.cbec71fc.js",
+    "main.js": "/youtube-viewer/static/js/main.da19b3dc.js",
     "static/js/787.4051355a.chunk.js": "/youtube-viewer/static/js/787.4051355a.chunk.js",
     "static/media/roboto-all-500-normal.woff": "/youtube-viewer/static/media/roboto-all-500-normal.52cb737b682eb9661ee1.woff",
     "static/media/roboto-all-700-normal.woff": "/youtube-viewer/static/media/roboto-all-700-normal.ef6d1d09b20b877fee4e.woff",
@@ -38,11 +38,11 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/youtube-viewer/static/media/roboto-greek-ext-700-normal.9674bc0ae12c2551d9d1.woff2",
     "index.html": "/youtube-viewer/index.html",
     "main.51a7d2a2.css.map": "/youtube-viewer/static/css/main.51a7d2a2.css.map",
-    "main.cbec71fc.js.map": "/youtube-viewer/static/js/main.cbec71fc.js.map",
+    "main.da19b3dc.js.map": "/youtube-viewer/static/js/main.da19b3dc.js.map",
     "787.4051355a.chunk.js.map": "/youtube-viewer/static/js/787.4051355a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.51a7d2a2.css",
-    "static/js/main.cbec71fc.js"
+    "static/js/main.da19b3dc.js"
   ]
 }
