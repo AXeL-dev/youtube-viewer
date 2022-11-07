@@ -27,7 +27,7 @@ export interface ChannelVideosCount {
 }
 
 type ChannelVideosContextType = {
-  videosCount: { [key: string]: ChannelVideosCount };
+  getAllVideosCount: (view: HomeView) => number;
   getChannelData: (view: HomeView, channel: Channel) => ChannelData | undefined;
   setChannelData: (view: HomeView, data: ChannelData) => void;
   clearChannelsData: (view: HomeView) => void;
@@ -59,8 +59,9 @@ const ChannelVideosContext = createContext<
 >(undefined);
 
 export const ChannelVideosProvider: FC = memo(({ children }) => {
-  const [videosCount, setVideosCount] =
-    useState<ChannelVideosContextType['videosCount']>(initialVideosCount);
+  const [videosCount, setVideosCount] = useState<{
+    [key: string]: ChannelVideosCount;
+  }>(initialVideosCount);
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
     initialChannelsMap,
   );
@@ -76,24 +77,28 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     [],
   );
 
-  const getCount = (view: HomeView) => {
+  const getCount = (
+    view: HomeView,
+    filterCallback: (data: ChannelData) => boolean = () => true,
+  ) => {
     const channelsData = Array.from(channelsMap.current[view].values());
-    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
-    const count = channelsData
-      .filter(({ channel }) => !hiddenChannelsIds.includes(channel.id))
-      .reduce(
-        (acc, data) => ({
-          current: acc.current + (data.items?.length || 0),
-          total: acc.total + (data.total || 0),
-        }),
-        { current: 0, total: 0 },
-      );
+    const count = channelsData.filter(filterCallback).reduce(
+      (acc, data) => ({
+        current: acc.current + (data.items?.length || 0),
+        total: acc.total + (data.total || 0),
+      }),
+      { current: 0, total: 0 },
+    );
     return count;
   };
 
   useDidMountEffect(() => {
     // update videos count for the all view (since it is the only view where we hide channels)
-    const count = getCount(HomeView.All);
+    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
+    const count = getCount(
+      HomeView.All,
+      ({ channel }) => !hiddenChannelsIds.includes(channel.id),
+    );
     updateCount(HomeView.All, count);
   }, [hiddenChannels]);
 
@@ -135,9 +140,19 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     }
   };
 
+  const getAllVideosCount = (view: HomeView) => {
+    const count = videosCount[view];
+    switch (view) {
+      case HomeView.All:
+        return count.current;
+      default:
+        return count.total;
+    }
+  };
+
   const value = useMemo(
     () => ({
-      videosCount,
+      getAllVideosCount,
       getChannelData,
       setChannelData,
       clearChannelsData,
@@ -155,7 +170,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
 });
 
 type ChannelVideosHookType = {
-  videosCount: ChannelVideosCount;
+  getAllVideosCount: () => number;
   getChannelData: (channel: Channel) => ChannelData | undefined;
   setChannelData: (data: ChannelData) => void;
   clearChannelsData: () => void;
@@ -173,7 +188,7 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
   }
 
   const {
-    videosCount,
+    getAllVideosCount,
     getChannelData,
     setChannelData,
     clearChannelsData,
@@ -182,7 +197,7 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
   } = context;
 
   return {
-    videosCount: videosCount[view],
+    getAllVideosCount: () => getAllVideosCount(view),
     getChannelData: (channel) => getChannelData(view, channel),
     setChannelData: (data) => setChannelData(view, data),
     clearChannelsData: () => clearChannelsData(view),

@@ -25,7 +25,7 @@ function StaticRenderer(props: StaticRendererProps) {
   const { data, error, isLoading, isFetching } = useGetVideosByIdQuery(
     {
       ids,
-      maxResults: Math.max(maxResults, itemsPerRow),
+      maxResults,
     },
     {
       skip: itemsPerRow === 0,
@@ -48,7 +48,11 @@ function StaticRenderer(props: StaticRendererProps) {
 
   useEffect(() => {
     if (!isFetching && data) {
-      setChannelData({ channel, items: videos, total });
+      setChannelData({
+        channel,
+        items: videos,
+        total: total - (maxResults - videos.length),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching, data]);

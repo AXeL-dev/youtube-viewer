@@ -3,12 +3,7 @@ import { Box } from '@mui/material';
 import MuiTab, { TabProps as MuiTabProps } from '@mui/material/Tab';
 import Badge from './Badge';
 import { HomeView } from 'types';
-import { useAppSelector } from 'store';
 import { useChannelVideos } from 'providers';
-import {
-  selectBookmarkedVideosCount,
-  selectWatchLaterVideosCount,
-} from 'store/selectors/videos';
 
 interface TabProps extends MuiTabProps {
   value: HomeView;
@@ -17,21 +12,8 @@ interface TabProps extends MuiTabProps {
 
 export default function Tab(props: TabProps) {
   const { label, value: view, selected, ...rest } = props;
-  const { videosCount } = useChannelVideos(view);
-  const watchLaterVideosCount = useAppSelector(selectWatchLaterVideosCount);
-  const bookmarkedVideosCount = useAppSelector(selectBookmarkedVideosCount);
-  const badgeContent: string | number = (() => {
-    switch (view) {
-      case HomeView.All:
-        return videosCount.current;
-      case HomeView.WatchLater:
-        return watchLaterVideosCount;
-      case HomeView.Bookmarks:
-        return bookmarkedVideosCount;
-      default:
-        return '';
-    }
-  })();
+  const { getAllVideosCount } = useChannelVideos(view);
+  const badgeContent = getAllVideosCount();
 
   return (
     <MuiTab
