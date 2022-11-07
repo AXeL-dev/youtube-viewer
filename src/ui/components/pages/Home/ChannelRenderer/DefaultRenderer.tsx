@@ -8,7 +8,7 @@ import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
 import { useChannelVideos } from 'providers';
-import { filterVideoByFlags } from 'store/selectors/videos';
+import { filterVideoByFlags } from 'store/services/youtube';
 
 export interface DefaultRendererProps {
   view: HomeView;
