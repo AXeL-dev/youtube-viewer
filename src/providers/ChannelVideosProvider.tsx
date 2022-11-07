@@ -64,9 +64,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
     initialChannelsMap,
   );
-  const hiddenChannels = useAppSelector(selectHiddenChannels).map(
-    ({ id }) => id,
-  );
+  const hiddenChannels = useAppSelector(selectHiddenChannels);
 
   const updateCount = useCallback(
     debounce((view: HomeView, count: ChannelVideosCount) => {
@@ -80,8 +78,9 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
 
   const getCount = (view: HomeView) => {
     const channelsData = Array.from(channelsMap.current[view].values());
+    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
     const count = channelsData
-      .filter(({ channel }) => !hiddenChannels.includes(channel.id))
+      .filter(({ channel }) => !hiddenChannelsIds.includes(channel.id))
       .reduce(
         (acc, data) => ({
           current: acc.current + (data.items?.length || 0),
