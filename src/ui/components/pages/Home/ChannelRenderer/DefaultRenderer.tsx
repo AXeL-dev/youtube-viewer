@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Channel, HomeView, Video } from 'types';
+import { Channel, HomeView, Video, VideoCache, ViewFilters } from 'types';
 import {
   PersistVideosOptions,
   useGetChannelVideosQuery,
@@ -8,19 +8,18 @@ import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
 import { useChannelVideos } from 'providers';
+import { filterVideoByFlags } from 'store/selectors/videos';
 
 export interface DefaultRendererProps {
   view: HomeView;
   channel: Channel;
   publishedAfter?: string;
   persistVideosOptions?: PersistVideosOptions;
-  filter?: (video: Video) => boolean;
+  cachedVideos?: { [key: string]: VideoCache };
+  filters?: ViewFilters;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
-
-// should be instanciated outside the component to avoid multi-rendering
-const defaultFilter = () => true;
 
 function DefaultRenderer(props: DefaultRendererProps) {
   const {
@@ -28,30 +27,50 @@ function DefaultRenderer(props: DefaultRendererProps) {
     channel,
     publishedAfter,
     persistVideosOptions,
-    filter = defaultFilter,
+    cachedVideos,
+    filters,
     onError,
     ...rest
   } = props;
+  // const lastVideoIdRef = useRef<string | undefined>(undefined);
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
   const { setChannelData } = useChannelVideos(view);
   const maxResults = itemsPerRow * page;
-  const { data, error, isLoading, isFetching } = useGetChannelVideosQuery(
+  const {
+    data,
+    // lastVideoId,
+    error,
+    isLoading,
+    isFetching,
+  } = useGetChannelVideosQuery(
     {
       channel,
       publishedAfter,
       maxResults,
       persistVideosOptions,
+      // lastVideoId: lastVideoIdRef.current,
     },
     {
       skip: itemsPerRow === 0,
+      selectFromResult: (result) => ({
+        ...result,
+        // lastVideoId: result.data?.items[result.data.items.length - 1]?.id,
+      }),
     },
   );
-  const videos = (data?.items || []).filter(filter);
+  let videos = data?.items || [];
+  if (filters && cachedVideos) {
+    videos = videos.filter(({ id }) =>
+      cachedVideos[id] ? filterVideoByFlags(cachedVideos[id], filters) : true,
+    );
+  }
+
   const count = data?.count || 0;
   const total = data?.total || 0;
 
   const handleLoadMore = () => {
+    // lastVideoIdRef.current = lastVideoId;
     setPage(page + 1);
   };
 
@@ -66,7 +85,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       setChannelData({ channel, items: videos, total });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, data, filter]);
+  }, [isFetching, data, cachedVideos, filters]);
 
   return (
     <ChannelRenderer

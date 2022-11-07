@@ -19,26 +19,27 @@ export interface ChannelData extends Omit<GetChannelVideosResponse, 'count'> {
 }
 
 export interface ChannelVideosCount {
-  displayed: number;
+  current: number;
   total: number;
 }
 
 type ChannelVideosContextType = {
   videosCount: { [key: string]: ChannelVideosCount };
+  getChannelData: (view: HomeView, channel: Channel) => ChannelData | undefined;
   setChannelData: (view: HomeView, data: ChannelData) => void;
   clearChannelsData: (view: HomeView) => void;
   getLatestChannelVideo: (
     view: HomeView,
-    channelId: string,
+    channel: Channel,
   ) => Video | undefined;
-  getChannelVideosCount: (view: HomeView, channelId: string) => number;
+  getChannelVideosCount: (view: HomeView, channel: Channel) => number;
 };
 
 const initialVideosCount = views.reduce(
   (acc, view) => ({
     ...acc,
     [view]: {
-      displayed: 0,
+      current: 0,
       total: 0,
     },
   }),
@@ -77,11 +78,11 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     // update videos count per view
     const channelsData = Array.from(channelsMap.current[view].values());
     const count = channelsData.reduce(
-      (acc, cur) => ({
-        displayed: acc.displayed + (cur.items?.length || 0),
-        total: acc.total + (cur.total || 0),
+      (acc, data) => ({
+        current: acc.current + (data.items?.length || 0),
+        total: acc.total + (data.total || 0),
       }),
-      { displayed: 0, total: 0 },
+      { current: 0, total: 0 },
     );
     updateCount(view, count);
   };
@@ -91,19 +92,23 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     setVideosCount((state) => ({
       ...state,
       [view]: {
-        displayed: 0,
+        current: 0,
         total: 0,
       },
     }));
   };
 
-  const getLatestChannelVideo = (view: HomeView, channelId: string) => {
-    const channelData = channelsMap.current[view].get(channelId);
+  const getChannelData = (view: HomeView, channel: Channel) => {
+    return channelsMap.current[view].get(channel.id);
+  };
+
+  const getLatestChannelVideo = (view: HomeView, channel: Channel) => {
+    const channelData = getChannelData(view, channel);
     return channelData?.items[0];
   };
 
-  const getChannelVideosCount = (view: HomeView, channelId: string) => {
-    const channelData = channelsMap.current[view].get(channelId);
+  const getChannelVideosCount = (view: HomeView, channel: Channel) => {
+    const channelData = getChannelData(view, channel);
     switch (view) {
       case HomeView.All:
         return channelData?.items.length || 0;
@@ -115,6 +120,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   const value = useMemo(
     () => ({
       videosCount,
+      getChannelData,
       setChannelData,
       clearChannelsData,
       getLatestChannelVideo,
@@ -132,10 +138,11 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
 
 type ChannelVideosHookType = {
   videosCount: ChannelVideosCount;
+  getChannelData: (channel: Channel) => ChannelData | undefined;
   setChannelData: (data: ChannelData) => void;
   clearChannelsData: () => void;
-  getLatestChannelVideo: (channelId: string) => Video | undefined;
-  getChannelVideosCount: (channelId: string) => number;
+  getLatestChannelVideo: (channel: Channel) => Video | undefined;
+  getChannelVideosCount: (channel: Channel) => number;
 };
 
 export function useChannelVideos(view: HomeView): ChannelVideosHookType {
@@ -149,6 +156,7 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
 
   const {
     videosCount,
+    getChannelData,
     setChannelData,
     clearChannelsData,
     getLatestChannelVideo,
@@ -157,11 +165,10 @@ export function useChannelVideos(view: HomeView): ChannelVideosHookType {
 
   return {
     videosCount: videosCount[view],
+    getChannelData: (channel) => getChannelData(view, channel),
     setChannelData: (data) => setChannelData(view, data),
     clearChannelsData: () => clearChannelsData(view),
-    getLatestChannelVideo: (channelId) =>
-      getLatestChannelVideo(view, channelId),
-    getChannelVideosCount: (channelId) =>
-      getChannelVideosCount(view, channelId),
+    getLatestChannelVideo: (channel) => getLatestChannelVideo(view, channel),
+    getChannelVideosCount: (channel) => getChannelVideosCount(view, channel),
   };
 }

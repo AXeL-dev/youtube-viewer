@@ -23,7 +23,7 @@ export default function Tab(props: TabProps) {
   const badgeContent: string | number = (() => {
     switch (view) {
       case HomeView.All:
-        return videosCount.displayed;
+        return videosCount.current;
       case HomeView.WatchLater:
         return watchLaterVideosCount;
       case HomeView.Bookmarks:

@@ -25,26 +25,18 @@ export const selectChannelVideos = (channel: Channel) =>
     videos.filter(({ channelId }) => channel.id === channelId),
   );
 
-export const selectClassifiedChannelVideos = (
+export const selectChannelVideosById = (
   channel: Channel,
-  view: HomeView,
+  filterCallback: (video: VideoCache) => boolean = () => true,
 ) =>
-  createSelector(
-    selectChannelVideos(channel),
-    selectViewFilters(view),
-    (videos, filters) =>
-      videos.reduce(
-        (acc, video) => {
-          const key = filterVideoByFlags(video, filters)
-            ? 'included'
-            : 'excluded';
-          return {
-            ...acc,
-            [key]: [...acc[key], video.id],
-          };
-        },
-        { excluded: [] as string[], included: [] as string[] },
-      ),
+  createSelector(selectChannelVideos(channel), (videos) =>
+    videos.filter(filterCallback).reduce(
+      (acc, video) => ({
+        ...acc,
+        [video.id]: video,
+      }),
+      {},
+    ),
   );
 
 export const selectUnflaggedVideos = (channel?: Channel) =>
@@ -86,7 +78,7 @@ const filter2Flag = (key: ViewFilter): VideoFlag => {
   }
 };
 
-const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
+export const filterVideoByFlags = (video: VideoCache, filters: ViewFilters) => {
   const filterKeys = Object.keys(filters) as ViewFilter[];
   const hasFlag = (key: ViewFilter) => {
     const flag = filter2Flag(key);

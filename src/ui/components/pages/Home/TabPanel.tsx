@@ -34,7 +34,7 @@ function TabPanel(props: TabPanelProps) {
   };
 
   const getChannelTimestamp = (channel: Channel) => {
-    return getLatestChannelVideo(channel.id)?.publishedAt || 0;
+    return getLatestChannelVideo(channel)?.publishedAt || 0;
   };
 
   // NOTE: cloning the channels array is required to trigger a re-render

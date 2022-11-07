@@ -18,10 +18,14 @@ const defaultBaseQuery = fetchBaseQuery({
   },
 });
 
+export interface BaseQueryExtraOptions {
+  timeout?: number;
+}
+
 const baseQuery = (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: { timeout?: number } = {},
+  extraOptions: BaseQueryExtraOptions = {},
 ) =>
   Promise.race([
     defaultBaseQuery(args, api, extraOptions),

@@ -17,7 +17,7 @@ function ChannelAvatar(props: ChannelAvatarProps) {
   );
   const { getChannelVideosCount } = useChannelVideos(view);
   const videosCount = displayVideosCount
-    ? getChannelVideosCount(channel.id)
+    ? getChannelVideosCount(channel)
     : null;
 
   return (

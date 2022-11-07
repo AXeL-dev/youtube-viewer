@@ -31,7 +31,10 @@ function StaticRenderer(props: StaticRendererProps) {
       skip: itemsPerRow === 0,
     },
   );
-  const videos = (data?.items || []).filter((video) => ids.includes(video.id)); // filter deleted videos (before refetch)
+  const videos = (data?.items || []).filter((video) =>
+    // filter deleted videos (since next refetch may take time)
+    ids.includes(video.id),
+  );
 
   const handleLoadMore = () => {
     setPage(page + 1);

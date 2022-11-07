@@ -31,8 +31,8 @@ function ChannelRenderer(props: ChannelRendererProps) {
   } = props;
   const videosCount = count || videos.length;
   const hasVideos = isLoading || videos.length > 0;
-  const hasMore =
-    videosCount > 0 && videosCount >= maxResults && total > maxResults;
+  // Note: max 50 videos per channel, check the getChannelVideos endpoint for more details
+  const hasMore = videosCount > 0 && videosCount < 50 && total > maxResults;
   const { collapsed } = useChannelOptions();
 
   return hasVideos ? (

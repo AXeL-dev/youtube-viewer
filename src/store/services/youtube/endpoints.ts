@@ -1,9 +1,19 @@
-import { youtubeApi } from './api';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
+import { BaseQueryExtraOptions, youtubeApi } from './api';
+import {
+  BaseQueryApi,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from '@reduxjs/toolkit/dist/query';
+import {
+  BaseQueryFn,
+  QueryReturnValue,
+} from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+import { QueryLifecycleApi as BaseQueryLifecycleApi } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
 import { niceDuration, shortenLargeNumber, TimeAgo } from 'helpers/utils';
 import { Channel, ChannelActivities, Response, Video, VideoFlags } from 'types';
-import { saveVideos } from 'store/reducers/videos';
 import { parseVideoField, evaluateField, isFetchTimeoutError } from './utils';
+import { saveVideos } from 'store/reducers/videos';
 
 type FindChannelByNameArgs = {
   name: string;
@@ -50,6 +60,7 @@ type GetVideosByIdResponse = {
 
 type GetChannelVideosArgs = GetChannelActivitiesArgs & {
   persistVideosOptions?: PersistVideosOptions;
+  lastVideoId?: string;
 };
 
 export interface PersistVideosOptions {
@@ -59,6 +70,35 @@ export interface PersistVideosOptions {
 
 export type GetChannelVideosResponse = GetVideosByIdResponse & {
   count: number;
+};
+
+type FetchWithBQ = (
+  arg: string | FetchArgs,
+) => Promise<
+  QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>
+>;
+
+type QueryLifecycleApi<QueryArg, ResultType> = BaseQueryLifecycleApi<
+  QueryArg,
+  BaseQueryFn<QueryArg, unknown, unknown, BaseQueryExtraOptions>,
+  ResultType,
+  'youtubeApi'
+>;
+
+const recalculateTotalAndCount = (
+  items: any[],
+  oldCount: number,
+  oldTotal: number,
+  maxResults: number | undefined,
+) => {
+  let total = oldTotal;
+  const count = items.length;
+  if (count < oldCount && maxResults && count < maxResults) {
+    total = count;
+  } else {
+    total = oldTotal - (oldCount - count);
+  }
+  return [total, count];
 };
 
 const queries = {
@@ -174,6 +214,186 @@ const queries = {
   },
 };
 
+const extendedQueries = {
+  // Videos by id query
+  getVideosById: {
+    queryFn: async (
+      _arg: GetVideosByIdArgs,
+      _api: BaseQueryApi,
+      _extraOptions: BaseQueryExtraOptions,
+      fetchWithBQ: FetchWithBQ,
+    ) => {
+      const { ids, maxResults } = _arg;
+      if (ids.length === 0) {
+        return {
+          data: {
+            items: [],
+            total: 0,
+          },
+        };
+      }
+      const result = await fetchWithBQ(
+        queries.getVideosById.query({
+          ids,
+          maxResults,
+        }),
+      );
+      if (!result.data) {
+        if (isFetchTimeoutError(result.error)) {
+          console.error(result.error);
+          return {
+            data: {
+              items: [],
+              total: 0,
+            },
+          };
+        }
+        return { error: result.error as FetchBaseQueryError };
+      }
+      return {
+        data: queries.getVideosById.transformResponse(result.data as Response),
+      };
+    },
+  },
+  // Channel videos query
+  getChannelVideos: {
+    queryFn: async (
+      _arg: GetChannelVideosArgs,
+      _api: BaseQueryApi,
+      _extraOptions: BaseQueryExtraOptions,
+      fetchWithBQ: FetchWithBQ,
+    ) => {
+      const { channel, publishedAfter, maxResults, lastVideoId } = _arg;
+      // Fetch channel activities
+      const activities = await fetchWithBQ(
+        queries.getChannelActivities.query({
+          channel,
+          publishedAfter,
+          maxResults,
+        }),
+      );
+      if (activities.error) {
+        if (isFetchTimeoutError(activities.error)) {
+          console.error(activities.error);
+          return {
+            data: {
+              items: [],
+              count: 0,
+              total: 0,
+            },
+          };
+        }
+        return { error: activities.error as FetchBaseQueryError };
+      }
+      const activitiesData = queries.getChannelActivities.transformResponse(
+        activities.data as Response,
+      );
+      let { count, total } = activitiesData;
+      // Fix: wrong total count (ex: maxResults = 6, total = 2, count = 1)
+      if (maxResults && maxResults >= total && count < total) {
+        total = count;
+      }
+      // Fetch channel videos
+      let ids = activitiesData.items.map(({ videoId }) => videoId);
+      let startIndex = 0;
+      if (lastVideoId) {
+        const index = ids.findIndex((id) => id === lastVideoId);
+        if (index >= 0) {
+          startIndex = index + 1; // start from the next item
+        }
+      }
+      // Restrict max ids number to 50
+      // @see https://developers.google.com/youtube/v3/docs/videos/list#request
+      let endIndex = startIndex + 50;
+      if (maxResults) {
+        endIndex = Math.min(endIndex, startIndex + maxResults);
+      }
+      ids = ids.slice(startIndex, endIndex);
+      if (ids.length === 0) {
+        return {
+          data: {
+            items: [],
+            count: 0,
+            total: 0,
+          },
+        };
+      }
+      const result = await fetchWithBQ(
+        queries.getVideosById.query({
+          ids,
+          maxResults,
+        }),
+      );
+      if (!result.data) {
+        return { error: result.error as FetchBaseQueryError };
+      }
+      const videosData = queries.getVideosById.transformResponse(
+        result.data as Response,
+      );
+      count = videosData.items.length;
+      // Fix: force filter by publish date (since we may receive wrong activities data from the youtube API sometimes)
+      if (publishedAfter) {
+        videosData.items = videosData.items.filter(
+          (video) => video.publishedAt >= new Date(publishedAfter).getTime(),
+        );
+        // Recalculate total & count
+        [total, count] = recalculateTotalAndCount(
+          videosData.items,
+          total,
+          count,
+          maxResults,
+        );
+      }
+      // Apply custom channel filters
+      if (channel.filters && channel.filters.length > 0) {
+        videosData.items = videosData.items.filter((video) =>
+          channel.filters!.some((filter) => {
+            const videoField = parseVideoField(video, filter.field);
+            return evaluateField(videoField, filter.operator, filter.value);
+          }),
+        );
+        // Recalculate total & count
+        [total, count] = recalculateTotalAndCount(
+          videosData.items,
+          total,
+          count,
+          maxResults,
+        );
+      }
+      return {
+        data: {
+          ...videosData,
+          count,
+          total,
+        },
+      };
+    },
+    onQueryStarted: async (
+      arg: GetChannelVideosArgs,
+      {
+        dispatch,
+        queryFulfilled,
+      }: QueryLifecycleApi<GetChannelVideosArgs, GetChannelVideosResponse>,
+    ) => {
+      const { persistVideosOptions } = arg;
+      try {
+        if (persistVideosOptions?.enable) {
+          const { flags = {} } = persistVideosOptions;
+          const { data } = await queryFulfilled;
+          dispatch(
+            saveVideos({
+              videos: data.items,
+              flags,
+            }),
+          );
+        }
+      } catch (err) {
+        // proceed
+      }
+    },
+  },
+};
+
 export const extendedApi = youtubeApi.injectEndpoints({
   endpoints: (builder) => ({
     findChannelByName: builder.query<
@@ -188,153 +408,13 @@ export const extendedApi = youtubeApi.injectEndpoints({
       GetChannelActivitiesResponse,
       GetChannelActivitiesArgs
     >(queries.getChannelActivities),
-    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>({
-      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { ids, maxResults } = _arg;
-        if (ids.length === 0) {
-          return {
-            data: {
-              items: [],
-              total: 0,
-            },
-          };
-        }
-        const result = await fetchWithBQ(
-          queries.getVideosById.query({
-            ids,
-            maxResults,
-          }),
-        );
-        if (!result.data) {
-          if (isFetchTimeoutError(result.error)) {
-            console.error(result.error);
-            return {
-              data: {
-                items: [],
-                total: 0,
-              },
-            };
-          }
-          return { error: result.error as FetchBaseQueryError };
-        }
-        return {
-          data: queries.getVideosById.transformResponse(
-            result.data as Response,
-          ),
-        };
-      },
-    }),
+    getVideosById: builder.query<GetVideosByIdResponse, GetVideosByIdArgs>(
+      extendedQueries.getVideosById,
+    ),
     getChannelVideos: builder.query<
       GetChannelVideosResponse,
       GetChannelVideosArgs
-    >({
-      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { channel, publishedAfter, maxResults } = _arg;
-        // Fetch channel activities
-        const activities = await fetchWithBQ(
-          queries.getChannelActivities.query({
-            channel,
-            publishedAfter,
-            maxResults,
-          }),
-        );
-        if (activities.error) {
-          if (isFetchTimeoutError(activities.error)) {
-            console.error(activities.error);
-            return {
-              data: {
-                items: [],
-                count: 0,
-                total: 0,
-              },
-            };
-          }
-          return { error: activities.error as FetchBaseQueryError };
-        }
-        const activitiesData = queries.getChannelActivities.transformResponse(
-          activities.data as Response,
-        );
-        let count = activitiesData.items.length;
-        let total = activitiesData.total;
-        // Fix: wrong total count (ex: maxResults = 6, total = 2, count = 1)
-        if (maxResults && maxResults >= total && count < total) {
-          total = count;
-        }
-        // Fetch channel videos
-        const ids = activitiesData.items.map(({ videoId }) => videoId);
-        if (ids.length === 0) {
-          return {
-            data: {
-              items: [],
-              count: 0,
-              total: 0,
-            },
-          };
-        }
-        const result = await fetchWithBQ(
-          queries.getVideosById.query({
-            ids,
-            maxResults,
-          }),
-        );
-        if (!result.data) {
-          return { error: result.error as FetchBaseQueryError };
-        }
-        const videosData = queries.getVideosById.transformResponse(
-          result.data as Response,
-        );
-        // Fix: force filter by publish date (since we may receive wrong activities data from the youtube API sometimes)
-        if (publishedAfter) {
-          videosData.items = videosData.items.filter(
-            (video) => video.publishedAt >= new Date(publishedAfter).getTime(),
-          );
-          const newCount = videosData.items.length;
-          if (newCount < count && maxResults && newCount < maxResults) {
-            total = newCount;
-          } else {
-            total = total - (count - newCount);
-          }
-          count = newCount;
-        }
-        // Apply custom user filters
-        if (channel.filters && channel.filters.length > 0) {
-          videosData.items = videosData.items.filter((video) =>
-            channel.filters!.some((filter) => {
-              const videoField = parseVideoField(video, filter.field);
-              return evaluateField(videoField, filter.operator, filter.value);
-            }),
-          );
-          // Recalculate total & count
-          const newCount = videosData.items.length;
-          total = total - (count - newCount);
-          count = newCount;
-        }
-        return {
-          data: {
-            ...videosData,
-            count,
-            total,
-          },
-        };
-      },
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        const { persistVideosOptions } = arg;
-        try {
-          if (persistVideosOptions?.enable) {
-            const { flags = {} } = persistVideosOptions;
-            const { data } = await queryFulfilled;
-            dispatch(
-              saveVideos({
-                videos: data.items,
-                flags,
-              }),
-            );
-          }
-        } catch (err) {
-          // proceed
-        }
-      },
-    }),
+    >(extendedQueries.getChannelVideos),
   }),
   overrideExisting: false,
 });
