@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAppSelector } from 'store';
 import {
   selectVideosSeniority,
@@ -7,7 +7,8 @@ import {
 import { date2ISO, getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 import { selectChannelVideosById } from 'store/selectors/videos';
-import { HomeView, VideosSeniority } from 'types';
+import { HomeView, Video, VideoCache, VideosSeniority } from 'types';
+import { filterVideoByFlags } from 'store/services/youtube';
 import { jsonEqualityFn } from 'store/utils';
 
 export interface AllViewRendererProps
@@ -19,13 +20,29 @@ const persistVideosOptions = {
   flags: { recent: true },
 };
 
+const filterableFlags = [
+  'seen',
+  'toWatchLater',
+  'archived',
+  'ignored',
+  'bookmarked',
+];
+
+const videosCacheFilter = ({ flags }: VideoCache) =>
+  Object.keys(flags).some((flag) => filterableFlags.includes(flag));
+
 function AllViewRenderer(props: AllViewRendererProps) {
   const { channel } = props;
   const filters = useAppSelector(selectViewFilters(HomeView.All));
   const videosSeniority = useAppSelector(selectVideosSeniority(HomeView.All));
   const videos = useAppSelector(
-    selectChannelVideosById(channel),
+    selectChannelVideosById(channel, videosCacheFilter),
     jsonEqualityFn,
+  );
+  const filterCallback = useCallback(
+    ({ id }: Video) =>
+      videos[id] ? filterVideoByFlags(videos[id], filters) : filters.others,
+    [filters, videos],
   );
   const publishedAfter = useMemo(
     () =>
@@ -39,8 +56,7 @@ function AllViewRenderer(props: AllViewRendererProps) {
     <DefaultRenderer
       publishedAfter={publishedAfter}
       persistVideosOptions={persistVideosOptions}
-      cachedVideos={videos}
-      filters={filters}
+      filter={filterCallback}
       {...props}
     />
   );

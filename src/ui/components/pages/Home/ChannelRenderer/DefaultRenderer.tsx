@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Channel, HomeView, Video, VideoCache, ViewFilters } from 'types';
+import { Channel, HomeView, Video } from 'types';
 import {
   PersistVideosOptions,
   useGetChannelVideosQuery,
@@ -8,18 +8,19 @@ import ChannelRenderer from './ChannelRenderer';
 import config from './ChannelVideos/config';
 import { useGrid } from 'hooks';
 import { useChannelVideos } from 'providers';
-import { filterVideoByFlags } from 'store/services/youtube';
 
 export interface DefaultRendererProps {
   view: HomeView;
   channel: Channel;
   publishedAfter?: string;
   persistVideosOptions?: PersistVideosOptions;
-  cachedVideos?: { [key: string]: VideoCache };
-  filters?: ViewFilters;
+  filter?: (video: Video) => boolean;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
+
+// should be instanciated outside the component to avoid multi-rendering
+const defaultFilter = () => true;
 
 function DefaultRenderer(props: DefaultRendererProps) {
   const {
@@ -27,8 +28,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
     channel,
     publishedAfter,
     persistVideosOptions,
-    cachedVideos,
-    filters,
+    filter = defaultFilter,
     onError,
     ...rest
   } = props;
@@ -59,13 +59,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       }),
     },
   );
-  let videos = data?.items || [];
-  if (filters && cachedVideos) {
-    videos = videos.filter(({ id }) =>
-      cachedVideos[id] ? filterVideoByFlags(cachedVideos[id], filters) : true,
-    );
-  }
-
+  const videos = (data?.items || []).filter(filter);
   const count = data?.count || 0;
   const total = data?.total || 0;
 
@@ -85,7 +79,7 @@ function DefaultRenderer(props: DefaultRendererProps) {
       setChannelData({ channel, items: videos, total });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, data, cachedVideos, filters]);
+  }, [isFetching, data, filter]);
 
   return (
     <ChannelRenderer

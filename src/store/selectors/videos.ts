@@ -28,14 +28,16 @@ export const selectChannelVideosById = (
   channel: Channel,
   filterCallback: (video: VideoCache) => boolean = () => true,
 ) =>
-  createSelector(selectChannelVideos(channel), (videos) =>
-    videos.filter(filterCallback).reduce(
-      (acc, video) => ({
-        ...acc,
-        [video.id]: video,
-      }),
-      {},
-    ),
+  createSelector(
+    selectChannelVideos(channel),
+    (videos) =>
+      videos.filter(filterCallback).reduce(
+        (acc, video) => ({
+          ...acc,
+          [video.id]: video,
+        }),
+        {},
+      ) as { [key: string]: VideoCache },
   );
 
 export const selectUnflaggedVideos = (channel?: Channel) =>
