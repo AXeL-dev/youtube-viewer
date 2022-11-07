@@ -339,8 +339,8 @@ const extendedQueries = {
         // Recalculate total & count
         [total, count] = recalculateTotalAndCount(
           videosData.items,
-          total,
           count,
+          total,
           maxResults,
         );
       }
@@ -355,8 +355,8 @@ const extendedQueries = {
         // Recalculate total & count
         [total, count] = recalculateTotalAndCount(
           videosData.items,
-          total,
           count,
+          total,
           maxResults,
         );
       }
