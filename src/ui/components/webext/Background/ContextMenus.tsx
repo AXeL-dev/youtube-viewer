@@ -12,6 +12,7 @@ import { getChannelId, getVideoId } from 'helpers/utils';
 import { addVideoById } from 'store/thunks/videos';
 import { selectChannels } from 'store/selectors/channels';
 import { addChannelById } from 'store/thunks/channels';
+import { useStateRef } from 'hooks';
 
 declare var browser: any;
 
@@ -53,9 +54,13 @@ const menus: ContextMenu[] = [
 
 export default function ContextMenus(props: ContextMenusProps) {
   const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
+  const watchLaterVideosRef = useStateRef(watchLaterVideos);
   const bookmarkedVideos = useAppSelector(selectBookmarkedVideos());
+  const bookmarkedVideosRef = useStateRef(bookmarkedVideos);
   const seenVideos = useAppSelector(selectSeenVideos());
+  const seenVideosRef = useStateRef(seenVideos);
   const channels = useAppSelector(selectChannels);
+  const channelsRef = useStateRef(channels);
 
   const handleContextMenusClick = (info: ContextMenuInfo, tab: Tab) => {
     const { videoId, channelId } = parseUrl(tab.url);
@@ -177,26 +182,28 @@ export default function ContextMenus(props: ContextMenusProps) {
         if (options.enabled) {
           switch (menu.id) {
             case 'add_video_to_watch_later_list': {
-              const found = watchLaterVideos.find(
+              const found = watchLaterVideosRef.current.find(
                 (video) => video.id === videoId,
               );
               options.enabled = !found;
               break;
             }
             case 'add_video_to_bookmarks_list': {
-              const found = bookmarkedVideos.find(
+              const found = bookmarkedVideosRef.current.find(
                 (video) => video.id === videoId,
               );
               options.enabled = !found;
               break;
             }
             case 'mark_video_as_seen': {
-              const found = seenVideos.find((video) => video.id === videoId);
+              const found = seenVideosRef.current.find(
+                (video) => video.id === videoId,
+              );
               options.checked = !!found;
               break;
             }
             case 'add_channel': {
-              const found = channels.find(
+              const found = channelsRef.current.find(
                 (channel) => channel.id === channelId,
               );
               options.enabled = !found;
@@ -242,7 +249,7 @@ export default function ContextMenus(props: ContextMenusProps) {
       browser.tabs.onUpdated.removeListener(handleTabUpdate);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchLaterVideos, seenVideos]);
+  }, []);
 
   return null;
 }
