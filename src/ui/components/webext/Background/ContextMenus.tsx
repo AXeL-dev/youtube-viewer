@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { isWebExtension, closeExtensionTabs } from 'helpers/webext';
 import { removeVideoFlag } from 'store/reducers/videos';
 import { Tab, ContextMenu, ContextMenuInfo } from 'types';
@@ -8,7 +8,7 @@ import {
   selectSeenVideos,
   selectWatchLaterVideos,
 } from 'store/selectors/videos';
-import { getChannelId, getVideoId } from 'helpers/utils';
+import { getVideoId } from 'helpers/utils';
 import { addVideoById } from 'store/thunks/videos';
 import { selectChannels } from 'store/selectors/channels';
 import { addChannelById } from 'store/thunks/channels';
@@ -61,73 +61,94 @@ export default function ContextMenus(props: ContextMenusProps) {
   const seenVideosRef = useStateRef(seenVideos);
   const channels = useAppSelector(selectChannels);
   const channelsRef = useStateRef(channels);
+  const channelIdsRef = useRef<{ [key: string]: string }>({}); // tab id: channel id
+  const portsRef = useRef<{ [key: string]: any }>({});
+
+  const handleConnect = (port: any) => {
+    portsRef.current[port.sender.tab.id] = port;
+    port.onMessage.addListener((message: any) => {
+      // const { menuItemId, checked } = message.request;
+      const { channelId } = message.response;
+      if (channelId) {
+        channelIdsRef.current[port.sender.tab.id] = channelId;
+      }
+    });
+  };
 
   const handleContextMenusClick = (info: ContextMenuInfo, tab: Tab) => {
-    const { videoId, channelId } = parseUrl(tab.url);
-    if (videoId) {
-      switch (info.menuItemId) {
-        case 'add_video_to_watch_later_list':
-          closeExtensionTabs().then(() => {
-            browser.contextMenus.update(info.menuItemId, { enabled: false });
+    const { videoId, channelId } = parseTabUrl(tab);
+    if (['add_channel'].includes(info.menuItemId) && channelId) {
+      handleChannelActions(info, channelId);
+    } else if (videoId) {
+      handleVideoActions(info, videoId);
+    }
+  };
+
+  const handleVideoActions = (info: ContextMenuInfo, videoId: string) => {
+    switch (info.menuItemId) {
+      case 'add_video_to_watch_later_list':
+        closeExtensionTabs().then(() => {
+          browser.contextMenus.update(info.menuItemId, { enabled: false });
+          dispatch(
+            addVideoById({
+              id: videoId,
+              flags: { toWatchLater: true },
+            }),
+            true,
+          );
+        });
+        break;
+      case 'add_video_to_bookmarks_list':
+        closeExtensionTabs().then(() => {
+          browser.contextMenus.update(info.menuItemId, { enabled: false });
+          dispatch(
+            addVideoById({
+              id: videoId,
+              flags: { bookmarked: true },
+              hideChannel: true,
+            }),
+            true,
+          );
+        });
+        break;
+      case 'mark_video_as_seen': {
+        closeExtensionTabs().then(() => {
+          if (info.checked) {
             dispatch(
               addVideoById({
                 id: videoId,
-                flags: { toWatchLater: true },
+                flags: { seen: true },
               }),
               true,
             );
-          });
-          break;
-        case 'add_video_to_bookmarks_list':
-          closeExtensionTabs().then(() => {
-            browser.contextMenus.update(info.menuItemId, { enabled: false });
+          } else {
             dispatch(
-              addVideoById({
-                id: videoId,
-                flags: { bookmarked: true },
-                hideChannel: true,
+              removeVideoFlag({
+                video: { id: videoId },
+                flag: 'seen',
               }),
               true,
             );
-          });
-          break;
-        case 'mark_video_as_seen': {
-          closeExtensionTabs().then(() => {
-            if (info.checked) {
-              dispatch(
-                addVideoById({
-                  id: videoId,
-                  flags: { seen: true },
-                }),
-                true,
-              );
-            } else {
-              dispatch(
-                removeVideoFlag({
-                  video: { id: videoId },
-                  flag: 'seen',
-                }),
-                true,
-              );
-            }
-          });
-          break;
-        }
+          }
+        });
+        break;
       }
-    } else if (channelId) {
-      switch (info.menuItemId) {
-        case 'add_channel':
-          closeExtensionTabs().then(() => {
-            browser.contextMenus.update(info.menuItemId, { enabled: false });
-            dispatch(
-              addChannelById({
-                id: channelId,
-              }),
-              true,
-            );
-          });
-          break;
-      }
+    }
+  };
+
+  const handleChannelActions = (info: ContextMenuInfo, channelId: string) => {
+    switch (info.menuItemId) {
+      case 'add_channel':
+        closeExtensionTabs().then(() => {
+          browser.contextMenus.update(info.menuItemId, { enabled: false });
+          dispatch(
+            addChannelById({
+              id: channelId,
+            }),
+            true,
+          );
+        });
+        break;
     }
   };
 
@@ -139,7 +160,7 @@ export default function ContextMenus(props: ContextMenusProps) {
     updateContextMenus(tabId);
   };
 
-  const parseUrl = (url: string) => {
+  const parseTabUrl = (tab: Tab) => {
     const data: {
       isYoutubeVideo: boolean;
       videoId: string | null;
@@ -151,29 +172,33 @@ export default function ContextMenus(props: ContextMenusProps) {
       isYoutubeChannel: false,
       channelId: null,
     };
-    if (url?.includes('youtube.com/watch?v=') || url?.includes('youtu.be/')) {
+    if (
+      tab.url?.includes('youtube.com/watch?v=') ||
+      tab.url?.includes('youtu.be/')
+    ) {
       data.isYoutubeVideo = true;
-      data.videoId = getVideoId(url);
+      data.videoId = getVideoId(tab.url);
+      data.channelId = channelIdsRef.current[tab.id];
     } else if (
-      url?.includes('youtube.com/channel/') ||
-      url?.includes('youtube.com/c/')
+      tab.url?.includes('youtube.com/channel/') ||
+      tab.url?.includes('youtube.com/c/')
     ) {
       data.isYoutubeChannel = true;
-      data.channelId = getChannelId(url);
+      // data.channelId = getChannelId(tab.url);
+      data.channelId = channelIdsRef.current[tab.id];
     }
     return data;
   };
 
   const updateContextMenus = (tabId: number) => {
     browser.tabs.get(tabId).then((tab: Tab) => {
-      const { isYoutubeVideo, videoId, isYoutubeChannel, channelId } = parseUrl(
-        tab.url,
-      );
+      const { isYoutubeVideo, videoId, isYoutubeChannel, channelId } =
+        parseTabUrl(tab);
       for (const menu of menus) {
         const options: ContextMenuUpdateOptions = {
           enabled:
             menu.id === 'add_channel'
-              ? isYoutubeChannel && !!channelId
+              ? (isYoutubeChannel || isYoutubeVideo) && !!channelId
               : isYoutubeVideo && !!videoId,
         };
         if (menu.type === 'checkbox') {
@@ -229,9 +254,12 @@ export default function ContextMenus(props: ContextMenusProps) {
     createContextMenus();
     // Handle context menu click
     browser.contextMenus.onClicked.addListener(handleContextMenusClick);
+    // Handle content script connection
+    browser.runtime.onConnect.addListener(handleConnect);
 
     return () => {
       browser.contextMenus.onClicked.removeListener(handleContextMenusClick);
+      browser.runtime.onConnect.removeListener(handleConnect);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

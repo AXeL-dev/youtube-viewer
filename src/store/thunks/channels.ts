@@ -10,7 +10,7 @@ export const fetchChannelById = createAsyncThunk<
   { state: RootState }
 >('channels/fetchChannelById', async ({ id }, { dispatch }) => {
   const result = dispatch(
-    extendedApi.endpoints.findChannelById.initiate({ id }),
+    extendedApi.endpoints.findChannelById.initiate({ id, maxResults: 1 }),
   );
   result.unsubscribe();
   const response = await result;
