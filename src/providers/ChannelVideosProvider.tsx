@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { debounce } from 'helpers/utils';
-import { useDidMountEffect } from 'hooks';
+import { useStateRef } from 'hooks';
 import {
   createContext,
   FC,
@@ -66,6 +66,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     initialChannelsMap,
   );
   const hiddenChannels = useAppSelector(selectHiddenChannels);
+  const hiddenChannelsRef = useStateRef(hiddenChannels);
 
   const updateCount = useCallback(
     debounce((view: HomeView, count: ChannelVideosCount) => {
@@ -92,21 +93,17 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
     return count;
   };
 
-  useDidMountEffect(() => {
-    // update videos count for the all view (since it is the only view where we hide channels)
-    const hiddenChannelsIds = hiddenChannels.map(({ id }) => id);
-    const count = getCount(
-      HomeView.All,
-      ({ channel }) => !hiddenChannelsIds.includes(channel.id),
-    );
-    updateCount(HomeView.All, count);
-  }, [hiddenChannels]);
-
   const setChannelData = (view: HomeView, data: ChannelData) => {
     // save channel data per view
     channelsMap.current[view].set(data.channel.id, data);
     // update videos count per view
-    const count = getCount(view);
+    const hiddenChannelsIds = hiddenChannelsRef.current.map(({ id }) => id);
+    const count = getCount(
+      view,
+      view === HomeView.All
+        ? ({ channel }) => !hiddenChannelsIds.includes(channel.id)
+        : undefined,
+    );
     updateCount(view, count);
   };
 
