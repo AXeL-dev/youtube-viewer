@@ -62,16 +62,22 @@ export default function ContextMenus(props: ContextMenusProps) {
   const channels = useAppSelector(selectChannels);
   const channelsRef = useStateRef(channels);
   const channelIdsRef = useRef<{ [key: string]: string }>({}); // tab id: channel id
-  const portsRef = useRef<{ [key: string]: any }>({});
+  const portsRef = useRef<{ [key: string]: any }>({}); // tab id: port
 
   const handleConnect = (port: any) => {
     portsRef.current[port.sender.tab.id] = port;
     port.onMessage.addListener((message: any) => {
       // const { menuItemId, checked } = message.request;
       const { channelId } = message.response;
+      const options: ContextMenuUpdateOptions = { enabled: false };
       if (channelId) {
         channelIdsRef.current[port.sender.tab.id] = channelId;
+        const found = channelsRef.current.find(
+          (channel) => channel.id === channelId,
+        );
+        options.enabled = !found;
       }
+      browser.contextMenus.update('add_channel', options);
     });
   };
 

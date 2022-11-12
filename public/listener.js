@@ -1,4 +1,6 @@
 (function () {
+  const channelUrlById = {};
+
   function getChannelId(url) {
     if (url.includes('youtube.com/watch?v=') || url.includes('youtu.be/')) {
       return ytInitialPlayerResponse.microformat.playerMicroformatRenderer
@@ -15,7 +17,15 @@
 
   function sendChannelId(data, delay = 0) {
     setTimeout(() => {
-      const channelId = getChannelId(window.location.href);
+      const url = window.location.href;
+      let channelId = getChannelId(url);
+      if (channelId) {
+        if (!channelUrlById[channelId]) {
+          channelUrlById[channelId] = url;
+        } else if (url !== channelUrlById[channelId]) {
+          channelId = null;
+        }
+      }
       window.postMessage({
         from: 'page',
         response: {
