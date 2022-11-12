@@ -1,6 +1,6 @@
 {
   "name": "youtube-viewer",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "private": true,
   "dependencies": {
     "@craco/craco": "^7.0.0-alpha.7",
