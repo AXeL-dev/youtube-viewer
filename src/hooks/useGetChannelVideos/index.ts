@@ -177,10 +177,11 @@ export function useGetChannelVideos({
   );
 
   return {
+    ...rest,
     data,
     error: activities.error || error,
     isLoading: activities.isLoading || isLoading,
     isFetching: activities.isFetching || isFetching,
-    ...rest,
+    refetch: activities.refetch,
   };
 }
