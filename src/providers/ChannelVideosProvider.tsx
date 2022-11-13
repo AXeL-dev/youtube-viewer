@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { debounce } from 'helpers/utils';
-import { useStateRef } from 'hooks';
+import { useSelectorRef } from 'hooks';
 import {
   createContext,
   FC,
@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useAppSelector } from 'store';
 import { views } from 'store/reducers/settings';
 import { selectHiddenChannels } from 'store/selectors/channels';
 import { GetChannelVideosResponse } from 'store/services/youtube';
@@ -65,8 +64,7 @@ export const ChannelVideosProvider: FC = memo(({ children }) => {
   const channelsMap = useRef<{ [key: string]: Map<string, ChannelData> }>(
     initialChannelsMap,
   );
-  const hiddenChannels = useAppSelector(selectHiddenChannels);
-  const hiddenChannelsRef = useStateRef(hiddenChannels);
+  const hiddenChannelsRef = useSelectorRef(selectHiddenChannels);
 
   const updateCount = useCallback(
     debounce((view: HomeView, count: ChannelVideosCount) => {

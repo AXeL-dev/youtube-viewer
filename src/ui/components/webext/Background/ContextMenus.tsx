@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { isWebExtension, closeExtensionTabs } from 'helpers/webext';
 import { removeVideoFlag } from 'store/reducers/videos';
 import { Tab, ContextMenu, ContextMenuInfo } from 'types';
-import { dispatch, useAppSelector } from 'store';
+import { dispatch } from 'store';
 import {
   selectBookmarkedVideos,
   selectSeenVideos,
@@ -12,7 +12,7 @@ import { getVideoId } from 'helpers/utils';
 import { addVideoById } from 'store/thunks/videos';
 import { selectChannels } from 'store/selectors/channels';
 import { addChannelById } from 'store/thunks/channels';
-import { useStateRef } from 'hooks';
+import { useSelectorRef } from 'hooks';
 
 declare var browser: any;
 
@@ -53,14 +53,10 @@ const menus: ContextMenu[] = [
 ];
 
 export default function ContextMenus(props: ContextMenusProps) {
-  const watchLaterVideos = useAppSelector(selectWatchLaterVideos());
-  const watchLaterVideosRef = useStateRef(watchLaterVideos);
-  const bookmarkedVideos = useAppSelector(selectBookmarkedVideos());
-  const bookmarkedVideosRef = useStateRef(bookmarkedVideos);
-  const seenVideos = useAppSelector(selectSeenVideos());
-  const seenVideosRef = useStateRef(seenVideos);
-  const channels = useAppSelector(selectChannels);
-  const channelsRef = useStateRef(channels);
+  const watchLaterVideosRef = useSelectorRef(selectWatchLaterVideos());
+  const bookmarkedVideosRef = useSelectorRef(selectBookmarkedVideos());
+  const seenVideosRef = useSelectorRef(selectSeenVideos());
+  const channelsRef = useSelectorRef(selectChannels);
   const channelIdsRef = useRef<{ [key: string]: string }>({}); // tab id: channel id
   const portsRef = useRef<{ [key: string]: any }>({}); // tab id: port
 
