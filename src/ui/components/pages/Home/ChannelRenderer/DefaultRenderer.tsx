@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Channel, HomeView, Video } from 'types';
 import {
+  FilterVideosOptions,
   PersistVideosOptions,
-  useGetChannelVideosQuery,
 } from 'store/services/youtube';
-import ChannelRenderer from './ChannelRenderer';
+import ChannelRenderer, { limit } from './ChannelRenderer';
+import ChannelDataHandler from './ChannelDataHandler';
 import config from './ChannelVideos/config';
-import { useGrid } from 'hooks';
-import { useChannelVideos } from 'providers';
+import { useGetChannelVideos, useGrid } from 'hooks';
 
 export interface DefaultRendererProps {
   view: HomeView;
   channel: Channel;
   publishedAfter?: string;
   persistVideosOptions?: PersistVideosOptions;
-  filter?: (video: Video) => boolean;
+  filterVideosOptions?: FilterVideosOptions;
   onError?: (error: any) => void;
   onVideoPlay: (video: Video) => void;
 }
-
-// should be instanciated outside the component to avoid multi-rendering
-const defaultFilter = () => true;
 
 function DefaultRenderer(props: DefaultRendererProps) {
   const {
@@ -28,14 +25,13 @@ function DefaultRenderer(props: DefaultRendererProps) {
     channel,
     publishedAfter,
     persistVideosOptions,
-    filter = defaultFilter,
+    filterVideosOptions,
     onError,
     ...rest
   } = props;
   // const lastVideoIdRef = useRef<string | undefined>(undefined);
   const [page, setPage] = useState(1);
   const { itemsPerRow = 0 } = useGrid(config.gridColumns);
-  const { setChannelData } = useChannelVideos(view);
   const maxResults = itemsPerRow * page;
   const {
     data,
@@ -43,23 +39,21 @@ function DefaultRenderer(props: DefaultRendererProps) {
     error,
     isLoading,
     isFetching,
-  } = useGetChannelVideosQuery(
-    {
-      channel,
-      publishedAfter,
-      maxResults,
-      persistVideosOptions,
-      // lastVideoId: lastVideoIdRef.current,
-    },
-    {
-      skip: itemsPerRow === 0,
-      selectFromResult: (result) => ({
-        ...result,
-        // lastVideoId: result.data?.items[result.data.items.length - 1]?.id,
-      }),
-    },
-  );
-  const videos = (data?.items || []).filter(filter);
+  } = useGetChannelVideos({
+    channel,
+    publishedAfter,
+    maxResults,
+    persistVideosOptions,
+    filterVideosOptions,
+    // lastVideoId: lastVideoIdRef.current,
+    limit,
+    skip: itemsPerRow === 0,
+    selectFromResult: (data) => ({
+      ...data,
+      // lastVideoId: data?.items[data.items.length - 1]?.id,
+    }),
+  });
+  const videos = data?.items || [];
   const count = data?.count || 0;
   const total = data?.total || 0;
 
@@ -74,26 +68,30 @@ function DefaultRenderer(props: DefaultRendererProps) {
     }
   }, [error, onError]);
 
-  useEffect(() => {
-    if (!isFetching && data) {
-      setChannelData({ channel, items: videos, total });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, data, filter]);
-
   return (
-    <ChannelRenderer
-      view={view}
-      channel={channel}
-      videos={videos}
-      count={count}
-      total={total}
-      isLoading={isLoading || isFetching}
-      itemsPerRow={itemsPerRow}
-      maxResults={maxResults}
-      onLoadMore={handleLoadMore}
-      {...rest}
-    />
+    <>
+      <ChannelRenderer
+        view={view}
+        channel={channel}
+        videos={videos}
+        count={count}
+        total={total}
+        isLoading={isLoading || isFetching}
+        itemsPerRow={itemsPerRow}
+        maxResults={maxResults}
+        onLoadMore={handleLoadMore}
+        {...rest}
+      />
+      <ChannelDataHandler
+        view={view}
+        channel={channel}
+        videos={videos}
+        total={total}
+        isFetching={isFetching}
+        hasData={!!data}
+        deps={[isFetching, data]}
+      />
+    </>
   );
 }
 

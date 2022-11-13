@@ -18,6 +18,9 @@ export interface ChannelRendererProps {
   onVideoPlay: (video: Video) => void;
 }
 
+// Note: max 50 videos per channel, check the useGetChannelVideos hook for more details
+export const limit = 50;
+
 function ChannelRenderer(props: ChannelRendererProps) {
   const {
     view,
@@ -31,8 +34,7 @@ function ChannelRenderer(props: ChannelRendererProps) {
   } = props;
   const videosCount = count || videos.length;
   const hasVideos = isLoading || videos.length > 0;
-  // Note: max 50 videos per channel, check the getChannelVideos endpoint for more details
-  const hasMore = videosCount > 0 && videosCount < 50 && total > maxResults;
+  const hasMore = videosCount > 0 && videosCount < limit && total > maxResults;
   const { collapsed } = useChannelOptions();
 
   return hasVideos ? (
