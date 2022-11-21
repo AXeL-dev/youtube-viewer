@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useAppSelector } from 'store';
 import {
   selectVideosSeniority,
@@ -7,8 +7,7 @@ import {
 import { date2ISO, getDateBefore } from 'helpers/utils';
 import DefaultRenderer, { DefaultRendererProps } from './DefaultRenderer';
 import { selectChannelVideosById } from 'store/selectors/videos';
-import { HomeView, Video, VideoCache, VideosSeniority } from 'types';
-import { filterVideoByFlags } from 'store/services/youtube';
+import { HomeView, VideoCache, VideosSeniority } from 'types';
 import { jsonEqualityFn } from 'store/utils';
 
 export interface AllViewRendererProps
@@ -35,14 +34,9 @@ function AllViewRenderer(props: AllViewRendererProps) {
   const { channel } = props;
   const filters = useAppSelector(selectViewFilters(HomeView.All));
   const videosSeniority = useAppSelector(selectVideosSeniority(HomeView.All));
-  const videos = useAppSelector(
+  const videosById = useAppSelector(
     selectChannelVideosById(channel, videosCacheFilter),
     jsonEqualityFn,
-  );
-  const filterCallback = useCallback(
-    ({ id }: Video) =>
-      videos[id] ? filterVideoByFlags(videos[id], filters) : filters.others,
-    [filters, videos],
   );
   const publishedAfter = useMemo(
     () =>
@@ -56,7 +50,10 @@ function AllViewRenderer(props: AllViewRendererProps) {
     <DefaultRenderer
       publishedAfter={publishedAfter}
       persistVideosOptions={persistVideosOptions}
-      filter={filterCallback}
+      filterVideosOptions={{
+        videosById,
+        filters,
+      }}
       {...props}
     />
   );

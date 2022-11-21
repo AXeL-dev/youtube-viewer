@@ -13,10 +13,10 @@ import {
 } from 'react';
 import { views } from 'store/reducers/settings';
 import { selectHiddenChannels } from 'store/selectors/channels';
-import { GetChannelVideosResponse } from 'store/services/youtube';
+import { GetVideosByIdResponse } from 'store/services/youtube';
 import { Channel, Video, HomeView } from 'types';
 
-export interface ChannelData extends Omit<GetChannelVideosResponse, 'count'> {
+export interface ChannelData extends Omit<GetVideosByIdResponse, 'count'> {
   channel: Channel;
 }
 

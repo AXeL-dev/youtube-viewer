@@ -15,7 +15,7 @@ import {
   selectViewFilters,
 } from './settings';
 import { elapsedDays } from 'helpers/utils';
-import { filterVideoByFlags } from 'store/services/youtube';
+import { filterVideoByFlags } from 'hooks/useGetChannelVideos/utils';
 
 export const selectVideos = (state: RootState) => state.videos.list;
 

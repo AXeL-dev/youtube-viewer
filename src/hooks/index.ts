@@ -7,3 +7,4 @@ export * from './useInterval';
 export * from './useForwardedRef';
 export * from './useStateRef';
 export * from './useSelectorRef';
+export * from './useGetChannelVideos';
