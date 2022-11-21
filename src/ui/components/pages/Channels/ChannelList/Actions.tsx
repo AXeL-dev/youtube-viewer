@@ -12,8 +12,9 @@ import DownloadIcon from '@mui/icons-material/Download';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Channel, Nullable } from 'types';
 import { useAppDispatch } from 'store';
-import { mergeChannels } from 'store/reducers/channels';
+import { mergeChannels, setChannels } from 'store/reducers/channels';
 import { readFile, downloadFile } from 'helpers/file';
+import ImportChannelsDialog from './ImportChannelsDialog';
 
 interface ChannelListActionsProps {
   channels: Channel[];
@@ -24,9 +25,19 @@ interface ChannelListActionsProps {
 function ChannelListActions(props: ChannelListActionsProps) {
   const { channels, showDragHandles, onDragHandlesToggle } = props;
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
+  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
   const fileInputRef = useRef<Nullable<HTMLInputElement>>(null);
+  const importedChannelsRef = useRef<Nullable<Channel[]>>(null);
   const open = Boolean(anchorEl);
   const dispatch = useAppDispatch();
+
+  const openDialog = (dialog: string) => {
+    setOpenedDialog(dialog);
+  };
+
+  const closeDialog = () => {
+    setOpenedDialog(null);
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -49,8 +60,11 @@ function ChannelListActions(props: ChannelListActionsProps) {
     try {
       readFile(file)
         .then((content) => {
-          const channels = JSON.parse(content as string);
-          dispatch(mergeChannels(channels));
+          const channels: Channel[] = JSON.parse(content as string);
+          if (channels.length > 0) {
+            importedChannelsRef.current = channels;
+            openDialog('import-channels');
+          }
         })
         .finally(() => {
           handleClose();
@@ -129,6 +143,24 @@ function ChannelListActions(props: ChannelListActionsProps) {
           event.currentTarget.value = '';
         }}
         onChange={importChannels}
+      />
+      <ImportChannelsDialog
+        open={openedDialog === 'import-channels'}
+        channels={importedChannelsRef.current!}
+        onClose={(confirmed, shouldReplace) => {
+          if (confirmed && importedChannelsRef.current) {
+            if (shouldReplace) {
+              dispatch(
+                setChannels({
+                  list: importedChannelsRef.current,
+                }),
+              );
+            } else {
+              dispatch(mergeChannels(importedChannelsRef.current));
+            }
+          }
+          closeDialog();
+        }}
       />
     </>
   ) : null;
