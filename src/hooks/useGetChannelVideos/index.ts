@@ -59,11 +59,11 @@ export function useGetChannelVideos({
       skip,
       // pollingInterval,
       selectFromResult: (result) => {
-        const { data } = result;
-        let { count = 0, total = 0 } = data || {};
+        let { data } = result;
         let ids: string[] = [];
 
         if (data) {
+          let { count = 0, total = 0 } = data;
           // Fix: wrong total count (ex: maxResults = 6, total = 2, count = 1)
           if (
             activitiesMaxResults &&
@@ -104,15 +104,17 @@ export function useGetChannelVideos({
             endIndex = Math.min(endIndex, startIndex + maxResults);
           }
           ids = ids.slice(startIndex, endIndex);
+          // Update data
+          data = {
+            ...data,
+            count,
+            total,
+          };
         }
 
         return {
           ...result,
-          data: {
-            ...data,
-            count,
-            total,
-          },
+          data,
           ids,
         };
       },
@@ -130,11 +132,11 @@ export function useGetChannelVideos({
       // pollingInterval,
       selectFromResult: (result) => {
         let { data } = result;
-        let items = data?.items;
-        let count = items?.length || 0;
-        let total = activities.data?.total || 0;
 
-        if (items) {
+        if (data) {
+          let items = data.items;
+          let count = items?.length || 0;
+          let total = activities.data?.total || 0;
           // Fix: force filter by publish date (since we may receive wrong activities data from the youtube API sometimes)
           if (publishedAfter) {
             items = items.filter(
