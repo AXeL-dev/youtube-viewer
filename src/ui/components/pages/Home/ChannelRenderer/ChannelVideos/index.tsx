@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Box, Grid } from '@mui/material';
 import { HomeView, Video } from 'types';
 import VideoCard from './VideoCard';
@@ -29,7 +29,15 @@ function ChannelVideos(props: ChannelVideosProps) {
     onVideoPlay,
     onLoadMore,
   } = props;
+  const showSkeletons = useRef(true);
   const skeletonNumber = Math.min(maxResults - videos.length, itemsPerRow);
+
+  useEffect(() => {
+    if (!isLoading) {
+      showSkeletons.current = hasMore ?? true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   return (
     <Box sx={{ display: 'flex', pl: 6 }}>
@@ -39,7 +47,7 @@ function ChannelVideos(props: ChannelVideosProps) {
             <VideoCard video={video} view={view} onVideoPlay={onVideoPlay} />
           </GridItem>
         ))}
-        {isLoading && hasMore && skeletonNumber > 0
+        {isLoading && showSkeletons.current && skeletonNumber > 0
           ? Array.from(new Array(skeletonNumber)).map((_, index: number) => (
               <GridItem key={index}>
                 <VideoSkeleton />
