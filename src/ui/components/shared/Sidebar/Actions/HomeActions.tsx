@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IconButton } from '@mui/material';
-import { Nullable } from 'types';
+import { useDialog } from 'hooks';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import HomeDisplayOptionsDialog from 'ui/components/pages/Home/DisplayOptionsDialog';
 
 interface HomeActionsProps {}
 
 export function HomeActions(props: HomeActionsProps) {
-  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
-
-  const openDialog = (dialog: string) => {
-    setOpenedDialog(dialog);
-  };
-
-  const closeDialog = () => {
-    setOpenedDialog(null);
-  };
+  const { openedDialog, openDialog, closeDialog } = useDialog();
 
   return (
     <>

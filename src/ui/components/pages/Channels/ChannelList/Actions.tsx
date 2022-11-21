@@ -14,6 +14,7 @@ import { Channel, Nullable } from 'types';
 import { useAppDispatch } from 'store';
 import { mergeChannels, setChannels } from 'store/reducers/channels';
 import { readFile, downloadFile } from 'helpers/file';
+import { useDialog } from 'hooks';
 import ImportChannelsDialog from './ImportChannelsDialog';
 
 interface ChannelListActionsProps {
@@ -25,19 +26,11 @@ interface ChannelListActionsProps {
 function ChannelListActions(props: ChannelListActionsProps) {
   const { channels, showDragHandles, onDragHandlesToggle } = props;
   const [anchorEl, setAnchorEl] = useState<Nullable<HTMLElement>>(null);
-  const [openedDialog, setOpenedDialog] = useState<Nullable<string>>(null);
+  const { openedDialog, openDialog, closeDialog } = useDialog();
   const fileInputRef = useRef<Nullable<HTMLInputElement>>(null);
   const importedChannelsRef = useRef<Nullable<Channel[]>>(null);
   const open = Boolean(anchorEl);
   const dispatch = useAppDispatch();
-
-  const openDialog = (dialog: string) => {
-    setOpenedDialog(dialog);
-  };
-
-  const closeDialog = () => {
-    setOpenedDialog(null);
-  };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
