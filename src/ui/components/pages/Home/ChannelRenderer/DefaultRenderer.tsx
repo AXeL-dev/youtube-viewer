@@ -4,7 +4,7 @@ import {
   FilterVideosOptions,
   PersistVideosOptions,
 } from 'store/services/youtube';
-import ChannelRenderer, { limit } from './ChannelRenderer';
+import ChannelRenderer from './ChannelRenderer';
 import ChannelDataHandler from './ChannelDataHandler';
 import config from './ChannelVideos/config';
 import { useGetChannelVideos, useGrid } from 'hooks';
@@ -46,7 +46,6 @@ function DefaultRenderer(props: DefaultRendererProps) {
     persistVideosOptions,
     filterVideosOptions,
     // lastVideoId: lastVideoIdRef.current,
-    limit,
     skip: itemsPerRow === 0,
     selectFromResult: (data) => ({
       ...data,

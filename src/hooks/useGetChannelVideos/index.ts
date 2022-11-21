@@ -19,7 +19,6 @@ interface IUseGetChannelVideosProps {
   channel: Channel;
   publishedAfter?: string;
   maxResults?: number;
-  limit?: number;
   skip: boolean;
   // pollingInterval?: number;
   persistVideosOptions?: PersistVideosOptions;
@@ -30,11 +29,14 @@ interface IUseGetChannelVideosProps {
 
 const defaultSelectFromResult = (result: IResult) => result;
 
+// Note: max 50 videos per channel
+// @see https://developers.google.com/youtube/v3/docs/videos/list#request
+export const channelVideosLimit = 50;
+
 export function useGetChannelVideos({
   channel,
   publishedAfter,
   maxResults,
-  limit,
   skip,
   // pollingInterval,
   persistVideosOptions,
@@ -42,8 +44,11 @@ export function useGetChannelVideos({
   lastVideoId,
   selectFromResult = defaultSelectFromResult,
 }: IUseGetChannelVideosProps) {
+  // Get more activities when a filter is provided
   const activitiesMaxResults =
-    limit && maxResults ? limit + maxResults : maxResults;
+    filterVideosOptions && maxResults
+      ? maxResults + channelVideosLimit
+      : maxResults;
   const activities = useGetChannelActivitiesQuery(
     {
       channel,
@@ -93,9 +98,8 @@ export function useGetChannelVideos({
               startIndex = index + 1; // start from the next item
             }
           }
-          // Restrict max ids number to 50
-          // @see https://developers.google.com/youtube/v3/docs/videos/list#request
-          let endIndex = startIndex + 50;
+          // Restrict max ids number
+          let endIndex = startIndex + channelVideosLimit;
           if (maxResults) {
             endIndex = Math.min(endIndex, startIndex + maxResults);
           }
@@ -126,19 +130,20 @@ export function useGetChannelVideos({
       // pollingInterval,
       selectFromResult: (result) => {
         let { data } = result;
-        let count = data?.items.length || 0;
+        let items = data?.items;
+        let count = items?.length || 0;
         let total = activities.data?.total || 0;
 
-        if (data) {
+        if (items) {
           // Fix: force filter by publish date (since we may receive wrong activities data from the youtube API sometimes)
           if (publishedAfter) {
-            data.items = data.items.filter(
+            items = items.filter(
               (video) =>
                 video.publishedAt >= new Date(publishedAfter).getTime(),
             );
             // Recalculate total & count
             [total, count] = recalculateTotalAndCount(
-              data.items.length,
+              items.length,
               count,
               total,
               maxResults,
@@ -146,7 +151,7 @@ export function useGetChannelVideos({
           }
           // Apply custom channel filters
           if (channel.filters && channel.filters.length > 0) {
-            data.items = data.items.filter((video) =>
+            items = items.filter((video) =>
               channel.filters!.some((filter) => {
                 const videoField = parseVideoField(video, filter.field);
                 return evaluateField(videoField, filter.operator, filter.value);
@@ -154,7 +159,7 @@ export function useGetChannelVideos({
             );
             // Recalculate total & count
             [total, count] = recalculateTotalAndCount(
-              data.items.length,
+              items.length,
               count,
               total,
               maxResults,
@@ -163,6 +168,7 @@ export function useGetChannelVideos({
           // Update data
           data = selectFromResult({
             ...data,
+            items,
             count,
             total,
           });

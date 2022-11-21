@@ -4,6 +4,7 @@ import { Channel, HomeView, Video } from 'types';
 import ChannelTitle from './ChannelTitle';
 import ChannelVideos from './ChannelVideos';
 import { ChannelOptionsProvider, useChannelOptions } from 'providers';
+import { channelVideosLimit as limit } from 'hooks';
 
 export interface ChannelRendererProps {
   view: HomeView;
@@ -18,9 +19,6 @@ export interface ChannelRendererProps {
   onVideoPlay: (video: Video) => void;
 }
 
-// Note: max 50 videos per channel, check the useGetChannelVideos hook for more details
-export const limit = 50;
-
 function ChannelRenderer(props: ChannelRendererProps) {
   const {
     view,
@@ -33,7 +31,7 @@ function ChannelRenderer(props: ChannelRendererProps) {
     ...rest
   } = props;
   const videosCount = count || videos.length;
-  const hasVideos = isLoading || videos.length > 0;
+  const hasVideos = isLoading || videosCount > 0;
   const hasMore = videosCount > 0 && videosCount < limit && total > maxResults;
   const { collapsed } = useChannelOptions();
 
